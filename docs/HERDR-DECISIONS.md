@@ -17,6 +17,10 @@
 | D-007 | 2026-10-31 20:24 | wg-coder | rust-analyzer LSP 플러그인 설치 권유 → 설치하지 않음(Esc) | 대리 응답 | 미보고 |
 | D-008 | 2026-10-31 20:35 | wg-reviewer, wg-checker | Phase 0 검증용 읽기 전용 명령(git diff/show, Get-Content, Select-String, Test-Path) 승인, checker 의 REPORT.md 쓰기 승인 | 대리 응답 | 미보고 |
 | D-009 | 2026-10-31 20:42 | wg-reviewer → wg-coder | Phase 0 리뷰 지적 4건(Major 2, Minor 2) 전부 채택·반영 | 대리 응답 | 미보고 |
+| D-010 | 2026-10-31 20:56 | wg-coder | Phase 1 판단 요청 5건: D-9·R-3·R-15 이후 변경 승인, 버튼 색·글꼴 선택은 미결 사항으로 | 대리 응답 | 미보고 |
+| D-011 | 2026-10-31 21:20 | wg-reviewer, wg-checker → wg-coder | Phase 1 리뷰 1·2회차 지적(Major 3, Minor 2)과 R-1 스냅 플라이아웃 실패 채택·반영 | 대리 응답 | 미보고 |
+| D-012 | 2026-11-01 | wg-checker | R-4·R-5 의 100·150% 배율 시험 미수행 실패 → Windows 배율 변경이 필요해 사용자에게 올림, Phase 1 미완료로 멈춤 | 사람에게 올림 | 2026-11-01 |
+| D-013 | 2026-11-01 | wg-leader | 사용자 허락으로 tools/set-scale.ps1 로 배율 100→150% 바꿔 verify-scale 시험, 200% 로 복원 확인. checker 3회차 R-1~R-5 통과 | 사용자 지시 | 2026-11-01 |
 
 ## 기록
 
@@ -109,3 +113,43 @@
 - 근거: HERDR-SETUP.md 7절 위임. 캡처 도구는 이후 모든 일치도 검증의 증거를 만들므로 정확해야 함. D-5
 - 결과: 없음
 - 보고: 미보고
+
+### D-010 · 2026-10-31 20:56 · wg-coder
+
+- 상황: 질문 (구현 중 판단 요청 5건)
+- 질문: ① gpui-kit TitleBar 가 높이 34·버튼 34px SVG 고정이라 D-9 대로 못 함 ② Windows 창 장식이 Server 라 앱이 테두리·모서리를 못 그림(R-3) ③ L-21 은 타이틀 바 32 고정인데 R-15 는 px 상수 금지 ④ 글리프 글꼴을 빌드 번호 대신 설치 여부로 판단 ⑤ 닫기 외 버튼 hover 색은 기본 테마 색 임시
+- 구분: 대리 응답
+- 답변: ①②③ 승인 — DECISIONS D-9, SPEC R-3·R-15 에 "이후 변경"으로 덧붙임. ④⑤ DECISIONS 미결 사항에 기록
+- 근거: HERDR-SETUP.md 7절 위임. ① gpui-component 0.8.1 src/title_bar.rs, L-21·L-39 ② gpui-pre platform.rs 기본값, 04-APP-SPEC A-30.6 원문 ③ 01-LAYOUT L-21 원문 "Windows 32 고정". 모두 원문 근거가 있고 v0.1 범위를 줄이지 않음
+- 결과: 사용자 최종 보고에서 알림
+- 보고: 미보고
+
+### D-011 · 2026-10-31 21:20 · wg-reviewer, wg-checker → wg-coder
+
+- 상황: 질문 (리뷰·검증 지적)
+- 질문: 리뷰 1회차 Major 2(dev 플래그 릴리스 노출, 전면 확인 없는 SendInput)·Minor 2(FreeLibrary, SetLastError), 2회차 새 Major 1(PID/HWND 고정 안 됨). 검증 1회차 R-1 스냅 플라이아웃 미표시
+- 구분: 대리 응답
+- 답변: 모두 채택·반영. 스냅 플라이아웃은 앱이 HTMAXBUTTON 을 돌려주는 것을 소스로 확인했고(gpui-pre-windows events.rs 971행), 원인은 스크립트의 hover 방식이라 스크립트를 고침 → 2회차 R-1 통과. 리뷰 왕복은 가이드 기준 2회로 마감, 2회차 Major 는 수정 후 스크립트 재실행(errors 0)으로 확인
+- 근거: HERDR-SETUP.md 7절 위임, 가이드 PLANNING 4절 검토 왕복 최대 2회
+- 결과: 없음
+- 보고: 미보고
+
+### D-012 · 2026-11-01 · wg-checker
+
+- 상황: 검증 실패 (미해결)
+- 질문: R-4(배율 100·150·200% 타이틀 바 32 논리 px), R-5(150% 배율 시험) — 이 PC 는 200% 이고 다른 배율 시험 증거가 없어 실패
+- 구분: 사람에게 올림
+- 답변: Windows 디스플레이 배율 변경은 시스템 설정 변경이라 대리하지 않음. PLAN "미해결 실패가 있으면 다음 Phase로 넘어가지 않는다"에 따라 Phase 1 을 커밋하지 않고 멈춤
+- 근거: HERDR-SETUP.md 7절 위임 밖(시스템 설정 변경), PLAN.md 규칙(사용자 결정 2026-10-31)
+- 결과: 사용자 답 "leader가 배율을 바꿔도 됨" (2026-11-01) → D-013
+- 보고: 2026-11-01
+
+### D-013 · 2026-11-01 · wg-leader
+
+- 상황: D-012 의 사용자 답 수신
+- 질문: R-4·R-5 배율 시험 수행
+- 구분: 사용자 지시 실행
+- 답변: `tools/set-scale.ps1 -Percent 100` → `verify-scale.ps1` → 150% 같은 순서(150% 에서 R-5 TaskDialog 포함) → 200% 복원(`"current": 200` 확인). 증거 specs/v0.1/verify/phase1/scale-100/, scale-150/
+- 근거: 사용자 답 "leader가 배율을 바꿔도 됨"
+- 결과: 100% 32 물리=32 논리 px, 150% 48 물리=32 논리 px. checker 3회차 R-1~R-5 모두 통과(모니터 이동은 단일 모니터라 판정 불가, SPEC 허용)
+- 보고: 2026-11-01

@@ -1,0 +1,54 @@
+{
+  "processName": "workbench-gpui",
+  "pid": 17692,
+  "hwnd": "0xD0816",
+  "title": "workbench-gpui",
+  "unit": "physical px",
+  "rect": {
+    "x": 439,
+    "y": 263,
+    "width": 1714,
+    "height": 1044
+  },
+  "windowRect": {
+    "x": 432,
+    "y": 263,
+    "width": 1728,
+    "height": 1051
+  },
+  "clientRect": {
+    "x": 440,
+    "y": 263,
+    "width": 1712,
+    "height": 1043
+  },
+  "dpi": 96,
+  "scale": 1.0,
+  "maximized": false,
+  "monitor": {
+    "device": "\\\\.\\DISPLAY1",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 2880,
+      "height": 1800
+    },
+    "workRect": {
+      "x": 0,
+      "y": 0,
+      "width": 2880,
+      "height": 1752
+    }
+  },
+  "capture": {
+    "method": "PrintWindow",
+    "ok": true,
+    "error": null,
+    "foreground": null,
+    "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-100\\close-hover.png",
+    "width": 1714,
+    "height": 1044
+  },
+  "timestamp": "2026-11-01T08:16:14.9056627+09:00"
+}
+

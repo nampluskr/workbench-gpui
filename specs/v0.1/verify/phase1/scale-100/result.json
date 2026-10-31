@@ -1,0 +1,63 @@
+{
+  "percent": 100,
+  "startedAt": "2026-11-01T08:16:06.0011827+09:00",
+  "scale": {
+    "device": "\\\\.\\DISPLAY1",
+    "current": 100,
+    "recommended": 200,
+    "minimum": 100,
+    "maximum": 300,
+    "relative": {
+      "min": -4,
+      "cur": -4,
+      "max": 3
+    }
+  },
+  "pid": 17692,
+  "hwnd": "0xD0816",
+  "window": {
+    "dpi": 96,
+    "scale": 1.0,
+    "dpiMatchesPercent": true,
+    "rect": {
+      "x": 439,
+      "y": 263,
+      "width": 1714,
+      "height": 1044
+    },
+    "clientRect": {
+      "x": 440,
+      "y": 263,
+      "width": 1712,
+      "height": 1043
+    },
+    "maximized": false,
+    "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-100\\window.png"
+  },
+  "titleBar": {
+    "method": "close-hover-red-run (L-84 #E81120, tol 8)",
+    "column": 1681,
+    "startRowFromClientTop": 0,
+    "heightPhysical": 32,
+    "heightLogical": 32.0,
+    "expectedLogical": 32,
+    "sampleColor": "#E81120"
+  },
+  "closeButton": {
+    "row": 4,
+    "widthPhysical": 36,
+    "widthLogical": 36.0,
+    "expectedLogical": 36,
+    "rightGapPhysical": 0
+  },
+  "devLayout": null,
+  "zoom": {
+    "factor": 8,
+    "normal": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-100\\buttons-zoom.png",
+    "closeHover": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-100\\buttons-hover-zoom.png",
+    "interpolation": "nearest-neighbor"
+  },
+  "r5": null,
+  "errors": [],
+  "finishedAt": "2026-11-01T08:16:20.2033149+09:00"
+}

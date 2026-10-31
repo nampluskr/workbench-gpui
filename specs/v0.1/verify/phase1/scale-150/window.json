@@ -1,0 +1,54 @@
+{
+  "processName": "workbench-gpui",
+  "pid": 17636,
+  "hwnd": "0x15085C",
+  "title": "workbench-gpui",
+  "unit": "physical px",
+  "rect": {
+    "x": 441,
+    "y": 259,
+    "width": 1710,
+    "height": 1028
+  },
+  "windowRect": {
+    "x": 432,
+    "y": 259,
+    "width": 1728,
+    "height": 1037
+  },
+  "clientRect": {
+    "x": 443,
+    "y": 259,
+    "width": 1706,
+    "height": 1026
+  },
+  "dpi": 144,
+  "scale": 1.5,
+  "maximized": false,
+  "monitor": {
+    "device": "\\\\.\\DISPLAY1",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 2880,
+      "height": 1800
+    },
+    "workRect": {
+      "x": 0,
+      "y": 0,
+      "width": 2880,
+      "height": 1728
+    }
+  },
+  "capture": {
+    "method": "PrintWindow",
+    "ok": true,
+    "error": null,
+    "foreground": null,
+    "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-150\\window.png",
+    "width": 1710,
+    "height": 1028
+  },
+  "timestamp": "2026-11-01T08:16:35.1501574+09:00"
+}
+

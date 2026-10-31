@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  G-128: gpui-pre 0.3.10 이 넣는 매니페스트(gpui-pre resources/windows/gpui.manifest.xml)에는
+  Common Controls v6 와 PerMonitorV2 는 있지만 longPathAware 가 없다. 이 조각을
+  tools/apply-manifest.ps1 이 mt.exe 로 exe 의 기존 매니페스트(리소스 #1)에 병합한다.
+-->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+    <application xmlns="urn:schemas-microsoft-com:asm.v3">
+        <windowsSettings>
+            <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+        </windowsSettings>
+    </application>
+</assembly>

@@ -146,6 +146,13 @@ gpui-kit 컴포넌트를 앱 곳곳에서 직접 부르지 않고, 우리 쪽 �
 
 없음.
 
+**이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-010)으로 바꿨다(2026-10-31). gpui-kit `TitleBar`는 높이 34, 창 버튼 폭 34, SVG 아이콘으로 고정되어 L-21(Windows 32 고정)·L-39(각 36×32, 글리프 10px)·L-83(글꼴 글리프로 그린다)을 맞출 수 없다. 그래서 창 옵션만 `TitleBar::window_options()`를 쓰고, 타이틀 바와 창 버튼은 gpui `WindowControlArea`(Drag/Min/Max/Close)로 직접 만든다. 근거는 gpui-component 0.8.1 `src/title_bar.rs`다.
+
+- 16행 `pub const TITLE_BAR_HEIGHT: Pixels = px(34.);`
+- 338행 타이틀 바 `.h(TITLE_BAR_HEIGHT)`
+- 213행 창 버튼 `.w(TITLE_BAR_HEIGHT)`
+- 245행 창 버튼 `.child(Icon::new(self.icon()).small())`, 149~152행 `IconName::WindowMinimize`·`WindowRestore`·`WindowMaximize`·`WindowClose`(SVG 아이콘)
+
 ---
 
 ## D-10. 레이아웃 뼈대는 02-gpui 4절의 gpui-kit 구성 요소로 조립한다
@@ -185,3 +192,5 @@ PoC 3단계 레이아웃 뼈대의 영역별 구성 요소는 다음과 같다.
 - **G-139 (P1)** — 한글이 없는 `.ZedSans`·`.ZedMono`에서 DirectWrite 대체 글꼴이 줄 높이·기준선·폭을 어떻게 바꾸는가.
 - **G-121 (P2)** — 빌드 준비물(MSVC, Windows SDK, CMake)과 Rust 최소 버전. 최소 버전은 crates.io `rust_version` 1.90과 설치 문서 1.92 두 값이 있다. 어느 값을 기준으로 둘 것인가.
 - **D-10의 "또는"** — 사이드바를 `sidebar`로 할지 `list`·`VirtualList`로 할지, 왼쪽 Dock을 `dock`(DockArea)으로 할지 `resizable` 패널로 할지 정하지 않았다.
+- **닫기 외 창 버튼 색 (Phase 1, 2026-10-31 추가)** — 최소화·최대화(복원) 버튼의 hover·누름 색은 테마 매핑(G-106, v0.1 범위 밖)이 정해지기 전까지 gpui-kit 기본 테마 색(`secondary_hover`·`secondary_active`)을 임시로 쓴다. Zed가 쓰는 토큰은 `ghost_element_hover`·`ghost_element_active`다(L-84).
+- **글리프 글꼴 선택 기준 (Phase 1, 2026-10-31 추가)** — L-83은 Windows 11(빌드 22000 이상)이면 `Segoe Fluent Icons`, 그 이전이면 `Segoe MDL2 Assets`를 쓴다. 구현은 빌드 번호 대신 `Segoe Fluent Icons`가 설치되어 있는지로 고른다. 빌드 22000 이상인데 이 글꼴이 없거나, 이전 빌드에 글꼴을 따로 설치한 경우에는 L-83과 결과가 다르다.

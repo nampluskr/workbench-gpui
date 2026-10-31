@@ -1,0 +1,71 @@
+{
+  "percent": 150,
+  "startedAt": "2026-11-01T08:16:28.6210649+09:00",
+  "scale": {
+    "device": "\\\\.\\DISPLAY1",
+    "current": 150,
+    "recommended": 200,
+    "minimum": 100,
+    "maximum": 300,
+    "relative": {
+      "min": -4,
+      "cur": -2,
+      "max": 3
+    }
+  },
+  "pid": 17636,
+  "hwnd": "0x15085C",
+  "window": {
+    "dpi": 144,
+    "scale": 1.5,
+    "dpiMatchesPercent": true,
+    "rect": {
+      "x": 441,
+      "y": 259,
+      "width": 1710,
+      "height": 1028
+    },
+    "clientRect": {
+      "x": 443,
+      "y": 259,
+      "width": 1706,
+      "height": 1026
+    },
+    "maximized": false,
+    "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-150\\window.png"
+  },
+  "titleBar": {
+    "method": "close-hover-red-run (L-84 #E81120, tol 8)",
+    "column": 1660,
+    "startRowFromClientTop": 0,
+    "heightPhysical": 48,
+    "heightLogical": 32.0,
+    "expectedLogical": 32,
+    "sampleColor": "#E81120"
+  },
+  "closeButton": {
+    "row": 6,
+    "widthPhysical": 54,
+    "widthLogical": 36.0,
+    "expectedLogical": 36,
+    "rightGapPhysical": 0
+  },
+  "devLayout": null,
+  "zoom": {
+    "factor": 5,
+    "normal": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-150\\buttons-zoom.png",
+    "closeHover": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\scale-150\\buttons-hover-zoom.png",
+    "interpolation": "nearest-neighbor"
+  },
+  "r5": {
+    "exitCode": 0,
+    "output": "---- r5-longpath.txt ----\r\n[dev] longpath utf16_len=319 rtl_long_paths_enabled=false result=error win32_error=3\r\npath_length_chars=319\r\npath=C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-longpath-10a3ccae\\dddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddd\\long-path-test.txt\r\n---- r5-taskdialog.txt ----\r\n[dev] taskdialog result=ok hresult=0x00000000 button=2 owner_is_null=false\r\nscript: dialog_found=true class=#32770 title=workbench-gpui foreground=True rect=1163,699,531x230 screenshot=r5-taskdialog.png\r\n",
+    "files": [
+      "r5-taskdialog.txt",
+      "r5-taskdialog.png",
+      "r5-longpath.txt"
+    ]
+  },
+  "errors": [],
+  "finishedAt": "2026-11-01T08:16:48.5711557+09:00"
+}

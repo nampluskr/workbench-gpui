@@ -1,0 +1,113 @@
+{
+  "startedAt": "2026-11-01T08:10:12.0326642+09:00",
+  "exe": "D:\\projects\\workbench-gpui\\target\\debug\\workbench-gpui.exe",
+  "steps": {
+    "windowNormal": {
+      "maximized": false,
+      "rect": {
+        "x": 443,
+        "y": 256,
+        "width": 1706,
+        "height": 1011
+      },
+      "clientRect": {
+        "x": 445,
+        "y": 256,
+        "width": 1702,
+        "height": 1009
+      },
+      "dpi": 192
+    },
+    "snapFlyout": {
+      "cursor": [
+        2039,
+        288
+      ],
+      "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase1\\snap-flyout.png",
+      "note": "플라이아웃이 보이는지는 PNG 를 눈으로 판정한다"
+    },
+    "doubleClick": {
+      "before": false,
+      "afterFirst": true,
+      "afterSecond": false,
+      "restoredRectEqualsBefore": true
+    },
+    "windowMaximized": {
+      "maximized": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 2880,
+        "height": 1704
+      },
+      "clientRect": {
+        "x": 0,
+        "y": 0,
+        "width": 2880,
+        "height": 1704
+      }
+    },
+    "drag": {
+      "requested": [
+        300,
+        160
+      ],
+      "moved": [
+        300,
+        160
+      ],
+      "sizeUnchanged": true,
+      "maximizedAfter": false
+    },
+    "resize": {
+      "requested": [
+        -400,
+        -240
+      ],
+      "changed": [
+        -400,
+        -240
+      ],
+      "originUnchanged": true
+    },
+    "minSize": {
+      "expectedLogical": [
+        360,
+        240
+      ],
+      "expectedPhysical": [
+        720,
+        480
+      ],
+      "clientPhysical": [
+        720,
+        480
+      ],
+      "framePhysical": [
+        724,
+        482
+      ],
+      "clientLogical": [
+        360.0,
+        240.0
+      ],
+      "note": "WM_GETMINMAXINFO 의 최소 크기가 프레임 기준인지 클라이언트 기준인지는 판정 때 함께 본다"
+    },
+    "closeHover": {
+      "cursor": [
+        2111,
+        288
+      ],
+      "samplePixel": [
+        1640,
+        8
+      ],
+      "sampleColor": "#E81120",
+      "expected": "#E81120"
+    }
+  },
+  "errors": [],
+  "pid": 7968,
+  "hwnd": "0x1F07B4",
+  "finishedAt": "2026-11-01T08:10:43.3949113+09:00"
+}

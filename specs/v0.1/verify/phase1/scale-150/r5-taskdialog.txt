@@ -1,0 +1,2 @@
+[dev] taskdialog result=ok hresult=0x00000000 button=2 owner_is_null=false
+script: dialog_found=true class=#32770 title=workbench-gpui foreground=True rect=1163,699,531x230 screenshot=r5-taskdialog.png

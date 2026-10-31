@@ -21,6 +21,13 @@
 .PARAMETER Out
   저장할 PNG 경로.
 
+.PARAMETER Title
+  찾을 메인 창 제목. 기본 workbench-gpui. 같은 제목의 창이 없으면 가장 큰 보이는 최상위 창을 쓴다.
+
+.PARAMETER Hwnd
+  창 핸들(16진수 0x… 또는 10진수). 주면 ProcessName·Title 로 찾지 않고 이 창만 쓴다.
+  창이 없거나 보이지 않으면 오류로 끝낸다.
+
 .PARAMETER Method
   PrintWindow 또는 Screen. 기본 PrintWindow.
 
@@ -31,6 +38,10 @@
 param(
     [string]$ProcessName = 'workbench-gpui',
     [Parameter(Mandatory = $true)][string]$Out,
+    [string]$Title = 'workbench-gpui',
+    # 지정하면 창을 찾지 않고 이 창을 쓴다 (예: 0x807C2). 호출 쪽이 입력 대상과 같은 창을 고정할 때 쓴다.
+    # (PowerShell 변수는 대소문자를 가리지 않아 본문의 $hwnd 와 겹치지 않게 변수 이름을 따로 둔다.)
+    [Alias('Hwnd')][string]$TargetHwnd,
     [ValidateSet('PrintWindow', 'Screen')][string]$Method = 'PrintWindow'
 )
 
@@ -95,6 +106,7 @@ namespace WgCapture
         [DllImport("user32.dll")] public static extern bool EnumWindows(EnumWindowsProc cb, IntPtr lParam);
         [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
         [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
+        [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hWnd);
         [DllImport("user32.dll")] public static extern IntPtr GetWindow(IntPtr hWnd, uint cmd);
         [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT r);
         [DllImport("user32.dll")] public static extern bool GetClientRect(IntPtr hWnd, out RECT r);
@@ -246,25 +258,39 @@ if ($prevCtx -eq [IntPtr]::Zero) {
 }
 
 try {
-    # 2) 메인 창 찾기: MainWindowHandle을 먼저 쓰고, 없으면 보이는 최상위 창 중 가장 큰 것.
-    $procs = @(Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)
-    if ($procs.Count -eq 0) { throw "프로세스를 찾지 못했다: $ProcessName" }
+    # 2) 메인 창 찾기
+    if ($TargetHwnd) {
+        # 호출 쪽이 고정한 창을 그대로 쓴다.
+        $value = if ($TargetHwnd -match '^0[xX]') { [Convert]::ToInt64($TargetHwnd.Substring(2), 16) } else { [int64]$TargetHwnd }
+        $fixed = [IntPtr]::new($value)
+        if (-not [WgCapture.Native]::IsWindow($fixed)) { throw "지정한 창이 없다: $TargetHwnd" }
+        if (-not [WgCapture.Native]::IsWindowVisible($fixed)) { throw "지정한 창이 보이지 않는다: $TargetHwnd" }
+        [uint32]$ownerPid = 0
+        [void][WgCapture.Native]::GetWindowThreadProcessId($fixed, [ref]$ownerPid)
+        $procs = @(Get-Process -Id $ownerPid -ErrorAction Stop)
+    } else {
+        $procs = @(Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)
+        if ($procs.Count -eq 0) { throw "프로세스를 찾지 못했다: $ProcessName" }
+    }
 
+    # MainWindowHandle 은 같은 프로세스의 다른 작은 최상위 창(예: 54×36)을 가리킬 수 있어 쓰지 않는다.
+    # 보이는 소유자 없는 최상위 창 중 제목이 $Title 인 것을 먼저 고르고, 없으면 가장 큰 창을 고른다.
     $hwnd = [IntPtr]::Zero
     $proc = $null
+    $bestTitled = 0; $titledHwnd = [IntPtr]::Zero; $titledProc = $null
+    $bestAny = 0
     foreach ($p in $procs) {
-        if ($p.MainWindowHandle -ne [IntPtr]::Zero) { $hwnd = $p.MainWindowHandle; $proc = $p; break }
-    }
-    if ($hwnd -eq [IntPtr]::Zero) {
-        $best = 0
-        foreach ($p in $procs) {
-            foreach ($h in [WgCapture.Native]::TopLevelWindows([uint32]$p.Id)) {
-                $r = [WgCapture.Native]::FrameBounds($h)
-                $area = ($r.Right - $r.Left) * ($r.Bottom - $r.Top)
-                if ($area -gt $best) { $best = $area; $hwnd = $h; $proc = $p }
+        foreach ($h in [WgCapture.Native]::TopLevelWindows([uint32]$p.Id)) {
+            $r = [WgCapture.Native]::FrameBounds($h)
+            $area = ($r.Right - $r.Left) * ($r.Bottom - $r.Top)
+            if ($Title -and [WgCapture.Native]::Title($h) -eq $Title -and $area -gt $bestTitled) {
+                $bestTitled = $area; $titledHwnd = $h; $titledProc = $p
             }
+            if ($area -gt $bestAny) { $bestAny = $area; $hwnd = $h; $proc = $p }
         }
     }
+    if ($titledHwnd -ne [IntPtr]::Zero) { $hwnd = $titledHwnd; $proc = $titledProc }
+    if ($TargetHwnd) { $hwnd = $fixed; $proc = $procs[0] }
     if ($hwnd -eq [IntPtr]::Zero) { throw "보이는 창을 찾지 못했다: $ProcessName" }
     if ([WgCapture.Native]::IsIconic($hwnd)) { throw '창이 최소화되어 있어 측정·캡처할 수 없다' }
 
