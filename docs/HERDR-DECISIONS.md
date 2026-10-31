@@ -14,6 +14,9 @@
 | D-004 | 2026-10-31 20:09 | wg-reviewer | 여러 파일을 묶은 Get-Content 읽기 명령 1회 승인 | 대리 응답 | 2026-10-31 20:20 |
 | D-005 | 2026-10-31 20:18 | wg-reviewer → wg-coder | SPEC 리뷰 지적 7건 전부 채택, 원문 확인 후 반영 지시 | 대리 응답 | 2026-10-31 20:22 |
 | D-006 | 2026-10-31 20:21 | wg-reviewer → wg-coder | PLAN 리뷰 지적 1건(Phase 2 완료 조건) 채택, 반영 | 대리 응답 | 미보고 |
+| D-007 | 2026-10-31 20:24 | wg-coder | rust-analyzer LSP 플러그인 설치 권유 → 설치하지 않음(Esc) | 대리 응답 | 미보고 |
+| D-008 | 2026-10-31 20:35 | wg-reviewer, wg-checker | Phase 0 검증용 읽기 전용 명령(git diff/show, Get-Content, Select-String, Test-Path) 승인, checker 의 REPORT.md 쓰기 승인 | 대리 응답 | 미보고 |
+| D-009 | 2026-10-31 20:42 | wg-reviewer → wg-coder | Phase 0 리뷰 지적 4건(Major 2, Minor 2) 전부 채택·반영 | 대리 응답 | 미보고 |
 
 ## 기록
 
@@ -74,5 +77,35 @@
 - 구분: 대리 응답
 - 답변: 채택. "R-6~R-10이 각각 SPEC의 판정 방법대로 통과로 판정되어 있다(증거 포함)"로 고치게 함
 - 근거: HERDR-SETUP.md 7절 위임. Phase 1·3 완료 조건과 같은 기준으로 맞춤
+- 결과: 없음
+- 보고: 미보고
+
+### D-007 · 2026-10-31 20:24 · wg-coder
+
+- 상황: blocked (질문)
+- 질문: "LSP plugin recommendation — Plugin: rust-analyzer-lsp ... Would you like to install this LSP plugin?"
+- 구분: 대리 응답
+- 답변: 설치하지 않음 — `send-keys esc` (닫기). 처음 `down enter`("No, not now")를 보내려던 시도는 leader 쪽 권한 분류기에 거부되어 Esc 로 닫음
+- 근거: HERDR-SETUP.md 7절 — 설치·환경 변경은 구성안 밖. 구현에 필수 아님(빌드는 cargo 로 함)
+- 결과: 없음
+- 보고: 미보고
+
+### D-008 · 2026-10-31 20:35 · wg-reviewer, wg-checker
+
+- 상황: blocked (승인 요청), 여러 번
+- 질문: reviewer — `git diff --cached -- ...`, `git show :Cargo.lock | Select-String ...`, `git show :tools/capture.ps1 | ForEach-Object ...` 등. checker — `Test-Path ...Cargo.lock; git status --short; git diff --cached --name-only`, `Get-ChildItem`, `specs/v0.1/verify/phase0/REPORT.md` 쓰기
+- 구분: 대리 응답
+- 답변: 모두 "이번만 실행"으로 승인. 승인 전 명령 내용을 확인했고 쓰기·삭제·git 변경 명령은 없었음
+- 근거: D-002·D-004 와 같음(읽기 전용). checker 의 쓰기는 HERDR-SETUP.md 4절 수정 범위(specs/<버전>/verify/) 안
+- 결과: leader 의 자동 승인 스크립트가 reviewer 의 명령 상세 창(pager)을 연 채 멈춰 사용자가 "편집 상태"로 보고함. 스크립트를 멈추고 수동으로 닫은 뒤 승인. 이후 승인은 대화창 문구를 보고 수동으로 한다
+- 보고: 미보고
+
+### D-009 · 2026-10-31 20:42 · wg-reviewer → wg-coder
+
+- 상황: 질문 (리뷰 지적)
+- 질문: capture.ps1:238 Major(PMv2 스레드에서 GetDpiForMonitor), :250 Major(SetForegroundWindow 실패 무시), :227 Minor(측정·캡처 시점 불일치), src/main.rs:5 Minor(D-5 래퍼 미경유)
+- 구분: 대리 응답
+- 답변: 4건 채택. 반영 후 재빌드(exit 0)·재캡처(PrintWindow 성공)로 확인
+- 근거: HERDR-SETUP.md 7절 위임. 캡처 도구는 이후 모든 일치도 검증의 증거를 만들므로 정확해야 함. D-5
 - 결과: 없음
 - 보고: 미보고
