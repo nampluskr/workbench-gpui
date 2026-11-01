@@ -178,6 +178,11 @@ PoC 3단계 레이아웃 뼈대의 영역별 구성 요소는 다음과 같다.
 
 없음. 사이드바·Dock의 "또는" 중 무엇을 쓸지는 미결 사항에 둔다.
 
+**이후 변경** — Phase 3 시작 전 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-015)으로 "또는"을 정했다(2026-11-01). 두 선택 모두 위 표 안의 대안이라 v0.1 범위는 바뀌지 않는다.
+
+- **사이드바**: gpui-kit `resizable` 패널(기본 300, size_range 200~800) 안에 직접 조립한 div 로 만든다. 폴더 줄 목록은 `list`·`VirtualList` 자리다. gpui-kit `sidebar` 컴포넌트는 쓰지 않는다. 근거: gpui-component 0.8.1 `sidebar/mod.rs` 27행 DEFAULT_WIDTH 255 와 내장 접기 애니메이션이 L-33(기본 300, 200~800)·L-34·L-35 치수와 다르다.
+- **왼쪽 Dock**: `resizable` 계열(gpui-base `resize_handle`)로 폭을 직접 관리한다. 6px 핸들, 더블클릭 시 240 복원, 하한 6·상한 창 폭−6 은 앱 코드로 맞춘다. 핸들 폭을 6 으로 맞출 수 없으면 gpui 끌기 이벤트로 직접 구현한다. gpui-kit `dock`(DockArea)은 쓰지 않는다. 근거: DockArea 는 자체 TabPanel·줌·직렬화 모델을 가져와 L-14(왼쪽 Dock 만)·L-22~L-27 탭 바 치수를 우리가 통제하기 어렵다. gpui-base `resizable/resize_handle.rs` 는 더블클릭 등 리스너를 호출자가 붙이도록 되어 있다(12~13행 HANDLE_PADDING 4·HANDLE_SIZE 1).
+
 ---
 
 ## 미결 사항
@@ -191,7 +196,6 @@ PoC 3단계 레이아웃 뼈대의 영역별 구성 요소는 다음과 같다.
 - **G-129 (P1)** — CRLF/LF 줄 끝이 열고 저장해도 보존되는가. UTF-8이 아닌 파일(UTF-16, CP949)을 어떻게 다룰 것인가.
 - **G-139 (P1)** — 한글이 없는 `.ZedSans`·`.ZedMono`에서 DirectWrite 대체 글꼴이 줄 높이·기준선·폭을 어떻게 바꾸는가.
 - **G-121 (P2)** — 빌드 준비물(MSVC, Windows SDK, CMake)과 Rust 최소 버전. 최소 버전은 crates.io `rust_version` 1.90과 설치 문서 1.92 두 값이 있다. 어느 값을 기준으로 둘 것인가.
-- **D-10의 "또는"** — 사이드바를 `sidebar`로 할지 `list`·`VirtualList`로 할지, 왼쪽 Dock을 `dock`(DockArea)으로 할지 `resizable` 패널로 할지 정하지 않았다.
 - **닫기 외 창 버튼 색 (Phase 1, 2026-10-31 추가)** — 최소화·최대화(복원) 버튼의 hover·누름 색은 테마 매핑(G-106, v0.1 범위 밖)이 정해지기 전까지 gpui-kit 기본 테마 색(`secondary_hover`·`secondary_active`)을 임시로 쓴다. Zed가 쓰는 토큰은 `ghost_element_hover`·`ghost_element_active`다(L-84).
 - **글리프 글꼴 선택 기준 (Phase 1, 2026-10-31 추가)** — L-83은 Windows 11(빌드 22000 이상)이면 `Segoe Fluent Icons`, 그 이전이면 `Segoe MDL2 Assets`를 쓴다. 구현은 빌드 번호 대신 `Segoe Fluent Icons`가 설치되어 있는지로 고른다. 빌드 22000 이상인데 이 글꼴이 없거나, 이전 빌드에 글꼴을 따로 설치한 경우에는 L-83과 결과가 다르다.
 - **Zed 글꼴(.ZedSans/.ZedMono) 자산 도입 (Phase 2, 2026-11-01 추가)** — G-139는 `.ZedSans`(IBM Plex Sans)·`.ZedMono`(Lilex)를 전제하지만, 두 글꼴은 이 PC에 설치되어 있지 않고 앱에 자산으로 넣지도 않았다. Phase 2 R-10은 leader 결정(docs/HERDR-DECISIONS.md D-014)으로 gpui-kit 기본 고정폭 글꼴(이 PC에서는 Consolas)로 측정했다. Zed 글꼴을 앱 자산으로 넣을지(G-024, T-14~T-17)와 그때 한글 대체 글꼴 측정을 다시 할지는 정하지 않았다.

@@ -1,0 +1,48 @@
+{
+  "cases": [
+    {
+      "case": "true vs true",
+      "pass": true,
+      "want": true,
+      "ok": true
+    },
+    {
+      "case": "false vs false",
+      "pass": true,
+      "want": true,
+      "ok": true
+    },
+    {
+      "case": "expected true, actual false",
+      "pass": false,
+      "want": false,
+      "ok": true
+    },
+    {
+      "case": "expected false, actual true",
+      "pass": false,
+      "want": false,
+      "ok": true
+    },
+    {
+      "case": "expected true, actual 1 (int)",
+      "pass": false,
+      "want": false,
+      "ok": true
+    },
+    {
+      "case": "expected true, actual 0 (int)",
+      "pass": false,
+      "want": false,
+      "ok": true
+    },
+    {
+      "case": "expected true, actual \"True\" (string)",
+      "pass": false,
+      "want": false,
+      "ok": true
+    }
+  ],
+  "allOk": true,
+  "legacyFalsePassed": true
+}

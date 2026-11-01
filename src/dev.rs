@@ -33,6 +33,8 @@ pub struct DevOptions {
     pub measure: bool,
     /// `--dev-cp949-selftest`: CP949 인코딩이 손실 문자를 오류로 잡는지 표준출력에 낸다 (R-9).
     pub cp949_selftest: bool,
+    /// `--dev-layout`: 레이아웃 경계(이름별 바깥 상자)·rem·Dock 폭을 바뀔 때마다 낸다 (Phase 3, R-12~R-15).
+    pub layout: bool,
 }
 
 /// R-9 파일 읽기·쓰기 방식.
@@ -80,6 +82,7 @@ impl DevOptions {
                 }
                 "--dev-measure" => options.measure = true,
                 "--dev-cp949-selftest" => options.cp949_selftest = true,
+                "--dev-layout" => options.layout = true,
                 _ => {}
             }
         }

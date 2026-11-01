@@ -10,6 +10,7 @@
 use gpui_kit::component::{ActiveTheme as _, h_flex};
 use gpui_kit::*;
 
+use super::layout_probe::probe;
 use super::metrics::{
     TITLE_BAR_HEIGHT, TITLE_BAR_PADDING_LEFT, WINDOW_BUTTON_GLYPH_SIZE, WINDOW_BUTTON_HEIGHT,
     WINDOW_BUTTON_WIDTH,
@@ -95,6 +96,7 @@ pub fn title_bar(glyph_font: SharedString, window: &Window, cx: &App) -> impl In
     };
 
     h_flex()
+        .on_children_prepainted(probe(&["title-bar-drag", "window-controls"]))
         .id("title-bar")
         .flex_shrink_0()
         .w_full()
@@ -109,6 +111,11 @@ pub fn title_bar(glyph_font: SharedString, window: &Window, cx: &App) -> impl In
         )
         .child(
             h_flex()
+                .on_children_prepainted(probe(&[
+                    "window-btn-min",
+                    "window-btn-max",
+                    "window-btn-close",
+                ]))
                 .id("window-controls")
                 .flex_shrink_0()
                 .h_full()

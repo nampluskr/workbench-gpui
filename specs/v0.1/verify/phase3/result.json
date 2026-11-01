@@ -1,0 +1,1330 @@
+{
+  "startedAt": "2026-11-01T10:11:09.9270953+09:00",
+  "pid": 13616,
+  "hwnd": "0x5907AA",
+  "errors": [],
+  "selfTest": {
+    "cases": [
+      {
+        "case": "true vs true",
+        "pass": true,
+        "want": true,
+        "ok": true
+      },
+      {
+        "case": "false vs false",
+        "pass": true,
+        "want": true,
+        "ok": true
+      },
+      {
+        "case": "expected true, actual false",
+        "pass": false,
+        "want": false,
+        "ok": true
+      },
+      {
+        "case": "expected false, actual true",
+        "pass": false,
+        "want": false,
+        "ok": true
+      },
+      {
+        "case": "expected true, actual 1 (int)",
+        "pass": false,
+        "want": false,
+        "ok": true
+      },
+      {
+        "case": "expected true, actual 0 (int)",
+        "pass": false,
+        "want": false,
+        "ok": true
+      },
+      {
+        "case": "expected true, actual \"True\" (string)",
+        "pass": false,
+        "want": false,
+        "ok": true
+      }
+    ],
+    "allOk": true,
+    "legacyFalsePassed": true
+  },
+  "window": {
+    "head": "rem=16 scale=2 viewport=1440x852 maximized=true dock_width=240 dock_stored=default body_width=1140",
+    "viewportLogical": "1440x852",
+    "rem": "16",
+    "scale": 2.0,
+    "expectedViewport": "1440x852 (A-30.2: 2880×1704 ÷ 2)"
+  },
+  "r12": {
+    "L-11 사이드바가 왼쪽, Workspace 가 그 오른쪽": true,
+    "L-11 오른쪽 사이드바 없음(Workspace 가 창 오른쪽 끝까지)": true,
+    "L-12 사이드바가 창 전체 높이(타이틀 바 줄 포함)": true,
+    "L-12 타이틀 바가 사이드바 오른쪽에서 시작": true,
+    "L-13 Workspace 세로: 타이틀 바 → 본문 → 상태 표시줄": true,
+    "L-14 본문 가로: 왼쪽 Dock → 가운데": true,
+    "L-14 오른쪽·아래 Dock 없음(가운데가 본문 오른쪽·아래 끝까지)": true,
+    "L-15 Pane = 탭 바 + 활성 아이템": true
+  },
+  "a32": [
+    {
+      "id": "A-32.1",
+      "what": "타이틀 바 높이",
+      "expected": 32,
+      "actual": 32.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.2",
+      "what": "창 버튼 최소화 폭",
+      "expected": 36,
+      "actual": 36.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.2",
+      "what": "창 버튼 최소화 높이",
+      "expected": 32,
+      "actual": 32.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.2",
+      "what": "창 버튼 최대화/복원 폭",
+      "expected": 36,
+      "actual": 36.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.2",
+      "what": "창 버튼 최대화/복원 높이",
+      "expected": 32,
+      "actual": 32.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.2",
+      "what": "창 버튼 닫기 폭",
+      "expected": 36,
+      "actual": 36.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.2",
+      "what": "창 버튼 닫기 높이",
+      "expected": 32,
+      "actual": 32.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.3",
+      "what": "탭 바 높이",
+      "expected": 32,
+      "actual": 32.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.3",
+      "what": "탭 내용 높이",
+      "expected": 31,
+      "actual": 31.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.4",
+      "what": "탭 왼쪽 padding",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 탭"
+    },
+    {
+      "id": "A-32.4",
+      "what": "탭 오른쪽 padding",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 탭"
+    },
+    {
+      "id": "A-32.4",
+      "what": "탭 gap (시작 슬롯→제목)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 탭"
+    },
+    {
+      "id": "A-32.4",
+      "what": "탭 gap (제목→끝 슬롯)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 탭"
+    },
+    {
+      "id": "A-32.5",
+      "what": "탭 시작 슬롯 폭",
+      "expected": 12,
+      "actual": 12.0,
+      "pass": true,
+      "note": "자리 표시 요소(빈 슬롯)"
+    },
+    {
+      "id": "A-32.5",
+      "what": "탭 시작 슬롯 높이",
+      "expected": 12,
+      "actual": 12.0,
+      "pass": true,
+      "note": "자리 표시 요소(빈 슬롯)"
+    },
+    {
+      "id": "A-32.5",
+      "what": "탭 끝 슬롯 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": "자리 표시 요소(빈 슬롯)"
+    },
+    {
+      "id": "A-32.5",
+      "what": "탭 끝 슬롯 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": "자리 표시 요소(빈 슬롯)"
+    },
+    {
+      "id": "A-32.6",
+      "what": "탭 바 시작 영역 왼쪽 padding",
+      "expected": 6,
+      "actual": 6.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.6",
+      "what": "탭 바 시작 영역 오른쪽 padding (테두리 1 제외)",
+      "expected": 6,
+      "actual": 6.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.6",
+      "what": "탭 바 시작 영역 gap",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.6",
+      "what": "탭 바 끝 영역 왼쪽 padding (테두리 1 제외)",
+      "expected": 6,
+      "actual": 6.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.6",
+      "what": "탭 바 끝 영역 오른쪽 padding",
+      "expected": 6,
+      "actual": 6.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.6",
+      "what": "탭 바 끝 영역 gap",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.7",
+      "what": "상태 표시줄 높이",
+      "expected": 30,
+      "actual": 30.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.8",
+      "what": "상태 표시줄 그룹 사이 gap",
+      "expected": 8,
+      "actual": 8.0,
+      "pass": true,
+      "note": "왼쪽 그룹을 flex_1 로 늘려 두 그룹 사이가 gap 그대로 남는다"
+    },
+    {
+      "id": "A-32.8",
+      "what": "상태 표시줄 그룹 안 gap (왼쪽 그룹)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 요소로 쟀다(측정 모드에서만 넣는 22×22 빈 상자)"
+    },
+    {
+      "id": "A-32.8",
+      "what": "상태 표시줄 그룹 안 gap (오른쪽 그룹)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 요소로 쟀다(측정 모드에서만 넣는 22×22 빈 상자)"
+    },
+    {
+      "id": "A-32.7",
+      "what": "상태 표시줄 padding 왼쪽(참고)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.7",
+      "what": "상태 표시줄 padding 오른쪽(참고)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.9",
+      "what": "Dock 리사이즈 핸들 폭",
+      "expected": 6,
+      "actual": 6.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.9",
+      "what": "핸들이 Dock 오른쪽 경계에 절반씩 걸침(핸들 x − 경계 x)",
+      "expected": "-3",
+      "actual": -3.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.10",
+      "what": "프로젝트 패널(왼쪽 Dock) 기본 폭",
+      "expected": 240,
+      "actual": 240.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.11",
+      "what": "사이드바 기본 폭",
+      "expected": 300,
+      "actual": 300.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.12",
+      "what": "사이드바 폴더 줄 높이",
+      "expected": 31,
+      "actual": 31.0,
+      "pass": true,
+      "note": "자리 표시 줄"
+    },
+    {
+      "id": "A-32.12",
+      "what": "사이드바 폴더 줄 왼쪽 padding",
+      "expected": 8,
+      "actual": 8.0,
+      "pass": true,
+      "note": "자리 표시 줄"
+    },
+    {
+      "id": "A-32.12",
+      "what": "사이드바 폴더 줄 오른쪽 padding",
+      "expected": 6,
+      "actual": 6.0,
+      "pass": true,
+      "note": "자리 표시 줄(라벨을 줄 끝까지 늘려 잼)"
+    },
+    {
+      "id": "A-32.13",
+      "what": "사이드바 푸터 padding 왼쪽",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.13",
+      "what": "사이드바 푸터 padding 위 (위 테두리 1 제외)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.13",
+      "what": "사이드바 푸터 padding 오른쪽",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.13",
+      "what": "사이드바 푸터 위 테두리 (푸터 높이 − padding 4×2 − 버튼 22)",
+      "expected": 1,
+      "actual": 1.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.13",
+      "what": "사이드바 푸터 gap (그룹 사이)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "왼쪽 그룹을 flex_1 로 늘려 두 그룹 사이가 gap 그대로 남는다"
+    },
+    {
+      "id": "A-32.13",
+      "what": "사이드바 푸터 gap (왼쪽 그룹 안)",
+      "expected": 4,
+      "actual": 4.0,
+      "pass": true,
+      "note": "자리 표시 요소로 쟀다(측정 모드에서만 넣는 22×22 빈 상자)"
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-back 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-back 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-forward 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-forward 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-new 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-new 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-split 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-split 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-zoom 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 tab-icon-zoom 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 status-icon-project-panel 폭",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "id": "A-32.16",
+      "what": "아이콘 status-icon-project-panel 높이",
+      "expected": 14,
+      "actual": 14.0,
+      "pass": true,
+      "note": ""
+    }
+  ],
+  "a32Summary": {
+    "pass": 54,
+    "fail": 0,
+    "notMeasurable": 0
+  },
+  "r14": {
+    "dockStart": {
+      "dockWidth": 240.0,
+      "dockBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 240.0,
+        "h": 788.0
+      },
+      "bodyBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 1140.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 537.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      }
+    },
+    "dockPlus100": {
+      "what": "Dock 핸들 +100 → 340 기대(L-30)",
+      "fromLogical": [
+        540.0,
+        427.0
+      ],
+      "toLogical": [
+        640.0,
+        427.0
+      ],
+      "dockWidth": 340.0,
+      "dockBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 340.0,
+        "h": 788.0
+      },
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 300.0,
+        "h": 852.0
+      },
+      "bodyBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 1140.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 637.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "seq": 3
+    },
+    "dockPastLeft": {
+      "what": "Dock 핸들을 본문 왼쪽 끝 너머(사이드바 위)로 → 하한 6 기대(L-31)",
+      "fromLogical": [
+        640.0,
+        427.0
+      ],
+      "toLogical": [
+        260.0,
+        427.0
+      ],
+      "dockWidth": 6.0,
+      "dockBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 300.0,
+        "h": 852.0
+      },
+      "bodyBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 1140.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 303.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "seq": 5
+    },
+    "dockPastRight": {
+      "what": "Dock 핸들을 창 오른쪽 끝 근처로 → 상한 본문 폭−6 = 1134 기대(L-31)",
+      "fromLogical": [
+        306.0,
+        427.0
+      ],
+      "toLogical": [
+        1438.0,
+        427.0
+      ],
+      "dockWidth": 1134.0,
+      "dockBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 1134.0,
+        "h": 788.0
+      },
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 300.0,
+        "h": 852.0
+      },
+      "bodyBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 1140.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 1431.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "seq": 8
+    },
+    "dockDoubleClick": {
+      "what": "핸들 더블클릭 → 240 기대(L-30)",
+      "dockWidth": 240.0,
+      "dockBox": {
+        "x": 300.0,
+        "y": 33.0,
+        "w": 240.0,
+        "h": 788.0
+      },
+      "seq": 9
+    },
+    "sidebarStart": {
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 300.0,
+        "h": 852.0
+      }
+    },
+    "sidebarPlus100": {
+      "what": "사이드바 경계 +100 → 400 기대(L-33 200~800 안)",
+      "fromLogical": [
+        300.0,
+        427.0
+      ],
+      "toLogical": [
+        400.0,
+        427.0
+      ],
+      "dockWidth": 240.0,
+      "dockBox": {
+        "x": 400.0,
+        "y": 33.0,
+        "w": 240.0,
+        "h": 788.0
+      },
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 400.0,
+        "h": 852.0
+      },
+      "bodyBox": {
+        "x": 400.0,
+        "y": 33.0,
+        "w": 1040.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 637.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "seq": 11
+    },
+    "sidebarPast800": {
+      "what": "사이드바 경계를 1000 으로 → 800 기대(L-33 상한)",
+      "fromLogical": [
+        400.0,
+        427.0
+      ],
+      "toLogical": [
+        1000.0,
+        427.0
+      ],
+      "dockWidth": 240.0,
+      "dockBox": {
+        "x": 800.0,
+        "y": 33.0,
+        "w": 240.0,
+        "h": 788.0
+      },
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 800.0,
+        "h": 852.0
+      },
+      "bodyBox": {
+        "x": 800.0,
+        "y": 33.0,
+        "w": 640.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 1037.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "seq": 13
+    },
+    "sidebarBelow200": {
+      "what": "사이드바 경계를 60 으로 → 200 기대(L-33 하한)",
+      "fromLogical": [
+        800.0,
+        427.0
+      ],
+      "toLogical": [
+        60.0,
+        427.0
+      ],
+      "dockWidth": 240.0,
+      "dockBox": {
+        "x": 200.0,
+        "y": 33.0,
+        "w": 240.0,
+        "h": 788.0
+      },
+      "sidebarBox": {
+        "x": 0.0,
+        "y": 0.0,
+        "w": 200.0,
+        "h": 852.0
+      },
+      "bodyBox": {
+        "x": 200.0,
+        "y": 33.0,
+        "w": 1240.0,
+        "h": 788.0
+      },
+      "handleBox": {
+        "x": 437.0,
+        "y": 33.0,
+        "w": 6.0,
+        "h": 788.0
+      },
+      "seq": 15
+    },
+    "reviewDockToMax": {
+      "what": "A1 Dock 을 상한까지 넓힘 → 본문 폭 − 6",
+      "dockWidth": 1234.0,
+      "dockStored": "1234",
+      "bodyWidth": 1240.0,
+      "limit": 1234.0,
+      "dockWithinLimit": true,
+      "dockBoxWidth": 1234.0,
+      "handleInsideBody": true,
+      "handleCenteredOnDockEdge": true,
+      "seq": 18,
+      "boxes": {
+        "body": {
+          "x": 200.0,
+          "y": 33.0,
+          "w": 1240.0,
+          "h": 788.0
+        },
+        "dock": {
+          "x": 200.0,
+          "y": 33.0,
+          "w": 1234.0,
+          "h": 788.0
+        },
+        "handle": {
+          "x": 1431.0,
+          "y": 33.0,
+          "w": 6.0,
+          "h": 788.0
+        },
+        "sidebar": {
+          "x": 0.0,
+          "y": 0.0,
+          "w": 200.0,
+          "h": 852.0
+        }
+      }
+    },
+    "reviewSidebarAfterDockMax": {
+      "what": "A2 Dock 상한 상태에서 사이드바 800 으로 확장 → Dock ≤ 본문 − 6",
+      "dockWidth": 634.0,
+      "dockStored": "1234",
+      "bodyWidth": 640.0,
+      "limit": 634.0,
+      "dockWithinLimit": true,
+      "dockBoxWidth": 634.0,
+      "handleInsideBody": true,
+      "handleCenteredOnDockEdge": true,
+      "seq": 20,
+      "boxes": {
+        "body": {
+          "x": 800.0,
+          "y": 33.0,
+          "w": 640.0,
+          "h": 788.0
+        },
+        "dock": {
+          "x": 800.0,
+          "y": 33.0,
+          "w": 634.0,
+          "h": 788.0
+        },
+        "handle": {
+          "x": 1431.0,
+          "y": 33.0,
+          "w": 6.0,
+          "h": 788.0
+        },
+        "sidebar": {
+          "x": 0.0,
+          "y": 0.0,
+          "w": 800.0,
+          "h": 852.0
+        }
+      }
+    },
+    "reviewWindowShrink": {
+      "what": "B 최대화 해제 후 창 1000×700 논리 px 로 축소 → Dock ≤ 본문 − 6",
+      "dockWidth": 432.5,
+      "dockStored": "1234",
+      "bodyWidth": 438.5,
+      "limit": 432.5,
+      "dockWithinLimit": true,
+      "dockBoxWidth": 432.5,
+      "handleInsideBody": true,
+      "handleCenteredOnDockEdge": true,
+      "seq": 22,
+      "boxes": {
+        "body": {
+          "x": 548.5,
+          "y": 33.0,
+          "w": 438.5,
+          "h": 629.5
+        },
+        "dock": {
+          "x": 548.5,
+          "y": 33.0,
+          "w": 432.5,
+          "h": 629.5
+        },
+        "handle": {
+          "x": 978.0,
+          "y": 33.0,
+          "w": 6.0,
+          "h": 629.5
+        },
+        "sidebar": {
+          "x": 0.0,
+          "y": 0.0,
+          "w": 548.5,
+          "h": 693.5
+        }
+      }
+    },
+    "reviewNarrowBody": {
+      "what": "C0 작은 창에서 사이드바를 넓혀 본문을 좁힘 → Dock ≤ 본문 − 6",
+      "dockWidth": 181.0,
+      "dockStored": "1234",
+      "bodyWidth": 187.0,
+      "limit": 181.0,
+      "dockWithinLimit": true,
+      "dockBoxWidth": 181.0,
+      "handleInsideBody": true,
+      "handleCenteredOnDockEdge": true,
+      "seq": 24,
+      "boxes": {
+        "body": {
+          "x": 800.0,
+          "y": 33.0,
+          "w": 187.0,
+          "h": 629.5
+        },
+        "dock": {
+          "x": 800.0,
+          "y": 33.0,
+          "w": 181.0,
+          "h": 629.5
+        },
+        "handle": {
+          "x": 978.0,
+          "y": 33.0,
+          "w": 6.0,
+          "h": 629.5
+        },
+        "sidebar": {
+          "x": 0.0,
+          "y": 0.0,
+          "w": 800.0,
+          "h": 693.5
+        }
+      }
+    },
+    "reviewNarrowDoubleClick": {
+      "what": "C 좁은 본문에서 핸들 더블클릭 → min(240, 본문 − 6)",
+      "dockWidth": 181.0,
+      "dockStored": "default",
+      "bodyWidth": 187.0,
+      "limit": 181.0,
+      "dockWithinLimit": true,
+      "dockBoxWidth": 181.0,
+      "handleInsideBody": true,
+      "handleCenteredOnDockEdge": true,
+      "seq": 25,
+      "boxes": {
+        "body": {
+          "x": 800.0,
+          "y": 33.0,
+          "w": 187.0,
+          "h": 629.5
+        },
+        "dock": {
+          "x": 800.0,
+          "y": 33.0,
+          "w": 181.0,
+          "h": 629.5
+        },
+        "handle": {
+          "x": 978.0,
+          "y": 33.0,
+          "w": 6.0,
+          "h": 629.5
+        },
+        "sidebar": {
+          "x": 0.0,
+          "y": 0.0,
+          "w": 800.0,
+          "h": 693.5
+        }
+      },
+      "expected": 181
+    },
+    "checks": [
+      {
+        "id": "L-30",
+        "what": "Dock 끌기 +100 후 폭",
+        "expected": 340,
+        "actual": 340.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-31",
+        "what": "Dock 하한",
+        "expected": 6,
+        "actual": 6.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-31",
+        "what": "Dock 상한 (본문 폭 − 6)",
+        "expected": 1134.0,
+        "actual": 1134.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "더블클릭 후 Dock 폭",
+        "expected": 240,
+        "actual": 240.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "핸들 폭",
+        "expected": 6,
+        "actual": 6.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-33",
+        "what": "사이드바 끌기 +100 후 폭",
+        "expected": 400,
+        "actual": 400.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-33",
+        "what": "사이드바 상한",
+        "expected": 800,
+        "actual": 800.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-33",
+        "what": "사이드바 하한",
+        "expected": 200,
+        "actual": 200.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-31",
+        "what": "A1 Dock 상한(본문 − 6)",
+        "expected": 1234.0,
+        "actual": 1234.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-31",
+        "what": "A2 사이드바 800 확장 뒤 Dock = min(저장 폭, 본문 − 6)",
+        "expected": 634.0,
+        "actual": 634.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-31",
+        "what": "B 창 축소 뒤 Dock ≤ 본문 − 6 (Dock 상자 폭)",
+        "expected": 432.5,
+        "actual": 432.5,
+        "pass": true,
+        "note": "Dock 상자 폭이 유효 폭과 같고 상한 안이어야 한다"
+      },
+      {
+        "id": "L-31",
+        "what": "C0 본문을 좁힌 뒤 Dock = min(저장 폭, 본문 − 6)",
+        "expected": 181.0,
+        "actual": 181.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "C 좁은 본문(본문 − 6 < 240) 확인",
+        "expected": true,
+        "actual": true,
+        "pass": true,
+        "kind": "bool",
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "C 좁은 본문 더블클릭 → min(240, 본문 − 6)",
+        "expected": 181,
+        "actual": 181.0,
+        "pass": true,
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "A2 핸들이 본문 안에 있고 Dock 경계에 걸침",
+        "expected": true,
+        "actual": true,
+        "pass": true,
+        "kind": "bool",
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "B 핸들이 본문 안에 있고 Dock 경계에 걸침",
+        "expected": true,
+        "actual": true,
+        "pass": true,
+        "kind": "bool",
+        "note": ""
+      },
+      {
+        "id": "L-30",
+        "what": "C 핸들이 본문 안에 있고 Dock 경계에 걸침",
+        "expected": true,
+        "actual": true,
+        "pass": true,
+        "kind": "bool",
+        "note": ""
+      }
+    ]
+  },
+  "r15": {
+    "windowRem": 16.0,
+    "expectedRem": 16,
+    "constants": [
+      {
+        "line": 15,
+        "name": "TITLE_BAR_HEIGHT",
+        "type": "Pixels",
+        "value": "px(32.)",
+        "viaRemHelper": false
+      },
+      {
+        "line": 17,
+        "name": "TITLE_BAR_PADDING_LEFT",
+        "type": "Pixels",
+        "value": "px(8.)",
+        "viaRemHelper": false
+      },
+      {
+        "line": 19,
+        "name": "WINDOW_BUTTON_WIDTH",
+        "type": "Pixels",
+        "value": "px(36.)",
+        "viaRemHelper": false
+      },
+      {
+        "line": 20,
+        "name": "WINDOW_BUTTON_HEIGHT",
+        "type": "Pixels",
+        "value": "px(32.)",
+        "viaRemHelper": false
+      },
+      {
+        "line": 21,
+        "name": "WINDOW_BUTTON_GLYPH_SIZE",
+        "type": "Pixels",
+        "value": "px(10.)",
+        "viaRemHelper": false
+      },
+      {
+        "line": 23,
+        "name": "WINDOW_ROUNDING",
+        "type": "Pixels",
+        "value": "px(10.)",
+        "viaRemHelper": false
+      },
+      {
+        "line": 33,
+        "name": "ICON_SMALL",
+        "type": "Rems",
+        "value": "rems_from_px(14.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 35,
+        "name": "BUTTON_DEFAULT",
+        "type": "Rems",
+        "value": "rems_from_px(22.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 40,
+        "name": "TAB_BAR_HEIGHT",
+        "type": "Rems",
+        "value": "rems_from_px(32.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 42,
+        "name": "TAB_CONTENT_HEIGHT",
+        "type": "Rems",
+        "value": "rems_from_px(31.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 44,
+        "name": "TAB_PADDING_X",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 45,
+        "name": "TAB_GAP",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 47,
+        "name": "TAB_START_SLOT",
+        "type": "Rems",
+        "value": "rems_from_px(12.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 48,
+        "name": "TAB_END_SLOT",
+        "type": "Rems",
+        "value": "rems_from_px(14.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 50,
+        "name": "TAB_BAR_EDGE_PADDING_X",
+        "type": "Rems",
+        "value": "rems_from_px(6.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 51,
+        "name": "TAB_BAR_EDGE_GAP",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 56,
+        "name": "STATUS_BAR_PADDING",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 58,
+        "name": "STATUS_BAR_GROUP_GAP",
+        "type": "Rems",
+        "value": "rems_from_px(8.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 59,
+        "name": "STATUS_BAR_ITEM_GAP",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 64,
+        "name": "DOCK_HANDLE_WIDTH",
+        "type": "Rems",
+        "value": "rems_from_px(6.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 66,
+        "name": "DOCK_DEFAULT_WIDTH",
+        "type": "Rems",
+        "value": "rems_from_px(240.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 71,
+        "name": "SIDEBAR_DEFAULT_WIDTH",
+        "type": "Rems",
+        "value": "rems_from_px(300.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 72,
+        "name": "SIDEBAR_MIN_WIDTH",
+        "type": "Rems",
+        "value": "rems_from_px(200.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 73,
+        "name": "SIDEBAR_MAX_WIDTH",
+        "type": "Rems",
+        "value": "rems_from_px(800.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 75,
+        "name": "SIDEBAR_ROW_HEIGHT",
+        "type": "Rems",
+        "value": "rems_from_px(31.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 76,
+        "name": "SIDEBAR_ROW_PADDING_LEFT",
+        "type": "Rems",
+        "value": "rems_from_px(8.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 77,
+        "name": "SIDEBAR_ROW_PADDING_RIGHT",
+        "type": "Rems",
+        "value": "rems_from_px(6.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 79,
+        "name": "SIDEBAR_FOOTER_PADDING",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      },
+      {
+        "line": 80,
+        "name": "SIDEBAR_FOOTER_GAP",
+        "type": "Rems",
+        "value": "rems_from_px(4.)",
+        "viaRemHelper": true
+      }
+    ],
+    "pxExceptions": [
+      "TITLE_BAR_HEIGHT",
+      "TITLE_BAR_PADDING_LEFT",
+      "WINDOW_BUTTON_WIDTH",
+      "WINDOW_BUTTON_HEIGHT",
+      "WINDOW_BUTTON_GLYPH_SIZE",
+      "WINDOW_ROUNDING",
+      "WINDOW_MIN_SIZE"
+    ],
+    "pxExceptionReason": "SPEC R-15 이후 변경: 타이틀 바·창 버튼(A-32.1, A-32.2)은 L-21 Windows 32 고정이라 px 허용. 창 모서리·최소 크기는 R-13 표 밖",
+    "nonRemOutsideExceptions": [],
+    "a32AllMeasuredAndPass": true,
+    "pass": true
+  },
+  "finishedAt": "2026-11-01T10:12:21.8741591+09:00"
+}

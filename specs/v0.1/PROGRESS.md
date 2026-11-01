@@ -200,7 +200,78 @@
 
 ### Phase 3 — 레이아웃 뼈대
 
-아직 없음.
+- **DECISIONS D-10 이후 변경 반영** (2026-11-01)
+  - 무엇을 했나: leader 결정(docs/HERDR-DECISIONS.md D-015)을 `specs/v0.1/DECISIONS.md` D-10 에 "이후 변경"으로 적고, 미결 사항의 "D-10의 또는" 항목을 지웠다.
+  - 결과: 사이드바 = gpui-kit `resizable` 패널(기본 300, 200~800) 안에 직접 조립(`sidebar` 컴포넌트 안 씀), 왼쪽 Dock = 폭을 앱이 직접 관리(DockArea 안 씀).
+  - 검증: DECISIONS.md D-10 절과 미결 사항 목록.
+  - 특이사항: 없음.
+
+- **레이아웃 뼈대 구현** (2026-11-01)
+  - 무엇을 했나: L-11~L-16 배치를 만들었다. 창 = [왼쪽 사이드바(resizable 패널)] → [Workspace(타이틀 바 → 본문 상자 → 상태 표시줄)], 본문 = [왼쪽 Dock(프로젝트 패널 자리)] → [가운데 Pane(탭 바 + 활성 아이템)]. 오른쪽 사이드바·오른쪽/아래 Dock 은 없다. Phase 1 타이틀 바는 사이드바 오른쪽으로 옮겼다(L-12). 편집기 PoC(`--dev-editor-poc`)는 Pane 의 활성 아이템 자리에 들어간다.
+  - 결과: `src/ui/layout.rs`(사이드바·탭 바·상태 표시줄·프로젝트 패널 자리, 새 파일), `src/ui/mod.rs`(Workbench 배치, Dock 폭 상태·핸들·끌기), `src/ui/rem.rs`(rem 헬퍼 `rems_from_px` = px÷16, 새 파일), `src/ui/metrics.rs`(R-13 치수 상수), `src/ui/layout_probe.rs`(측정 탐침, 새 파일), `src/ui/title_bar.rs`(탐침), `src/dev.rs`(`--dev-layout`).
+    - 왼쪽 Dock 핸들: gpui-base `resize_handle` 의 띠는 HANDLE_PADDING 4×2 + HANDLE_SIZE 1 = 9px 라 6 으로 맞출 수 없어, D-015 대로 gpui 끌기 이벤트(`on_drag`·`on_drag_move`)로 직접 만들었다. 폭 6, Dock 오른쪽 경계에 −3 으로 걸침, 더블클릭 시 240 으로 복원, 폭 한계 하한 6·상한 "본문 폭 − 6".
+    - 아이콘이 처음엔 자리만 잡고 그려지지 않아, gpui-kit 기본 아이콘 자산을 앱에 등록했다(`application().with_assets(gpui_kit::assets::Assets)`, gpui-kit-assets 0.8.1 README).
+  - 검증: `cargo build` 경고 없음, `tools/apply-manifest.ps1` 세 항목 true. 편집기 PoC 가 새 레이아웃에서 뜨고 측정 출력이 나옴을 확인했다.
+  - 특이사항: 내용이 없는 자리는 자리 표시 요소로 두었다(폴더 줄 "folder (placeholder)", 탭 "untitled (placeholder)"와 빈 시작·끝 슬롯, 프로젝트 패널, 활성 아이템). 아이콘은 gpui-kit 기본 묶음에서 가까운 것(PanelLeft, Folder, FolderOpen, ArrowLeft/Right, Plus, PanelRight, Maximize)을 임시로 썼다(Zed 아이콘 테마는 PoC 7단계 범위). 색은 gpui-kit 기본 테마다. L-31 의 "창 폭"은 Dock 이 들어 있는 Workspace 본문 폭으로 해석했다(사이드바는 Workspace 밖, L-11). 1px 테두리는 gpui `border_*_1`(Zed 도 1px 고정)이라 rem 상수로 두지 않았다.
+
+- **증거 수집 tools/verify-phase3.ps1** (2026-11-01)
+  - 무엇을 했나: 앱을 `--dev-layout` 으로 띄워 PID·HWND 를 고정하고, 창을 최대화(배율 200% 에서 창 내용 1440×852 논리 px, A-30.2)해 스크린샷과 이름별 바깥 상자(테두리 포함) 스냅숏을 받았다. R-12 배치, R-13 A-32 ID 별 측정, R-14 끌기(SendInput)·더블클릭, R-15 rem 값과 상수 정의를 확인했다.
+  - 결과:
+    - R-12: L-11~L-15 배치 확인값 8개 모두 참.
+    - R-13: A-32 측정 52항목 중 통과 49, 실패 0, 레이아웃으로 잴 수 없음 3(상태 표시줄 그룹 사이 gap 8·그룹 안 gap 4, 사이드바 푸터 gap 4 — 그룹마다 항목이 하나뿐이거나 justify_between 으로 벌어져 있어 코드 상수로 근거를 댐). 탭 슬롯·폴더 줄은 자리 표시 요소로 쟀다.
+    - R-14: Dock +100 → 340, 왼쪽 끝 너머 → 6, 오른쪽 끝 근처 → 1134(= 본문 1140 − 6), 핸들 더블클릭 → 240, 핸들 폭 6. 사이드바 +100 → 400, 1000 으로 → 800, 60 으로 → 200. 모두 통과.
+    - R-15: 창 rem 16. metrics.rs 상수 중 rem 헬퍼가 아닌 것은 SPEC R-15 이후 변경의 px 예외(타이틀 바·창 버튼)와 R-13 표 밖(창 모서리·최소 크기)뿐이다.
+  - 검증: `specs/v0.1/verify/phase3/result.json`, `layout.png`, `layout.json`, `layout-boxes.json`, `r14-*.png`·`r14-*.json`, `app-stdout.txt`.
+  - 특이사항: 스크립트 첫 실행들에서 세 가지를 고쳤다. ① PowerShell 이 한 개짜리 배열을 풀어 스냅숏을 못 찾음 → `@()`. ② `Sort-Object seq` 가 사전 객체를 정렬하지 못함 → 스크립트 블록 정렬. ③ 끌기 도중 스냅숏을 읽음 → 새 스냅숏이 1.2초 동안 없을 때까지 기다림. 또 다른 창이 전면에 있으면 SetForegroundWindow 가 막혀, 입력 주입 없이 AttachThreadInput 으로 전면 전환하도록 보강했다(전면 확인 실패 시 입력 없이 중단하는 규칙은 그대로). 리뷰(wg-reviewer)·검증(wg-checker)과 커밋은 아직이다(leader 지시 대기). → leader 확인(D-018)으로 "잴 수 없음" 3항목을 실측했다(아래 항목).
+
+- **leader 확인 반영 (D-018)** (2026-11-01)
+  - 무엇을 했나: leader 확인 세 가지를 반영했다(docs/HERDR-DECISIONS.md D-018).
+    - ① R-13 "잴 수 없음" 3항목(상태 표시줄 그룹 사이 gap 8·그룹 안 gap 4, 사이드바 푸터 gap 4)을 SPEC R-13 판정 방법대로 자리 표시 요소로 쟀다. 측정 모드(`--dev-layout`)에서만 상태 표시줄 왼쪽·오른쪽 그룹과 사이드바 푸터 왼쪽 그룹에 22×22 빈 상자를 하나씩 더 넣어 그룹당 항목을 둘로 만들었다. 그룹 사이 gap 은 왼쪽 그룹을 `flex_1` 로 늘려(justify_between 과 보이는 결과는 같다) 두 그룹 사이가 gap 그대로 남게 해서 쟀다.
+    - ② L-31 "창 폭" 해석(승인).
+    - ③ 사이드바 푸터 높이 31 과 A-11.4 의 30 차이(승인, 판정 대상 아님).
+  - 결과: `tools/verify-phase3.ps1` 재실행에서 A-32 54항목 통과, 실패 0, 잴 수 없음 0. 상태 표시줄 그룹 사이 8, 그룹 안 4(왼쪽·오른쪽), 사이드바 푸터 그룹 사이 4, 왼쪽 그룹 안 4. R-12 배치·R-14 끌기 8개·R-15(rem 16) 모두 그대로 통과.
+  - 검증: `specs/v0.1/verify/phase3/result.json`(a32 의 해당 항목 note 에 "자리 표시 요소로 쟀다"), `layout.png`, `layout-boxes.json`, `app-stdout.txt`. `cargo build` 경고 없음, `tools/apply-manifest.ps1` 세 항목 true.
+  - 특이사항:
+    - L-31 해석 근거: L-31 원문은 "하한은 핸들 6px, 상한은 창 폭 − 반대쪽 Dock − 6"이고, 출처로 Zed `workspace.rs` 9192~9227행을 든다. Zed 의 Dock 은 Workspace 안에 있고 그 상한은 Workspace 기준이다. 우리 앱은 사이드바가 Workspace 밖, 창 최상위 가로 배치의 왼쪽에 있다(L-11). 그래서 "창 폭"을 Dock 이 들어 있는 Workspace 본문 폭으로 보았다. 오른쪽 Dock 은 없으므로(L-14) 상한 = 본문 폭 − 6 이다(측정 1140 − 6 = 1134).
+    - 사이드바 푸터 높이: 31 이다(padding 4×2 + 버튼 22 + 위 테두리 1). A-11.4 는 "상태 표시줄과 같은 30"으로 적었지만, L-35 원문은 "높이가 상태 표시줄과 같아 보인다"는 관찰이고 A-32.13 은 padding·gap·위 테두리만 본다. leader 가 판정 대상이 아니라고 승인했다(D-018).
+
+- **리뷰 (wg-reviewer) 1회차** (2026-11-01)
+  - 무엇을 했나: Phase 3 리뷰 지적 2건(Major 1, Minor 1)을 leader 가 모두 채택했고(docs/HERDR-DECISIONS.md D-019) 반영했다.
+    - ① Major: Dock 폭을 렌더할 때 저장값을 그대로 쓰고 본문 폭 제한은 끌기 때만 해서, Dock 을 상한까지 넓힌 뒤 사이드바를 넓히거나 창을 줄이면 Dock 이 "본문 폭 − 6"을 넘고 핸들이 화면 밖으로 나갈 수 있었다. 렌더할 때 직전 레이아웃의 실제 본문 폭으로 유효 폭을 다시 제한하도록 고쳤다(`src/ui/mod.rs` effective_dock_width, 하한 6·상한 본문 폭 − 6). 핸들 위치도 유효 폭 기준이다. 본문 폭은 본문 상자의 `on_children_prepainted` 에서 읽어 달라지면 저장하고 다시 그린다. 저장 폭은 그대로 두어, 창을 다시 넓히면 저장 폭까지 돌아간다. 핸들 더블클릭은 저장 폭을 기본값으로 되돌리므로 유효 폭은 min(240, 본문 − 6)이 된다.
+    - ② Minor: `r15.pass` 가 rem 16 과 상수 정의만 보고 R-13 측정 결과를 보지 않았다. A-32 전체 항목이 측정되었고 모두 pass=true 라는 조건(`a32AllMeasuredAndPass`)을 넣었다.
+  - 결과: `tools/verify-phase3.ps1` 에 시나리오를 더해 재실행했다. 모두 통과.
+    - A1 Dock 을 상한까지(사이드바 200, 본문 1240) → 1234.
+    - A2 그 상태에서 더블클릭 없이 사이드바를 800 으로 → 본문 640, Dock 634(= 본문 − 6, 저장 폭은 1234 그대로), 핸들이 본문 안·Dock 경계에 걸침.
+    - B 최대화 해제 후 창 1000×700 논리 px → 본문 438.5, Dock 432.5, 핸들 본문 안.
+    - C0 작은 창에서 사이드바를 다시 넓혀 본문 187 → Dock 181.
+    - C 좁은 본문(본문 − 6 < 240)에서 핸들 더블클릭 → 저장 폭 기본값, Dock 181(= min(240, 181)).
+    - 기존 R-14 8개, A-32 54항목, R-12 배치, R-15(rem 16, a32AllMeasuredAndPass true) 모두 그대로 통과.
+  - 검증: `cargo build` 경고 없음, `tools/apply-manifest.ps1` 세 항목 true. 증거 `specs/v0.1/verify/phase3/result.json`, `r14-review-*.png`·`r14-review-*.json`, `app-stdout.txt`(스냅숏 머리에 dock_stored·body_width 추가).
+  - 특이사항: 창을 줄이면 resizable 이 사이드바도 함께 줄여(800 → 약 561) 본문이 넓게 남았다. 그래서 C 전에 사이드바를 다시 넓혀 본문을 좁히는 단계(C0)를 넣었다. checker 1회차 보고서 `specs/v0.1/verify/phase3/REPORT.md` 는 내용을 고치지 않고 함께 스테이징했다. 커밋은 하지 않았다(leader 지시 대기).
+
+- **리뷰 (wg-reviewer) 2회차** (2026-11-01)
+  - 무엇을 했나: 1회차 반영분을 다시 리뷰했다. 1회차 2건(Dock 유효 폭 재제한, r15.pass 조건)은 해결로 확인됐다. 새 Minor 1건을 leader 가 채택했고(docs/HERDR-DECISIONS.md D-020) 반영했다.
+    - 새 Minor: `tools/verify-phase3.ps1` 의 참·거짓 검사 4개(C 좁은 본문 확인, A2·B·C 핸들 위치)를 0/1 로 바꿔 ±1 치수 검사(Check)에 넘겨, 기대 1·실제 0 도 통과로 나왔다. 허용 오차 0 의 참·거짓 전용 검사 `CheckBool` 을 만들어 바꿨다. 실제 값이 [bool] 이 아니면(없음·숫자·문자열) 통과로 보지 않는다.
+    - 자체 시험: 스크립트가 시작할 때 `CheckBool` 자체 시험(7사례)을 돌리고, 실패하면 앱을 띄우지 않고 끝낸다. `-SelfTest` 스위치로 자체 시험만 돌릴 수도 있다.
+  - 결과:
+    - 자체 시험 7사례 모두 기대대로다. true/true·false/false 는 통과. 기대 true·실제 false, 기대 false·실제 true, 실제 1(정수)·0(정수)·"True"(문자열)는 모두 pass=false. 이전 방식(기대 1·실제 0 을 ±1 검사에 넘김)이 통과로 나오는 것도 재현해 기록했다(legacyFalsePassed=true).
+    - 전체 재실행 errors 0. 새 참·거짓 검사 4개: C 좁은 본문(본문 − 6 < 240) expected=True actual=True pass=True, A2·B·C 핸들이 본문 안·Dock 경계에 걸침 각각 expected=True actual=True pass=True(실제 값 형식 Boolean). R-12 배치 8개, A-32 54항목, R-14 치수 검사, R-15(rem 16, a32AllMeasuredAndPass true) 모두 그대로 통과.
+  - 검증: `specs/v0.1/verify/phase3/result.json`(selfTest, r14.checks 의 kind=bool 항목), `selftest-checkbool.json`(`-SelfTest` 출력), `r14-*.png`·`r14-*.json`, `layout.png`, `app-stdout.txt`.
+  - 특이사항: 처음 넣을 때 자체 시험 결과 변수 `$selfTest` 가 스위치 `-SelfTest` 와 이름이 겹쳐(PowerShell 변수 이름은 대소문자를 가리지 않는다) 오류가 나서 `$checkBoolTest` 로 바꿨다. 커밋은 하지 않았다(leader 지시 대기).
+
+- **완료 조건 검증 (wg-checker)** (2026-11-01)
+  - 무엇을 했나: R-12~R-15 를 SPEC 판정 방법대로 검증했다. 1회차는 leader 확인(D-018) 반영 뒤 증거로, 2회차는 리뷰 1회차(D-019) 반영 뒤 다시 모은 증거로 했다.
+  - 결과: 보고서 `specs/v0.1/verify/phase3/REPORT.md`.
+    - 1회차: R-12~R-15 모두 통과. R-12 L-11~L-16 6항목, R-13 A-32.1~A-32.13·A-32.16 일부 14항목(세부 측정값 54개, 오차 0.0), R-14 기본 끌기·더블클릭 시나리오, R-15 rem 16·rem 헬퍼 정의·px 예외.
+    - 2회차(최종): R-12~R-15 모두 통과. R-14 는 본문 폭 변화 시나리오(A1·A2·B·C0·C)와 핸들 위치 검사를 포함한 17개 점검 모두 통과, R-15 는 `a32AllMeasuredAndPass = true` 조건을 더한 뒤 통과.
+  - 검증: 보고서 `specs/v0.1/verify/phase3/REPORT.md`와 `specs/v0.1/verify/phase3/`의 증거 파일.
+  - 특이사항: 보고서의 "검증 일시" 줄에는 2026-04-20 으로 적혀 있다(보고서 원문 그대로, 고치지 않았다). 리뷰 2회차 Minor(D-020, CheckBool) 수정은 leader 가 재실행 결과로 확인했다.
+
+- **Phase 3 완료** (2026-11-01)
+  - 무엇을 했나: PLAN Phase 3 완료 조건을 대조했다.
+  - 결과: R-12~R-15 통과, `specs/v0.1/verify/phase3/` 검증 보고서에 A-32 ID 마다 측정값과 통과/실패, R-15 rem 헬퍼 정의 위치가 있음, wg-reviewer 리뷰 결과(1·2회차) 기록됨. 미해결 실패가 없어 Phase 3 을 완료로 본다.
+  - 검증: `specs/v0.1/verify/phase3/REPORT.md`, `specs/v0.1/verify/phase3/result.json`, 이 PROGRESS 기록.
+  - 특이사항: PLAN 의 Phase 3 완료 조건 중 "Phase 3 커밋이 있다"는 이 기록 뒤의 커밋으로 채운다.
 
 ## 사용자 요청 작업
 
