@@ -23,6 +23,9 @@
 //! - `--dev-no-shell`: Reveal in File Explorer·Open in Default App 을 실행하지 않고 기록만 한다 (v0.2 Phase 4, R-22).
 //! - `--dev-trash <list|restore|purge> <폴더>`: 휴지통에서 원래 위치가 그 폴더 아래인 항목만 보이거나 되살리거나 비운다.
 //!   창을 띄우지 않고 끝난다. 시험이 버린 항목만 다루려고 둔다 (v0.2 Phase 4, R-20).
+//! - `--dev-slow-io <경로 조각> <ms>`: 감시 쪽 존재 확인·탭 파일 다시 읽기를 늦춘다(v0.2 Phase 5 리뷰 1회차 ⑤, D-046).
+//! - `--dev-ui-stall <이름> <ms>`: 이름이 같은 지점(인라인 입력 확정 `edit-committed`·취소 `edit-cancelled`)에서 UI 스레드를
+//!   멈춘다. 파일 작업 직후 `fs-<op>`(예: `fs-create`)도 있다(v0.2 Phase 5 리뷰 2회차, D-047).
 
 #[derive(Debug, Default, Clone)]
 pub struct DevOptions {
@@ -103,6 +106,20 @@ impl DevOptions {
                 }
                 "--dev-pick-folder" => options.pick_folder_file = args.next(),
                 "--dev-no-shell" => NO_SHELL.store(true, std::sync::atomic::Ordering::Relaxed),
+                "--dev-ui-stall" => {
+                    let name = args.next().unwrap_or_default();
+                    let ms = args.next().and_then(|v| v.parse().ok()).unwrap_or(0);
+                    if !name.is_empty() {
+                        let _ = UI_STALL.set((name, ms));
+                    }
+                }
+                "--dev-slow-io" => {
+                    let part = args.next().unwrap_or_default().to_lowercase();
+                    let ms = args.next().and_then(|v| v.parse().ok()).unwrap_or(0);
+                    if !part.is_empty() {
+                        let _ = SLOW_IO.set((part, ms));
+                    }
+                }
                 "--dev-trash" => {
                     let op = args.next().unwrap_or_default();
                     let dir = args.next().unwrap_or_default();
@@ -664,6 +681,33 @@ static NO_SHELL: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::
 /// `--dev-no-shell` 이 켜졌는가.
 pub fn no_shell() -> bool {
     NO_SHELL.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+/// `--dev-slow-io <경로 조각> <ms>` (v0.2 Phase 5 리뷰 1회차 ⑤, D-046): 경로에 조각이 든 폴더 존재 확인·탭 파일 다시 읽기를
+/// 이만큼 늦춘다. 응답 없는 네트워크 경로·느린 저장 장치를 흉내 내어 그 일이 메인 스레드를 막는지 본다.
+static SLOW_IO: std::sync::OnceLock<(String, u64)> = std::sync::OnceLock::new();
+
+/// `--dev-ui-stall <이름> <ms>` (v0.2 Phase 5 리뷰 2회차, D-047): 이름이 같은 지점에서 UI 스레드를 이만큼 멈춘다.
+/// 동기 복사·긴 트리 읽기처럼 UI 가 늦어지는 경우를 흉내 내어 감시 묶음 반영의 순서·만료를 본다.
+static UI_STALL: std::sync::OnceLock<(String, u64)> = std::sync::OnceLock::new();
+
+/// 시험 플래그가 없거나 이름이 다르면 아무것도 하지 않는다.
+pub fn ui_stall(name: &str) {
+    if let Some((n, ms)) = UI_STALL.get()
+        && n == name
+    {
+        println!("[dev] ui-stall name={name} ms={ms}");
+        std::thread::sleep(std::time::Duration::from_millis(*ms));
+    }
+}
+
+/// 감시 쪽 디스크 일(존재 확인·파일 다시 읽기) 직전에 부른다. 시험 플래그가 없으면 아무것도 하지 않는다.
+pub fn slow_io(path: &std::path::Path) {
+    if let Some((part, ms)) = SLOW_IO.get()
+        && path.to_string_lossy().to_lowercase().contains(part.as_str())
+    {
+        std::thread::sleep(std::time::Duration::from_millis(*ms));
+    }
 }
 
 /// `--dev-trash <op> <폴더>`: 원래 위치가 `<폴더>` 아래인 휴지통 항목만 다룬다. 사용자 휴지통의 다른 항목은 건드리지 않는다.

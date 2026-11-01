@@ -126,6 +126,24 @@ impl ProjectTree {
         self.rebuild(cx);
     }
 
+    /// 바깥에서 이름이 바뀐 항목을 따라간다(Phase 5, 판단): 펼침·접기 끔·선택·표시·기준의 경로를 새 경로로 바꾼다.
+    pub fn follow_rename(&mut self, from: &Path, to: &Path) {
+        let map = |p: &Path| -> Option<PathBuf> {
+            let rest = p.strip_prefix(from).ok()?;
+            Some(if rest.as_os_str().is_empty() { to.to_path_buf() } else { to.join(rest) })
+        };
+        let remap_set = |set: &mut HashSet<PathBuf>| {
+            *set = set.drain().map(|p| map(&p).unwrap_or(p)).collect();
+        };
+        remap_set(&mut self.expanded);
+        remap_set(&mut self.unfolded);
+        for p in self.selected.iter_mut().chain(self.anchor.iter_mut()).chain(self.marked.iter_mut()) {
+            if let Some(n) = map(p) {
+                *p = n;
+            }
+        }
+    }
+
     pub fn index_of(&self, path: &Path) -> Option<usize> {
         self.rows.iter().position(|r| r.covers(path))
     }

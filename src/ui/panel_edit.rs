@@ -171,6 +171,8 @@ impl Workbench {
 
     /// dev 출력: 입력칸 상태(값·선택 범위·검증).
     pub(super) fn log_edit(&self, what: &str, cx: &App) {
+        // 시험 훅(D-047): 입력 확정·취소 때 UI 스레드를 잠시 멈춘다(`--dev-ui-stall edit-committed|edit-cancelled <ms>`).
+        crate::dev::ui_stall(&format!("edit-{what}"));
         if !keymap::dev_enabled(cx) {
             return;
         }

@@ -23,6 +23,8 @@ mod shell;
 mod task_dialog;
 mod title_bar;
 mod tooltip;
+mod watch;
+mod watch_io;
 
 use std::time::Duration;
 
@@ -79,6 +81,8 @@ struct Workbench {
     pending_press: Option<std::path::PathBuf>,
     /// 휴지통·삭제 확인창이 떠 있다(겹쳐 띄우지 않는다).
     deleting: bool,
+    /// 활성 폴더 디스크 감시(Phase 5, R-24).
+    watch: watch::WatchState,
 }
 
 /// 왼쪽 Dock 핸들을 끄는 동안의 끌기 값 (L-30). 화면에는 아무것도 그리지 않는다.
@@ -645,15 +649,19 @@ pub fn run(dev: DevOptions) {
                         panel_menu: None,
                         pending_press: None,
                         deleting: false,
+                        watch: watch::WatchState::default(),
                     };
                     // 알림은 gpui-kit Root 가 생긴 뒤에 띄운다(창을 연 다음 차례).
                     cx.defer_in(window, move |this: &mut Workbench, window, cx| {
                         this.start_folders(&loaded, window, cx);
+                        // Phase 5(R-24): 활성 폴더 감시와 그 틱.
+                        this.sync_watch("start", cx);
+                        this.start_watch_loop(window, cx);
                     });
-                    // A-16.3 최소 대응: 창이 다시 활성화되면 경로를 다시 본다.
+                    // 창이 다시 활성화되면 경로·트리·탭을 다시 본다(감시를 못 한 경우의 대비로 남긴다).
                     cx.observe_window_activation(window, |this: &mut Workbench, window, cx| {
                         if window.is_window_active() {
-                            this.refresh_on_activation(cx);
+                            this.refresh_on_activation(window, cx);
                         }
                     })
                     .detach();

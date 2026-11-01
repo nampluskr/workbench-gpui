@@ -128,12 +128,31 @@ impl FolderList {
             .state
             .folders
             .iter()
-            .filter(|f| !std::path::Path::new(&f.path).is_dir())
+            .filter(|f| {
+                crate::dev::slow_io(std::path::Path::new(&f.path));
+                !std::path::Path::new(&f.path).is_dir()
+            })
             .map(|f| f.id.clone())
             .collect();
         let changed = missing != self.missing;
         self.missing = missing;
         changed
+    }
+
+    /// 폴더 하나만 확인한다(활성화 때 그 폴더의 트리를 그리려고, Phase 5 리뷰 1회차 ⑤ D-046). 나머지는 감시 쪽이
+    /// 백그라운드에서 확인한다.
+    pub fn refresh_one(&mut self, id: &str) -> bool {
+        let Some(f) = self.state.folders.iter().find(|f| f.id == id) else { return false };
+        let p = std::path::Path::new(&f.path);
+        crate::dev::slow_io(p);
+        let gone = !p.is_dir();
+        let was = self.missing.contains(id);
+        if gone {
+            self.missing.insert(id.to_string());
+        } else {
+            self.missing.remove(id);
+        }
+        gone != was
     }
 
     pub fn index_of(&self, id: &str) -> Option<usize> {
@@ -373,7 +392,9 @@ impl Workbench {
             return;
         };
         self.folders.state.active = Some(folder.id.clone());
-        self.folders.refresh_missing();
+        // 활성화한 폴더만 지금 확인하고, 나머지 등록 폴더는 백그라운드에서 확인한다(Phase 5 리뷰 1회차 ⑤ D-046).
+        self.folders.refresh_one(&folder.id);
+        self.request_exist("activate", window, cx);
         let created = !self.folders.workspaces.contains_key(&folder.id);
         let ws = match self.folders.workspaces.get(&folder.id) {
             Some(ws) => ws.clone(),
@@ -383,9 +404,12 @@ impl Workbench {
                 ws
             }
         };
-        // 다시 활성화하면 디스크를 다시 읽는다(펼침·선택·스크롤은 그대로, A-15.2). 감시는 Phase 5.
-        if !created {
+        // 다시 활성화하면 디스크를 다시 읽는다(펼침·선택·스크롤은 그대로, A-15.2). 활성이 아닌 동안은 감시하지 않으므로
+        // 탭 내용도 다시 본다(Phase 5, R-24). 감시는 이 폴더로 옮긴다.
+        self.sync_watch("activate", cx);
+        if !created && !self.folders.missing.contains(&folder.id) {
             ws.update(cx, |ws, cx| ws.tree.refresh(cx));
+            self.request_reload(&ws, |_| true, window, cx);
         }
         if self.dev(cx) {
             println!(
@@ -440,6 +464,8 @@ impl Workbench {
                 return;
             }
         }
+        // 감시 해제(Phase 5): 활성 폴더가 없어졌으면 감시자를 버린다.
+        self.sync_watch("remove", cx);
         self.log_folders(cx);
         self.schedule_save(window, cx);
         cx.notify();
@@ -854,16 +880,15 @@ impl Workbench {
             .map(|f| title_text(&path::folder_name(&f.path)))
     }
 
-    /// 창이 다시 활성화되면 경로를 다시 본다(A-16.3 의 최소 대응. 감시는 R-24, Phase 5).
-    pub(super) fn refresh_on_activation(&mut self, cx: &mut Context<Self>) {
-        // Phase 4: 활성 폴더 트리도 디스크를 다시 읽는다(바깥 변경 감시는 Phase 5, R-24).
+    /// 창이 다시 활성화되면 경로·트리·탭을 다시 본다. 감시(R-24, Phase 5)가 있어도 감시를 못 만든 경우의 대비로 남긴다.
+    pub(super) fn refresh_on_activation(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        // 등록 폴더 존재는 백그라운드에서 확인한다(Phase 5 리뷰 1회차 ⑤ D-046). 바뀌면 감시 쪽이 반영한다.
+        self.request_exist("window-activation", window, cx);
         if let Some(ws) = self.active_ws() && ws.read(cx).tree.edit.is_none() {
             ws.update(cx, |ws, cx| ws.tree.refresh(cx));
+            self.request_reload(&ws, |_| true, window, cx);
             self.log_tree(cx);
-            cx.notify();
-        }
-        if self.folders.refresh_missing() {
-            self.log_folders(cx);
+            self.log_tabs(cx);
             cx.notify();
         }
     }

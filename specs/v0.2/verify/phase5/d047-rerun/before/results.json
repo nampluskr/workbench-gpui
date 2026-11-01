@@ -1,0 +1,271 @@
+{
+  "startedAt": "2026-11-02T05:52:49.1846892+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276",
+  "cases": {
+    "d047-expire": {
+      "pid": 7028,
+      "hwnd": "0x13109B2",
+      "tabs": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b\tb|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b",
+      "stall": "[dev] ui-stall name=fs-paste-copy ms=3500",
+      "applied": [
+        "[dev] watch-applied events=109 own=7 external=102 lost=false tree=refreshed renames=1 own_renames=0 reloaded=2 wait_ms=3845 t_ms=1793566394051"
+      ]
+    },
+    "d047-order": {
+      "pid": 8340,
+      "hwnd": "0x5509BA",
+      "tabs": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b",
+      "stall": "[dev] ui-stall name=edit-cancelled ms=1500",
+      "after": [
+        "[dev] watch-applied events=3 own=0 external=3 lost=false tree=deferred renames=1 own_renames=0 reloaded=0 wait_ms=234 t_ms=1793566416761",
+        "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=1 own_renames=0 reloaded=1 wait_ms=1546 t_ms=1793566418724",
+        "[dev] watch-refresh via=deferred batches=1 renames=1 reload_queued=1 t_ms=1793566418850"
+      ]
+    },
+    "d047-extra-fail": {
+      "pid": 1128,
+      "hwnd": "0x970928",
+      "extraWhileAway": [
+        "[dev] watch-extra-failed error=Input watch path is neither a file nor a directory.",
+        "[dev] watch-extra folder=00000000-0000-4000-8000-000000000000 dirs=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\pb active=false"
+      ],
+      "extraAfter": [
+        "[dev] watch-extra-failed error=Input watch path is neither a file nor a directory.",
+        "[dev] watch-extra folder=00000000-0000-4000-8000-000000000000 dirs=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\pb active=false"
+      ]
+    },
+    "d047-extra-replace": {
+      "pid": 23344,
+      "hwnd": "0x8809AE",
+      "extraAfter": []
+    }
+  },
+  "failures": [
+    "d047-expire: D-047 ⓐ·D-046 ①·R-24 UI 가 3초 넘게 늦어도 앱 자신의 a→b 를 다시 적용하지 않음: 새 a 탭과 b 탭이 따로: 기대 a 탭 1, b 탭 1, 실제 a=0, b=2, [dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b\tb|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b",
+    "d047-expire: D-047 ⓐ·G-115 새 a 탭이 바깥 변경을 다시 읽음: 기대 active_text_fnv=c3b90936f449f3a0, 실제 ok=False, app_ms=, seen_ms=, <none>",
+    "d047-order: D-047 ⓑ·R-24 미룬 a→b 를 먼저, 그다음 b→c: 탭 경로가 c: 기대 D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\c, 실제 [dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b",
+    "d047-order: D-047 ⓑ·G-115 탭이 c 의 바깥 변경을 다시 읽음: 기대 active_text_fnv=305920f9d203819e, 실제 ok=False, app_ms=, seen_ms=, <none>",
+    "d047-extra-fail: D-047 ⓒ pb 가 다시 생기면 부모 감시를 다시 등록: 기대 watch-extra … active=true, 실제 [dev] watch-extra-failed error=Input watch path is neither a file nor a directory. | [dev] watch-extra folder=00000000-0000-4000-8000-000000000000 dirs=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\pb active=false",
+    "d047-extra-fail: D-047 ⓒ·R-24·G-115 다시 등록한 뒤 탭이 다시 읽음: 기대 active_text_fnv=71ca085f277a08e9, 실제 ok=False, app_ms=, seen_ms=, <none>",
+    "d047-extra-replace: D-047 ⓒ 부모가 새 폴더로 바뀌면 다시 등록: 기대 watch-extra-invalid … / watch-extra … active=true, 실제 ",
+    "d047-extra-replace: D-047 ⓒ·G-115 다시 등록하면서 새 pb\\notes.txt 내용을 탭이 다시 읽음: 기대 d6dd89e4fb0f1b90, 실제 336bcdc192735bfe",
+    "d047-extra-replace: D-047 ⓒ·R-24·G-115 바뀐 부모의 변경을 탭이 다시 읽음: 기대 active_text_fnv=26c9487a3e56f99d, 실제 ok=False, app_ms=, seen_ms=, <none>"
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "case": "d047-expire",
+      "id": "준비",
+      "what": "루트의 a 를 고름(cp\\a 를 복사해 둠)",
+      "expect": "selected=a",
+      "got": "a",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-expire",
+      "id": "D-047 ⓐ",
+      "what": "UI 멈춤 시험 훅이 붙여넣기 직후에 걸림",
+      "expect": "ui-stall name=fs-paste-copy ms=3500",
+      "got": "[dev] ui-stall name=fs-paste-copy ms=3500",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-expire",
+      "id": "D-047 ⓐ·D-046 ①·R-24",
+      "what": "UI 가 3초 넘게 늦어도 앱 자신의 a→b 를 다시 적용하지 않음: 새 a 탭과 b 탭이 따로",
+      "expect": "a 탭 1, b 탭 1",
+      "got": "a=0, b=2, [dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b\tb|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-expire",
+      "id": "D-047 ⓐ·G-115",
+      "what": "새 a 탭이 바깥 변경을 다시 읽음",
+      "expect": "active_text_fnv=c3b90936f449f3a0",
+      "got": "ok=False, app_ms=, seen_ms=, <none>",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-order",
+      "id": "D-046 ②",
+      "what": "입력 중 바깥 a→b 는 미룸",
+      "expect": "watch-applied tree=deferred",
+      "got": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=deferred renames=1 own_renames=0 reloaded=0 wait_ms=234 t_ms=1793566416761",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-order",
+      "id": "D-047 ⓑ",
+      "what": "UI 멈춤 시험 훅이 입력 취소 때 걸림",
+      "expect": "ui-stall name=edit-cancelled",
+      "got": "[dev] ui-stall name=edit-cancelled ms=1500",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-order",
+      "id": "D-047 ⓑ·R-24",
+      "what": "미룬 a→b 를 먼저, 그다음 b→c: 탭 경로가 c",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\c",
+      "got": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\proj\\b",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-order",
+      "id": "D-047 ⓑ",
+      "what": "트리에 c, a·b 없음",
+      "expect": "c 행",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / c / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-order",
+      "id": "D-047 ⓑ·G-115",
+      "what": "탭이 c 의 바깥 변경을 다시 읽음",
+      "expect": "active_text_fnv=305920f9d203819e",
+      "got": "ok=False, app_ms=, seen_ms=, <none>",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-fail",
+      "id": "D-047 ⓒ",
+      "what": "pb 가 없는 동안 부모 감시 등록 실패를 dev 출력에 남김",
+      "expect": "watch-extra-failed",
+      "got": "[dev] watch-extra-failed error=Input watch path is neither a file nor a directory. | [dev] watch-extra folder=00000000-0000-4000-8000-000000000000 dirs=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\pb active=false",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-fail",
+      "id": "D-047 ⓒ",
+      "what": "pb 가 다시 생기면 부모 감시를 다시 등록",
+      "expect": "watch-extra … active=true",
+      "got": "[dev] watch-extra-failed error=Input watch path is neither a file nor a directory. | [dev] watch-extra folder=00000000-0000-4000-8000-000000000000 dirs=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\pb active=false",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-fail",
+      "id": "D-047 ⓒ·R-24·G-115",
+      "what": "다시 등록한 뒤 탭이 다시 읽음",
+      "expect": "active_text_fnv=71ca085f277a08e9",
+      "got": "ok=False, app_ms=, seen_ms=, <none>",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-replace",
+      "id": "D-046 ④",
+      "what": "루트 밖 열린 파일의 부모 pb 감시",
+      "expect": "watch-extra dirs=…\\pb active=true",
+      "got": "[dev] watch-extra folder=00000000-0000-4000-8000-000000000000 dirs=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276\\pb active=true",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-replace",
+      "id": "D-047 ⓒ",
+      "what": "부모가 새 폴더로 바뀌면 다시 등록",
+      "expect": "watch-extra-invalid … / watch-extra … active=true",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-replace",
+      "id": "D-047 ⓒ·G-115",
+      "what": "다시 등록하면서 새 pb\\notes.txt 내용을 탭이 다시 읽음",
+      "expect": "d6dd89e4fb0f1b90",
+      "got": "336bcdc192735bfe",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d047-extra-replace",
+      "id": "D-047 ⓒ·R-24·G-115",
+      "what": "바뀐 부모의 변경을 탭이 다시 읽음",
+      "expect": "active_text_fnv=26c9487a3e56f99d",
+      "got": "ok=False, app_ms=, seen_ms=, <none>",
+      "ok": false,
+      "evidence": ""
+    }
+  ],
+  "latency": [
+    {
+      "case": "d047-expire",
+      "what": "UI 지연 뒤 같은 경로 바깥 내용 바꾸기 a",
+      "ok": false,
+      "change_ms": 12,
+      "recv_ms": 6,
+      "app_ms": null,
+      "seen_ms": null,
+      "lines": 0,
+      "last": "<none>"
+    },
+    {
+      "case": "d047-order",
+      "what": "두 번 이름이 바뀐 열린 파일 내용 바꾸기 c",
+      "ok": false,
+      "change_ms": 9,
+      "recv_ms": 3,
+      "app_ms": null,
+      "seen_ms": null,
+      "lines": 0,
+      "last": "<none>"
+    },
+    {
+      "case": "d047-extra-fail",
+      "what": "부모가 다시 생긴 뒤 루트 밖 열린 파일 내용 바꾸기",
+      "ok": false,
+      "change_ms": 10,
+      "recv_ms": null,
+      "app_ms": null,
+      "seen_ms": null,
+      "lines": 0,
+      "last": "<none>"
+    },
+    {
+      "case": "d047-extra-replace",
+      "what": "바뀐 부모 안 열린 파일 내용 바꾸기",
+      "ok": false,
+      "change_ms": 14,
+      "recv_ms": null,
+      "app_ms": null,
+      "seen_ms": null,
+      "lines": 0,
+      "last": "<none>"
+    }
+  ],
+  "testDrive": {
+    "DeviceID": "D:",
+    "DriveType": 2,
+    "FileSystem": "NTFS"
+  },
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p5-backup-f1733bd5-a2a4-428d-81f3-ab117e11bfc5"
+  },
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase5-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-ec0f58abdf8848578d5b59ffa1269276",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T05:54:39.5516148+09:00",
+  "passed": false
+}

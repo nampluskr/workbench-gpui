@@ -1,0 +1,354 @@
+{
+  "startedAt": "2026-11-02T05:00:13.2071476+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f",
+  "cases": {
+    "d046-own": {
+      "pid": 26320,
+      "hwnd": "0x5C08D8",
+      "tabs": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\b\ta|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\a",
+      "applied": [
+        "[dev] watch-applied events=81 own=6 external=75 lost=false tree=refreshed renames=0 own_renames=1 reloaded=2 wait_ms=1463 t_ms=1793563226312",
+        "[dev] watch-applied events=28 own=0 external=28 lost=false tree=none renames=0 own_renames=0 reloaded=0 wait_ms=1062 t_ms=1793563227386"
+      ]
+    },
+    "d046-defer": {
+      "pid": 17972,
+      "hwnd": "0x8B08F0",
+      "during": [
+        "[dev] watch-applied events=5 own=0 external=5 lost=false tree=deferred renames=1 own_renames=0 reloaded=0 wait_ms=172 t_ms=1793563243856"
+      ],
+      "tabs": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=moved.txt|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\moved.txt"
+    },
+    "d046-replace": {
+      "pid": 5512,
+      "hwnd": "0x170083C",
+      "swapMs": 6,
+      "starts": [
+        "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj parent_watched=true root_id=3029ce3f:000700000000d604 via=identity"
+      ]
+    },
+    "d046-moved": {
+      "pid": 2820,
+      "hwnd": "0x10D0966"
+    },
+    "d046-junction": {
+      "pid": 15128,
+      "hwnd": "0x12109AA"
+    },
+    "d046-io": {
+      "pid": 30128,
+      "hwnd": "0x23D08F6",
+      "idleGaps": null,
+      "keyLatency": [
+        231,
+        245,
+        252
+      ],
+      "keyLatencyDuringReload": 221,
+      "reloadGaps": null
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "d046-own",
+      "id": "D-046 ①·R-24",
+      "what": "앱 자신의 이름 바꾸기를 감시가 다시 적용하지 않음: 새 a 탭과 b 탭이 따로",
+      "expect": "a 탭 1, b 탭 1",
+      "got": "a=1, b=1, [dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=b|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\b\ta|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\a",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-own",
+      "id": "D-046 ①",
+      "what": "선택은 새 a 그대로",
+      "expect": "selected=a",
+      "got": "a",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-own",
+      "id": "D-046 ①·G-115",
+      "what": "같은 경로의 바깥 변경은 보존(새 a 탭이 다시 읽음)",
+      "expect": "active_text_fnv=f078334cdbf0ed18",
+      "got": "ok=True, app_ms=263, seen_ms=1261, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\a result=reloaded len=28 fnv=f078334cdbf0ed18 t_ms=1793563229390",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-own",
+      "id": "D-046 ①",
+      "what": "활성 탭은 새 a",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\a",
+      "got": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\a",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-defer",
+      "id": "R-24(판단)",
+      "what": "입력 중 바깥 변경 → 미룸, 입력칸 그대로",
+      "expect": "tree=deferred, panel_input",
+      "got": "[dev] watch-applied events=5 own=0 external=5 lost=false tree=deferred renames=1 own_renames=0 reloaded=0 wait_ms=172 t_ms=1793563243856, panel_input",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-defer",
+      "id": "D-046 ②·R-24",
+      "what": "입력이 끝나면 미룬 이름 바꾸기를 적용: 탭 경로가 moved.txt",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\moved.txt",
+      "got": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=moved.txt|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\moved.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-defer",
+      "id": "D-046 ②·G-115",
+      "what": "이름이 바뀐 뒤 바뀐 내용을 탭이 다시 읽음",
+      "expect": "bde4f2f1b52c2caf",
+      "got": "bde4f2f1b52c2caf",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-defer",
+      "id": "D-046 ②",
+      "what": "트리에 moved.txt, 가상 행 없음",
+      "expect": "moved.txt 행",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / moved.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-replace",
+      "id": "D-046 ③·A-16.3",
+      "what": "루트가 같은 경로의 새 폴더로 바뀌면 다시 감시(watch-start)",
+      "expect": "watch-start root=…\\proj (교체 6ms)",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj parent_watched=true root_id=3029ce3f:000700000000d604 via=identity",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-replace",
+      "id": "D-046 ③·R-24",
+      "what": "새 폴더 내용으로 트리를 다시 읽음",
+      "expect": "fresh.txt 행, ops 행 없음",
+      "got": "proj / fresh.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-replace",
+      "id": "D-046 ③·R-24",
+      "what": "새 루트 안 변경이 반영됨",
+      "expect": "after-replace.txt 행",
+      "got": "ok=True, app_ms=171, seen_ms=201, [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=167 t_ms=1793563259555",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-replace",
+      "id": "D-046 ③",
+      "what": "옛 폴더(proj-old) 변경은 받지 않음",
+      "expect": "tree=refreshed 묶음 없음, old-side.txt 행 없음",
+      "got": " | proj / after-replace.txt / fresh.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-replace",
+      "id": "D-046 ③",
+      "what": "루트 자신의 이름 바꾸기 이벤트 → 정체가 같아도 다시 등록",
+      "expect": "watch-rewatch reason=root-event",
+      "got": "[dev] watch-rewatch reason=root-event root_event=true old_id=3029ce3f:000700000000d604 new_id=3029ce3f:000700000000d604 via=root-event t_ms=1793563262986",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-replace",
+      "id": "D-046 ③·R-24",
+      "what": "다시 등록한 뒤 변경 반영",
+      "expect": "after-bounce.txt 행",
+      "got": "ok=True, app_ms=258, seen_ms=859, [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=254 t_ms=1793563263301",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-moved",
+      "id": "R-21·D-043 ④",
+      "what": "proj 의 탭 경로가 옮긴 pb\\notes.txt",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\pb\\notes.txt",
+      "got": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=notes.txt|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\pb\\notes.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-moved",
+      "id": "D-046 ④·R-24·G-115",
+      "what": "루트 밖 열린 파일의 바깥 변경을 탭이 다시 읽음",
+      "expect": "active_text_fnv=087693ee497338c2",
+      "got": "ok=True, app_ms=188, seen_ms=1082, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\pb\\notes.txt result=reloaded len=37 fnv=087693ee497338c2 t_ms=1793563281959",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-junction",
+      "id": "R-27",
+      "what": "정션 안 inside.txt 탭",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\jlink\\inside.txt",
+      "got": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=inside.txt|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\jlink\\inside.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-junction",
+      "id": "D-046 ④·R-24·G-115",
+      "what": "정션 대상 경로로 바꾼 열린 파일을 탭이 다시 읽음",
+      "expect": "active_text_fnv=43f26d43ce81bdd4",
+      "got": "ok=True, app_ms=268, seen_ms=1164, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\jlink\\inside.txt result=reloaded len=32 fnv=43f26d43ce81bdd4 t_ms=1793563294662",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-junction",
+      "id": "D-046 ④·R-24·G-115",
+      "what": "정션 경로로 바꾼 열린 파일을 탭이 다시 읽음",
+      "expect": "active_text_fnv=dd338af8f1ace2c4",
+      "got": "ok=True, app_ms=166, seen_ms=992, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\jlink\\inside.txt result=reloaded len=32 fnv=dd338af8f1ace2c4 t_ms=1793563295775",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-io",
+      "id": "D-046 ⑤",
+      "what": "느린 등록 폴더 존재 확인이 메인 스레드를 막지 않음(조용한 4초 동안 틱 늦음 없음)",
+      "expect": "틱 늦음 0",
+      "got": "늦음 0번: ",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-io",
+      "id": "D-046 ⑤",
+      "what": "키 입력 응답(3번 모두 500ms 안)",
+      "expect": "< 500ms",
+      "got": "231,245,252",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-io",
+      "id": "R-24·G-115",
+      "what": "느린 경로의 열린 파일도 결국 다시 읽음",
+      "expect": "tab-reload fnv=dd0d4036a0bac1c4",
+      "got": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\slowf-tab.txt result=reloaded len=24 fnv=dd0d4036a0bac1c4 t_ms=1793563321537",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d046-io",
+      "id": "D-046 ⑤",
+      "what": "다시 읽는 동안에도 키 입력 응답 500ms 안",
+      "expect": "< 500ms",
+      "got": "221",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "latency": [
+    {
+      "case": "d046-own",
+      "what": "앱 작업 직후 같은 경로 바깥 내용 바꾸기 a",
+      "ok": true,
+      "change_ms": 12,
+      "recv_ms": 6,
+      "app_ms": 263,
+      "seen_ms": 1261,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\a result=reloaded len=28 fnv=f078334cdbf0ed18 t_ms=1793563229390"
+    },
+    {
+      "case": "d046-replace",
+      "what": "바뀐 루트 안 파일 만들기 after-replace.txt",
+      "ok": true,
+      "change_ms": 9,
+      "recv_ms": 3,
+      "app_ms": 171,
+      "seen_ms": 201,
+      "lines": 1,
+      "last": "[dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=167 t_ms=1793563259555"
+    },
+    {
+      "case": "d046-replace",
+      "what": "되돌린 루트 안 파일 만들기 after-bounce.txt",
+      "ok": true,
+      "change_ms": 9,
+      "recv_ms": 3,
+      "app_ms": 258,
+      "seen_ms": 859,
+      "lines": 1,
+      "last": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=254 t_ms=1793563263301"
+    },
+    {
+      "case": "d046-moved",
+      "what": "루트 밖(다른 등록 폴더)으로 옮긴 열린 파일 내용 바꾸기",
+      "ok": true,
+      "change_ms": 17,
+      "recv_ms": 4,
+      "app_ms": 188,
+      "seen_ms": 1082,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\pb\\notes.txt result=reloaded len=37 fnv=087693ee497338c2 t_ms=1793563281959"
+    },
+    {
+      "case": "d046-junction",
+      "what": "정션 대상 경로로 열린 파일 내용 바꾸기",
+      "ok": true,
+      "change_ms": 8,
+      "recv_ms": 3,
+      "app_ms": 268,
+      "seen_ms": 1164,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\jlink\\inside.txt result=reloaded len=32 fnv=43f26d43ce81bdd4 t_ms=1793563294662"
+    },
+    {
+      "case": "d046-junction",
+      "what": "정션 경로로 열린 파일 내용 바꾸기",
+      "ok": true,
+      "change_ms": 16,
+      "recv_ms": 3,
+      "app_ms": 166,
+      "seen_ms": 992,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f\\proj\\jlink\\inside.txt result=reloaded len=32 fnv=dd338af8f1ace2c4 t_ms=1793563295775"
+    }
+  ],
+  "testDrive": {
+    "DeviceID": "D:",
+    "DriveType": 2,
+    "FileSystem": "NTFS"
+  },
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p5-backup-b2523a34-199b-4cda-afcf-4206d468d6e3"
+  },
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase5-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-7f693f33ee52460f9188566102fe048f",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T05:02:02.4276115+09:00",
+  "passed": true
+}

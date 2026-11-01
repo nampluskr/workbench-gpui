@@ -18,6 +18,15 @@ pub struct FileClipboard {
 impl Workbench {
     /// dev 출력: 디스크 작업 하나.
     pub(super) fn log_fs(&self, op: &str, targets: &[&Path], error: Option<String>, cx: &App) {
+        // Phase 5(R-24): 앱 자신의 작업 경로를 남겨 감시 이벤트를 바깥 변경과 구분한다.
+        // 시험 훅(D-047): 파일 작업 직후 UI 스레드를 잠시 멈춘다(`--dev-ui-stall fs-<op> <ms>`).
+        crate::dev::ui_stall(&format!("fs-{op}"));
+        let now = std::time::Instant::now();
+        self.watch.self_ops.borrow_mut().record(targets, now);
+        // 앱이 이미 반영한 이름 바꾸기·이동은 감시가 다시 적용하지 않게 짝으로 남긴다(Phase 5 리뷰 1회차 ① D-046).
+        if error.is_none() && targets.len() == 2 && matches!(op, "rename" | "paste-move") {
+            self.watch.self_ops.borrow_mut().record_rename(targets[0], targets[1], now);
+        }
         if keymap::dev_enabled(cx) {
             let t: Vec<String> = targets.iter().map(|p| p.display().to_string()).collect();
             println!(

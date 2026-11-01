@@ -15,6 +15,9 @@ pub struct Tab {
     pub path: PathBuf,
     pub preview: bool,
     pub editor: Entity<EditorState>,
+    /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046). 보기 전용이라
+    /// 편집기 내용은 늘 넣은 내용과 같다(D-18).
+    pub hash: u64,
 }
 
 impl Tab {
@@ -31,6 +34,11 @@ impl Tab {
 pub struct Pane {
     pub tabs: Vec<Tab>,
     pub active: Option<usize>,
+}
+
+/// 내용 해시: UTF-8 바이트의 FNV-1a 64(dev 출력 `fnv=` 와 같은 값).
+pub fn text_hash(text: &str) -> u64 {
+    text.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3))
 }
 
 /// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계).
@@ -68,7 +76,7 @@ impl Pane {
         let text = read_text(path);
         let editor = cx.new(|cx| EditorState::new(window, cx));
         editor.update(cx, |state, cx| state.set_value(text.as_str(), window, cx));
-        let tab = Tab { path: path.to_path_buf(), preview, editor };
+        let tab = Tab { path: path.to_path_buf(), preview, editor, hash: text_hash(&text) };
         if preview && let Some(pi) = self.tabs.iter().position(|t| t.preview) {
             self.tabs[pi] = tab;
             self.active = Some(pi);

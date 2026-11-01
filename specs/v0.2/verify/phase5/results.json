@@ -1,0 +1,955 @@
+{
+  "startedAt": "2026-11-02T03:38:36.9553620+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b",
+  "cases": {
+    "tree": {
+      "pid": 31732,
+      "hwnd": "0x45094C",
+      "treeBefore": "[dev] tree folder=00000000-0000-4000-8000-000000000000 selected=ops\\sub\\s.txt marked= expanded=.;ops;ops\\sub rows=proj|0|open\tdeep \\ l1 \\ l2|1|closed\tdocs \\ guides|1|closed\tmany|1|closed\tops|1|open\tsub|2|open\ts.txt|3|file\tf1.txt|2|file\tf2.txt|2|file\tf3.txt|2|file\tlocked.txt|2|file\tsrc|1|closed\tnotes.txt|1|file\tREADME.md|1|file",
+      "afterRename": "[dev] tree folder=00000000-0000-4000-8000-000000000000 selected=ops\\sub2\\s.txt marked= expanded=.;ops;ops\\sub2 rows=proj|0|open\tdeep \\ l1 \\ l2|1|closed\tdocs \\ guides|1|closed\tmany|1|closed\tops|1|open\tsub2|2|open\ts.txt|3|file\tf1-renamed.txt|2|file\tf2.txt|2|file\tlocked.txt|2|file\tnew-ext.txt|2|file\tsrc|1|closed\tnotes.txt|1|file\tREADME.md|1|file",
+      "treeAfter": "[dev] tree folder=00000000-0000-4000-8000-000000000000 selected=src marked= expanded=.;ops;ops\\sub2;src rows=proj|0|open\tdeep \\ l1 \\ l2|1|closed\tdocs \\ guides|1|closed\tmany|1|closed\tops|1|open\tsub2|2|open\ts.txt|3|file\tf1-renamed.txt|2|file\tf2.txt|2|file\tlocked.txt|2|file\tnew-ext.txt|2|file\tsrc|1|open\tutil|2|closed\tadded.rs|2|file\tlib.rs|2|file\tmain.rs|2|file\tnotes.txt|1|file\tREADME.md|1|file"
+    },
+    "tab": {
+      "pid": 18940,
+      "hwnd": "0x3808C4",
+      "tabsBefore": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=notes.txt|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\notes.txt\tREADME.md|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md"
+    },
+    "root": {
+      "pid": 1668,
+      "hwnd": "0x1B608F6"
+    },
+    "switch": {
+      "pid": 12380,
+      "hwnd": "0x3B09B2",
+      "holderWhileWatched": "blocked: Access to the path 'D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h1' is denied.",
+      "holderAfterSwitch": "renamed",
+      "holderAfterRemove": "renamed",
+      "holder2AfterRemove": "renamed"
+    },
+    "own": {
+      "pid": 21484,
+      "hwnd": "0xA208E4",
+      "ownApplied": [
+        "[dev] watch-applied events=3 own=3 external=0 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=722 t_ms=1793558412404"
+      ]
+    },
+    "flood": {
+      "pid": 20932,
+      "hwnd": "0x4A094C",
+      "floodApplied": [
+        "[dev] watch-applied events=253 own=0 external=253 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=1071 t_ms=1793558431534",
+        "[dev] watch-applied events=540 own=0 external=540 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=3639 t_ms=1793558435169",
+        "[dev] watch-applied events=249 own=0 external=249 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=1001 t_ms=1793558436174",
+        "[dev] watch-applied events=277 own=0 external=277 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=1075 t_ms=1793558437255",
+        "[dev] watch-applied events=85 own=0 external=85 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=518 t_ms=1793558437772",
+        "[dev] watch-applied events=1 own=0 external=1 lost=false tree=none renames=0 reloaded=0 wait_ms=162 t_ms=1793558437920"
+      ],
+      "floodEvents": 1405.0
+    },
+    "junction": {
+      "pid": 24320,
+      "hwnd": "0x9808A0",
+      "tree": "[dev] tree folder=00000000-0000-4000-8000-000000000000 selected=jlink marked= expanded=.;jlink rows=proj|0|open\tdeep \\ l1 \\ l2|1|closed\tdocs \\ guides|1|closed\tjlink|1|open\tinside.txt|2|file\tvia-link.txt|2|file\tvia-target.txt|2|file\tmany|1|closed\tops|1|closed\tsrc|1|closed\tnotes.txt|1|file\tpoke.txt|1|file\tREADME.md|1|file"
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "tree",
+      "id": "R-24·D-6",
+      "what": "활성 폴더 감시 시작(루트 하위까지, 부모 한 단계)",
+      "expect": "watch-start root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj parent_watched=true",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj parent_watched=true via=start",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥에서 만든 파일이 트리에 나타남",
+      "expect": "new-ext.txt 행",
+      "got": "ok=True, app_ms=204, seen_ms=243, [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=193 t_ms=1793558331412",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥에서 만든 폴더가 트리에 나타남",
+      "expect": "newdir 행(닫힘)",
+      "got": "ok=True, app_ms=182, seen_ms=217, [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=173 t_ms=1793558332689",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥에서 지운 파일이 트리에서 사라짐",
+      "expect": "f3.txt 행 없음",
+      "got": "ok=True, app_ms=290, seen_ms=311, [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=253 t_ms=1793558334144",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥에서 이름을 바꾼 파일이 새 이름으로",
+      "expect": "f1-renamed.txt 있음, f1.txt 없음",
+      "got": "ok=True, app_ms=173, seen_ms=1203, [dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=238 t_ms=1793558334383",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥에서 지운 폴더가 트리에서 사라짐",
+      "expect": "newdir 행 없음",
+      "got": "ok=True, app_ms=229, seen_ms=244, [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=218 t_ms=1793558335692",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥에서 이름을 바꾼 폴더가 새 이름으로",
+      "expect": "sub2 행",
+      "got": "ok=True, app_ms=1118, seen_ms=1209, [dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=1212 t_ms=1793558336905",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24(판단)",
+      "what": "이름이 바뀐 펼친 폴더: 펼침·선택을 따라감",
+      "expect": "expanded ops\\sub2, selected ops\\sub2\\s.txt",
+      "got": "expanded=.;ops;ops\\sub2, selected=ops\\sub2\\s.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24(판단)·R-27",
+      "what": "열린 탭 경로도 새 이름을 따라감",
+      "expect": "...\\ops\\sub2\\s.txt",
+      "got": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=0 count=1 list=s.txt|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\ops\\sub2\\s.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "접힌 폴더 안 변경도 받아 다시 읽음",
+      "expect": "watch-applied tree=refreshed",
+      "got": "ok=True, app_ms=1044, seen_ms=1126, [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=1039 t_ms=1793558338166",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "접힌 폴더를 펼치면 바깥에서 만든 항목이 보임",
+      "expect": "added.rs 행",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / sub2 / s.txt / f1-renamed.txt / f2.txt / locked.txt / new-ext.txt / src / util / added.rs / lib.rs / main.rs / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tree",
+      "id": "R-24",
+      "what": "바깥 변경은 바깥으로 셈(앱 자신 작업 0)",
+      "expect": "own=0 모든 줄",
+      "got": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=193 t_ms=1793558331412 | [dev] watch-applied events=1 own=0 external=1 lost=false tree=none renames=0 reloaded=0 wait_ms=1046 t_ms=1793558332456 | [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=173 t_ms=1793558332689 | [dev] watch-applied events=1 own=0 external=1 lost=false tree=none renames=0 reloaded=0 wait_ms=1120 t_ms=1793558333808 | [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=253 t_ms=1793558334144 | [dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=238 t_ms=1793558334383 | [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=218 t_ms=1793558335692 | [dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=1212 t_ms=1793558336905 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=1039 t_ms=1793558338166 | [dev] watch-applied events=1 own=0 external=1 lost=false tree=none renames=0 reloaded=0 wait_ms=236 t_ms=1793558338401",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-27",
+      "what": "탭 둘: notes.txt 일반, README.md 활성",
+      "expect": "README.md 활성",
+      "got": "active=1 notes.txt|normal / README.md|preview",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24·E-086·G-115",
+      "what": "활성 탭 내용을 자동으로 다시 읽음",
+      "expect": "active_text_fnv=f3333c130cb7fa10",
+      "got": "ok=True, app_ms=258, seen_ms=1278, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793558357800",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24",
+      "what": "tab-reload 줄의 길이·FNV",
+      "expect": "len=40 fnv=f3333c130cb7fa10",
+      "got": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793558357800",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24·G-115",
+      "what": "활성이 아닌 탭도 다시 읽음",
+      "expect": "tab-reload path=notes.txt fnv=ee569b18d529fc56",
+      "got": "ok=True, app_ms=239, seen_ms=297, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\notes.txt result=reloaded len=25 fnv=ee569b18d529fc56 t_ms=1793558360039",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24(판단)",
+      "what": "내용이 같으면 탭을 다시 넣지 않음",
+      "expect": "tab-reload 줄 2 그대로",
+      "got": "2",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24·G-115",
+      "what": "바꿔 넣은 파일도 다시 읽음",
+      "expect": "active_text_fnv=f44fa1bf2ed7155c",
+      "got": "ok=True, app_ms=274, seen_ms=1085, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=56 fnv=f44fa1bf2ed7155c t_ms=1793558361158",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24",
+      "what": "임시 파일은 트리에 남지 않음",
+      "expect": "README.md.tmp~ 행 없음",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24",
+      "what": "지운 파일은 트리에서 사라짐",
+      "expect": "README.md 행 없음",
+      "got": "ok=True, app_ms=168, seen_ms=224, [dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=152 t_ms=1793558362640",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "D-18·E-087",
+      "what": "지운 파일의 탭은 그대로, 내용도 그대로(표시는 이후 버전)",
+      "expect": "탭 2개, README.md 활성, fnv f44fa1bf2ed7155c",
+      "got": "active=1 notes.txt|normal / README.md|preview, fnv=f44fa1bf2ed7155c",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "R-24·G-115",
+      "what": "다시 만든 파일 내용을 탭이 읽음",
+      "expect": "active_text_fnv=eeb42a408f255ae4",
+      "got": "ok=True, app_ms=253, seen_ms=1249, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=34 fnv=eeb42a408f255ae4 t_ms=1793558363852",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tab",
+      "id": "D-18",
+      "what": "보기 전용 탭: 다시 읽은 뒤에도 탭 수·종류 그대로",
+      "expect": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=notes.txt|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\notes.txt\tREADME.md|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md",
+      "got": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=notes.txt|normal|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\notes.txt\tREADME.md|preview|D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24",
+      "what": "시작: 활성 proj 감시",
+      "expect": "watch-start root=proj",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj parent_watched=true via=start",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24·A-16.3",
+      "what": "활성 폴더가 사라지면 경로 없음 상태",
+      "expect": "folder-row index=0 missing=true",
+      "got": "ok=True, app_ms=176, seen_ms=665, [dev] watch-missing via=event missing=00000000-0000-4000-8000-000000000000 t_ms=1793558373325",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-15·A-16.2",
+      "what": "트리 자리에 안내와 Remove 버튼",
+      "expect": "project-missing-text, project-missing-remove",
+      "got": "True, True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24(감시 해제)",
+      "what": "사라진 폴더 감시 해제",
+      "expect": "watch-stop folder=…0000",
+      "got": "[dev] watch-stop folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj via=event",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24·A-16.3",
+      "what": "폴더가 다시 생기면 트리로 돌아감",
+      "expect": "missing=false, ops 행",
+      "got": "ok=True, app_ms=54, seen_ms=128, [dev] watch-missing via=poll missing= t_ms=1793558374918",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24",
+      "what": "다시 감시",
+      "expect": "watch-start root=proj",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj parent_watched=true via=poll",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24",
+      "what": "다시 감시한 폴더의 변경 반영",
+      "expect": "back.txt 행",
+      "got": "ok=True, app_ms=697, seen_ms=745, [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=690 t_ms=1793558375732",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24·A-16.3·A-12.7",
+      "what": "활성이 아닌 폴더가 사라져도 사이드바에 경로 없음",
+      "expect": "folder-row index=1 missing=true",
+      "got": "ok=True, app_ms=136, seen_ms=180, [dev] watch-missing via=event missing=00000000-0000-4000-8000-000000000001 t_ms=1793558375953",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24",
+      "what": "다시 생기면 경로 없음 해제",
+      "expect": "folder-row index=1 missing=false",
+      "got": "ok=True, app_ms=293, seen_ms=339, [dev] watch-missing via=poll missing= t_ms=1793558377371",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24·A-16.3",
+      "what": "활성 폴더를 지우면 경로 없음 상태",
+      "expect": "folder-row index=0 missing=true",
+      "got": "ok=True, app_ms=632, seen_ms=692, [dev] watch-missing via=event missing=00000000-0000-4000-8000-000000000000 t_ms=1793558378080",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24(감시 해제)",
+      "what": "감시가 잡고 있지 않아 폴더가 실제로 지워짐",
+      "expect": "Test-Path proj = False",
+      "got": "False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "root",
+      "id": "R-24(감시 해제)·A-13.5",
+      "what": "Remove → proj2 활성, proj2 감시",
+      "expect": "watch-start root=proj2",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000001 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj2 parent_watched=true via=activate",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24",
+      "what": "시작: pa 감시",
+      "expect": "watch-start root=…\\h1\\pa",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h1\\pa parent_watched=true via=start",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "관찰(Windows)",
+      "what": "감시 중인 폴더의 윗 폴더 이름 바꾸기는 막힘(감시 핸들)",
+      "expect": "blocked",
+      "got": "blocked: Access to the path 'D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h1' is denied.",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24(감시 해제)",
+      "what": "전환: pa watch-stop, pb watch-start",
+      "expect": "watch-stop …0000 via=activate, watch-start root=…\\h2\\pb",
+      "got": "[dev] watch-stop folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h1\\pa via=activate | [dev] watch-start folder=00000000-0000-4000-8000-000000000001 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h2\\pb parent_watched=true via=activate",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24(감시 해제)",
+      "what": "전환 뒤 pa 의 윗 폴더 이름 바꾸기가 됨(핸들을 놓음)",
+      "expect": "renamed",
+      "got": "renamed",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24",
+      "what": "활성이 아닌 폴더 변경 → 감시 줄 없음",
+      "expect": "watch-applied 0 그대로(1.5초)",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24",
+      "what": "새 활성 폴더 변경은 반영",
+      "expect": "b2.txt 행",
+      "got": "ok=True, app_ms=222, seen_ms=252, [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=218 t_ms=1793558393063",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24·A-15.2",
+      "what": "다시 활성화: 그동안 생긴 inactive.txt 가 트리에",
+      "expect": "inactive.txt 행",
+      "got": "pa / a.txt / inactive.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24·G-115",
+      "what": "다시 활성화: 그동안 바뀐 a.txt 를 탭이 다시 읽음",
+      "expect": "c966e515f968470d",
+      "got": "c966e515f968470d",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24",
+      "what": "다시 pa 감시",
+      "expect": "watch-start root=…\\h1\\pa via=activate",
+      "got": "[dev] watch-start folder=00000000-0000-4000-8000-000000000000 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h1\\pa parent_watched=true via=activate",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24(감시 해제)",
+      "what": "해제 뒤 pa 윗 폴더 이름 바꾸기가 됨",
+      "expect": "renamed, watch-start root=…\\h2\\pb",
+      "got": "renamed, [dev] watch-start folder=00000000-0000-4000-8000-000000000001 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h2\\pb parent_watched=true via=activate",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-24(감시 해제)",
+      "what": "모든 폴더 해제 → watch-stop, 새 감시 없음, h2 이름 바꾸기 됨",
+      "expect": "watch-stop via=remove, renamed",
+      "got": "[dev] watch-stop folder=00000000-0000-4000-8000-000000000001 root=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\h2\\pb via=remove, start+0, renamed",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(구분)",
+      "what": "앱 자신의 이름 바꾸기 → 감시 이벤트는 모두 own, external=0",
+      "expect": "own>0 external=0",
+      "got": "[dev] watch-applied events=3 own=3 external=0 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=722 t_ms=1793558412404",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(구분)",
+      "what": "앱 작업 뒤 감시 반영이 탭을 다시 넣지 않음",
+      "expect": "tab-reload 0 그대로",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(구분)",
+      "what": "선택은 앱이 정한 새 이름 그대로",
+      "expect": "selected=renamed.txt",
+      "got": "renamed.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(구분)",
+      "what": "탭 경로는 앱이 바꾼 새 경로 하나",
+      "expect": "renamed.txt 탭 하나",
+      "got": "active=0 renamed.txt|preview",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(구분)",
+      "what": "앱 작업 직후(3초 안) 다른 경로의 바깥 변경도 반영",
+      "expect": "after-own.txt 행",
+      "got": "ok=True, app_ms=254, seen_ms=290, [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=245 t_ms=1793558414617",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(구분)",
+      "what": "그 묶음은 external 로 셈",
+      "expect": "external>=1",
+      "got": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=245 t_ms=1793558414617",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(판단)",
+      "what": "입력 중 바깥 변경 → 트리 미룸(tree=deferred), 입력칸 그대로",
+      "expect": "tree=deferred, panel_input, <new file> 행",
+      "got": "[dev] watch-applied events=2 own=0 external=2 lost=false tree=deferred renames=0 reloaded=0 wait_ms=196 t_ms=1793558418125, panel_input, proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / <new file> / after-own.txt / README.md / renamed.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "own",
+      "id": "R-24(판단)",
+      "what": "입력이 끝나면 미룬 다시 읽기 → during-edit.txt 행",
+      "expect": "watch-refresh via=deferred, during-edit.txt",
+      "got": "[dev] watch-refresh via=deferred reloaded=0 t_ms=1793558419679, proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / after-own.txt / during-edit.txt / README.md / renamed.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24",
+      "what": "flood 폴더 나타남",
+      "expect": "flood 행",
+      "got": "ok=True, app_ms=928, seen_ms=934, [dev] watch-applied events=1 own=0 external=1 lost=false tree=none renames=0 reloaded=0 wait_ms=751 t_ms=1793558429421",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24",
+      "what": "바깥에서 만든 600 개가 모두 트리에",
+      "expect": "flood 아래 600 행",
+      "got": "ok=True, app_ms=7366, seen_ms=7394, [dev] watch-refresh via=settle reloaded=0 t_ms=1793558437810",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24(묶기)",
+      "what": "이벤트 1405 개를 몇 번에 묶어 반영",
+      "expect": "반영 10번 이하",
+      "got": "반영 6번, 이벤트 1405",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24(묶기)",
+      "what": "많은 묶음 뒤 한 번 더 다시 읽기(settle)",
+      "expect": "watch-refresh via=settle",
+      "got": "[dev] watch-refresh via=settle reloaded=0 t_ms=1793558437810",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24",
+      "what": "폭주 뒤 트리 행 수 = 디스크",
+      "expect": "600",
+      "got": "600",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24",
+      "what": "바깥에서 지운 600 개가 모두 트리에서 사라짐",
+      "expect": "flood 아래 0 행",
+      "got": "ok=True, app_ms=2737, seen_ms=2775, [dev] watch-applied events=88 own=0 external=88 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=599 t_ms=1793558442741",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "flood",
+      "id": "R-24(묶기)",
+      "what": "지우기 폭주도 묶어 반영",
+      "expect": "반영 10번 이하",
+      "got": "반영 4번",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "junction",
+      "id": "R-24",
+      "what": "루트 안 변경이 오면 정션 아래도 다시 읽음",
+      "expect": "poke.txt·via-target.txt·via-link.txt 행",
+      "got": "ok=True, app_ms=339, seen_ms=380, [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=333 t_ms=1793558458437",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "latency": [
+    {
+      "case": "tree",
+      "what": "파일 만들기 ops\\new-ext.txt",
+      "ok": true,
+      "change_ms": 16,
+      "recv_ms": 7,
+      "app_ms": 204,
+      "seen_ms": 243,
+      "lines": 1,
+      "last": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=193 t_ms=1793558331412"
+    },
+    {
+      "case": "tree",
+      "what": "폴더 만들기 ops\\newdir",
+      "ok": true,
+      "change_ms": 8,
+      "recv_ms": 5,
+      "app_ms": 182,
+      "seen_ms": 217,
+      "lines": 1,
+      "last": "[dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=173 t_ms=1793558332689"
+    },
+    {
+      "case": "tree",
+      "what": "파일 지우기 ops\\f3.txt",
+      "ok": true,
+      "change_ms": 36,
+      "recv_ms": 34,
+      "app_ms": 290,
+      "seen_ms": 311,
+      "lines": 1,
+      "last": "[dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=253 t_ms=1793558334144"
+    },
+    {
+      "case": "tree",
+      "what": "파일 이름 바꾸기 ops\\f1.txt → f1-renamed.txt",
+      "ok": true,
+      "change_ms": 14,
+      "recv_ms": null,
+      "app_ms": 173,
+      "seen_ms": 1203,
+      "lines": 1,
+      "last": "[dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=238 t_ms=1793558334383"
+    },
+    {
+      "case": "tree",
+      "what": "폴더 지우기 ops\\newdir",
+      "ok": true,
+      "change_ms": 10,
+      "recv_ms": 8,
+      "app_ms": 229,
+      "seen_ms": 244,
+      "lines": 1,
+      "last": "[dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=218 t_ms=1793558335692"
+    },
+    {
+      "case": "tree",
+      "what": "펼친 폴더 이름 바꾸기 ops\\sub → sub2",
+      "ok": true,
+      "change_ms": 5,
+      "recv_ms": null,
+      "app_ms": 1118,
+      "seen_ms": 1209,
+      "lines": 1,
+      "last": "[dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=1 reloaded=0 wait_ms=1212 t_ms=1793558336905"
+    },
+    {
+      "case": "tree",
+      "what": "접힌 폴더 안 파일 만들기 src\\added.rs",
+      "ok": true,
+      "change_ms": 14,
+      "recv_ms": 2,
+      "app_ms": 1044,
+      "seen_ms": 1126,
+      "lines": 1,
+      "last": "[dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=1039 t_ms=1793558338166"
+    },
+    {
+      "case": "tab",
+      "what": "활성 탭 파일 내용 바꾸기 README.md",
+      "ok": true,
+      "change_ms": 9,
+      "recv_ms": 3,
+      "app_ms": 258,
+      "seen_ms": 1278,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793558357800"
+    },
+    {
+      "case": "tab",
+      "what": "활성이 아닌 탭 파일 내용 바꾸기 notes.txt",
+      "ok": true,
+      "change_ms": 8,
+      "recv_ms": 2,
+      "app_ms": 239,
+      "seen_ms": 297,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\notes.txt result=reloaded len=25 fnv=ee569b18d529fc56 t_ms=1793558360039"
+    },
+    {
+      "case": "tab",
+      "what": "같은 내용으로 다시 쓰기 README.md",
+      "ok": true,
+      "change_ms": 11,
+      "recv_ms": 2,
+      "app_ms": 218,
+      "seen_ms": 231,
+      "lines": 1,
+      "last": "[dev] watch-applied events=2 own=0 external=2 lost=false tree=none renames=0 reloaded=0 wait_ms=213 t_ms=1793558360384"
+    },
+    {
+      "case": "tab",
+      "what": "임시 파일에 쓰고 바꿔 넣기 README.md",
+      "ok": true,
+      "change_ms": 25,
+      "recv_ms": 5,
+      "app_ms": 274,
+      "seen_ms": 1085,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=56 fnv=f44fa1bf2ed7155c t_ms=1793558361158"
+    },
+    {
+      "case": "tab",
+      "what": "열린 파일 지우기 README.md",
+      "ok": true,
+      "change_ms": 16,
+      "recv_ms": 10,
+      "app_ms": 168,
+      "seen_ms": 224,
+      "lines": 1,
+      "last": "[dev] watch-applied events=1 own=0 external=1 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=152 t_ms=1793558362640"
+    },
+    {
+      "case": "tab",
+      "what": "지운 파일 다시 만들기 README.md",
+      "ok": true,
+      "change_ms": 7,
+      "recv_ms": 3,
+      "app_ms": 253,
+      "seen_ms": 1249,
+      "lines": 1,
+      "last": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b\\proj\\README.md result=reloaded len=34 fnv=eeb42a408f255ae4 t_ms=1793558363852"
+    },
+    {
+      "case": "root",
+      "what": "활성 등록 폴더 이름 바꾸기 proj → proj-gone",
+      "ok": true,
+      "change_ms": 4,
+      "recv_ms": 4,
+      "app_ms": 176,
+      "seen_ms": 665,
+      "lines": 1,
+      "last": "[dev] watch-missing via=event missing=00000000-0000-4000-8000-000000000000 t_ms=1793558373325"
+    },
+    {
+      "case": "root",
+      "what": "이름 되돌리기 proj-gone → proj",
+      "ok": true,
+      "change_ms": 5,
+      "recv_ms": null,
+      "app_ms": 54,
+      "seen_ms": 128,
+      "lines": 1,
+      "last": "[dev] watch-missing via=poll missing= t_ms=1793558374918"
+    },
+    {
+      "case": "root",
+      "what": "되돌린 뒤 바깥 파일 만들기 back.txt",
+      "ok": true,
+      "change_ms": 10,
+      "recv_ms": 4,
+      "app_ms": 697,
+      "seen_ms": 745,
+      "lines": 1,
+      "last": "[dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=690 t_ms=1793558375732"
+    },
+    {
+      "case": "root",
+      "what": "활성이 아닌 등록 폴더 지우기 proj2",
+      "ok": true,
+      "change_ms": 25,
+      "recv_ms": null,
+      "app_ms": 136,
+      "seen_ms": 180,
+      "lines": 1,
+      "last": "[dev] watch-missing via=event missing=00000000-0000-4000-8000-000000000001 t_ms=1793558375953"
+    },
+    {
+      "case": "root",
+      "what": "활성이 아닌 등록 폴더 다시 만들기 proj2",
+      "ok": true,
+      "change_ms": 28,
+      "recv_ms": null,
+      "app_ms": 293,
+      "seen_ms": 339,
+      "lines": 1,
+      "last": "[dev] watch-missing via=poll missing= t_ms=1793558377371"
+    },
+    {
+      "case": "root",
+      "what": "활성 등록 폴더 지우기 proj",
+      "ok": true,
+      "change_ms": 431,
+      "recv_ms": 5,
+      "app_ms": 632,
+      "seen_ms": 692,
+      "lines": 1,
+      "last": "[dev] watch-missing via=event missing=00000000-0000-4000-8000-000000000000 t_ms=1793558378080"
+    },
+    {
+      "case": "switch",
+      "what": "pb 안 파일 만들기 b2.txt",
+      "ok": true,
+      "change_ms": 13,
+      "recv_ms": 3,
+      "app_ms": 222,
+      "seen_ms": 252,
+      "lines": 1,
+      "last": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=218 t_ms=1793558393063"
+    },
+    {
+      "case": "own",
+      "what": "앱 작업 직후 바깥 파일 만들기 after-own.txt",
+      "ok": true,
+      "change_ms": 15,
+      "recv_ms": 6,
+      "app_ms": 254,
+      "seen_ms": 290,
+      "lines": 1,
+      "last": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=245 t_ms=1793558414617"
+    },
+    {
+      "case": "flood",
+      "what": "폴더 만들기 flood",
+      "ok": true,
+      "change_ms": 9,
+      "recv_ms": 4,
+      "app_ms": 928,
+      "seen_ms": 934,
+      "lines": 2,
+      "last": "[dev] watch-applied events=1 own=0 external=1 lost=false tree=none renames=0 reloaded=0 wait_ms=751 t_ms=1793558429421"
+    },
+    {
+      "case": "flood",
+      "what": "파일 600 개 한꺼번에 만들기",
+      "ok": true,
+      "change_ms": 7172,
+      "recv_ms": 5,
+      "app_ms": 7366,
+      "seen_ms": 7394,
+      "lines": 7,
+      "last": "[dev] watch-refresh via=settle reloaded=0 t_ms=1793558437810"
+    },
+    {
+      "case": "flood",
+      "what": "파일 600 개 한꺼번에 지우기",
+      "ok": true,
+      "change_ms": 2580,
+      "recv_ms": 7,
+      "app_ms": 2737,
+      "seen_ms": 2775,
+      "lines": 4,
+      "last": "[dev] watch-applied events=88 own=0 external=88 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=599 t_ms=1793558442741"
+    },
+    {
+      "case": "junction",
+      "what": "정션 대상 경로로 파일 만들기 jtarget\\via-target.txt",
+      "ok": false,
+      "change_ms": 15,
+      "recv_ms": null,
+      "app_ms": null,
+      "seen_ms": null,
+      "lines": 0,
+      "last": "<none>"
+    },
+    {
+      "case": "junction",
+      "what": "정션 경로로 파일 만들기 jlink\\via-link.txt",
+      "ok": false,
+      "change_ms": 9,
+      "recv_ms": null,
+      "app_ms": null,
+      "seen_ms": null,
+      "lines": 0,
+      "last": "<none>"
+    },
+    {
+      "case": "junction",
+      "what": "루트 안 다른 파일 만들기 poke.txt",
+      "ok": true,
+      "change_ms": 9,
+      "recv_ms": 3,
+      "app_ms": 339,
+      "seen_ms": 380,
+      "lines": 1,
+      "last": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 reloaded=0 wait_ms=333 t_ms=1793558458437"
+    }
+  ],
+  "testDrive": {
+    "DeviceID": "D:",
+    "DriveType": 2,
+    "FileSystem": "NTFS"
+  },
+  "retries": [
+    "tab: notes.txt 더블클릭 재시도(첫 시도 결과: active=0 notes.txt|preview)"
+  ],
+  "observations": [
+    {
+      "case": "junction",
+      "what": "정션 대상 경로로 만든 파일이 펼친 정션 아래에 바로 보이나",
+      "got": "False (app_ms=)"
+    },
+    {
+      "case": "junction",
+      "what": "정션 경로로 만든 파일이 바로 보이나",
+      "got": "False (app_ms=)"
+    }
+  ],
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p5-backup-ab859f38-772e-414a-8bd6-9744c7c72bfe"
+  },
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase5-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-59ddaf566c354ac998e19f685af71c3b",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T03:40:59.2582845+09:00",
+  "passed": true
+}
