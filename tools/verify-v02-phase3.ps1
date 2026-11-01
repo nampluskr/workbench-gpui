@@ -967,7 +967,10 @@ try {
     # ================================================================ menus: 02 9.2절 File·View 항목과 동작(D-031 ④ Phase 3 이월)
     Run-Case 'menus' (New-StateJson @((Folder 'alpha')) 0) {
         param($res, $p)
+        $bf = Count-Lines '^\[dev\] menu-render .*name=File'
         Send-Keys 'f10 right'
+        # Phase 4 다시 돌리기(p4-rerun): 앱이 커져 디버그 빌드 그리기가 느려졌다. 줄이 나올 때까지(최대 3초) 기다린다.
+        [void](Wait-NewLine '^\[dev\] menu-render .*name=File' $bf 3)
         $file = Last-Line '^\[dev\] menu-render .*name=File'
         Check 'menus' 'R-8 9.2' 'File 메뉴' "Open Folder...|Ctrl-K Ctrl-O, ---, Close Window|Ctrl-Shift-W" $file ($file -match "rows=Open Folder\.\.\.\|Ctrl-K Ctrl-O`t---`tClose Window\|Ctrl-Shift-W$")
         Send-Keys 'right'

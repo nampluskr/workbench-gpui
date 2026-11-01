@@ -13,7 +13,7 @@ use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
 use super::app_menu::{
-    LIST_PAD_Y, MAX_HEIGHT_RATIO, MIN_WIDTH, RADIUS, ROW_LINE_HEIGHT, ROW_MARGIN_X, ROW_PAD_X,
+    LIST_PAD_Y, MAX_HEIGHT_RATIO, MIN_WIDTH, RADIUS, ROW_LINE_HEIGHT, ROW_MARGIN_X, ROW_PAD_X, SHORTCUT_GAP,
     ROW_TEXT, SEPARATOR_MARGIN_Y, WINDOW_MARGIN,
 };
 use super::keymap::{self, menu as menu_actions};
@@ -23,8 +23,19 @@ use super::tooltip;
 
 #[derive(Clone, Debug)]
 pub enum CmEntry {
-    Item { label: &'static str, enabled: bool },
+    Item { label: SharedString, enabled: bool, shortcut: Option<SharedString> },
     Separator,
+}
+
+impl CmEntry {
+    pub fn item(label: impl Into<SharedString>, enabled: bool) -> Self {
+        CmEntry::Item { label: label.into(), enabled, shortcut: None }
+    }
+
+    /// 단축키 열이 있는 항목(프로젝트 패널 메뉴, I-509·I-530~I-557).
+    pub fn with_shortcut(label: impl Into<SharedString>, enabled: bool, shortcut: Option<String>) -> Self {
+        CmEntry::Item { label: label.into(), enabled, shortcut: shortcut.map(Into::into) }
+    }
 }
 
 pub enum ContextMenuEvent {
@@ -34,45 +45,81 @@ pub enum ContextMenuEvent {
 
 impl EventEmitter<ContextMenuEvent> for ContextMenu {}
 
-const ROW_PROBES: [&str; 6] = [
-    "ctx-menu-row-0",
-    "ctx-menu-row-1",
-    "ctx-menu-row-2",
-    "ctx-menu-row-3",
-    "ctx-menu-row-4",
-    "ctx-menu-row-5",
+/// 목록 자식(구분선 포함) 순서대로의 탐침 이름. 프로젝트 패널 폴더 메뉴가 가장 길다(구분선 포함 27줄).
+const ROW_PROBES: [&str; 28] = [
+    "ctx-menu-row-0", "ctx-menu-row-1", "ctx-menu-row-2", "ctx-menu-row-3", "ctx-menu-row-4",
+    "ctx-menu-row-5", "ctx-menu-row-6", "ctx-menu-row-7", "ctx-menu-row-8", "ctx-menu-row-9",
+    "ctx-menu-row-10", "ctx-menu-row-11", "ctx-menu-row-12", "ctx-menu-row-13", "ctx-menu-row-14",
+    "ctx-menu-row-15", "ctx-menu-row-16", "ctx-menu-row-17", "ctx-menu-row-18", "ctx-menu-row-19",
+    "ctx-menu-row-20", "ctx-menu-row-21", "ctx-menu-row-22", "ctx-menu-row-23", "ctx-menu-row-24",
+    "ctx-menu-row-25", "ctx-menu-row-26", "ctx-menu-row-27",
 ];
+
+/// I-520 단축키로 실행할 때 선택 표시 시간(☰ 메뉴와 같다).
+const SHORTCUT_FLASH: std::time::Duration = std::time::Duration::from_millis(50);
+/// chord 대기 시간(gpui `PENDING_INPUT_TIMEOUT` 과 같다).
+const CHORD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(1);
 
 pub struct ContextMenu {
     entries: Vec<CmEntry>,
+    /// 항목마다 단축키를 해석할 액션 이름(I-520). 비어 있으면 단축키 실행이 없다(사이드바 메뉴, R-14).
+    actions: Vec<Option<&'static str>>,
     position: Point<Pixels>,
     focus: FocusHandle,
     selected: Option<usize>,
     prev_focus: Option<FocusHandle>,
     closed: bool,
+    /// I-520 예약(항목 번호, 세대). 50ms 뒤 세대가 같고 메뉴가 열려 있을 때만 실행한다(☰ 메뉴 D-032·D-033 과 같은 방식).
+    pending: Option<(usize, u64)>,
+    generation: u64,
+    /// 메뉴가 열린 채 받은 chord 앞 키들.
+    pending_input: Vec<Keystroke>,
+    chord_token: u64,
+    /// 메뉴를 열기 직전 포커스의 컨텍스트 스택(항목 단축키는 이 자리에서 해석한다, 11.2절 머리말·I-307).
+    prev_stack: Vec<KeyContext>,
+    _intercept: Option<Subscription>,
     _blur: Subscription,
 }
 
 impl ContextMenu {
     /// `position` 에 연다. 포커스를 메뉴로 옮기고, 지금 포커스를 기억한다.
+    /// `actions` 는 항목마다 단축키 해석용 액션 이름이다(없으면 빈 Vec).
     pub fn new(
         entries: Vec<CmEntry>,
+        actions: Vec<Option<&'static str>>,
         position: Point<Pixels>,
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> Self {
         let focus = cx.focus_handle();
         let blur = cx.on_blur(&focus, window, |this, window, cx| {
-            this.close("blur", false, window, cx);
+            if this.pending.is_none() {
+                this.close("blur", false, window, cx);
+            }
         });
         let prev_focus = window.focused(cx);
+        // 메뉴로 포커스를 옮기기 전 자리의 컨텍스트 스택.
+        let prev_stack = window.context_stack();
+        let intercept = actions.iter().any(Option::is_some).then(|| {
+            let weak = cx.entity().downgrade();
+            cx.intercept_keystrokes(move |event, window, cx| {
+                let consumed = weak.update(cx, |this, cx| this.intercept(event, window, cx)).unwrap_or(false);
+                if consumed {
+                    cx.stop_propagation();
+                }
+            })
+        });
         focus.focus(window, cx);
         if keymap::dev_enabled(cx) {
             let rows: Vec<String> = entries
                 .iter()
                 .map(|e| match e {
-                    CmEntry::Item { label, enabled } => {
-                        format!("{label}|{}", if *enabled { "enabled" } else { "disabled" })
+                    CmEntry::Item { label, enabled, shortcut } => {
+                        let state = if *enabled { "enabled" } else { "disabled" };
+                        match shortcut {
+                            Some(s) => format!("{label}|{state}|{s}"),
+                            None => format!("{label}|{state}"),
+                        }
                     }
                     CmEntry::Separator => "---".into(),
                 })
@@ -81,11 +128,18 @@ impl ContextMenu {
         }
         Self {
             entries,
+            actions,
             position,
             focus,
             selected: None,
             prev_focus,
             closed: false,
+            pending: None,
+            generation: 0,
+            pending_input: Vec::new(),
+            chord_token: 0,
+            prev_stack,
+            _intercept: intercept,
             _blur: blur,
         }
     }
@@ -95,6 +149,7 @@ impl ContextMenu {
             return;
         }
         self.closed = true;
+        self.cancel_pending();
         layout_probe::forget("ctx-menu-");
         if restore && let Some(prev) = self.prev_focus.take() {
             prev.focus(window, cx);
@@ -131,11 +186,11 @@ impl ContextMenu {
     }
 
     fn execute(&mut self, index: usize, via: &str, window: &mut Window, cx: &mut Context<Self>) {
-        let Some(CmEntry::Item { label, enabled: true }) = self.entries.get(index).cloned() else {
+        let Some(CmEntry::Item { label, enabled: true, .. }) = self.entries.get(index).cloned() else {
             return;
         };
         if keymap::dev_enabled(cx) {
-            println!("[dev] context-menu-exec item={label} via={via}");
+            println!("[dev] context-menu-exec item={label} via={via} t_ms={}", now_ms());
         }
         self.close("execute", true, window, cx);
         cx.emit(ContextMenuEvent::Chosen(index));
@@ -183,6 +238,7 @@ impl Render for ContextMenu {
         let theme = cx.theme();
         let border = theme.border;
         let disabled_fg = theme.muted_foreground;
+        let muted = theme.muted_foreground;
         let selected_bg = theme.secondary_hover;
         let bg = theme.popover;
         let fg = theme.popover_foreground;
@@ -201,7 +257,7 @@ impl Render for ContextMenu {
                 CmEntry::Separator => {
                     list = list.child(div().my(SEPARATOR_MARGIN_Y).h(px(1.)).w_full().bg(border));
                 }
-                CmEntry::Item { label, enabled } => {
+                CmEntry::Item { label, enabled, shortcut } => {
                     let selected = enabled && self.selected == Some(i);
                     list = list.child(
                         h_flex()
@@ -209,6 +265,7 @@ impl Render for ContextMenu {
                             .mx(ROW_MARGIN_X)
                             .px(ROW_PAD_X)
                             .rounded(rems_from_px(4.))
+                            .justify_between()
                             .text_size(ROW_TEXT)
                             .line_height(relative(ROW_LINE_HEIGHT))
                             .when(!enabled, |row| row.text_color(disabled_fg))
@@ -224,7 +281,17 @@ impl Render for ContextMenu {
                                     this.execute(i, "click", window, cx);
                                 }))
                             })
-                            .child(div().whitespace_nowrap().child(label)),
+                            .child(div().whitespace_nowrap().child(label))
+                            // I-509 라벨과 단축키는 양끝 정렬, 단축키 앞 여백 16.
+                            .when_some(shortcut, |row, s| {
+                                row.child(
+                                    div()
+                                        .flex_shrink_0()
+                                        .ml(SHORTCUT_GAP)
+                                        .when(enabled, |d| d.text_color(muted))
+                                        .child(s),
+                                )
+                            }),
                     );
                 }
             }
@@ -260,4 +327,131 @@ impl Render for ContextMenu {
         .with_priority(1)
         .into_any_element()
     }
+}
+
+/// I-520: 메뉴가 열린 채 항목의 단축키를 누르면 그 항목을 선택 표시하고 50ms 뒤 닫고 실행한다(☰ 메뉴와 같은 방식, R-9).
+impl ContextMenu {
+    fn dev(&self, cx: &App) -> bool {
+        keymap::dev_enabled(cx)
+    }
+
+    /// 예약을 지우고 세대를 올린다. 이미 걸린 50ms 타이머는 세대가 달라 아무것도 하지 않는다.
+    fn cancel_pending(&mut self) {
+        self.pending = None;
+        self.pending_input.clear();
+        self.generation += 1;
+    }
+
+    /// 액션 이름이 `name` 인 켜진 항목의 번호.
+    fn item_index(&self, name: &str) -> Option<usize> {
+        self.actions.iter().enumerate().find_map(|(i, a)| {
+            let enabled = matches!(self.entries.get(i), Some(CmEntry::Item { enabled: true, .. }));
+            (enabled && *a == Some(name)).then_some(i)
+        })
+    }
+
+    fn schedule_item(&mut self, index: usize, window: &mut Window, cx: &mut Context<Self>) {
+        self.cancel_pending();
+        let generation = self.generation;
+        self.pending = Some((index, generation));
+        self.selected = Some(index);
+        cx.notify();
+        if self.dev(cx) {
+            println!("[dev] context-menu-shortcut index={index} action={} t_ms={}", self.actions[index].unwrap_or(""), now_ms());
+        }
+        cx.spawn_in(window, async move |this, cx| {
+            cx.background_executor().timer(SHORTCUT_FLASH).await;
+            let _ = this.update_in(cx, |this, window, cx| {
+                if this.closed || !matches!(this.pending, Some((_, g)) if g == generation) {
+                    return;
+                }
+                if let Some((index, _)) = this.pending.take() {
+                    this.execute(index, "shortcut", window, cx);
+                }
+            });
+        })
+        .detach();
+    }
+
+    /// 메뉴를 열기 직전 자리의 컨텍스트 스택으로 푼다: (이기는 액션 이름, 더 긴 바인딩이 이어질 수 있는가).
+    fn resolve(&self, input: &[Keystroke], cx: &App) -> (Option<&'static str>, bool) {
+        let keymap = cx.key_bindings();
+        let keymap = keymap.borrow();
+        let (bindings, pending) = keymap.bindings_for_input(input, &self.prev_stack);
+        (bindings.first().map(|b| b.action().name()), pending)
+    }
+
+    fn replay_prefix(&mut self, prefix: &[Keystroke], window: &mut Window, cx: &mut Context<Self>) {
+        for len in (1..=prefix.len()).rev() {
+            if let (Some(name), _) = self.resolve(&prefix[..len], cx) {
+                if let Some(index) = self.item_index(name) {
+                    self.schedule_item(index, window, cx);
+                }
+                return;
+            }
+        }
+    }
+
+    fn start_chord_timeout(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.chord_token += 1;
+        let token = self.chord_token;
+        cx.spawn_in(window, async move |this, cx| {
+            cx.background_executor().timer(CHORD_TIMEOUT).await;
+            let _ = this.update_in(cx, |this, window, cx| {
+                if this.chord_token == token && !this.closed && !this.pending_input.is_empty() {
+                    let prefix = std::mem::take(&mut this.pending_input);
+                    this.replay_prefix(&prefix, window, cx);
+                }
+            });
+        })
+        .detach();
+    }
+
+    /// 열린 동안 키 입력을 디스패치 전에 본다. 소비하면 true.
+    /// 1. chord 대기가 아니고 메뉴 자리에서 `menu::` 액션으로 풀리는 키(위·아래·Enter·Escape·Ctrl-C 등, I-517)는 건드리지 않는다.
+    /// 2. 아니면 열기 직전 자리의 스택으로 풀어, 접두면 기다리고(1초), 켜진 항목의 액션이면 그 항목을 예약한다.
+    /// 3. 항목이 아닌 액션이나 바인딩 없음은 보통 디스패치에 맡긴다.
+    fn intercept(&mut self, event: &KeystrokeEvent, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        if self.closed {
+            return false;
+        }
+        if self.pending_input.is_empty() {
+            let keymap = cx.key_bindings();
+            let keymap = keymap.borrow();
+            let (bindings, _) = keymap.bindings_for_input(std::slice::from_ref(&event.keystroke), &event.context_stack);
+            if bindings.first().is_some_and(|b| b.action().name().starts_with("menu::")) {
+                return false;
+            }
+        }
+        let mut input = self.pending_input.clone();
+        input.push(event.keystroke.clone());
+        let (first, pending) = self.resolve(&input, cx);
+        if pending {
+            self.pending_input = input;
+            self.start_chord_timeout(window, cx);
+            return true;
+        }
+        if let Some(name) = first {
+            let chord = input.len() > 1;
+            self.pending_input.clear();
+            if let Some(index) = self.item_index(name) {
+                self.schedule_item(index, window, cx);
+                return true;
+            }
+            return chord;
+        }
+        if !self.pending_input.is_empty() {
+            let prefix = std::mem::take(&mut self.pending_input);
+            self.replay_prefix(&prefix, window, cx);
+            return self.intercept(event, window, cx);
+        }
+        false
+    }
+}
+
+fn now_ms() -> u128 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or_default()
 }

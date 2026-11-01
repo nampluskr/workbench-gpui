@@ -43,7 +43,7 @@ pub(super) const LIST_PAD_Y: Rems = rems_from_px(4.);
 /// I-316 항목 바깥 좌우 4, 안 좌우 6, 라벨–단축키 최소 16.
 pub(super) const ROW_MARGIN_X: Rems = rems_from_px(4.);
 pub(super) const ROW_PAD_X: Rems = rems_from_px(6.);
-const SHORTCUT_GAP: Rems = rems_from_px(16.);
+pub(super) const SHORTCUT_GAP: Rems = rems_from_px(16.);
 /// I-317 라벨 14px, 줄 높이 1.618.
 pub(super) const ROW_TEXT: Rems = rems_from_px(14.);
 pub(super) const ROW_LINE_HEIGHT: f32 = 1.618;

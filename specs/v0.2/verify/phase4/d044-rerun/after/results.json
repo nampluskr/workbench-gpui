@@ -1,0 +1,123 @@
+{
+  "startedAt": "2026-11-02T02:19:06.2004262+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-41ef820a55424071b27c58347e8df9ee",
+  "cases": {
+    "d044-alias": {
+      "pid": 31408,
+      "hwnd": "0xC40996"
+    },
+    "d044-xmove-link": {
+      "pid": 14416,
+      "hwnd": "0x4809A8"
+    },
+    "d044-xmove-plain": {
+      "pid": 16200,
+      "hwnd": "0x560132"
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "d044-alias",
+      "id": "D-044 ①·R-21",
+      "what": "같은 폴더를 가리키는 정션이 먼저 열거돼도 실제 폴더 z-data 를 빠짐없이 복사",
+      "expect": "ali copy\\z-data\\file.txt 있음",
+      "got": "z-data=True, a-link 복사=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d044-alias",
+      "id": "D-044 ①",
+      "what": "정션은 따라가지 않고 건너뛰며 결과에 남김",
+      "expect": "a-link 복사 안 함, copy-report skipped_links=1 …\\ali\\a-link",
+      "got": "[dev] copy-report op=paste-copy files=1 dirs=2 bytes=14 skipped_links=1 skipped=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-41ef820a55424071b27c58347e8df9ee\\proj\\ali\\a-link",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d044-alias",
+      "id": "D-044",
+      "what": "원본 그대로",
+      "expect": "ali\\z-data\\file.txt·ali\\a-link 있음",
+      "got": "True, True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d044-xmove-link",
+      "id": "D-044 ②",
+      "what": "재분석 지점이 있는 폴더를 다른 볼륨으로 잘라 붙이기 → 시작 전 거부, 원본·대상 그대로",
+      "expect": "원본 있음, C:\\…\\ali 없음, 디스크 목록 같음",
+      "got": "원본=True, 대상 없음=True, 같음=True, [dev] fs-op op=paste-move result=failed targets=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-41ef820a55424071b27c58347e8df9ee\\proj\\ali;C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-d044-41ef820a55424071b27c58347e8df9ee\\ali error=contains links",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d044-xmove-link",
+      "id": "D-044 ②·D-14",
+      "what": "거부 알림",
+      "expect": "Cannot move `ali` to another drive because it contains links …",
+      "got": "[dev] notification text=Cannot move `ali` to another drive because it contains links (junctions or symbolic links).",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d044-xmove-plain",
+      "id": "D-044 ②·I-037",
+      "what": "재분석 지점 없는 폴더는 다른 볼륨으로 옮겨진다(복사 확인 뒤 원본 삭제)",
+      "expect": "C:\\…\\sub\\s.txt 있음, D: ops\\sub 없음, paste-move ok",
+      "got": "moved=True, src=False, [dev] fs-op op=paste-move result=ok targets=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-41ef820a55424071b27c58347e8df9ee\\proj\\ops\\sub;C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-d044-41ef820a55424071b27c58347e8df9ee\\sub error=none",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "clipboardFormatsBefore": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "trashBefore": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "d044": {
+    "cRoot": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-d044-41ef820a55424071b27c58347e8df9ee",
+    "cDrive": "C:",
+    "testDrive": "D:",
+    "cRootLeft": false
+  },
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-backup-269669a2-b7bb-4b23-bef0-5110c3871893"
+  },
+  "clipboardFormatsAfter": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "clipboardRestored": true,
+  "trashPurge": [
+    "[dev] trash-done op=purge count=0 total=0"
+  ],
+  "trashAfter": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase4-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-41ef820a55424071b27c58347e8df9ee",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T02:19:57.4523295+09:00",
+  "passed": true
+}

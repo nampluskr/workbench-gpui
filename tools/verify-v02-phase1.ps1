@@ -430,6 +430,11 @@ try {
         }
         # 표에 없는 내장 바인딩(있으면 실패: 표 밖의 키를 넣은 것).
         $extra = @($builtin | Where-Object { $b = $_; -not ($expected | Where-Object { $_.keys -eq $b.keys -and $_.context -eq $b.context -and $_.action -eq $b.action }) })
+        # v0.2 Phase 4(R-22): 02 11.2절 우클릭 메뉴 항목표의 단축키 열(I-532 Ctrl-Alt-R, I-533 Ctrl-Shift-Enter)은 1절 표 밖이지만
+        # 메뉴가 그 키를 보여야 하므로 넣었다. 이 두 줄만 따로 기록하고 실패로 세지 않는다.
+        $menuKeys = @(@{ keys = 'ctrl-alt-r'; action = 'project_panel::RevealInFileManager' }, @{ keys = 'ctrl-shift-enter'; action = 'project_panel::OpenWithSystem' })
+        $res.r1MenuKeys = @($extra | Where-Object { $x = $_; $x.context -eq 'ProjectPanel' -and ($menuKeys | Where-Object { $_.keys -eq $x.keys -and $_.action -eq $x.action }) } | ForEach-Object { "$($_.keys) [$($_.context)] $($_.action)" })
+        $extra = @($extra | Where-Object { $x = $_; -not ($x.context -eq 'ProjectPanel' -and ($menuKeys | Where-Object { $_.keys -eq $x.keys -and $_.action -eq $x.action })) })
         foreach ($x in $extra) { Fail 'base' "R-1 표 밖의 내장 바인딩: $($x.keys) [$($x.context)] $($x.action)" }
         $res.r1 = [ordered]@{ expected = $expected.Count; matched = @($rows | Where-Object ok).Count; builtin = $builtin.Count; extra = $extra.Count }
         $script:r1Rows = $rows

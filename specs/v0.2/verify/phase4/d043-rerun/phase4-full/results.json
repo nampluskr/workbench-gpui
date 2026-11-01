@@ -1,0 +1,2194 @@
+{
+  "startedAt": "2026-11-02T01:39:52.0198280+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b",
+  "cases": {
+    "layout": {
+      "pid": 30620,
+      "hwnd": "0xA908A8",
+      "rows": [
+        "proj|0|open",
+        "deep \\ l1 \\ l2|1|closed",
+        "docs \\ guides|1|open",
+        "a.md|2|file",
+        "many|1|closed",
+        "ops|1|closed",
+        "src|1|open",
+        "util|2|open",
+        "mod.rs|3|file",
+        "lib.rs|2|file",
+        "main.rs|2|file",
+        "notes.txt|1|file",
+        "README.md|1|file"
+      ],
+      "boxes": [
+        {
+          "row": 0,
+          "label": "proj",
+          "depth": 0,
+          "rowY": 33.0,
+          "rowH": 26.0,
+          "iconDx": 7.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 1,
+          "label": "deep \\ l1 \\ l2",
+          "depth": 1,
+          "rowY": 59.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 2,
+          "label": "docs \\ guides",
+          "depth": 1,
+          "rowY": 85.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 3,
+          "label": "a.md",
+          "depth": 2,
+          "rowY": 111.0,
+          "rowH": 26.0,
+          "iconDx": 47.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 4,
+          "label": "many",
+          "depth": 1,
+          "rowY": 137.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 5,
+          "label": "ops",
+          "depth": 1,
+          "rowY": 163.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 6,
+          "label": "src",
+          "depth": 1,
+          "rowY": 189.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 7,
+          "label": "util",
+          "depth": 2,
+          "rowY": 215.0,
+          "rowH": 26.0,
+          "iconDx": 47.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 8,
+          "label": "mod.rs",
+          "depth": 3,
+          "rowY": 241.0,
+          "rowH": 26.0,
+          "iconDx": 67.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 9,
+          "label": "lib.rs",
+          "depth": 2,
+          "rowY": 267.0,
+          "rowH": 26.0,
+          "iconDx": 47.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 10,
+          "label": "main.rs",
+          "depth": 2,
+          "rowY": 293.0,
+          "rowH": 26.0,
+          "iconDx": 47.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 11,
+          "label": "notes.txt",
+          "depth": 1,
+          "rowY": 319.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        },
+        {
+          "row": 12,
+          "label": "README.md",
+          "depth": 1,
+          "rowY": 345.0,
+          "rowH": 26.0,
+          "iconDx": 27.0,
+          "iconW": 16.0,
+          "iconH": 16.0
+        }
+      ],
+      "screenshot": "layout-tree.png"
+    },
+    "keys": {
+      "pid": 23008,
+      "hwnd": "0x3D096C",
+      "tabs": "[dev] tabs folder=00000000-0000-4000-8000-000000000000 active=1 count=2 list=README.md|normal|D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md\tnotes.txt|normal|D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\notes.txt"
+    },
+    "inline": {
+      "pid": 30996,
+      "hwnd": "0x310978",
+      "diskAdded": [
+        "\\proj\\blur.txt",
+        "\\proj\\dots.txt",
+        "\\proj\\nest\\a\\b.md",
+        "\\proj\\nest\\a",
+        "\\proj\\nest",
+        "\\proj\\new.txt",
+        "\\proj\\newdir",
+        "\\proj\\renamed.txt",
+        "\\proj\\slashdir"
+      ],
+      "diskRemoved": [
+        "\\proj\\notes.txt"
+      ]
+    },
+    "trash": {
+      "pid": 13740,
+      "hwnd": "0x7A08B0",
+      "recycleEnv": {
+        "drive": "D",
+        "driveType": 2,
+        "removable": true,
+        "nukeOnDelete": "1",
+        "available": false
+      },
+      "diskTrash": [
+        "<= \\proj\\ops\\f1.txt"
+      ],
+      "diskDelete": [
+        "<= \\proj\\ops\\f2.txt"
+      ]
+    },
+    "clip": {
+      "pid": 1392,
+      "hwnd": "0x2C08E4",
+      "diskChanges": [
+        "=> \\proj\\f3 copy.txt",
+        "=> \\proj\\ops\\f1 copy.txt",
+        "=> \\proj\\ops\\f3 copy.txt",
+        "=> \\proj\\ops\\s copy.txt",
+        "=> \\proj\\ops\\s.txt",
+        "=> \\proj\\ops\\sub\\f2.txt",
+        "=> \\proj\\sub\\f2.txt",
+        "=> \\proj\\sub\\s.txt",
+        "=> \\proj\\sub",
+        "<= \\proj\\ops\\f2.txt"
+      ]
+    },
+    "menu": {
+      "pid": 13728,
+      "hwnd": "0x310954"
+    },
+    "reveal": {
+      "pid": 16908,
+      "hwnd": "0x3D08E0"
+    },
+    "readonly": {
+      "pid": 22092,
+      "hwnd": "0x470944"
+    },
+    "tooltip": {
+      "pid": 31288,
+      "hwnd": "0xF09B8",
+      "tooltip": {
+        "id": "tree-item",
+        "delayMs": 1505,
+        "mouseX": 419.5,
+        "mouseY": 228.0,
+        "rows": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md|<none>",
+        "line": "[dev] tooltip-shown id=tree-item t_ms=1793551601209 mouse=419.50,228.00 rows=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md|<none>",
+        "box": {
+          "x": 428.5,
+          "y": 239.0,
+          "w": 306.0,
+          "h": 100.0
+        },
+        "screenshot": "tooltip-tree-item.png"
+      }
+    },
+    "a332": {
+      "pid": 12712,
+      "hwnd": "0x270966",
+      "steps": [
+        "1 README.md 한 번 클릭: active=0 README.md|preview, focus=project_panel",
+        "2 notes.txt 한 번 클릭: active=0 notes.txt|preview",
+        "3 notes.txt 더블클릭: active=0 notes.txt|normal, focus=editor",
+        "4 README.md 한 번 클릭(일반 탭 옆에 새 임시 탭): active=1 notes.txt|normal / README.md|preview"
+      ]
+    },
+    "a334": {
+      "pid": 23148,
+      "hwnd": "0x2608A0",
+      "steps": [
+        "1 proj: 탭 active=0 README.md|normal / 펼침 .;many / 선택 many / scroll -234.0",
+        "2 proj2: 탭 active=0 b-readme.md|normal",
+        "3 proj 로 돌아옴: 탭 active=0 README.md|normal / 펼침 .;many / 선택 many / scroll -234.0",
+        "4 proj2 해제: [dev] folder-tabs-closed id=00000000-0000-4000-8000-000000000001 count=1 / 폴더 proj / 디스크 같음 True"
+      ]
+    },
+    "menukeys": {
+      "pid": 12304,
+      "hwnd": "0xA808C2"
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "layout",
+      "id": "L-41",
+      "what": "루트를 맨 위 항목으로(펼친 채)",
+      "expect": "proj|0|open 맨 앞",
+      "got": "{\"label\":\"proj\",\"depth\":0,\"kind\":\"open\"}",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-50",
+      "what": "정렬: 폴더 먼저, 대소문자 무시 자연 정렬",
+      "expect": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / notes.txt / README.md",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-42",
+      "what": "자식이 폴더 하나뿐이면 한 줄로(연쇄)",
+      "expect": "docs \\ guides, deep \\ l1 \\ l2",
+      "got": "deep \\ l1 \\ l2, docs \\ guides",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "R-18",
+      "what": "폴더 누르기 = 펼침",
+      "expect": "src·docs\\guides·src\\util 펼침",
+      "got": ".;docs\\guides;src;src\\util",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 00 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 00 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "7",
+      "got": "7",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 00 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 01 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 01 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 01 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 01 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 01 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 02 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 02 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 02 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 02 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 02 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 03 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 03 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "47",
+      "got": "47",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 03 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 03 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 03 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 03 안내선 단계 1 x = 단계×20+15, 폭 1",
+      "expect": "35, 1",
+      "got": "35, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 04 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 04 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 04 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 04 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 04 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 05 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 05 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 05 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 05 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 05 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 06 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 06 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 06 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 06 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 06 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 07 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 07 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "47",
+      "got": "47",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 07 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 07 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 07 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 07 안내선 단계 1 x = 단계×20+15, 폭 1",
+      "expect": "35, 1",
+      "got": "35, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 08 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 08 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "67",
+      "got": "67",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 08 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 08 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 08 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 08 안내선 단계 1 x = 단계×20+15, 폭 1",
+      "expect": "35, 1",
+      "got": "35, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 08 안내선 단계 2 x = 단계×20+15, 폭 1",
+      "expect": "55, 1",
+      "got": "55, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 09 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 09 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "47",
+      "got": "47",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 09 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 09 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 09 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 09 안내선 단계 1 x = 단계×20+15, 폭 1",
+      "expect": "35, 1",
+      "got": "35, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 10 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 10 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "47",
+      "got": "47",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 10 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 10 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 10 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 10 안내선 단계 1 x = 단계×20+15, 폭 1",
+      "expect": "35, 1",
+      "got": "35, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 11 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 11 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 11 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 11 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 11 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-36·A-32.14",
+      "what": "행 12 높이 26",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-37·A-32.15",
+      "what": "행 12 들여쓰기(아이콘 x = 1 + 6 + 깊이×20)",
+      "expect": "27",
+      "got": "27",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-40·A-32.16",
+      "what": "행 12 아이콘 16×16",
+      "expect": "16×16±1",
+      "got": "16×16",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-46",
+      "what": "행 12 이 앞 행 바로 아래(같은 높이 목록)",
+      "expect": "26±1",
+      "got": "26",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38·A-32.15",
+      "what": "행 12 안내선 단계 0 x = 단계×20+15, 폭 1",
+      "expect": "15, 1",
+      "got": "15, 1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "layout",
+      "id": "L-38",
+      "what": "안내선 구간 첫 행 위 4·끝 행 아래 4",
+      "expect": "4 / 4",
+      "got": "4 / 4",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-023",
+      "what": "Ctrl+Shift+E → 프로젝트 패널 포커스",
+      "expect": "project_panel",
+      "got": "project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-030",
+      "what": "선택 없음 + Down → 첫 항목(루트)",
+      "expect": ".",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-030",
+      "what": "Down → 다음 항목(접힌 경로 줄)",
+      "expect": "deep\\l1\\l2",
+      "got": "deep\\l1\\l2",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-030",
+      "what": "End → 끝 항목",
+      "expect": "README.md",
+      "got": "README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-030",
+      "what": "Home → 처음 항목",
+      "expect": ".",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-030",
+      "what": "처음에서 Up → 그대로(판단: 돌지 않는다)",
+      "expect": ".",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-088",
+      "what": "Up/Down/Home/End 는 파일을 열지 않는다",
+      "expect": "tabs 0, focus project_panel",
+      "got": "tabs 0, focus project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089·I-031",
+      "what": "Right: 닫힌 폴더 펼침",
+      "expect": "docs\\guides 펼침",
+      "got": ".;docs\\guides",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089",
+      "what": "Right: 이미 펼쳤으면 다음 항목",
+      "expect": "docs\\guides\\a.md",
+      "got": "docs\\guides\\a.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089",
+      "what": "Left: 파일이면 부모로",
+      "expect": "docs\\guides",
+      "got": "docs\\guides",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089·I-031",
+      "what": "Left: 펼친 폴더 접기",
+      "expect": "docs\\guides 접힘",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-032",
+      "what": "Ctrl+Right 전체 펼치기",
+      "expect": "src\\util·ops\\sub·deep\\l1\\l2 포함",
+      "got": ".;deep;deep\\l1;deep\\l1\\l2;docs;docs\\guides;many;ops;ops\\sub;src;src\\util",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-032",
+      "what": "Ctrl+Left 전체 접기(루트는 펼친 채, 판단)",
+      "expect": ".",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-033·R-27",
+      "what": "Space: 임시 탭으로 열고 트리에 포커스",
+      "expect": "README.md|preview, focus project_panel",
+      "got": "active=0 README.md|preview, focus project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-043",
+      "what": "Shift+Up 두 번 → 범위 확장 3개",
+      "expect": "src;notes.txt;README.md (순서 무관)",
+      "got": "src;notes.txt;README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089",
+      "what": "폴더 누르기 → 펼침",
+      "expect": "ops 펼침",
+      "got": ".;ops",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089",
+      "what": "다시 누르기 → 접힘",
+      "expect": "ops 접힘",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089",
+      "what": "Alt+클릭 → 하위 전체 펼침",
+      "expect": "src, src\\util",
+      "got": ".;src;src\\util",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-089",
+      "what": "Alt+클릭 다시 → 하위 전체 접힘",
+      "expect": "src·src\\util 없음",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-090",
+      "what": "Ctrl+클릭 → 개별 선택 추가",
+      "expect": "notes.txt;README.md",
+      "got": "notes.txt;README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-090",
+      "what": "Ctrl+클릭 다시 → 빼기",
+      "expect": "notes.txt",
+      "got": "notes.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-090",
+      "what": "Shift+클릭 → 보이는 항목 범위",
+      "expect": "many;ops;src;notes.txt",
+      "got": "many;ops;src;notes.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-087·I-062",
+      "what": "파일 한 번 클릭 → 임시 탭(기존 임시 자리 교체), 편집기 포커스 없음",
+      "expect": "notes.txt|preview 하나, focus project_panel",
+      "got": "active=0 notes.txt|preview, focus project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-087",
+      "what": "더블클릭 → 일반 탭 + 편집기 포커스",
+      "expect": "README.md|normal 활성, focus editor",
+      "got": "active=0 README.md|normal, focus editor",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "I-087·I-063",
+      "what": "가운데 클릭 → 임시였던 탭이 일반 탭 + 편집기 포커스",
+      "expect": "notes.txt|normal, README.md|normal, focus editor",
+      "got": "active=1 README.md|normal / notes.txt|normal, focus editor",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-036·P-019",
+      "what": "Ctrl+N → 새 파일 입력칸(빈 값), 루트에 가상 행",
+      "expect": "kind=new-file target=. value=\"\"",
+      "got": "[dev] edit what=start active=true kind=new-file target=. value=\"\" selected=0..0 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "입력칸 포커스 → editing 컨텍스트",
+      "expect": "panel_input",
+      "got": "panel_input",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "R-3·I-036·P-022",
+      "what": "Enter 확정 → 디스크에 new.txt",
+      "expect": "exists",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-097·R-27",
+      "what": "만든 파일을 연다(일반 탭, 편집기 포커스)",
+      "expect": "new.txt|normal, editor",
+      "got": "active=0 new.txt|normal, editor",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-036·P-019",
+      "what": "Alt+N → 새 폴더 입력칸(선택 파일의 부모 = 루트)",
+      "expect": "kind=new-dir target=.",
+      "got": "[dev] edit what=start active=true kind=new-dir target=. value=\"\" selected=0..0 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-036",
+      "what": "새 폴더 생성",
+      "expect": "dir",
+      "got": "dir",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "폴더를 만든 뒤 패널 포커스",
+      "expect": "project_panel",
+      "got": "project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-034·I-091·P-019",
+      "what": "F2 → 이름 변경, 파일은 확장자 뺀 이름만 선택",
+      "expect": "value=\"notes.txt\" selected_text=\"notes\"",
+      "got": "[dev] edit what=start active=true kind=rename target=notes.txt value=\"notes.txt\" selected=0..5 selected_text=\"notes\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-091",
+      "what": "이름 변경 확정 → renamed.txt, notes.txt 없음",
+      "expect": "renamed.txt",
+      "got": "renamed=True notes=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "R-27(판단)",
+      "what": "열린 탭 경로도 새 이름으로",
+      "expect": "renamed.txt 탭",
+      "got": "active=1 new.txt|normal / renamed.txt|preview",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-034·I-091",
+      "what": "Enter → 이름 변경(Windows), 폴더는 이름 전체 선택",
+      "expect": "value=\"many\" selected_text=\"many\"",
+      "got": "[dev] edit what=start active=true kind=rename target=many value=\"many\" selected=0..4 selected_text=\"many\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-092·P-022",
+      "what": "Escape → 입력 버림, 패널 포커스, 디스크 그대로",
+      "expect": "cancelled, project_panel, many 있음",
+      "got": "[dev] edit what=cancelled active=false, project_panel, many=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-091·A-14",
+      "what": "루트 F2 → 아무 일 없음",
+      "expect": "rename-skipped reason=root, 입력칸 없음",
+      "got": "1 / project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "I-092·P-022",
+      "what": "포커스 잃음 → 유효하면 만든다",
+      "expect": "blur.txt 있음",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-021",
+      "what": "같은 이름 → 오류 문구",
+      "expect": "File or directory 'README.md' already exists at location. Please choose a different name.",
+      "got": "[dev] edit what=change active=true kind=new-file target=. value=\"README.md\" selected=9..9 selected_text=\"\" validation=error text=\"File or directory 'README.md' already exists at location. Please choose a different name.\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022 ②",
+      "what": "Enter → 거부, 입력칸 열린 채",
+      "expect": "what=rejected active=true",
+      "got": "[dev] edit what=rejected active=true kind=new-file target=. value=\"README.md\" selected=9..9 selected_text=\"\" validation=error text=\"File or directory 'README.md' already exists at location. Please choose a different name.\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "충돌 상태에서 포커스 잃음 → 편집 취소",
+      "expect": "what=cancelled",
+      "got": "[dev] edit what=cancelled active=false",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-021",
+      "what": "앞뒤 공백 → 경고 문구",
+      "expect": "File or directory name contains leading or trailing whitespace.",
+      "got": "[dev] edit what=change active=true kind=new-file target=. value=\" lead.txt\" selected=9..9 selected_text=\"\" validation=warning text=\"File or directory name contains leading or trailing whitespace.\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "Windows: 끝 마침표를 모두 지운다",
+      "expect": "dots.txt (dots.txt.. 없음)",
+      "got": "dots.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "새 항목이 \\ 로 끝나면 폴더 생성",
+      "expect": "dir",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "foo/bar/baz 는 중간 폴더도 만든다",
+      "expect": "nest\\a\\b.md",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022 ①",
+      "what": "빈 이름 Enter → 아무 일 없이 열린 채",
+      "expect": "what=rejected active=true",
+      "got": "[dev] edit what=rejected active=true kind=new-file target=. value=\"\" selected=0..0 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "inline",
+      "id": "P-022",
+      "what": "이름 변경에서 같은 이름 → 편집 끝, 패널 포커스",
+      "expect": "committed, project_panel",
+      "got": "[dev] edit what=committed active=false, project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14·R-3",
+      "what": "루트가 선택된 채 Delete → 아무 일도 하지 않음(확인창 없음)",
+      "expect": "delete-skipped, 확인창 없음",
+      "got": "skipped+1, dialog=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.7·P-015·I-039",
+      "what": "Delete → 휴지통 확인창 문구·버튼(기본 Cancel)",
+      "expect": "instruction=\"Do you want to trash `f1.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `f1.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "D-12",
+      "what": "Esc → 취소, 디스크 그대로",
+      "expect": "button=Cancel, f1 있음",
+      "got": "[dev] task-dialog-result button=Cancel comctl32_loads=1, f1=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "D-12",
+      "what": "확인창에서 바로 Enter → 기본 버튼 Cancel",
+      "expect": "button=Cancel, f1 있음",
+      "got": "[dev] task-dialog-result button=Cancel comctl32_loads=1, f1=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.3·D-6",
+      "what": "Trash 확인 → trash 크레이트로 보내고 디스크에서 사라짐",
+      "expect": "button=Confirm, fs-op op=trash result=ok, f1 없음",
+      "got": "[dev] task-dialog-result button=Confirm comctl32_loads=1, [dev] fs-op op=trash result=ok targets=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\ops\\f1.txt error=none, f1=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "I-039",
+      "what": "Backspace → 휴지통 확인창",
+      "expect": "trash `f3.txt`",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `f3.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "I-040",
+      "what": "Ctrl+Delete → 영구 삭제 확인창",
+      "expect": "Delete|Cancel",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Are you sure you want to permanently delete `f2.txt`?\" content=Some(\"This cannot be undone.\") buttons=Delete|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "I-040",
+      "what": "Ctrl+Backspace → 영구 삭제 확인창",
+      "expect": "Delete|Cancel",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Are you sure you want to permanently delete `f2.txt`?\" content=Some(\"This cannot be undone.\") buttons=Delete|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.8·P-015",
+      "what": "영구 삭제 문구 + 보조 문구",
+      "expect": "instruction=\"Are you sure you want to permanently delete `f2.txt`?\" content=Some(\"This cannot be undone.\") buttons=Delete|Cancel",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Are you sure you want to permanently delete `f2.txt`?\" content=Some(\"This cannot be undone.\") buttons=Delete|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.3",
+      "what": "Delete 확인 → 지운다(휴지통에 없음)",
+      "expect": "f2 없음, 휴지통에 f2 없음",
+      "got": "[dev] task-dialog-result button=Confirm comctl32_loads=1, f2=False, trash=",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.9·I-562",
+      "what": "여러 항목 → following N files + 목록",
+      "expect": "the following 3 files?\\nf3.txt\\nlocked.txt\\nsub",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash the following 3 files?\\nf3.txt\\nlocked.txt\\nsub\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.9·P-015",
+      "what": "넘치면 10개 + .. N files not shown",
+      "expect": "following 12 files? … m09.txt\\n.. 2 files not shown",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Are you sure you want to permanently delete the following 12 files?\\nm00.txt\\nm01.txt\\nm02.txt\\nm03.txt\\nm04.txt\\nm05.txt\\nm06.txt\\nm07.txt\\nm08.txt\\nm09.txt\\n.. 2 files not shown\" content=Some(\"This cannot be undone.\") buttons=Delete|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "D-12",
+      "what": "넘치는 목록 취소 → 12개 그대로",
+      "expect": "12",
+      "got": "12",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.11·D-14",
+      "what": "영구 삭제 실패 → 알림 문구",
+      "expect": "[dev] notification text=Failed to delete 1 of 1 file(s).",
+      "got": "[dev] notification text=Failed to delete 1 of 1 file(s).",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14.11·D-14",
+      "what": "휴지통 실패 → 알림 문구",
+      "expect": "[dev] notification text=Failed to trash 1 of 1 file(s).",
+      "got": "[dev] notification text=Failed to trash 1 of 1 file(s).",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "trash",
+      "id": "A-14 아래 목록",
+      "what": "사용자 키(ctrl-t → Trash)도 확인창을 띄운다",
+      "expect": "trash `f3.txt`, Cancel",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `f3.txt`?\" content=None buttons=Trash|Cancel default=Cancel / [dev] task-dialog-result button=Cancel comctl32_loads=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-544",
+      "what": "붙여 넣을 것이 없으면 Paste 비활성",
+      "expect": "Paste|disabled|Ctrl-V",
+      "got": "Paste|disabled|Ctrl-V",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-037",
+      "what": "Ctrl+C → 파일 복사(텍스트 아님)",
+      "expect": "file-clipboard op=copy …s.txt",
+      "got": "[dev] file-clipboard op=copy paths=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\ops\\sub\\s.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-037",
+      "what": "Ctrl+V → 대상 폴더에 복사",
+      "expect": "ops\\s.txt (원본 그대로)",
+      "got": "True, src=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-097·R-27",
+      "what": "붙여 넣은 파일을 연다(일반 탭, 포커스는 패널, 판단)",
+      "expect": "s.txt|normal, project_panel",
+      "got": "active=0 s.txt|normal, project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-037(판단)",
+      "what": "같은 이름이 있으면 \" copy\" 이름",
+      "expect": "ops\\s copy.txt",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-037",
+      "what": "Ctrl+Insert 복사 / Shift+Insert 붙여넣기",
+      "expect": "ops\\f1 copy.txt",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-037",
+      "what": "Ctrl+X → Ctrl+V 는 옮긴다",
+      "expect": "ops\\sub\\f2.txt 있음, ops\\f2.txt 없음",
+      "got": "True, False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-544(판단)",
+      "what": "잘라내 붙인 뒤 클립보드를 비운다 → Paste 비활성",
+      "expect": "Paste|disabled|Ctrl-V",
+      "got": "Paste|disabled|Ctrl-V",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-543",
+      "what": "Duplicate → 같은 폴더에 \" copy\"",
+      "expect": "ops\\f3 copy.txt",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-037",
+      "what": "폴더 복사(통째로)",
+      "expect": "sub\\s.txt, sub\\f2.txt",
+      "got": "True, True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-041·I-548",
+      "what": "Shift+Alt+C → 절대 경로(OS 클립보드)",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md",
+      "got": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-041·I-549",
+      "what": "Ctrl+K Ctrl+Shift+C → 상대 경로",
+      "expect": "README.md",
+      "got": "README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "clip",
+      "id": "I-549·I-562(판단)",
+      "what": "여러 항목 → 줄마다 하나",
+      "expect": "README.md\nops\\f1.txt",
+      "got": "README.md\\nops\\f1.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-530~I-557·11.2절",
+      "what": "README.md (마크다운 파일, I-660) 메뉴 항목·단축키·구분선·비활성",
+      "expect": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / Open Markdown Preview|disabled / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete",
+      "got": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / Open Markdown Preview|disabled / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-560",
+      "what": "README.md (마크다운 파일, I-660) 우클릭한 항목이 선택이 된다",
+      "expect": "README.md",
+      "got": "README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-530~I-557·11.2절",
+      "what": "notes.txt (파일, I-660) 메뉴 항목·단축키·구분선·비활성",
+      "expect": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete",
+      "got": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-560",
+      "what": "notes.txt (파일, I-660) 우클릭한 항목이 선택이 된다",
+      "expect": "notes.txt",
+      "got": "notes.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-530~I-557·11.2절",
+      "what": "src (폴더, I-661) 메뉴 항목·단축키·구분선·비활성",
+      "expect": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete / --- / Expand All|enabled / Collapse All|enabled",
+      "got": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete / --- / Expand All|enabled / Collapse All|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-560",
+      "what": "src (폴더, I-661) 우클릭한 항목이 선택이 된다",
+      "expect": "src",
+      "got": "src",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-530~I-557·11.2절",
+      "what": "docs \\ guides (접힌 폴더, I-661·I-538) 메뉴 항목·단축키·구분선·비활성",
+      "expect": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Unfold Directory|enabled / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete / --- / Expand All|enabled / Collapse All|enabled",
+      "got": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Unfold Directory|enabled / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Rename|enabled|F2 / Trash|enabled|Delete / Delete|enabled|Ctrl-Delete / --- / Expand All|enabled / Collapse All|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-560",
+      "what": "docs \\ guides (접힌 폴더, I-661·I-538) 우클릭한 항목이 선택이 된다",
+      "expect": "docs \\ guides",
+      "got": "docs",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-530~I-557·11.2절",
+      "what": "proj (루트, I-662) 메뉴 항목·단축키·구분선·비활성",
+      "expect": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Add Folders to Project…|enabled / Remove from Project|enabled / --- / Expand All|enabled|Ctrl-Right / Collapse All|enabled|Ctrl-Left",
+      "got": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Add Folders to Project…|enabled / Remove from Project|enabled / --- / Expand All|enabled|Ctrl-Right / Collapse All|enabled|Ctrl-Left",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-560",
+      "what": "proj (루트, I-662) 우클릭한 항목이 선택이 된다",
+      "expect": "proj",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-559",
+      "what": "빈 공간 우클릭 → 루트 메뉴",
+      "expect": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Add Folders to Project…|enabled / Remove from Project|enabled / --- / Expand All|enabled|Ctrl-Right / Collapse All|enabled|Ctrl-Left",
+      "got": "New File|enabled|Ctrl-N / New Folder|enabled|Alt-N / --- / Reveal in File Explorer|enabled|Ctrl-Alt-R / Open in Default App|enabled|Ctrl-Shift-Enter / --- / Cut|enabled|Ctrl-X / Copy|enabled|Ctrl-C / Duplicate|enabled / Paste|disabled|Ctrl-V / --- / Copy Path|enabled|Alt-Shift-C / Copy Relative Path|enabled|Ctrl-K Ctrl-Shift-C / --- / Add Folders to Project…|enabled / Remove from Project|enabled / --- / Expand All|enabled|Ctrl-Right / Collapse All|enabled|Ctrl-Left",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-042·I-502",
+      "what": "shift-f10 → 메뉴, 선택 항목 왼쪽 아래 + (2, 2)(판단: 기준 모서리)",
+      "expect": "302,217",
+      "got": "302.0,217.0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-042·I-502",
+      "what": "menu → 메뉴, 선택 항목 왼쪽 아래 + (2, 2)(판단: 기준 모서리)",
+      "expect": "302,217",
+      "got": "302.0,217.0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-538",
+      "what": "Unfold Directory → docs 와 guides 가 따로 보인다",
+      "expect": "docs 줄 있음, docs \\ guides 없음",
+      "got": "proj / deep \\ l1 \\ l2 / docs / many / ops / src / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-539",
+      "what": "접을 수 있는 폴더에 Fold Directory",
+      "expect": "Fold Directory|enabled",
+      "got": "Fold Directory|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-539",
+      "what": "Fold Directory → 다시 docs \\ guides",
+      "expect": "docs \\ guides",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-556",
+      "what": "하위 폴더 Expand All → 그 아래 모두 펼침",
+      "expect": "src, src\\util",
+      "got": ".;src;src\\util",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-557",
+      "what": "하위 폴더 Collapse All → 그 아래 모두 접힘",
+      "expect": "src·src\\util 없음",
+      "got": ".",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-532",
+      "what": "Reveal in File Explorer → explorer.exe /select,\"경로\"",
+      "expect": "/select,\"D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\notes.txt\"",
+      "got": "[dev] shell op=reveal program=explorer.exe arg=\"/select,\\\"D:\\\\projects\\\\workbench-gpui\\\\target\\\\phase4-folders\\\\run-e1878c5a95084f67a03aabd3c4ab666b\\\\proj\\\\notes.txt\\\"\" executed=false",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-533",
+      "what": "Open in Default App → 기본 앱으로 열기(ShellExecute)",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\notes.txt",
+      "got": "[dev] shell op=open-default path=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\notes.txt executed=false",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-542",
+      "what": "메뉴 Copy → 파일 클립보드",
+      "expect": "op=copy notes.txt",
+      "got": "[dev] file-clipboard op=copy paths=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\notes.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-551",
+      "what": "메뉴 Rename → 입력칸",
+      "expect": "kind=rename target=notes.txt",
+      "got": "[dev] edit what=start active=true kind=rename target=notes.txt value=\"notes.txt\" selected=0..5 selected_text=\"notes\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-552",
+      "what": "메뉴 Trash → 확인창",
+      "expect": "trash `notes.txt`",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `notes.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-553",
+      "what": "메뉴 Delete → 영구 삭제 확인창",
+      "expect": "permanently delete `notes.txt`",
+      "got": "[dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Are you sure you want to permanently delete `notes.txt`?\" content=Some(\"This cannot be undone.\") buttons=Delete|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-530",
+      "what": "메뉴 New File → 그 폴더에 입력칸",
+      "expect": "kind=new-file target=ops",
+      "got": "[dev] edit what=start active=true kind=new-file target=ops value=\"\" selected=0..0 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-554",
+      "what": "Add Folders to Project… → 폴더 등록",
+      "expect": "folder-add result=added index=1",
+      "got": "[dev] folder-add result=added index=1 path=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj2",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-555·R-13·A-14.3",
+      "what": "Remove from Project → 등록 해제, 디스크 그대로",
+      "expect": "folder-remove via=project-panel-menu, 디스크 같음",
+      "got": "[dev] folder-remove index=1 id=54388ce5-3844-4c5d-afba-8e8fd0ad05d2 path=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj2 via=project-panel-menu, same=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "reveal",
+      "id": "I-096·R-23",
+      "what": "활성 파일이 바뀌면 그 항목까지 펼쳐 보인다(접힌 경로 r23 \\ a \\ b 펼침, c.md 선택)",
+      "expect": "expanded r23\\a\\b, selected r23\\a\\b\\c.md, 행 c.md",
+      "got": "expanded=.;r23;r23\\a;r23\\a\\b, selected=r23\\a\\b\\c.md, rows=proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / r23 \\ a \\ b / c.md / src / notes.txt / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "reveal",
+      "id": "I-096",
+      "what": "트리에 포커스를 가져오지 않는다(편집기에 남음)",
+      "expect": "editor",
+      "got": "editor",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "reveal",
+      "id": "R-23",
+      "what": "reveal 기록",
+      "expect": "reveal path=…\\r23\\a\\b\\c.md",
+      "got": "[dev] reveal path=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\r23\\a\\b\\c.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "readonly",
+      "id": "R-27",
+      "what": "탭 내용 = 파일 내용(gpui-kit Editor, 줄 끝 CRLF 는 LF 로 보일 수 있다)",
+      "expect": "len=33 또는 31",
+      "got": "len=33",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "readonly",
+      "id": "I-087",
+      "what": "편집기 포커스",
+      "expect": "editor",
+      "got": "editor",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "readonly",
+      "id": "D-18·R-27",
+      "what": "글자를 쳐도 탭 내용·디스크 파일이 바뀌지 않는다",
+      "expect": "len=33 fnv=c45e16dbc6dd544f, 디스크 해시 같음",
+      "got": "len=33 fnv=c45e16dbc6dd544f, 디스크 같음=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-247·L-49",
+      "what": "항목 hover → 절대 경로 툴팁(홈 아래가 아니면 그대로)",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md|<none>",
+      "got": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b\\proj\\README.md|<none>",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-247",
+      "what": "지연 1500ms",
+      "expect": "1500±250",
+      "got": "1505",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a332",
+      "id": "A-33.2①·I-061·I-064",
+      "what": "README.md 한 번 클릭 → 임시 탭(제목 기울임, 스크린샷)",
+      "expect": "README.md|preview 하나",
+      "got": "active=0 README.md|preview",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a332",
+      "id": "A-33.2②·I-062",
+      "what": "다른 파일 한 번 클릭 → 같은 자리(0)에서 교체",
+      "expect": "active=0 notes.txt|preview 하나",
+      "got": "active=0 notes.txt|preview",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a332",
+      "id": "A-33.2③·I-087·I-063",
+      "what": "더블클릭 → 일반 탭(기울임 없음), 편집기 포커스",
+      "expect": "notes.txt|normal 하나, editor",
+      "got": "active=0 notes.txt|normal, editor",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a332",
+      "id": "I-062",
+      "what": "일반 탭은 두고 새 임시 탭을 뒤에",
+      "expect": "notes.txt|normal, README.md|preview",
+      "got": "active=1 notes.txt|normal / README.md|preview",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-33.4①",
+      "what": "proj 에서 탭을 연다",
+      "expect": "README.md|normal",
+      "got": "active=0 README.md|normal",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-33.4①·A-15.1",
+      "what": "proj2 에서 탭을 연다(proj 탭은 안 보인다)",
+      "expect": "b-readme.md|normal 만",
+      "got": "active=0 b-readme.md|normal",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-33.4②·A-15.1",
+      "what": "전환해도 proj 탭이 그대로",
+      "expect": "active=0 README.md|normal",
+      "got": "active=0 README.md|normal",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-15.2·R-12",
+      "what": "proj 트리 펼침·선택이 그대로",
+      "expect": ".;many / many",
+      "got": ".;many / many",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-15.2·R-12",
+      "what": "proj 트리 스크롤 위치가 그대로(스크롤한 값)",
+      "expect": "-234.0",
+      "got": "-234.0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-33.4②",
+      "what": "proj2 탭도 그대로",
+      "expect": "active=0 b-readme.md|normal",
+      "got": "active=0 b-readme.md|normal",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-33.4③·R-13",
+      "what": "하나를 해제 → 그 폴더 탭을 닫는다",
+      "expect": "folder-tabs-closed count=1",
+      "got": "[dev] folder-tabs-closed id=00000000-0000-4000-8000-000000000001 count=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-33.4④·A-14.3",
+      "what": "해제한 폴더는 디스크에 그대로",
+      "expect": "디스크 목록 같음",
+      "got": "same=True, proj2\\b-readme.md=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "a334",
+      "id": "A-13.5",
+      "what": "해제 뒤 남은 proj 활성, 탭 그대로",
+      "expect": "active=0 README.md|normal",
+      "got": "proj / active=0 README.md|normal",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520",
+      "what": "메뉴가 열린 채 F2 → Rename 선택 표시 뒤 실행",
+      "expect": "shortcut action=project_panel::Rename → exec item=Rename via=shortcut",
+      "got": "[dev] context-menu-shortcut index=14 action=project_panel::Rename t_ms=1793551669408 / [dev] context-menu-exec item=Rename via=shortcut t_ms=1793551669468",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520",
+      "what": "선택 표시 뒤 실행까지 약 50ms",
+      "expect": "50~200ms",
+      "got": "60",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520·I-309",
+      "what": "실행 결과: 패널 자리에서 이름 변경 입력칸",
+      "expect": "kind=rename target=notes.txt",
+      "got": "[dev] edit what=start active=true kind=rename target=notes.txt value=\"notes.txt\" selected=0..5 selected_text=\"notes\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520·I-549",
+      "what": "chord 단축키도 항목 실행(Copy Relative Path)",
+      "expect": "exec item=Copy Relative Path, 클립보드 README.md",
+      "got": "[dev] context-menu-exec item=Copy Relative Path via=shortcut t_ms=1793551673907 / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-517",
+      "what": "Down·Escape 는 메뉴 키(단축키 실행 없음), Escape 로 닫힘",
+      "expect": "shortcut 0, close reason=cancel",
+      "got": "shortcut+0, [dev] context-menu-close reason=cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520·I-544·I-515",
+      "what": "비활성 Paste 의 Ctrl+V → 예약·실행 없음",
+      "expect": "shortcut 0, paste 0",
+      "got": "shortcut+0, paste+0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520(D-032 세대)",
+      "what": "예약 뒤 50ms 안에 닫으면 실행하지 않는다",
+      "expect": "shortcut 1, exec 0, edit 0",
+      "got": "shortcut+1, exec+0, edit+0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520·I-556",
+      "what": "루트 메뉴에서 Ctrl+Right → Expand All",
+      "expect": "exec item=Expand All, src\\util 펼침",
+      "got": "[dev] context-menu-exec item=Expand All via=shortcut t_ms=1793551687308 / .;deep;deep\\l1;deep\\l1\\l2;docs;docs\\guides;many;ops;ops\\sub;src;src\\util",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menukeys",
+      "id": "I-520·I-552",
+      "what": "메뉴에서 Delete → Trash 실행 → 확인창",
+      "expect": "exec item=Trash, trash `notes.txt`",
+      "got": "[dev] context-menu-exec item=Trash via=shortcut t_ms=1793551693793 / [dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `notes.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "clipboardFormatsBefore": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "trashBefore": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "undetermined": [
+    {
+      "case": "trash",
+      "id": "A-14.3·A-14.5",
+      "what": "휴지통 안 항목 확인·복원",
+      "why": "시험 폴더 볼륨 D: DriveType=2(2=이동식, 휴지통 없음), 휴지통 설정 NukeOnDelete=1(1=바로 지움). 사용자 시스템 설정은 바꾸지 않았다. 휴지통 목록="
+    }
+  ],
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-backup-9473e87a-d25f-464d-bf0f-3e289324f61d"
+  },
+  "clipboardFormatsAfter": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "clipboardRestored": true,
+  "trashPurge": [
+    "[dev] trash-done op=purge count=0 total=0"
+  ],
+  "trashAfter": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase4-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-e1878c5a95084f67a03aabd3c4ab666b",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T01:48:18.5495921+09:00",
+  "passed": true
+}

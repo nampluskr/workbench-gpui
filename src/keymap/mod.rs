@@ -43,6 +43,8 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("project_panel::SelectPreviousExtend", true),
     ("project_panel::SelectNextExtend", true),
     ("project_panel::RemoveFromProject", false),
+    ("project_panel::RevealInFileManager", false),
+    ("project_panel::OpenWithSystem", false),
     ("menu::SelectNext", true),
     ("menu::SelectPrevious", true),
     ("menu::SelectFirst", true),

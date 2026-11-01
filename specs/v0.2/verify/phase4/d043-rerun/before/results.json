@@ -1,0 +1,216 @@
+{
+  "startedAt": "2026-11-02T01:25:29.9443171+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c5d07665cbae41bfbde289089d5330a7",
+  "cases": {
+    "d043-rename": {
+      "pid": 23116,
+      "hwnd": "0xB7090E",
+      "diskChanges": [
+        "=> \\abs.txt",
+        "=> \\outside.txt",
+        "=> \\proj\\ops\\con.txt",
+        "=> \\proj\\ops\\sub\\moved.txt",
+        "<= \\proj\\notes.txt",
+        "<= \\proj\\ops\\f1.txt",
+        "<= \\proj\\ops\\f3.txt",
+        "<= \\proj\\README.md"
+      ]
+    },
+    "d043-ctrlclick": {
+      "pid": 15664,
+      "hwnd": "0xE0954"
+    },
+    "d043-crossmove": {
+      "pid": 18384,
+      "hwnd": "0x150920"
+    },
+    "d043-dialog": {
+      "pid": 13408,
+      "hwnd": "0x7908C2"
+    },
+    "d043-junction": {
+      "pid": 3024,
+      "hwnd": "0x17099A",
+      "nestedDirs": 122
+    },
+    "d043-loop": {
+      "pid": 14432,
+      "hwnd": "0x18099A",
+      "expandedCount": 2784
+    }
+  },
+  "failures": [
+    "d043-rename: D-043 ①·I-091·P-022 이름 변경 \"..\\outside.txt\" → 거부(입력칸 유지), 등록 루트 밖에 파일이 생기지 않음: 기대 README.md 그대로, run\\outside.txt 없음, 입력칸 열림, 실제 README=False, outside=True, [dev] edit what=committed active=false",
+    "d043-rename: D-043 ① 이름 변경에 절대 경로 → 거부: 기대 notes.txt 그대로, run\\abs.txt 없음, 실제 notes=False, abs=True",
+    "d043-rename: D-043 ① 이름 변경에 구분자(하위 폴더로 이동) → 거부: 기대 ops\\f1.txt 그대로, ops\\sub\\moved.txt 없음, 실제 f1=False, moved=True",
+    "d043-rename: D-043 ① 예약 장치 이름(con) → 거부, 입력칸 열림: 기대 f3.txt 그대로, active=true, 실제 f3=False, [dev] edit what=committed active=false",
+    "d043-ctrlclick: D-043 ③·I-090·I-562 2개→1개 해제 뒤 Delete 대상은 남은 f1.txt: 기대 trash `f1.txt`, 실제 marked=ops\\f1.txt selected=ops\\f2.txt / [dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `f2.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+    "d043-ctrlclick: D-043 ③ 1개→0개 해제 뒤 Delete → 대상 없음(확인창 없음): 기대 selected=none, delete-skipped, 확인창 0, 실제 marked= selected=ops\\f1.txt, skipped+0, dialog+1",
+    "d043-crossmove: D-043 ④·R-21·R-27·A-15 폴더 A 의 탭으로 연 파일을 B 로 잘라 붙이면 A 의 탭 경로가 B 의 새 경로: 기대 D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c5d07665cbae41bfbde289089d5330a7\\proj2\\notes.txt, 실제 moved=True, tab=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c5d07665cbae41bfbde289089d5330a7\\proj\\notes.txt",
+    "d043-dialog: D-043 ⑥ 확인창 3번 → comctl32 올리기 1번(프로세스 수명 캐시): 기대 1,1,1, 실제 <none>,<none>,<none>",
+    "d043-junction: D-043 ②·R-21 정션 link(→A) 에 A 를 붙여넣기 → 자기 안 복사로 거부, 폴더가 생기지 않음: 기대 paste-copy failed (into itself), A 아래 폴더 0, 실제 nested=122, <none>",
+    "d043-loop: D-043 ②·L-42 자기를 가리키는 정션이 하나뿐인 폴더 → 접기가 순환하지 않는다: 기대 loopdir 줄 조각 2개 이하, 실제 조각=64, 글자수=448",
+    "d043-loop: D-043 ②·I-032 proj 를 가리키는 정션(up)이 있어도 Ctrl+Right 전체 펼치기가 끝난다: 기대 10초 안에 트리 갱신, 앱 살아 있음, 펼침 수 유한, 실제 갱신=True, alive=True, expanded=2784"
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①·I-091·P-022",
+      "what": "이름 변경 \"..\\outside.txt\" → 거부(입력칸 유지), 등록 루트 밖에 파일이 생기지 않음",
+      "expect": "README.md 그대로, run\\outside.txt 없음, 입력칸 열림",
+      "got": "README=False, outside=True, [dev] edit what=committed active=false",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "이름 변경에 절대 경로 → 거부",
+      "expect": "notes.txt 그대로, run\\abs.txt 없음",
+      "got": "notes=False, abs=True",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "이름 변경에 구분자(하위 폴더로 이동) → 거부",
+      "expect": "ops\\f1.txt 그대로, ops\\sub\\moved.txt 없음",
+      "got": "f1=False, moved=True",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "대체 데이터 스트림(:) 이름 → 거부",
+      "expect": "ops\\f2.txt 그대로, 입력칸 열림",
+      "got": "f2=True, [dev] edit what=rejected active=true kind=rename target=ops\\f2.txt value=\"f2.txt:ads\" selected=10..10 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "예약 장치 이름(con) → 거부, 입력칸 열림",
+      "expect": "f3.txt 그대로, active=true",
+      "got": "f3=False, [dev] edit what=committed active=false",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-ctrlclick",
+      "id": "D-043 ③·I-090·I-562",
+      "what": "2개→1개 해제 뒤 Delete 대상은 남은 f1.txt",
+      "expect": "trash `f1.txt`",
+      "got": "marked=ops\\f1.txt selected=ops\\f2.txt / [dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `f2.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-ctrlclick",
+      "id": "D-043 ③",
+      "what": "1개→0개 해제 뒤 Delete → 대상 없음(확인창 없음)",
+      "expect": "selected=none, delete-skipped, 확인창 0",
+      "got": "marked= selected=ops\\f1.txt, skipped+0, dialog+1",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-crossmove",
+      "id": "D-043 ④·R-21·R-27·A-15",
+      "what": "폴더 A 의 탭으로 연 파일을 B 로 잘라 붙이면 A 의 탭 경로가 B 의 새 경로",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c5d07665cbae41bfbde289089d5330a7\\proj2\\notes.txt",
+      "got": "moved=True, tab=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c5d07665cbae41bfbde289089d5330a7\\proj\\notes.txt",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-crossmove",
+      "id": "D-043 ④",
+      "what": "출발 폴더 트리에서 옮긴 파일이 사라진다",
+      "expect": "notes.txt 행 없음",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-dialog",
+      "id": "D-043 ⑥",
+      "what": "확인창 3번 → comctl32 올리기 1번(프로세스 수명 캐시)",
+      "expect": "1,1,1",
+      "got": "<none>,<none>,<none>",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-junction",
+      "id": "D-043 ②·R-21",
+      "what": "정션 link(→A) 에 A 를 붙여넣기 → 자기 안 복사로 거부, 폴더가 생기지 않음",
+      "expect": "paste-copy failed (into itself), A 아래 폴더 0",
+      "got": "nested=122, <none>",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-loop",
+      "id": "D-043 ②·L-42",
+      "what": "자기를 가리키는 정션이 하나뿐인 폴더 → 접기가 순환하지 않는다",
+      "expect": "loopdir 줄 조각 2개 이하",
+      "got": "조각=64, 글자수=448",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "d043-loop",
+      "id": "D-043 ②·I-032",
+      "what": "proj 를 가리키는 정션(up)이 있어도 Ctrl+Right 전체 펼치기가 끝난다",
+      "expect": "10초 안에 트리 갱신, 앱 살아 있음, 펼침 수 유한",
+      "got": "갱신=True, alive=True, expanded=2784",
+      "ok": false,
+      "evidence": ""
+    }
+  ],
+  "clipboardFormatsBefore": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "trashBefore": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-backup-40377c05-6af7-47d0-b1e1-837b16721cca"
+  },
+  "clipboardFormatsAfter": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "clipboardRestored": true,
+  "trashPurge": [
+    "[dev] trash-done op=purge count=0 total=0"
+  ],
+  "trashAfter": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase4-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c5d07665cbae41bfbde289089d5330a7",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T01:27:45.7926633+09:00",
+  "passed": false
+}

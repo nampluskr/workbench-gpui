@@ -140,7 +140,80 @@ fn icon_with_probe(
 /// - L-27 양 끝 영역: gap 4, 좌우 padding 6, 아래 테두리, 시작 영역 오른쪽·끝 영역 왼쪽 테두리.
 /// - L-62 시작 영역 ← →, L-71~L-73 끝 영역 + · 분할 · 최대화 (Small 14).
 /// - L-63 활성 탭은 아래 테두리가 없어 내용과 이어진다. 탭은 자리 표시 하나(활성)다.
-pub fn tab_bar(cx: &App) -> impl IntoElement {
+/// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
+pub struct TabView {
+    pub title: SharedString,
+    /// 임시 탭이면 제목 기울임(I-064, L-68).
+    pub preview: bool,
+    pub active: bool,
+}
+
+const TAB_PROBES: [&str; 12] = [
+    "tab-00", "tab-01", "tab-02", "tab-03", "tab-04", "tab-05", "tab-06", "tab-07", "tab-08", "tab-09", "tab-10",
+    "tab-11",
+];
+
+/// 탭 목록(L-61 가운데 영역). 탭이 없으면 v0.1 뼈대의 자리 표시 탭 하나를 그린다(판단: 앞 Phase 판정 그대로).
+/// L-63: 활성 탭은 아래 테두리 대신 1px 여백(내용 높이 31), 비활성 탭은 아래 테두리. 탭 사이는 오른쪽 테두리(판단).
+/// L-64 [시작 슬롯 12][제목][끝 슬롯 14], L-67 파일 아이콘 없음.
+fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
+    let theme = cx.theme();
+    if tabs.is_empty() {
+        return div()
+            .on_children_prepainted(probe(&["tab-content"]))
+            .flex_shrink_0()
+            .h_full()
+            .pb(rems_1px())
+            .bg(theme.background)
+            .child(
+                h_flex()
+                    .on_children_prepainted(probe(&["tab-slot-start", "tab-label", "tab-slot-end"]))
+                    .h(TAB_CONTENT_HEIGHT)
+                    .px(TAB_PADDING_X)
+                    .gap(TAB_GAP)
+                    .items_center()
+                    .text_sm()
+                    .child(div().flex_shrink_0().size(TAB_START_SLOT))
+                    .child(div().child("untitled (placeholder)"))
+                    .child(div().flex_shrink_0().size(TAB_END_SLOT)),
+            )
+            .into_any_element();
+    }
+    let mut row = h_flex().on_children_prepainted(probe(&TAB_PROBES)).flex_shrink_0().h_full();
+    for (i, tab) in tabs.iter().enumerate() {
+        let label_names: &'static [&'static str] = match i {
+            0 => &["", "tab-label-00", ""],
+            1 => &["", "tab-label-01", ""],
+            2 => &["", "tab-label-02", ""],
+            _ => &[],
+        };
+        row = row.child(
+            div()
+                .flex_shrink_0()
+                .h_full()
+                .border_r_1()
+                .border_color(theme.border)
+                .when(tab.active, |d| d.pb(rems_1px()).bg(theme.background))
+                .when(!tab.active, |d| d.border_b_1().bg(theme.tab_bar))
+                .child(
+                    h_flex()
+                        .on_children_prepainted(probe(label_names))
+                        .h(TAB_CONTENT_HEIGHT)
+                        .px(TAB_PADDING_X)
+                        .gap(TAB_GAP)
+                        .items_center()
+                        .text_sm()
+                        .when(!tab.active, |d| d.text_color(theme.muted_foreground))
+                        .child(div().flex_shrink_0().size(TAB_START_SLOT))
+                        .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).child(tab.title.clone()))
+                        .child(div().flex_shrink_0().size(TAB_END_SLOT)),
+                ),
+        );
+    }
+    row.into_any_element()
+}
+
+pub fn tab_bar(tabs: &[TabView], cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     h_flex()
         .on_children_prepainted(probe(&[
@@ -180,29 +253,8 @@ pub fn tab_bar(cx: &App) -> impl IntoElement {
                 )),
         )
         .child(
-            // 활성 탭(자리 표시): 아래 테두리 대신 1px 여백을 두어 내용 높이 31 을 남긴다.
-            div()
-                .on_children_prepainted(probe(&["tab-content"]))
-                .flex_shrink_0()
-                .h_full()
-                .pb(rems_1px())
-                .bg(theme.background)
-                .child(
-                    h_flex()
-                        .on_children_prepainted(probe(&[
-                            "tab-slot-start",
-                            "tab-label",
-                            "tab-slot-end",
-                        ]))
-                        .h(TAB_CONTENT_HEIGHT)
-                        .px(TAB_PADDING_X)
-                        .gap(TAB_GAP)
-                        .items_center()
-                        .text_sm()
-                        .child(div().flex_shrink_0().size(TAB_START_SLOT))
-                        .child(div().child("untitled (placeholder)"))
-                        .child(div().flex_shrink_0().size(TAB_END_SLOT)),
-                ),
+            // 활성 탭: 아래 테두리 대신 1px 여백을 두어 내용 높이 31 을 남긴다. 탭이 없으면 자리 표시.
+            tab_list(tabs, cx),
         )
         .child(
             div()

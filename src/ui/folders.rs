@@ -28,30 +28,23 @@ const SAVE_DEBOUNCE: Duration = Duration::from_millis(500);
 /// L-88 타이틀 바 폴더 이름 최대 글자 수.
 const TITLE_MAX_CHARS: usize = 40;
 
-/// 폴더 하나의 작업 문맥(D-7 Workspace 엔티티). Phase 3 은 루트 이름만 들고 있다.
+/// 폴더 하나의 작업 문맥(D-7 Workspace 엔티티): 트리(펼침·선택·스크롤, A-15.2)와 탭(A-15.1).
+/// 등록을 해제하면 엔티티째 버리므로 그 폴더의 탭도 닫힌다(R-13, A-14.5 "열었던 탭은 복구되지 않는다").
+/// 그리기는 Workbench 가 한다(`panel_view`): 행 처리기가 Workbench 의 포커스·탭·알림을 함께 다룬다.
 pub struct FolderWorkspace {
     pub folder_id: String,
-    pub root_name: SharedString,
+    pub tree: super::project_panel::ProjectTree,
+    pub pane: super::pane::Pane,
 }
 
-impl Render for FolderWorkspace {
-    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let theme = cx.theme();
-        // 루트 한 줄(자리 표시, D-035 ①). 트리 치수(R-17)는 Phase 4.
-        v_flex().size_full().child(
-            h_flex()
-                .on_children_prepainted(super::layout_probe::probe(&["project-root-icon", "project-root-label"]))
-                .id("project-root-row")
-                .w_full()
-                .h(super::metrics::SIDEBAR_ROW_HEIGHT)
-                .px(super::rem::rems_from_px(8.))
-                .gap(super::rem::rems_from_px(4.))
-                .items_center()
-                .text_sm()
-                .text_color(theme.foreground)
-                .child(Icon::new(IconName::FolderOpen).size(super::metrics::ICON_SMALL))
-                .child(div().whitespace_nowrap().child(self.root_name.clone())),
-        )
+impl FolderWorkspace {
+    pub fn new(folder: &Folder, cx: &mut App) -> Self {
+        let root_name = path::folder_name(&folder.path);
+        Self {
+            folder_id: folder.id.clone(),
+            tree: super::project_panel::ProjectTree::new(PathBuf::from(&folder.path), root_name, cx),
+            pane: super::pane::Pane::default(),
+        }
     }
 }
 
@@ -284,7 +277,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         self.start_pick(window, cx);
     }
 
@@ -382,18 +375,18 @@ impl Workbench {
         self.folders.state.active = Some(folder.id.clone());
         self.folders.refresh_missing();
         let created = !self.folders.workspaces.contains_key(&folder.id);
-        let root_name: SharedString = path::folder_name(&folder.path).into();
-        let ws = self
-            .folders
-            .workspaces
-            .entry(folder.id.clone())
-            .or_insert_with(|| {
-                cx.new(|_| FolderWorkspace {
-                    folder_id: folder.id.clone(),
-                    root_name,
-                })
-            })
-            .clone();
+        let ws = match self.folders.workspaces.get(&folder.id) {
+            Some(ws) => ws.clone(),
+            None => {
+                let ws = cx.new(|cx| FolderWorkspace::new(&folder, cx));
+                self.folders.workspaces.insert(folder.id.clone(), ws.clone());
+                ws
+            }
+        };
+        // 다시 활성화하면 디스크를 다시 읽는다(펼침·선택·스크롤은 그대로, A-15.2). 감시는 Phase 5.
+        if !created {
+            ws.update(cx, |ws, cx| ws.tree.refresh(cx));
+        }
         if self.dev(cx) {
             println!(
                 "[dev] folder-activate index={index} id={} workspace={:?} created={created} folder_id={}",
@@ -403,6 +396,8 @@ impl Workbench {
             );
         }
         self.log_folders(cx);
+        self.log_tree(cx);
+        self.log_tabs(cx);
         self.schedule_save(window, cx);
         cx.notify();
     }
@@ -414,7 +409,12 @@ impl Workbench {
         }
         let was_active = self.folders.active_index() == Some(index);
         let removed = self.folders.state.folders.remove(index);
-        self.folders.workspaces.remove(&removed.id);
+        // R-13: 엔티티째 버리므로 그 폴더의 탭도 닫힌다.
+        if let Some(ws) = self.folders.workspaces.remove(&removed.id)
+            && self.dev(cx)
+        {
+            println!("[dev] folder-tabs-closed id={} count={}", removed.id, ws.read(cx).pane.tabs.len());
+        }
         self.folders.missing.remove(&removed.id);
         let len = self.folders.state.folders.len();
         if self.dev(cx) {
@@ -482,19 +482,19 @@ impl Workbench {
         let mut entries = Vec::new();
         let mut commands = Vec::new();
         if len >= 2 {
-            entries.push(CmEntry::Item { label: "Move Up", enabled: index > 0 });
+            entries.push(CmEntry::item("Move Up", index > 0));
             commands.push(Some(FolderCommand::MoveUp));
-            entries.push(CmEntry::Item { label: "Move Down", enabled: index + 1 < len });
+            entries.push(CmEntry::item("Move Down", index + 1 < len));
             commands.push(Some(FolderCommand::MoveDown));
             entries.push(CmEntry::Separator);
             commands.push(None);
         }
-        entries.push(CmEntry::Item { label: "Remove", enabled: true });
+        entries.push(CmEntry::item("Remove", true));
         commands.push(Some(FolderCommand::Remove));
         if self.dev(cx) {
             println!("[dev] context-menu-target index={index} id={folder_id}");
         }
-        let menu = cx.new(|cx| ContextMenu::new(entries, position, window, cx));
+        let menu = cx.new(|cx| ContextMenu::new(entries, Vec::new(), position, window, cx));
         let sub = cx.subscribe_in(&menu, window, |this, menu, event: &ContextMenuEvent, window, cx| {
             let current = this.folders.context_menu.as_ref().is_some_and(|m| m.menu == *menu);
             if !current {
@@ -563,7 +563,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         self.step_cursor(true, cx);
     }
 
@@ -573,7 +573,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         self.step_cursor(false, cx);
     }
 
@@ -584,7 +584,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         if let Some(c) = self.folders.cursor {
             self.activate_folder(c, window, cx);
         }
@@ -597,7 +597,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         if let Some(c) = self.folders.cursor {
             self.remove_folder(c, "delete-key", window, cx);
         }
@@ -634,7 +634,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         if self.sidebar_open {
             let had_focus = self.sidebar_focus.is_focused(window);
             self.sidebar_open = false;
@@ -659,7 +659,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         if self.sidebar_open && self.sidebar_focus.is_focused(window) {
             self.return_from_sidebar(window, cx);
         } else {
@@ -675,7 +675,7 @@ impl Workbench {
                 "[dev] sidebar open={} dock_open={} focus={}",
                 self.sidebar_open,
                 self.dock_open,
-                self.focus_name(window)
+                self.focus_name(window, cx)
             );
         }
     }
@@ -783,7 +783,7 @@ impl Workbench {
 
 impl Workbench {
     /// 프로젝트 패널 내용: 빈 상태(A-16.1), 경로 없음(A-16.2), 활성 폴더의 Workspace(루트 한 줄).
-    pub(super) fn render_project_panel(&mut self, cx: &mut Context<Self>) -> AnyElement {
+    pub(super) fn render_project_panel(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
         let theme = cx.theme();
         let muted = theme.muted_foreground;
         let border = theme.border;
@@ -839,7 +839,10 @@ impl Workbench {
                 .into_any_element();
         }
         match self.folders.workspaces.get(&id) {
-            Some(ws) => div().size_full().child(ws.clone()).into_any_element(),
+            Some(ws) => {
+                let ws = ws.clone();
+                self.render_tree(&ws, window, cx)
+            }
             None => div().size_full().into_any_element(),
         }
     }
@@ -853,6 +856,12 @@ impl Workbench {
 
     /// 창이 다시 활성화되면 경로를 다시 본다(A-16.3 의 최소 대응. 감시는 R-24, Phase 5).
     pub(super) fn refresh_on_activation(&mut self, cx: &mut Context<Self>) {
+        // Phase 4: 활성 폴더 트리도 디스크를 다시 읽는다(바깥 변경 감시는 Phase 5, R-24).
+        if let Some(ws) = self.active_ws() && ws.read(cx).tree.edit.is_none() {
+            ws.update(cx, |ws, cx| ws.tree.refresh(cx));
+            self.log_tree(cx);
+            cx.notify();
+        }
         if self.folders.refresh_missing() {
             self.log_folders(cx);
             cx.notify();
@@ -892,11 +901,11 @@ impl Workbench {
             notify_text(text, window, cx);
         }
         if let Some(folder) = self.folders.active_folder().cloned() {
-            let root_name: SharedString = path::folder_name(&folder.path).into();
-            let ws = cx.new(|_| FolderWorkspace { folder_id: folder.id.clone(), root_name });
+            let ws = cx.new(|cx| FolderWorkspace::new(&folder, cx));
             self.folders.workspaces.insert(folder.id, ws);
         }
         self.log_folders(cx);
+        self.log_tree(cx);
         cx.notify();
     }
 }

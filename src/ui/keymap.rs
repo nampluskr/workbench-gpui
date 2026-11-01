@@ -76,6 +76,8 @@ pub mod project_panel {
             SelectPreviousExtend,
             SelectNextExtend,
             RemoveFromProject,
+            RevealInFileManager,
+            OpenWithSystem,
         ]
     );
 }
@@ -208,6 +210,8 @@ fn register_placeholder_handlers(cx: &mut App) {
         project_panel::SelectPreviousExtend,
         project_panel::SelectNextExtend,
         project_panel::RemoveFromProject,
+        project_panel::RevealInFileManager,
+        project_panel::OpenWithSystem,
         menu::SelectNext,
         menu::SelectPrevious,
         menu::SelectFirst,

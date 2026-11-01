@@ -1,0 +1,32 @@
+{
+  "startedAt": "2026-11-02T01:31:25.9861111+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c832fdbd55694a7db3d8e39e79347c01",
+  "cases": {},
+  "failures": [
+    "OS 클립보드에 텍스트가 아닌 형식이 있다(형식 번호 8,2,17). 그대로 되돌릴 수 없어 사용자 파일·클립보드를 바꾸기 전에 중단한다"
+  ],
+  "errors": [],
+  "checks": [],
+  "clipboardFormatsBefore": [
+    8,
+    2,
+    17
+  ],
+  "abortedBeforeChanges": true,
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": null
+  },
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase4-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-c832fdbd55694a7db3d8e39e79347c01",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T01:31:26.1194260+09:00",
+  "passed": false
+}

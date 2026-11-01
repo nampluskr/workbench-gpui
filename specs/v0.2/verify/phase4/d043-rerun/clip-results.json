@@ -1,0 +1,58 @@
+{
+  "startedAt": "2026-11-02T01:31:01.2527728+09:00",
+  "userFormatsBefore": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "before": {
+    "script": "C:/Users/nampl/AppData/Local/Temp/claude/D--projects-workbench-gpui/1ec0f75e-3381-4c85-8ab2-323ff9cddc4c/scratchpad/p4-before/tools/verify-v02-phase4.ps1",
+    "formatsSet": [
+      8,
+      2,
+      17
+    ],
+    "formatsAfterRun": [
+      13,
+      16,
+      1,
+      7
+    ],
+    "imageKept": false,
+    "output": [
+      "cases: tooltip",
+      "checks: 2, failed: 0",
+      "failures: 0",
+      "user files restored: True"
+    ]
+  },
+  "after": {
+    "script": "tools\\verify-v02-phase4.ps1",
+    "formatsSet": [
+      8,
+      2,
+      17
+    ],
+    "formatsAfterRun": [
+      8,
+      2,
+      17
+    ],
+    "imageKept": true,
+    "output": [
+      "cases: ",
+      "checks: 0, failed: 0",
+      "failures: 1",
+      "user files restored: True",
+      "  - OS 클립보드에 텍스트가 아닌 형식이 있다(형식 번호 8,2,17). 그대로 되돌릴 수 없어 사용자 파일·클립보드를 바꾸기 전에 중단한다"
+    ]
+  },
+  "userFormatsAfter": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "userRestored": true
+}

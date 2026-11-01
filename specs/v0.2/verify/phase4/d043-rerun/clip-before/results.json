@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-11-02T01:31:02.7710819+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-b9eabc0b4b1a4d5c9222b9eee7ffeaab",
+  "cases": {
+    "tooltip": {
+      "pid": 24728,
+      "hwnd": "0x2F096A",
+      "tooltip": {
+        "id": "tree-item",
+        "delayMs": 1510,
+        "mouseX": 419.5,
+        "mouseY": 228.0,
+        "rows": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-b9eabc0b4b1a4d5c9222b9eee7ffeaab\\proj\\README.md|<none>",
+        "line": "[dev] tooltip-shown id=tree-item t_ms=1793550678848 mouse=419.50,228.00 rows=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-b9eabc0b4b1a4d5c9222b9eee7ffeaab\\proj\\README.md|<none>",
+        "box": {
+          "x": 428.5,
+          "y": 239.0,
+          "w": 306.0,
+          "h": 100.0
+        },
+        "screenshot": "tooltip-tree-item.png"
+      }
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "tooltip",
+      "id": "L-247·L-49",
+      "what": "항목 hover → 절대 경로 툴팁(홈 아래가 아니면 그대로)",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-b9eabc0b4b1a4d5c9222b9eee7ffeaab\\proj\\README.md|<none>",
+      "got": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-b9eabc0b4b1a4d5c9222b9eee7ffeaab\\proj\\README.md|<none>",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-247",
+      "what": "지연 1500ms",
+      "expect": "1500±250",
+      "got": "1510",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "trashBefore": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-backup-272e3e83-29ef-4728-b9c8-96358f3b5d73"
+  },
+  "clipboardRestored": true,
+  "trashPurge": [
+    "[dev] trash-done op=purge count=0 total=0"
+  ],
+  "trashAfter": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase4-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-b9eabc0b4b1a4d5c9222b9eee7ffeaab",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-02T01:31:24.7456137+09:00",
+  "passed": true
+}

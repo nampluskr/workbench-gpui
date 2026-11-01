@@ -20,6 +20,9 @@
 //! - `--dev-measure`: 한글 혼합 줄과 영문 줄의 줄 높이·폭·거터·커서 위치를 낸다 (R-10).
 //! - `--dev-pick-folder <파일>`: 폴더 선택 창 대신 파일에 적힌 경로를 고른 것으로 한다 (v0.2 Phase 3, R-10).
 //! - Editor·Input 값이 바뀔 때마다 `[dev] value ...` 를 낸다 (R-6 IME 결과 확인용).
+//! - `--dev-no-shell`: Reveal in File Explorer·Open in Default App 을 실행하지 않고 기록만 한다 (v0.2 Phase 4, R-22).
+//! - `--dev-trash <list|restore|purge> <폴더>`: 휴지통에서 원래 위치가 그 폴더 아래인 항목만 보이거나 되살리거나 비운다.
+//!   창을 띄우지 않고 끝난다. 시험이 버린 항목만 다루려고 둔다 (v0.2 Phase 4, R-20).
 
 #[derive(Debug, Default, Clone)]
 pub struct DevOptions {
@@ -44,6 +47,8 @@ pub struct DevOptions {
     /// `--dev-pick-folder <파일>`: 폴더 선택 창 대신 이 파일의 첫 줄을 고른 경로로 쓴다(v0.2 Phase 3, R-10, D-035).
     /// 파일이 없거나 비었거나 `<cancel>` 이면 취소로 본다. 열 때마다 다시 읽는다.
     pub pick_folder_file: Option<String>,
+    /// `--dev-trash <list|restore|purge> <폴더>` (v0.2 Phase 4).
+    pub trash_cmd: Option<(String, String)>,
 }
 
 /// R-9 파일 읽기·쓰기 방식.
@@ -97,6 +102,12 @@ impl DevOptions {
                     options.keymap_startup_delay_ms = args.next().and_then(|v| v.parse().ok())
                 }
                 "--dev-pick-folder" => options.pick_folder_file = args.next(),
+                "--dev-no-shell" => NO_SHELL.store(true, std::sync::atomic::Ordering::Relaxed),
+                "--dev-trash" => {
+                    let op = args.next().unwrap_or_default();
+                    let dir = args.next().unwrap_or_default();
+                    options.trash_cmd = Some((op, dir));
+                }
                 _ => {}
             }
         }
@@ -645,5 +656,52 @@ mod tests {
         let (back, encoding) = decode(&bytes, RoundtripMode::App).unwrap();
         assert_eq!(encoding, TextEncoding::Cp949);
         assert_eq!(encode(&back, encoding).unwrap(), bytes);
+    }
+}
+
+static NO_SHELL: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// `--dev-no-shell` 이 켜졌는가.
+pub fn no_shell() -> bool {
+    NO_SHELL.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+/// `--dev-trash <op> <폴더>`: 원래 위치가 `<폴더>` 아래인 휴지통 항목만 다룬다. 사용자 휴지통의 다른 항목은 건드리지 않는다.
+/// 한 줄씩 `[dev] trash-item name=… original_parent=… deleted=…` 를 내고, 끝에 `[dev] trash-done op=… count=…`.
+pub fn run_trash_command(op: &str, dir: &str) {
+    let base = std::path::PathBuf::from(dir);
+    let base_l = base.to_string_lossy().to_lowercase();
+    let items = match trash::os_limited::list() {
+        Ok(items) => items,
+        Err(e) => {
+            println!("[dev] trash-done op={op} error={e}");
+            return;
+        }
+    };
+    let total = items.len();
+    let mine: Vec<trash::TrashItem> = items
+        .into_iter()
+        .filter(|i| {
+            let p = i.original_parent.to_string_lossy().to_lowercase();
+            p == base_l || p.starts_with(&format!("{}\\", base_l.trim_end_matches('\\')))
+        })
+        .collect();
+    for i in &mine {
+        println!(
+            "[dev] trash-item name={} original_parent={} deleted={}",
+            i.name.to_string_lossy(),
+            i.original_parent.display(),
+            i.time_deleted
+        );
+    }
+    let count = mine.len();
+    let result = match op {
+        "restore" => trash::os_limited::restore_all(mine).map_err(|e| e.to_string()),
+        "purge" => trash::os_limited::purge_all(mine).map_err(|e| e.to_string()),
+        _ => Ok(()),
+    };
+    match result {
+        Ok(()) => println!("[dev] trash-done op={op} count={count} total={total}"),
+        Err(e) => println!("[dev] trash-done op={op} count={count} error={e}"),
     }
 }

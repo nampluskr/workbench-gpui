@@ -10,7 +10,17 @@ mod keymap;
 mod layout;
 mod layout_probe;
 mod metrics;
+mod pane;
+mod panel_delete;
+mod panel_edit;
+mod panel_menu;
+mod panel_nav;
+mod panel_ops;
+mod panel_view;
+mod project_panel;
 mod rem;
+mod shell;
+mod task_dialog;
 mod title_bar;
 mod tooltip;
 
@@ -61,6 +71,14 @@ struct Workbench {
     sidebar_prev_focus: Option<FocusHandle>,
     /// 사이드바·Workspace 분할 상태. 사이드바를 닫았다 열어도 폭을 그대로 둔다.
     split: Entity<gpui_kit::component::ResizableState>,
+    /// 프로젝트 패널 파일 클립보드(I-037, Phase 4).
+    file_clipboard: Option<panel_ops::FileClipboard>,
+    /// 열린 프로젝트 패널 우클릭 메뉴(R-22).
+    panel_menu: Option<panel_menu::OpenPanelMenu>,
+    /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
+    pending_press: Option<std::path::PathBuf>,
+    /// 휴지통·삭제 확인창이 떠 있다(겹쳐 띄우지 않는다).
+    deleting: bool,
 }
 
 /// 왼쪽 Dock 핸들을 끄는 동안의 끌기 값 (L-30). 화면에는 아무것도 그리지 않는다.
@@ -75,16 +93,32 @@ impl Render for DockResize {
 
 impl Workbench {
     /// 지금 포커스가 있는 자리 이름 (dev 출력용).
-    fn focus_name(&self, window: &Window) -> &'static str {
+    fn focus_name(&self, window: &Window, cx: &App) -> &'static str {
         if self.sidebar_focus.is_focused(window) {
             "sidebar"
         } else if self.panel_focus.is_focused(window) {
             "project_panel"
         } else if self.center_focus.is_focused(window) {
             "center"
+        } else if self.active_editor_focused(window, cx) {
+            // Phase 4: 활성 탭의 편집기(가운데 Pane 안).
+            "editor"
+        } else if self.panel_editing(cx) {
+            // 프로젝트 패널 인라인 입력칸(P-022 editing).
+            "panel_input"
         } else {
             "none"
         }
+    }
+
+    /// 활성 폴더의 활성 탭 편집기에 포커스가 있는가.
+    fn active_editor_focused(&self, window: &Window, cx: &App) -> bool {
+        self.active_ws().is_some_and(|ws| {
+            ws.read(cx)
+                .pane
+                .active_tab()
+                .is_some_and(|t| t.editor.focus_handle(cx).is_focused(window))
+        })
     }
 
     /// Phase 1 에서 화면 요소가 직접 받는 액션. 나머지는 `keymap` 의 자리 처리기가 받는다.
@@ -96,7 +130,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         self.dock_open = !self.dock_open;
         if !self.dock_open && self.panel_focus.is_focused(window) {
             self.center_focus.focus(window, cx);
@@ -110,7 +144,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         if self.panel_focus.is_focused(window) {
             self.center_focus.focus(window, cx);
         } else {
@@ -127,13 +161,13 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         self.app_menu.update(cx, |menu, cx| menu.toggle(window, cx));
     }
 
     /// Quit workbench-gpui (I-341).
     fn on_quit(&mut self, action: &keymap::zed::Quit, window: &mut Window, cx: &mut Context<Self>) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         self.flush_save(Some(window), "quit", cx);
         cx.quit();
     }
@@ -145,7 +179,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         // 창이 사라지기 전에 쓰지 않은 변경을 쓴다(A-24.3, 리뷰 1회차 ①).
         self.flush_save(Some(window), "close-window", cx);
         window.remove_window();
@@ -153,13 +187,13 @@ impl Workbench {
 
     /// Window > Minimize (I-445).
     fn on_minimize(&mut self, action: &keymap::zed::Minimize, window: &mut Window, cx: &mut Context<Self>) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         window.minimize_window();
     }
 
     /// Window > Zoom (I-446): 창 확대(최대화)·복원.
     fn on_zoom(&mut self, action: &keymap::zed::Zoom, window: &mut Window, cx: &mut Context<Self>) {
-        keymap::log_handled(action, self.focus_name(window), cx);
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
         window.zoom_window();
     }
 
@@ -186,28 +220,83 @@ impl Workbench {
 
     /// 본문: [왼쪽 Dock] → [가운데 Pane], 그리고 Dock 오른쪽 경계에 걸친 6px 핸들 (L-14, L-16, L-30).
     fn body(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement + use<> {
-        let project_panel = self.render_project_panel(cx);
+        let project_panel = self.render_project_panel(window, cx);
+        let editing = self.panel_editing(cx);
+        // Phase 4 최소 탭(R-27): 활성 폴더의 탭 목록과 활성 탭 편집기(보기 전용, D-18).
+        let (tabs, active_editor) = match self.active_ws() {
+            Some(ws) => {
+                let pane = &ws.read(cx).pane;
+                let tabs: Vec<layout::TabView> = pane
+                    .tabs
+                    .iter()
+                    .enumerate()
+                    .map(|(i, t)| layout::TabView { title: t.title().into(), preview: t.preview, active: pane.active == Some(i) })
+                    .collect();
+                (tabs, pane.active_tab().map(|t| t.editor.clone()))
+            }
+            None => (Vec::new(), None),
+        };
         let theme = cx.theme();
         let handle = to_px(DOCK_HANDLE_WIDTH, window);
         // Dock 폭과 핸들 위치 모두 유효 폭 기준이다.
         let dock_width = self.effective_dock_width(window);
 
-        let item: AnyElement = match &self.editor_poc {
-            Some(poc) => div().size_full().child(poc.clone()).into_any_element(),
-            None => div().size_full().bg(theme.background).into_any_element(),
+        let item: AnyElement = match (&self.editor_poc, active_editor) {
+            (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
+            (None, Some(editor)) => div()
+                .size_full()
+                .bg(theme.background)
+                .child(gpui_kit::component::input::Editor::new(&editor).readonly(true).h_full())
+                .into_any_element(),
+            (None, None) => div().size_full().bg(theme.background).into_any_element(),
         };
 
         // 프로젝트 패널 자리의 키 컨텍스트: `ProjectPanel` 과 `menu` 를 함께 가진다(I-002, I-030 "ProjectPanel + menu").
-        // 이름 편집 칸이 아직 없으므로 늘 `not_editing` 이다(I-033).
+        // 인라인 입력 중이면 `editing`, 아니면 `not_editing`(P-022, I-033).
         let mut panel_context = KeyContext::default();
         panel_context.add(crate::keymap::builtin::PROJECT_PANEL_CONTEXT);
         panel_context.add(crate::keymap::builtin::MENU_CONTEXT);
-        panel_context.add(crate::keymap::builtin::NOT_EDITING);
+        panel_context.add(if editing { "editing" } else { crate::keymap::builtin::NOT_EDITING });
 
         let dock: Option<AnyElement> = self.dock_open.then(|| {
             div()
                 .key_context(panel_context)
                 .track_focus(&self.panel_focus)
+                // 트리 빈 곳을 누르면 TreeState 가 자기 포커스를 잡는다. 그 뒤에 우리 자리로 되돌린다(입력칸을 누른 때는 빼고).
+                .on_mouse_down(MouseButton::Left, cx.listener(|this, _: &MouseDownEvent, window, cx| {
+                    let input_focused = this.active_ws().is_some_and(|ws| {
+                        ws.read(cx).tree.edit.as_ref().is_some_and(|e| e.input.read(cx).focus_handle(cx).is_focused(window))
+                    });
+                    if !input_focused {
+                        this.panel_focus.focus(window, cx);
+                    }
+                }))
+                .on_action(cx.listener(Self::on_tree_next))
+                .on_action(cx.listener(Self::on_tree_prev))
+                .on_action(cx.listener(Self::on_tree_first))
+                .on_action(cx.listener(Self::on_tree_last))
+                .on_action(cx.listener(Self::on_tree_next_extend))
+                .on_action(cx.listener(Self::on_tree_prev_extend))
+                .on_action(cx.listener(Self::on_tree_expand))
+                .on_action(cx.listener(Self::on_tree_collapse))
+                .on_action(cx.listener(Self::on_tree_expand_all))
+                .on_action(cx.listener(Self::on_tree_collapse_all))
+                .on_action(cx.listener(Self::on_tree_open))
+                .on_action(cx.listener(Self::on_rename))
+                .on_action(cx.listener(Self::on_new_file))
+                .on_action(cx.listener(Self::on_new_dir))
+                .on_action(cx.listener(Self::on_copy))
+                .on_action(cx.listener(Self::on_cut))
+                .on_action(cx.listener(Self::on_paste))
+                .on_action(cx.listener(Self::on_trash))
+                .on_action(cx.listener(Self::on_delete))
+                .on_action(cx.listener(Self::on_copy_path))
+                .on_action(cx.listener(Self::on_copy_relative_path))
+                .on_action(cx.listener(Self::on_deploy_menu))
+                .on_action(cx.listener(Self::on_reveal))
+                .on_action(cx.listener(Self::on_open_with_system))
+                .on_action(cx.listener(Self::on_panel_cancel))
+                .on_action(cx.listener(Self::on_input_escape))
                 .flex_shrink_0()
                 .h_full()
                 .w(dock_width)
@@ -244,7 +333,7 @@ impl Workbench {
                     .flex_1()
                     .min_w_0()
                     .h_full()
-                    .child(layout::tab_bar(cx))
+                    .child(layout::tab_bar(&tabs, cx))
                     .child(div().flex_1().min_h_0().child(item)),
             )
             .when(self.dock_open, |body| {
@@ -277,7 +366,7 @@ impl Workbench {
                 cx.background_executor()
                     .timer(Duration::from_millis(300))
                     .await;
-                let Ok(text) = this.update_in(cx, |this, window, _| {
+                let Ok(text) = this.update_in(cx, |this, window, cx| {
                     let mut out = format!(
                         "rem={} scale={} viewport={}x{} maximized={} dock_width={} dock_stored={} body_width={}",
                         f32::from(window.rem_size()),
@@ -293,6 +382,17 @@ impl Workbench {
                             .map(|w| f32::from(w).to_string())
                             .unwrap_or_else(|| "unknown".into()),
                     );
+                    // Phase 4 A-15.2: 활성 폴더 트리의 스크롤 위치.
+                    if let Some(ws) = this.active_ws() {
+                        let y = ws.read(cx).tree.state.read(cx).scroll_handle().0.borrow().base_handle.offset().y;
+                        out.push_str(&format!(" tree_scroll_y={:.1}", f32::from(y)));
+                        // R-27·D-18: 활성 탭 편집기 내용(길이·FNV-1a). 보기 전용이면 글자를 쳐도 바뀌지 않는다.
+                        if let Some(tab) = ws.read(cx).pane.active_tab() {
+                            let text = tab.editor.read(cx).text().to_string();
+                            let fnv = text.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3));
+                            out.push_str(&format!(" active_text_len={} active_text_fnv={fnv:016x}", text.len()));
+                        }
+                    }
                     for (name, b) in layout_probe::snapshot() {
                         out.push_str(&format!(
                             "\nname={name} bounds={:.2},{:.2},{:.2},{:.2}",
@@ -330,7 +430,7 @@ impl Render for Workbench {
         layout_probe::begin_frame();
         // dev: 포커스 자리나 창 활성 상태가 바뀌면 낸다(키 판정에서 포커스가 어디로 갔는지 추적).
         if crate::ui::keymap::dev_flag() {
-            let state = format!("focus={} active={}", self.focus_name(window), window.is_window_active());
+            let state = format!("focus={} active={}", self.focus_name(window, cx), window.is_window_active());
             if state != self.last_focus_log {
                 println!("[dev] focus-state {state}");
                 self.last_focus_log = state;
@@ -449,7 +549,8 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_zoom))
             .size_full()
             .child(content)
-            .children(context_menu);
+            .children(context_menu)
+            .children(self.panel_menu.as_ref().map(|m| m.menu.clone()));
 
         client_decorations(window, border, root)
     }
@@ -540,6 +641,10 @@ pub fn run(dev: DevOptions) {
                         sidebar_open: true,
                         sidebar_prev_focus: None,
                         split: cx.new(|_| gpui_kit::component::ResizableState::default()),
+                        file_clipboard: None,
+                        panel_menu: None,
+                        pending_press: None,
+                        deleting: false,
                     };
                     // 알림은 gpui-kit Root 가 생긴 뒤에 띄운다(창을 연 다음 차례).
                     cx.defer_in(window, move |this: &mut Workbench, window, cx| {
