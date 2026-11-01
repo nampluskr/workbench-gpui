@@ -1,0 +1,1721 @@
+{
+  "startedAt": "2026-11-01T14:33:24.5161350+09:00",
+  "keymapPath": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+  "cases": {
+    "tooltip": {
+      "pid": 20268,
+      "hwnd": "0x250708",
+      "tooltips": [
+        {
+          "id": "app-menu-button",
+          "delayMs": 504,
+          "mouseX": 319.0,
+          "mouseY": 16.0,
+          "rows": "Open Application Menu|<none>",
+          "line": "[dev] tooltip-shown id=app-menu-button t_ms=1793511210796 mouse=319.00,16.00 rows=Open Application Menu|<none>",
+          "box": {
+            "x": 328.0,
+            "y": 27.0,
+            "w": 171.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-app-menu-button.png",
+          "flipX": false,
+          "flipY": false
+        },
+        {
+          "id": "title-folder-name",
+          "delayMs": 502,
+          "mouseX": 404.0,
+          "mouseY": 16.0,
+          "rows": "Recent Projects|<none>",
+          "line": "[dev] tooltip-shown id=title-folder-name t_ms=1793511213742 mouse=404.00,16.00 rows=Recent Projects|<none>",
+          "box": {
+            "x": 413.0,
+            "y": 27.0,
+            "w": 116.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-title-folder-name.png",
+          "flipX": false,
+          "flipY": false
+        },
+        {
+          "id": "sidebar-btn-folder-add",
+          "delayMs": 505,
+          "mouseX": 284.0,
+          "mouseY": 837.0,
+          "rows": "Add Project|Ctrl-K Ctrl-O",
+          "line": "[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1793511216289 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O",
+          "box": {
+            "x": 293.0,
+            "y": 803.5,
+            "w": 189.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-sidebar-btn-folder-add.png",
+          "flipX": false,
+          "flipY": true
+        },
+        {
+          "id": "sidebar-btn-toggle",
+          "delayMs": 513,
+          "mouseX": 15.0,
+          "mouseY": 837.0,
+          "rows": "Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;",
+          "line": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;",
+          "box": {
+            "x": 24.0,
+            "y": 768.0,
+            "w": 180.0,
+            "h": 68.0
+          },
+          "screenshot": "r7-sidebar-btn-toggle.png",
+          "flipX": false,
+          "flipY": true
+        },
+        {
+          "id": "tab-btn-back",
+          "delayMs": 513,
+          "mouseX": 557.0,
+          "mouseY": 48.5,
+          "rows": "Go Back|<none>",
+          "line": "[dev] tooltip-shown id=tab-btn-back t_ms=1793511221320 mouse=557.00,48.50 rows=Go Back|<none>",
+          "box": {
+            "x": 566.0,
+            "y": 59.5,
+            "w": 71.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-tab-btn-back.png",
+          "flipX": false,
+          "flipY": false
+        },
+        {
+          "id": "tab-btn-forward",
+          "delayMs": 504,
+          "mouseX": 583.0,
+          "mouseY": 48.5,
+          "rows": "Go Forward|<none>",
+          "line": "[dev] tooltip-shown id=tab-btn-forward t_ms=1793511223877 mouse=583.00,48.50 rows=Go Forward|<none>",
+          "box": {
+            "x": 592.0,
+            "y": 59.5,
+            "w": 93.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-tab-btn-forward.png",
+          "flipX": false,
+          "flipY": false
+        },
+        {
+          "id": "tab-btn-new",
+          "delayMs": 507,
+          "mouseX": 1371.0,
+          "mouseY": 48.5,
+          "rows": "New…|<none>",
+          "line": "[dev] tooltip-shown id=tab-btn-new t_ms=1793511226386 mouse=1371.00,48.50 rows=New…|<none>",
+          "box": {
+            "x": 1380.0,
+            "y": 59.5,
+            "w": 57.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-tab-btn-new.png",
+          "flipX": false,
+          "flipY": false
+        },
+        {
+          "id": "tab-btn-split",
+          "delayMs": 506,
+          "mouseX": 1397.0,
+          "mouseY": 48.5,
+          "rows": "Split Pane|<none>",
+          "line": "[dev] tooltip-shown id=tab-btn-split t_ms=1793511229068 mouse=1397.00,48.50 rows=Split Pane|<none>",
+          "box": {
+            "x": 1314.0,
+            "y": 59.5,
+            "w": 82.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-tab-btn-split.png",
+          "flipX": true,
+          "flipY": false
+        },
+        {
+          "id": "tab-btn-zoom",
+          "delayMs": 507,
+          "mouseX": 1423.0,
+          "mouseY": 48.5,
+          "rows": "Zoom In|<none>",
+          "line": "[dev] tooltip-shown id=tab-btn-zoom t_ms=1793511231753 mouse=1423.00,48.50 rows=Zoom In|<none>",
+          "box": {
+            "x": 1349.0,
+            "y": 59.5,
+            "w": 73.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-tab-btn-zoom.png",
+          "flipX": true,
+          "flipY": false
+        },
+        {
+          "id": "status-btn-project-panel",
+          "delayMs": 504,
+          "mouseX": 315.0,
+          "mouseY": 837.0,
+          "rows": "Close Left Dock|Ctrl-B",
+          "line": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511234425 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B",
+          "box": {
+            "x": 324.0,
+            "y": 803.5,
+            "w": 171.0,
+            "h": 32.5
+          },
+          "screenshot": "r7-status-btn-project-panel.png",
+          "flipX": false,
+          "flipY": true
+        }
+      ],
+      "splitTooltipBox": {
+        "x": 1314.0,
+        "y": 59.5,
+        "w": 82.0,
+        "h": 32.5
+      }
+    },
+    "menu": {
+      "pid": 30204,
+      "hwnd": "0x31070C",
+      "menuNames": [
+        {
+          "x": 308.0,
+          "y": 5.0,
+          "w": 101.0,
+          "h": 22.0
+        },
+        {
+          "x": 413.0,
+          "y": 5.0,
+          "w": 31.0,
+          "h": 22.0
+        },
+        {
+          "x": 448.0,
+          "y": 5.0,
+          "w": 38.0,
+          "h": 22.0
+        },
+        {
+          "x": 490.0,
+          "y": 5.0,
+          "w": 57.0,
+          "h": 22.0
+        }
+      ],
+      "menuBar": {
+        "x": 308.0,
+        "y": 5.0,
+        "w": 239.0,
+        "h": 22.0
+      },
+      "viewBox": {
+        "x": 443.0,
+        "y": 27.0,
+        "w": 202.0,
+        "h": 68.0
+      },
+      "viewRows": [
+        {
+          "x": 448.0,
+          "y": 32.0,
+          "w": 192.0,
+          "h": 22.5
+        },
+        {
+          "x": 444.0,
+          "y": 60.5,
+          "w": 200.0,
+          "h": 1.0
+        },
+        {
+          "x": 448.0,
+          "y": 67.5,
+          "w": 192.0,
+          "h": 22.5
+        }
+      ],
+      "appMenuButtonTooltips": 0
+    },
+    "reload": {
+      "pid": 33132,
+      "hwnd": "0x1DF0890"
+    },
+    "pending": {
+      "pid": 14984,
+      "hwnd": "0x15609B4",
+      "lines": [
+        "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793511312135",
+        "[dev] menu-open index=1 name=File t_ms=1793511312143"
+      ]
+    },
+    "shadow": {
+      "pid": 13872,
+      "hwnd": "0x620A14"
+    },
+    "prevctx": {
+      "pid": 22640,
+      "hwnd": "0x35070C"
+    },
+    "quit": {
+      "pid": 14344,
+      "hwnd": "0x8C0170"
+    },
+    "closewin": {
+      "pid": 8424,
+      "hwnd": "0x37070C"
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "tooltip",
+      "id": "L-225",
+      "what": "app-menu-button 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793511210796 mouse=319.00,16.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-225",
+      "what": "app-menu-button 문구",
+      "expect": "Open Application Menu",
+      "got": "Open Application Menu",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793511210796 mouse=319.00,16.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "app-menu-button 지연 ms",
+      "expect": "500~750",
+      "got": "504",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793511210796 mouse=319.00,16.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "app-menu-button 상자 x (마우스 319)",
+      "expect": "328.00",
+      "got": "328.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793511210796 mouse=319.00,16.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "app-menu-button 상자 y (마우스 16)",
+      "expect": "27.00",
+      "got": "27.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793511210796 mouse=319.00,16.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-226·L-227·D-16",
+      "what": "title-folder-name 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=title-folder-name t_ms=1793511213742 mouse=404.00,16.00 rows=Recent Projects|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-226·L-227·D-16",
+      "what": "title-folder-name 문구",
+      "expect": "Recent Projects",
+      "got": "Recent Projects",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=title-folder-name t_ms=1793511213742 mouse=404.00,16.00 rows=Recent Projects|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "title-folder-name 지연 ms",
+      "expect": "500~750",
+      "got": "502",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=title-folder-name t_ms=1793511213742 mouse=404.00,16.00 rows=Recent Projects|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "title-folder-name 상자 x (마우스 404)",
+      "expect": "413.00",
+      "got": "413.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=title-folder-name t_ms=1793511213742 mouse=404.00,16.00 rows=Recent Projects|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "title-folder-name 상자 y (마우스 16)",
+      "expect": "27.00",
+      "got": "27.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=title-folder-name t_ms=1793511213742 mouse=404.00,16.00 rows=Recent Projects|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-230",
+      "what": "sidebar-btn-folder-add 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1793511216289 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-230",
+      "what": "sidebar-btn-folder-add 문구",
+      "expect": "Add Project",
+      "got": "Add Project",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1793511216289 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "sidebar-btn-folder-add 지연 ms",
+      "expect": "500~750",
+      "got": "505",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1793511216289 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "sidebar-btn-folder-add 상자 x (마우스 284)",
+      "expect": "293.00",
+      "got": "293.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1793511216289 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "sidebar-btn-folder-add 상자 y (마우스 837)",
+      "expect": "803.50",
+      "got": "803.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1793511216289 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-232",
+      "what": "sidebar-btn-toggle 줄 수",
+      "expect": "2",
+      "got": "2",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-232",
+      "what": "sidebar-btn-toggle 문구",
+      "expect": "Toggle Sidebar",
+      "got": "Toggle Sidebar",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-232",
+      "what": "sidebar-btn-toggle 문구",
+      "expect": "Focus Sidebar",
+      "got": "Focus Sidebar",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "sidebar-btn-toggle 지연 ms",
+      "expect": "500~750",
+      "got": "513",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "sidebar-btn-toggle 상자 x (마우스 15)",
+      "expect": "24.00",
+      "got": "24.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "sidebar-btn-toggle 상자 y (마우스 837)",
+      "expect": "768.00",
+      "got": "768.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=sidebar-btn-toggle t_ms=1793511218791 mouse=15.00,837.00 rows=Toggle Sidebar|Ctrl-Alt-J\tFocus Sidebar|Ctrl-Alt-;"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-236",
+      "what": "tab-btn-back 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-back t_ms=1793511221320 mouse=557.00,48.50 rows=Go Back|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-236",
+      "what": "tab-btn-back 문구",
+      "expect": "Go Back",
+      "got": "Go Back",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-back t_ms=1793511221320 mouse=557.00,48.50 rows=Go Back|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "tab-btn-back 지연 ms",
+      "expect": "500~750",
+      "got": "513",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-back t_ms=1793511221320 mouse=557.00,48.50 rows=Go Back|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-back 상자 x (마우스 557)",
+      "expect": "566.00",
+      "got": "566.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-back t_ms=1793511221320 mouse=557.00,48.50 rows=Go Back|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-back 상자 y (마우스 48.5)",
+      "expect": "59.50",
+      "got": "59.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-back t_ms=1793511221320 mouse=557.00,48.50 rows=Go Back|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-237",
+      "what": "tab-btn-forward 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-forward t_ms=1793511223877 mouse=583.00,48.50 rows=Go Forward|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-237",
+      "what": "tab-btn-forward 문구",
+      "expect": "Go Forward",
+      "got": "Go Forward",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-forward t_ms=1793511223877 mouse=583.00,48.50 rows=Go Forward|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "tab-btn-forward 지연 ms",
+      "expect": "500~750",
+      "got": "504",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-forward t_ms=1793511223877 mouse=583.00,48.50 rows=Go Forward|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-forward 상자 x (마우스 583)",
+      "expect": "592.00",
+      "got": "592.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-forward t_ms=1793511223877 mouse=583.00,48.50 rows=Go Forward|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-forward 상자 y (마우스 48.5)",
+      "expect": "59.50",
+      "got": "59.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-forward t_ms=1793511223877 mouse=583.00,48.50 rows=Go Forward|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-243",
+      "what": "tab-btn-new 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-new t_ms=1793511226386 mouse=1371.00,48.50 rows=New…|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-243",
+      "what": "tab-btn-new 문구",
+      "expect": "New…",
+      "got": "New…",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-new t_ms=1793511226386 mouse=1371.00,48.50 rows=New…|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "tab-btn-new 지연 ms",
+      "expect": "500~750",
+      "got": "507",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-new t_ms=1793511226386 mouse=1371.00,48.50 rows=New…|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-new 상자 x (마우스 1371)",
+      "expect": "1,380.00",
+      "got": "1,380.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-new t_ms=1793511226386 mouse=1371.00,48.50 rows=New…|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-new 상자 y (마우스 48.5)",
+      "expect": "59.50",
+      "got": "59.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-new t_ms=1793511226386 mouse=1371.00,48.50 rows=New…|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-244",
+      "what": "tab-btn-split 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-split t_ms=1793511229068 mouse=1397.00,48.50 rows=Split Pane|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-244",
+      "what": "tab-btn-split 문구",
+      "expect": "Split Pane",
+      "got": "Split Pane",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-split t_ms=1793511229068 mouse=1397.00,48.50 rows=Split Pane|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "tab-btn-split 지연 ms",
+      "expect": "500~750",
+      "got": "506",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-split t_ms=1793511229068 mouse=1397.00,48.50 rows=Split Pane|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "tab-btn-split 상자 x (마우스 1397)",
+      "expect": "1,314.00",
+      "got": "1,314.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-split t_ms=1793511229068 mouse=1397.00,48.50 rows=Split Pane|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-split 상자 y (마우스 48.5)",
+      "expect": "59.50",
+      "got": "59.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-split t_ms=1793511229068 mouse=1397.00,48.50 rows=Split Pane|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-245",
+      "what": "tab-btn-zoom 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-zoom t_ms=1793511231753 mouse=1423.00,48.50 rows=Zoom In|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-245",
+      "what": "tab-btn-zoom 문구",
+      "expect": "Zoom In",
+      "got": "Zoom In",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-zoom t_ms=1793511231753 mouse=1423.00,48.50 rows=Zoom In|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "tab-btn-zoom 지연 ms",
+      "expect": "500~750",
+      "got": "507",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-zoom t_ms=1793511231753 mouse=1423.00,48.50 rows=Zoom In|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "tab-btn-zoom 상자 x (마우스 1423)",
+      "expect": "1,349.00",
+      "got": "1,349.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-zoom t_ms=1793511231753 mouse=1423.00,48.50 rows=Zoom In|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "tab-btn-zoom 상자 y (마우스 48.5)",
+      "expect": "59.50",
+      "got": "59.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=tab-btn-zoom t_ms=1793511231753 mouse=1423.00,48.50 rows=Zoom In|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-254·L-266",
+      "what": "status-btn-project-panel 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511234425 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-254·L-266",
+      "what": "status-btn-project-panel 문구",
+      "expect": "Close Left Dock",
+      "got": "Close Left Dock",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511234425 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "status-btn-project-panel 지연 ms",
+      "expect": "500~750",
+      "got": "504",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511234425 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208·L-209",
+      "what": "status-btn-project-panel 상자 x (마우스 315)",
+      "expect": "324.00",
+      "got": "324.00",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511234425 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "status-btn-project-panel 상자 y (마우스 837)",
+      "expect": "803.50",
+      "got": "803.50",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511234425 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "오른쪽 끝에서 왼쪽으로 뒤집은 툴팁",
+      "expect": "1개 이상",
+      "got": "tab-btn-split,tab-btn-zoom",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-210",
+      "what": "아래 끝에서 위로 뒤집은 툴팁",
+      "expect": "1개 이상",
+      "got": "sidebar-btn-folder-add,sidebar-btn-toggle,status-btn-project-panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-207",
+      "what": "leave 하면 사라짐 (앞서 상자 있음: True)",
+      "expect": "사라짐",
+      "got": "사라짐",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-207",
+      "what": "press 하면 사라짐 (앞서 상자 있음: True)",
+      "expect": "사라짐",
+      "got": "사라짐",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-207",
+      "what": "scroll 하면 사라짐 (앞서 상자 있음: True)",
+      "expect": "사라짐",
+      "got": "사라짐",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-228",
+      "what": "window-btn-min 툴팁 없음",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-228",
+      "what": "window-btn-close 툴팁 없음",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-231",
+      "what": "sidebar-folder-row-label 툴팁 없음",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-253·L-266",
+      "what": "Dock 닫힘 문구",
+      "expect": "Project Panel",
+      "got": "Project Panel",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511251392 mouse=315.00,837.00 rows=Project Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "menu",
+      "id": "I-302",
+      "what": "☰ 클릭 → 첫 메뉴",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-open index=0 name=workbench-gpui t_ms=1793511258513"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "workbench-gpui 항목·구분선",
+      "expect": "Quit workbench-gpui|Ctrl-Q",
+      "got": "Quit workbench-gpui|Ctrl-Q",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 1",
+      "expect": "index=1",
+      "got": "index=1",
+      "ok": true,
+      "evidence": "[dev] menu-open index=1 name=File t_ms=1793511260117"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "File 항목·구분선",
+      "expect": "Close Window|Ctrl-Shift-W",
+      "got": "Close Window|Ctrl-Shift-W",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-open index=2 name=View t_ms=1793511261518"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "View 항목·구분선",
+      "expect": "Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+      "got": "Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 3",
+      "expect": "index=3",
+      "got": "index=3",
+      "ok": true,
+      "evidence": "[dev] menu-open index=3 name=Window t_ms=1793511262951"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "Window 항목·구분선",
+      "expect": "Minimize|<none>\tZoom|<none>",
+      "got": "Minimize|<none>\tZoom|<none>",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-321",
+      "what": "메뉴 이름 버튼 사이 gap",
+      "expect": "4",
+      "got": "4.00",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-313",
+      "what": "최소 바깥 폭(200 + 테두리 2)",
+      "expect": ">= 202",
+      "got": "202.00",
+      "ok": true,
+      "evidence": "menu-box"
+    },
+    {
+      "case": "menu",
+      "id": "I-314",
+      "what": "팝업 x = 이름 버튼 왼쪽 − 5",
+      "expect": "443.00",
+      "got": "443.00",
+      "ok": true,
+      "evidence": "menu-box, menu-name-2"
+    },
+    {
+      "case": "menu",
+      "id": "I-314",
+      "what": "팝업 y = 이름 버튼 아래",
+      "expect": "27.00",
+      "got": "27.00",
+      "ok": true,
+      "evidence": "menu-box, menu-name-2"
+    },
+    {
+      "case": "menu",
+      "id": "I-315",
+      "what": "목록 위 여백 4 (테두리 1 안)",
+      "expect": "5",
+      "got": "5.00",
+      "ok": true,
+      "evidence": "menu-row-00"
+    },
+    {
+      "case": "menu",
+      "id": "I-315",
+      "what": "목록 아래 여백 4 (테두리 1 안)",
+      "expect": "5",
+      "got": "5.00",
+      "ok": true,
+      "evidence": "menu-row-02"
+    },
+    {
+      "case": "menu",
+      "id": "I-316",
+      "what": "항목 바깥 좌우 4 (테두리 1 안)",
+      "expect": "5",
+      "got": "5.00",
+      "ok": true,
+      "evidence": "menu-row-00"
+    },
+    {
+      "case": "menu",
+      "id": "I-317",
+      "what": "항목 줄 높이 14 × 1.618",
+      "expect": "22.65",
+      "got": "22.50",
+      "ok": true,
+      "evidence": "menu-row-00"
+    },
+    {
+      "case": "menu",
+      "id": "I-318",
+      "what": "구분선 높이 1",
+      "expect": "1",
+      "got": "1.00",
+      "ok": true,
+      "evidence": "menu-row-01"
+    },
+    {
+      "case": "menu",
+      "id": "I-318",
+      "what": "구분선 위 margin 6",
+      "expect": "6",
+      "got": "6.00",
+      "ok": true,
+      "evidence": "menu-row-00·01"
+    },
+    {
+      "case": "menu",
+      "id": "I-318",
+      "what": "구분선 아래 margin 6",
+      "expect": "6",
+      "got": "6.00",
+      "ok": true,
+      "evidence": "menu-row-01·02"
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "right → 메뉴 3",
+      "expect": "index=3",
+      "got": "index=3",
+      "ok": true,
+      "evidence": "[dev] menu-open index=3 name=Window t_ms=1793511265401"
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "right → 메뉴 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-open index=0 name=workbench-gpui t_ms=1793511265876"
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "left → 메뉴 3",
+      "expect": "index=3",
+      "got": "index=3",
+      "ok": true,
+      "evidence": "[dev] menu-open index=3 name=Window t_ms=1793511266152"
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "left → 메뉴 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-open index=2 name=View t_ms=1793511266450"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "down → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "down → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "down → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "up → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "up → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "end → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "home → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "tab → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "shift-tab → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "ctrl-n → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "ctrl-p → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "pagedown → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "pageup → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "shift-pagedown → 항목 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=2"
+    },
+    {
+      "case": "menu",
+      "id": "I-517·I-518",
+      "what": "shift-pageup → 항목 0",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "menu",
+      "id": "I-519",
+      "what": "Escape 닫기",
+      "expect": "reason=cancel",
+      "got": "[dev] menu-close reason=cancel t_ms=1793511271607",
+      "ok": true,
+      "evidence": "[dev] menu-close reason=cancel t_ms=1793511271607"
+    },
+    {
+      "case": "menu",
+      "id": "I-309",
+      "what": "닫은 뒤 포커스 복원(컨텍스트)",
+      "expect": "Root > Workspace",
+      "got": "[dev] key keystroke=ctrl-c action=none context=Root > Workspace",
+      "ok": true,
+      "evidence": "[dev] key keystroke=ctrl-c action=none context=Root > Workspace"
+    },
+    {
+      "case": "menu",
+      "id": "I-517",
+      "what": "Ctrl-C 닫기",
+      "expect": "reason=cancel",
+      "got": "[dev] menu-close reason=cancel t_ms=1793511272942",
+      "ok": true,
+      "evidence": "[dev] menu-close reason=cancel t_ms=1793511272942"
+    },
+    {
+      "case": "menu",
+      "id": "I-310",
+      "what": "F10 열기",
+      "expect": "index=0",
+      "got": "[dev] menu-open index=0 name=workbench-gpui t_ms=1793511273351",
+      "ok": true,
+      "evidence": "[dev] menu-open index=0 name=workbench-gpui t_ms=1793511273351"
+    },
+    {
+      "case": "menu",
+      "id": "I-310",
+      "what": "열린 채 F10 닫기",
+      "expect": "reason=toggle",
+      "got": "[dev] menu-close reason=toggle t_ms=1793511273606",
+      "ok": true,
+      "evidence": "[dev] menu-close reason=toggle t_ms=1793511273606"
+    },
+    {
+      "case": "menu",
+      "id": "R-8",
+      "what": "Enter 실행",
+      "expect": "action=workspace::ToggleLeftDock via=enter",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=enter t_ms=1793511275218",
+      "ok": true,
+      "evidence": "[dev] menu-exec action=workspace::ToggleLeftDock via=enter t_ms=1793511275218"
+    },
+    {
+      "case": "menu",
+      "id": "I-309",
+      "what": "실행 때 원래 포커스(center)",
+      "expect": "focus=center",
+      "got": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=center",
+      "ok": true,
+      "evidence": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=center"
+    },
+    {
+      "case": "menu",
+      "id": "I-520",
+      "what": "단축키 → 선택 표시 뒤 실행까지 ms",
+      "expect": "50~120",
+      "got": "59",
+      "ok": true,
+      "evidence": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793511277712 / [dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793511277771"
+    },
+    {
+      "case": "menu",
+      "id": "I-520",
+      "what": "단축키 실행 경로",
+      "expect": "via=shortcut",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793511277771",
+      "ok": true,
+      "evidence": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793511277771"
+    },
+    {
+      "case": "menu",
+      "id": "I-519",
+      "what": "메뉴 밖 누름 닫기",
+      "expect": "reason=click-outside",
+      "got": "[dev] menu-close reason=click-outside t_ms=1793511279603",
+      "ok": true,
+      "evidence": "[dev] menu-close reason=click-outside t_ms=1793511279603"
+    },
+    {
+      "case": "menu",
+      "id": "I-446",
+      "what": "Window > Zoom 클릭 → 최대화 (전: False)",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": "[dev] menu-exec action=zed::Zoom via=click t_ms=1793511283454"
+    },
+    {
+      "case": "menu",
+      "id": "I-445",
+      "what": "Window > Minimize → 최소화",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": "[dev] menu-exec action=zed::Minimize via=enter t_ms=1793511286262"
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾸기 전 메뉴 View 단축키",
+      "expect": "Toggle Left Dock|Ctrl-B",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾸기 전 툴팁",
+      "expect": "Close Left Dock|Ctrl-B",
+      "got": "Close Left Dock|Ctrl-B",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511296856 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "저장 뒤 다시 읽기",
+      "expect": "display-end seq=2",
+      "got": "1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾼 뒤 메뉴 View 단축키",
+      "expect": "Toggle Left Dock|Alt-B",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Alt-B\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Alt-B\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾼 뒤 툴팁",
+      "expect": "Close Left Dock|Alt-B",
+      "got": "Close Left Dock|Alt-B",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511304152 mouse=315.00,837.00 rows=Close Left Dock|Alt-B"
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "새 키 실행",
+      "expect": "ToggleLeftDock",
+      "got": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=center",
+      "ok": true,
+      "evidence": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=center"
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "Ctrl-B 로 예약됨",
+      "expect": "menu-shortcut action=workspace::ToggleLeftDock",
+      "got": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793511312135",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "50ms 안에 Left → File 로 전환",
+      "expect": "menu-open index=1",
+      "got": "[dev] menu-open index=1 name=File t_ms=1793511312143",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "전환 뒤 예약 실행 없음",
+      "expect": "없음",
+      "got": "",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "앱이 살아 있음(Close Window 오실행 없음)",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "shadow",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "View 의 Toggle Left Dock 단축키",
+      "expect": "Toggle Left Dock|<none>",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "shadow",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "Close Left Dock 툴팁 단축키",
+      "expect": "Close Left Dock|<none>",
+      "got": "Close Left Dock|<none>",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793511321768 mouse=315.00,837.00 rows=Close Left Dock|<none>"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-307 D-032 ③",
+      "what": "View 단축키(패널 컨텍스트 기준)",
+      "expect": "Toggle Left Dock|Ctrl-Y / Project Panel|Down",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\t---\tProject Panel|Down",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\t---\tProject Panel|Down"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-517 D-032 ③",
+      "what": "Down 은 메뉴 목록 키 우선(선택 이동)",
+      "expect": "menu-selected index=0, 실행 없음",
+      "got": "[dev] menu-selected index=0 / exec=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-520 D-032 ③",
+      "what": "Ctrl-Y → 항목 예약",
+      "expect": "menu-shortcut action=workspace::ToggleLeftDock",
+      "got": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793511331981",
+      "ok": true,
+      "evidence": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793511331981"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-520 D-032 ③",
+      "what": "Ctrl-Y → 50ms 뒤 실행",
+      "expect": "menu-exec action=workspace::ToggleLeftDock via=shortcut",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793511332043",
+      "ok": true,
+      "evidence": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793511332043"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-309 D-032 ③",
+      "what": "실행 때 원래 포커스(project_panel)",
+      "expect": "focus=project_panel",
+      "got": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=project_panel",
+      "ok": true,
+      "evidence": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=project_panel"
+    },
+    {
+      "case": "quit",
+      "id": "I-341",
+      "what": "Quit workbench-gpui 실행 → 앱 끝남",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": "[dev] menu-render index=0 name=workbench-gpui selected=0 rows=Quit workbench-gpui|Ctrl-Q"
+    },
+    {
+      "case": "closewin",
+      "id": "I-358",
+      "what": "Ctrl-Shift-W → 창 닫힘(앱 끝남)",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "shortcutRows": [
+    {
+      "case": "tooltip",
+      "where": "툴팁 app-menu-button",
+      "label": "Open Application Menu",
+      "action": "",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음 (F10, 표시 안 함 L-225)",
+      "ok": true,
+      "evidence": "r7-app-menu-button.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 title-folder-name",
+      "label": "Recent Projects",
+      "action": "projects::OpenRecent",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "Ctrl-R (v0.2 에 동작 없음)",
+      "ok": true,
+      "evidence": "r7-title-folder-name.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 sidebar-btn-folder-add",
+      "label": "Add Project",
+      "action": "workspace::Open",
+      "shown": "Ctrl-K Ctrl-O",
+      "computed": "Ctrl-K Ctrl-O",
+      "original": "Ctrl-K Ctrl-O (A-13.1)",
+      "ok": true,
+      "evidence": "r7-sidebar-btn-folder-add.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 sidebar-btn-toggle",
+      "label": "Toggle Sidebar",
+      "action": "multi_workspace::ToggleWorkspaceSidebar",
+      "shown": "Ctrl-Alt-J",
+      "computed": "Ctrl-Alt-J",
+      "original": "Ctrl-Alt-J",
+      "ok": true,
+      "evidence": "r7-sidebar-btn-toggle.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 sidebar-btn-toggle",
+      "label": "Focus Sidebar",
+      "action": "multi_workspace::FocusWorkspaceSidebar",
+      "shown": "Ctrl-Alt-;",
+      "computed": "Ctrl-Alt-;",
+      "original": "Ctrl-Alt-;",
+      "ok": true,
+      "evidence": "r7-sidebar-btn-toggle.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 tab-btn-back",
+      "label": "Go Back",
+      "action": "pane::GoBack",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "Alt-Left (v0.2 에 동작 없음)",
+      "ok": true,
+      "evidence": "r7-tab-btn-back.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 tab-btn-forward",
+      "label": "Go Forward",
+      "action": "pane::GoForward",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "Alt-Right (v0.2 에 동작 없음)",
+      "ok": true,
+      "evidence": "r7-tab-btn-forward.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 tab-btn-new",
+      "label": "New…",
+      "action": "",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음",
+      "ok": true,
+      "evidence": "r7-tab-btn-new.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 tab-btn-split",
+      "label": "Split Pane",
+      "action": "",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음",
+      "ok": true,
+      "evidence": "r7-tab-btn-split.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 tab-btn-zoom",
+      "label": "Zoom In",
+      "action": "workspace::ToggleZoom",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "Shift-Escape (v0.2 에 동작 없음)",
+      "ok": true,
+      "evidence": "r7-tab-btn-zoom.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 status-btn-project-panel",
+      "label": "Close Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Ctrl-B",
+      "computed": "Ctrl-B",
+      "original": "Ctrl-B",
+      "ok": true,
+      "evidence": "r7-status-btn-project-panel.png"
+    },
+    {
+      "case": "tooltip",
+      "where": "툴팁 status-btn-project-panel (Dock 닫힘)",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "r7-status-btn-project-panel-closed.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 workbench-gpui",
+      "label": "Quit workbench-gpui",
+      "action": "zed::Quit",
+      "shown": "Ctrl-Q",
+      "computed": "Ctrl-Q",
+      "original": "Ctrl+Q",
+      "ok": true,
+      "evidence": "r8-menu-0.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 File",
+      "label": "Close Window",
+      "action": "workspace::CloseWindow",
+      "shown": "Ctrl-Shift-W",
+      "computed": "Ctrl-Shift-W",
+      "original": "Ctrl+Shift+W",
+      "ok": true,
+      "evidence": "r8-menu-1.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 View",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Ctrl-B",
+      "computed": "Ctrl-B",
+      "original": "Ctrl+B",
+      "ok": true,
+      "evidence": "r8-menu-2.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 View",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "Ctrl+Shift+E",
+      "ok": true,
+      "evidence": "r8-menu-2.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 Window",
+      "label": "Minimize",
+      "action": "zed::Minimize",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음",
+      "ok": true,
+      "evidence": "r8-menu-3.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 Window",
+      "label": "Zoom",
+      "action": "zed::Zoom",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음 (F11 은 다른 액션)",
+      "ok": true,
+      "evidence": "r8-menu-3.png"
+    },
+    {
+      "case": "reload",
+      "where": "메뉴 View (keymap.json 바꾼 뒤)",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Alt-B",
+      "computed": "Alt-B",
+      "original": "사용자 keymap.json",
+      "ok": true,
+      "evidence": "r4-menu-after.png"
+    },
+    {
+      "case": "reload",
+      "where": "메뉴 View (keymap.json 바꾼 뒤)",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "사용자 keymap.json",
+      "ok": true,
+      "evidence": "r4-menu-after.png"
+    },
+    {
+      "case": "reload",
+      "where": "툴팁 status-btn-project-panel (keymap.json 바꾼 뒤)",
+      "label": "Close Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Alt-B",
+      "computed": "Alt-B",
+      "original": "사용자 keymap.json",
+      "ok": true,
+      "evidence": "r4-tooltip-after.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "툴팁 status-btn-project-panel (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Close Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-tooltip.png"
+    }
+  ],
+  "userKeymap": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+    "existedBefore": false,
+    "hashBefore": "<absent>",
+    "existsAfter": false,
+    "hashAfter": "<absent>",
+    "restored": true,
+    "backupPath": null
+  },
+  "finishedAt": "2026-11-01T14:35:42.6161206+09:00",
+  "passed": true
+}

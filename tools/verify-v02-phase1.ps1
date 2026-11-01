@@ -732,7 +732,7 @@ if ($script:r1Rows) {
     $md.Add('# R-1 바인딩 대조표 (v0.2 Phase 1)')
     $md.Add('')
     $md.Add(('생성: tools/verify-v02-phase1.ps1, {0}. 앱 출력: base-stdout.txt 의 `[dev] binding seq=1` 줄(source=builtin).' -f (Get-Date).ToString('yyyy-MM-dd HH:mm')))
-    $md.Add('기대 표: r1-expected.tsv (01-zed 02-INTERACTION 1절·9절 I-517, 04-APP-SPEC A-13.1·A-17 원문 키).')
+    $md.Add('기대 표: r1-expected.tsv (01-zed 02-INTERACTION 1절·9절 I-517, 04-APP-SPEC A-13.1·A-17 원문 키, 02 9.2절 키 열의 I-341·I-358(D-031 ③)).')
     $md.Add('')
     $md.Add(('- 기대 {0}줄, 일치 {1}줄, 앱 내장 바인딩 {2}개, 표 밖 내장 바인딩 {3}개.' -f $script:r1Rows.Count, @($script:r1Rows | Where-Object ok).Count, $script:r1Builtin.Count, $script:r1Extra.Count))
     $md.Add('- 기대 표의 I-030·I-035 줄(`menu` 컨텍스트)과 I-517 줄은 같은 앱 바인딩 하나에 대응한다. 프로젝트 패널 요소가 `ProjectPanel`·`menu`·`not_editing` 을 함께 컨텍스트로 가져(I-002) 이 바인딩이 패널에서도 듣는다.')

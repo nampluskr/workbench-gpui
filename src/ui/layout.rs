@@ -12,6 +12,7 @@ use gpui_kit::prelude::FluentBuilder as _;
 
 use super::layout_probe::{self, probe};
 use super::metrics::*;
+use super::tooltip::{self, Line, Spec};
 
 /// 왼쪽 사이드바(등록 폴더 목록) 내용. resizable 패널 안에 들어간다(D-10 이후 변경).
 ///
@@ -79,6 +80,11 @@ pub fn sidebar(cx: &App) -> impl IntoElement {
                             "sidebar-btn-toggle",
                             &["sidebar-icon-toggle"],
                             IconName::PanelLeft,
+                            Some(Spec::two(
+                                "sidebar-btn-toggle",
+                                Line::action("Toggle Sidebar", "multi_workspace::ToggleWorkspaceSidebar"),
+                                Line::action("Focus Sidebar", "multi_workspace::FocusWorkspaceSidebar"),
+                            )),
                             cx,
                         ))
                         .when(layout_probe::is_enabled(), |d| {
@@ -93,6 +99,10 @@ pub fn sidebar(cx: &App) -> impl IntoElement {
                             "sidebar-btn-folder-add",
                             &["sidebar-icon-folder-add"],
                             IconName::Folder,
+                            Some(Spec::one(
+                                "sidebar-btn-folder-add",
+                                Line::action("Add Project", "workspace::Open"),
+                            )),
                             cx,
                         )),
                 ),
@@ -104,6 +114,7 @@ fn icon_with_probe(
     id: &'static str,
     icon_name: &'static [&'static str],
     icon: IconName,
+    tooltip: Option<Spec>,
     cx: &App,
 ) -> impl IntoElement {
     let theme = cx.theme();
@@ -118,6 +129,7 @@ fn icon_with_probe(
         .size(BUTTON_DEFAULT)
         .text_color(theme.muted_foreground)
         .hover(move |s| s.bg(hover_bg))
+        .when_some(tooltip, |d, spec| d.tooltip(tooltip::build(spec)))
         .child(Icon::new(icon).size(ICON_SMALL))
 }
 
@@ -155,12 +167,14 @@ pub fn tab_bar(cx: &App) -> impl IntoElement {
                     "tab-btn-back",
                     &["tab-icon-back"],
                     IconName::ArrowLeft,
+                    Some(Spec::one("tab-btn-back", Line::action("Go Back", "pane::GoBack"))),
                     cx,
                 ))
                 .child(icon_with_probe(
                     "tab-btn-forward",
                     &["tab-icon-forward"],
                     IconName::ArrowRight,
+                    Some(Spec::one("tab-btn-forward", Line::action("Go Forward", "pane::GoForward"))),
                     cx,
                 )),
         )
@@ -211,18 +225,21 @@ pub fn tab_bar(cx: &App) -> impl IntoElement {
                     "tab-btn-new",
                     &["tab-icon-new"],
                     IconName::Plus,
+                    Some(Spec::one("tab-btn-new", Line::text("New…"))),
                     cx,
                 ))
                 .child(icon_with_probe(
                     "tab-btn-split",
                     &["tab-icon-split"],
                     IconName::PanelRight,
+                    Some(Spec::one("tab-btn-split", Line::text("Split Pane"))),
                     cx,
                 ))
                 .child(icon_with_probe(
                     "tab-btn-zoom",
                     &["tab-icon-zoom"],
                     IconName::Maximize,
+                    Some(Spec::one("tab-btn-zoom", Line::action("Zoom In", "workspace::ToggleZoom"))),
                     cx,
                 )),
         )
@@ -236,7 +253,7 @@ fn rems_1px() -> Rems {
 /// 상태 표시줄 (L-28 padding 4, L-29 그룹 사이 8·그룹 안 4, L-91 좌·우 목록).
 ///
 /// A-11.8 사이드바가 열린 상태: 왼쪽에 프로젝트 패널 토글. 오른쪽에 커서 위치(L-97, 자리 표시 "1:1").
-pub fn status_bar(cx: &App) -> impl IntoElement {
+pub fn status_bar(dock_open: bool, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     // 왼쪽 그룹을 flex_1 로 늘려 오른쪽 그룹을 끝에 붙인다(justify_between 과 보이는 결과가 같다).
     // 이렇게 하면 두 그룹 사이가 정확히 gap 8 이 되어 레이아웃으로 잴 수 있다.
@@ -260,6 +277,7 @@ pub fn status_bar(cx: &App) -> impl IntoElement {
                     "status-btn-project-panel",
                     &["status-icon-project-panel"],
                     IconName::FolderOpen,
+                    Some(project_panel_toggle_tooltip(dock_open)),
                     cx,
                 ))
                 .when(measuring, |d| d.child(measure_placeholder())),
@@ -300,4 +318,21 @@ pub fn project_panel_placeholder(cx: &App) -> impl IntoElement {
 
 fn rems_from_px_local(px: f32) -> Rems {
     super::rem::rems_from_px(px)
+}
+
+/// 상태 표시줄 프로젝트 패널 토글의 툴팁(L-253, L-254, L-266). 패널이 열려 있고 활성이면 `Close Left Dock`
+/// + Dock 토글 키, 닫혀 있으면 `Project Panel` + 패널 포커스 토글 키. 왼쪽 Dock 의 패널은 프로젝트 패널 하나라
+/// Dock 이 열려 있으면 활성이다.
+fn project_panel_toggle_tooltip(dock_open: bool) -> Spec {
+    if dock_open {
+        Spec::one(
+            "status-btn-project-panel",
+            Line::action("Close Left Dock", "workspace::ToggleLeftDock"),
+        )
+    } else {
+        Spec::one(
+            "status-btn-project-panel",
+            Line::action("Project Panel", "project_panel::ToggleFocus"),
+        )
+    }
 }

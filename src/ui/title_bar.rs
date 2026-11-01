@@ -79,8 +79,48 @@ impl WindowButton {
     }
 }
 
-/// 타이틀 바: [Drag 영역 (flex_1)] + [최소화][최대화|복원][닫기] (L-83 오른쪽 끝).
-pub fn title_bar(glyph_font: SharedString, window: &Window, cx: &App) -> impl IntoElement {
+/// L-87 왼쪽 묶음 gap 2 (`gap_0p5`).
+const LEFT_GROUP_GAP: Rems = super::rem::rems_from_px(2.);
+
+/// L-87 왼쪽 묶음: [☰ 메뉴] → [폴더 이름]. 폴더 이름 버튼은 이름 표시와 툴팁만 둔다(D-16).
+/// v0.2 Phase 2 에는 등록 폴더가 없어 늘 `Open Recent Project`(Muted, L-227)를 보인다. 툴팁 `Recent Projects`(L-226).
+/// 툴팁의 액션 `projects::OpenRecent` 는 v0.2 에 없어 단축키 없이 제목만 보인다(R-7, L-223).
+fn left_group(app_menu: AnyView, cx: &App) -> impl IntoElement {
+    let theme = cx.theme();
+    let hover_bg = theme.secondary_hover;
+    h_flex()
+        .on_children_prepainted(probe(&["app-menu", "title-folder-name"]))
+        .id("title-left")
+        .flex_shrink_0()
+        .h_full()
+        .pl(TITLE_BAR_PADDING_LEFT)
+        .gap(LEFT_GROUP_GAP)
+        .child(app_menu)
+        .child(
+            div()
+                .id("title-folder-name")
+                .flex()
+                .items_center()
+                .h(super::metrics::BUTTON_DEFAULT)
+                .px(super::rem::rems_from_px(6.))
+                .text_sm()
+                .text_color(theme.muted_foreground)
+                .hover(move |s| s.bg(hover_bg))
+                .tooltip(super::tooltip::build(super::tooltip::Spec::one(
+                    "title-folder-name",
+                    super::tooltip::Line::action("Recent Projects", "projects::OpenRecent"),
+                )))
+                .child("Open Recent Project"),
+        )
+}
+
+/// 타이틀 바: [왼쪽 묶음] + [Drag 영역 (flex_1)] + [최소화][최대화|복원][닫기] (L-83 오른쪽 끝, L-87).
+pub fn title_bar(
+    glyph_font: SharedString,
+    app_menu: AnyView,
+    window: &Window,
+    cx: &App,
+) -> impl IntoElement {
     // L-312 최대화하지 않으면 최대화 □(U+E922), 최대화하면 복원(U+E923).
     let max_or_restore = if window.is_maximized() {
         WindowButton::Restore
@@ -96,17 +136,17 @@ pub fn title_bar(glyph_font: SharedString, window: &Window, cx: &App) -> impl In
     };
 
     h_flex()
-        .on_children_prepainted(probe(&["title-bar-drag", "window-controls"]))
+        .on_children_prepainted(probe(&["title-left", "title-bar-drag", "window-controls"]))
         .id("title-bar")
         .flex_shrink_0()
         .w_full()
         .h(TITLE_BAR_HEIGHT)
+        .child(left_group(app_menu, cx))
         .child(
             h_flex()
                 .id("title-bar-drag")
                 .flex_1()
                 .h_full()
-                .pl(TITLE_BAR_PADDING_LEFT)
                 .window_control_area(WindowControlArea::Drag),
         )
         .child(

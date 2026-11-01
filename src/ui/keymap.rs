@@ -11,6 +11,7 @@
 use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc;
 use std::time::Duration;
 
@@ -32,7 +33,14 @@ const KEYMAP_FILE: &str = "keymap.json";
 const APP_DIR: &str = "workbench-gpui";
 
 pub mod workspace {
-    gpui_kit::actions!(workspace, [ToggleLeftDock, Open, CopyPath, CopyRelativePath]);
+    gpui_kit::actions!(
+        workspace,
+        [ToggleLeftDock, Open, CopyPath, CopyRelativePath, CloseWindow]
+    );
+}
+
+pub mod zed {
+    gpui_kit::actions!(zed, [Quit, Minimize, Zoom]);
 }
 
 pub mod multi_workspace {
@@ -113,6 +121,7 @@ pub fn keymap_path() -> Option<PathBuf> {
 
 /// `gpui_kit::init` 바로 뒤에 한 번 부른다. 액션 처리기와 키 입력 관찰을 붙인다. 바인딩은 `load` 가 넣는다.
 pub fn init(dev: bool, cx: &mut App) {
+    DEV.store(dev, Ordering::Relaxed);
     let base: Vec<KeyBinding> = cx.key_bindings().borrow().bindings().cloned().collect();
     cx.set_global(KeymapState {
         base,
@@ -174,6 +183,10 @@ fn register_placeholder_handlers(cx: &mut App) {
         workspace::Open,
         workspace::CopyPath,
         workspace::CopyRelativePath,
+        workspace::CloseWindow,
+        zed::Quit,
+        zed::Minimize,
+        zed::Zoom,
         multi_workspace::ToggleWorkspaceSidebar,
         multi_workspace::FocusWorkspaceSidebar,
         app_menu::Toggle,
@@ -206,6 +219,43 @@ fn register_placeholder_handlers(cx: &mut App) {
     );
 }
 
+
+/// `--dev-keymap` 이 켜졌는가. `App` 이 없는 곳(Drop 등)에서 쓴다.
+static DEV: AtomicBool = AtomicBool::new(false);
+
+pub fn dev_flag() -> bool {
+    DEV.load(Ordering::Relaxed)
+}
+
+pub fn dev_enabled(cx: &App) -> bool {
+    cx.try_global::<KeymapState>().is_some_and(|s| s.dev)
+}
+
+/// 액션 이름 하나의 표시 문자열(메뉴 I-307·I-510, 툴팁 L-201·L-202, I-704·L-217).
+/// `focus` 가 있으면(메뉴: 열기 직전 포커스) 그 자리의 컨텍스트에서만, 없으면(툴팁) 지금 포커스 핸들의 컨텍스트에서
+/// 고른다. 다른 액션에 가려진 키는 빼고 남은 것 중 마지막이다(I-704, gpui `highest_precedence_binding_for_action_in`).
+/// 없으면 None 이다(L-223: 단축키 없이 제목만). I-307 의 "없으면 창 전체"는 열기 직전 포커스가 없을 때(지금 포커스)로만 쓴다.
+/// 리뷰 1회차 ②(D-032)·2회차 ②(D-033): 가려진 결과를 다른 컨텍스트나 키맵 전체의 후보로 바꾸지 않는다.
+pub fn shortcut_for_name(
+    name: &str,
+    focus: Option<&FocusHandle>,
+    window: &Window,
+    cx: &App,
+) -> Option<String> {
+    let action = cx.build_action(name, None).ok()?;
+    // "지금 포커스"는 포커스 핸들로 직접 고른다. `Window::highest_precedence_binding_for_action` 은 디스패치 트리에
+    // 마지막으로 그린 요소의 컨텍스트 스택을 써서 포커스 자리와 다를 수 있다(gpui-pre `window.rs` 6809행).
+    // `focus` 가 있으면 그 자리에서만 고른다. 거기서 가려져 없으면 표시하지 않는다(리뷰 2회차 ②, D-033):
+    // 메뉴 포커스 같은 다른 컨텍스트로 다시 찾으면 원래 자리에서 가려진 키가 되살아난다.
+    let binding = match focus {
+        Some(focus) => window.highest_precedence_binding_for_action_in(action.as_ref(), focus)?,
+        None => {
+            let current = window.focused(cx)?;
+            window.highest_precedence_binding_for_action_in(action.as_ref(), &current)?
+        }
+    };
+    Some(display::binding_text(&strokes(&binding)))
+}
 /// dev 출력: 화면 요소 처리기가 액션을 받았다.
 pub fn log_handled(action: &dyn Action, focus: &str, cx: &App) {
     if cx.global::<KeymapState>().dev {
@@ -241,9 +291,14 @@ fn apply(cx: &mut App) -> Vec<String> {
         let action = cx
             .build_action(b.action, None)
             .unwrap_or_else(|e| panic!("builtin action {}: {e:?}", b.action));
-        let predicate = KeyBindingContextPredicate::parse(b.context)
-            .unwrap_or_else(|e| panic!("builtin context {}: {e}", b.context));
-        let binding = KeyBinding::load(b.keys, action, Some(Rc::new(predicate)), false, None, cx)
+        // 빈 문자열은 컨텍스트 없는(전역) 바인딩이다.
+        let predicate = (!b.context.is_empty()).then(|| {
+            Rc::new(
+                KeyBindingContextPredicate::parse(b.context)
+                    .unwrap_or_else(|e| panic!("builtin context {}: {e}", b.context)),
+            )
+        });
+        let binding = KeyBinding::load(b.keys, action, predicate, false, None, cx)
             .unwrap_or_else(|e| panic!("builtin keys {}: {e:?}", b.keys));
         bindings.push(binding.with_meta(BUILTIN_META));
     }
@@ -395,7 +450,10 @@ fn dump(errors: &[String], cx: &App) {
     for (index, b) in BUILTIN.iter().enumerate() {
         println!(
             "[dev] builtin seq={seq} index={index} keys={} context={} action={} source={}",
-            b.keys, b.context, b.action, b.source
+            b.keys,
+            if b.context.is_empty() { "-" } else { b.context },
+            b.action,
+            b.source
         );
     }
     println!("[dev] keymap-load-end seq={seq}");

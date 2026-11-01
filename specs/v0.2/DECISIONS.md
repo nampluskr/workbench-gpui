@@ -53,6 +53,8 @@ v0.1 결정은 버전과 무관한 구현 방식이고, v0.2 범위(PoC 4~5단�
 
 **이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-027 ②)으로 액션 이름을 정했다(2026-11-01). 01-zed·02-gpui 에 이름이 나온 액션은 그 이름을 그대로 쓴다. 문서에 이름이 없는 액션은 Zed 와 같은 `namespace::Name` 꼴로 우리가 짓고, 그 목록을 PROGRESS 와 검증 보고서(`specs/v0.2/verify/phase1/`)에 "우리가 지은 이름"으로 남긴다.
 
+**이후 변경** — Phase 2 구현 전 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-031 ③)으로 내장 키맵에 두 키를 더했다(2026-11-01). ☰ 메뉴의 Quit(I-341 `zed::Quit`, Ctrl+Q)과 Close Window(I-358 `workspace::CloseWindow`, Ctrl+Shift+W)는 v0.2 에서 동작하는 항목인데, 키가 02 1절 표가 아니라 9.2절 표(A-18.11, 적용 keymap 결과)에만 있다. 두 키를 내장 키맵에 넣고 R-1 기대 표와 Phase 1 검증 스크립트를 함께 고친다.
+
 ---
 
 ## D-3. 키 충돌·해제·표시 규칙은 01-zed I-702·I-703·I-704 와 L-217~L-221 을 그대로 따르고, 키 엔진은 gpui 의 actions·KeyBinding·key_context 를 쓴다
@@ -122,6 +124,12 @@ v0.1 결정은 버전과 무관한 구현 방식이고, v0.2 범위(PoC 4~5단�
 - **Windows 네이티브 메뉴(`native_menu`)로 ☰ 메뉴 만들기** — 01-zed I-301 이 Zed 는 직접 그린 메뉴이고 우리도 직접 그린다고 정했다. 배제.
 
 **이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-027 ③)으로 메뉴 키 컨텍스트를 정했다(2026-11-01). I-516·I-517 대로 `menu` 컨텍스트에 I-517 의 키를 우리 `menu::` 액션으로 묶고, Phase 2 에서 메뉴 요소에 `menu` 컨텍스트를 달아 그 액션을 gpui-kit PopupMenu 동작으로 잇는다. gpui-component 0.8.1 PopupMenu 가 자기 컨텍스트 `PopupMenu` 에 넣는 바인딩(enter·escape·up·down·left·right, `menu/popup_menu.rs` 22~29행)은 gpui-kit 것으로 두고 R-1 대조에서 뺀다.
+
+**이후 변경** — Phase 2 구현 전 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-031 ①·②)으로 다음과 같이 바꿨다(2026-11-01). 근거는 G-111 소스 대조(PROGRESS Phase 2)다. gpui-component 0.8.1 `PopupMenu` 는 항목 높이 26·안쪽 좌우 8·구분선 2px 같은 값을 상수로 박아 두어(`menu/popup_menu.rs` 1236~1285행) 바깥에서 I-505~I-512 로 고칠 수 없다. `Kbd` 단축키 형식(`Ctrl+Alt+Shift+Win+A`, `kbd.rs` 105~125행)도 L-219 와 다르다. gpui-kit `Tooltip` 의 여백·gap·애니메이션(`tooltip.rs` 113~130행)도 L-209·L-213·L-215 와 다르다.
+
+- ☰ 메뉴는 gpui 요소(`div`·`anchored`·`deferred`, 포커스, `menu` 키 컨텍스트)로 직접 그린다. gpui-kit `PopupMenu`·`AppMenuBar` 는 쓰지 않는다. `menu` 컨텍스트의 우리 `menu::` 액션(위 이후 변경)을 이 메뉴 요소가 받는다.
+- 툴팁은 gpui 의 `.tooltip()` 장치(지연 500ms·마우스 + (1, 1)·창 가장자리 뒤집기, gpui-pre `elements/div.rs` 53행·`window.rs` 3834~3860행. Zed 값과 같다)를 그대로 쓰고, 그 안의 상자는 우리 툴팁 뷰로 그린다. gpui-kit `Tooltip` 은 쓰지 않는다.
+- 메뉴·툴팁의 단축키 글자는 우리 표시 문자열(`crate::keymap::display`, L-219~L-221)로 그린다. gpui-kit `Kbd` 는 쓰지 않는다.
 
 ---
 
@@ -275,6 +283,11 @@ v0.2 의 탭은 다음 다섯 가지만 한다.
 
 - **전체 구조를 만들고 동작 없는 항목은 비활성** — 사용자가 동작 항목만 골랐다. 배제.
 - **전체 구조를 만들고 동작 없는 항목도 활성** — 위와 같음. 배제.
+
+**이후 변경** — Phase 2 구현 전 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-031 ④·⑤)으로 다음을 정했다(2026-11-01).
+
+- Phase 2 의 ☰ 메뉴에는 지금 동작하는 항목만 둔다. Open Folder...(R-10)와 Toggle Folder Sidebar·Focus Folder Sidebar(R-16)는 그 동작이 생기는 Phase 3 에서 메뉴에 넣고, R-8 의 그 세 항목 판정도 Phase 3 으로 이월한다. 메뉴 정의는 02 9.2절 순서 그대로 한 곳에 두고, 동작 여부로만 걸러 순서·구분선(I-306)을 지킨다.
+- 메뉴에 쓰는 앱 이름은 `workbench-gpui` 다(I-341, A-18.10). 첫 메뉴 이름은 `workbench-gpui`, 항목은 `Quit workbench-gpui` 다. 01-zed A-40.5 가 앱 이름을 정하지 않았고, 창 제목(v0.1)과 앱 데이터 폴더(D-11)가 이미 이 이름이다.
 
 ---
 

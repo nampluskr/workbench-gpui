@@ -1,0 +1,107 @@
+{
+  "startedAt": "2026-11-01T15:32:55.6937280+09:00",
+  "keymapPath": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+  "cases": {
+    "shadowpp": {
+      "pid": 3532,
+      "hwnd": "0xE70A52"
+    },
+    "rapid": {
+      "pid": 33284,
+      "hwnd": "0x13D0A5A",
+      "lines": [
+        "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793514790778",
+        "[dev] menu-shortcut action=project_panel::ToggleFocus t_ms=1793514790788"
+      ]
+    },
+    "chord": {
+      "pid": 31908,
+      "hwnd": "0xC09CE"
+    }
+  },
+  "failures": [
+    "shadowpp: I-704 L-223 D-033 ② View 의 Toggle Left Dock 단축키(패널에서 가려짐): 기대 Toggle Left Dock|<none>, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+    "rapid: I-520 D-033 ⓐ 마지막 예약만 실행: 기대 menu-exec action=project_panel::ToggleFocus via=shortcut (1번), 실제 ",
+    "chord: I-520 D-033 ⓑ ⑴ Ctrl-K Ctrl-Y → Project Panel 만 실행: 기대 menu-exec action=project_panel::ToggleFocus via=shortcut (1번), 실제 [dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793514799845",
+    "chord: I-520 D-033 ⓑ ⑵ Ctrl-K 직후(0.4초)에는 아직 실행 안 함(접두 대기): 기대 0, 실제 1",
+    "chord: I-520 D-033 ⓑ ⑵ Ctrl-K 만 → 시간 초과 뒤 Toggle Left Dock 실행: 기대 menu-exec action=workspace::ToggleLeftDock via=shortcut, 900ms 이상, 실제 [dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793514804489 (dt=106)"
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "case": "shadowpp",
+      "id": "I-704 L-223 D-033 ②",
+      "what": "View 의 Toggle Left Dock 단축키(패널에서 가려짐)",
+      "expect": "Toggle Left Dock|<none>",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": false,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "rapid",
+      "id": "I-520 D-033 ⓐ",
+      "what": "두 번 예약됨",
+      "expect": "2",
+      "got": "2",
+      "ok": true,
+      "evidence": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793514790778 / [dev] menu-shortcut action=project_panel::ToggleFocus t_ms=1793514790788"
+    },
+    {
+      "case": "rapid",
+      "id": "I-520 D-033 ⓐ",
+      "what": "마지막 예약만 실행",
+      "expect": "menu-exec action=project_panel::ToggleFocus via=shortcut (1번)",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "chord",
+      "id": "I-307 D-033 ⓑ",
+      "what": "View 단축키(패널 컨텍스트)",
+      "expect": "Toggle Left Dock|Ctrl-K / Project Panel|Ctrl-K Ctrl-Y",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K\t---\tProject Panel|Ctrl-K Ctrl-Y",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K\t---\tProject Panel|Ctrl-K Ctrl-Y"
+    },
+    {
+      "case": "chord",
+      "id": "I-520 D-033 ⓑ",
+      "what": "⑴ Ctrl-K Ctrl-Y → Project Panel 만 실행",
+      "expect": "menu-exec action=project_panel::ToggleFocus via=shortcut (1번)",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793514799845",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "chord",
+      "id": "I-520 D-033 ⓑ",
+      "what": "⑵ Ctrl-K 직후(0.4초)에는 아직 실행 안 함(접두 대기)",
+      "expect": "0",
+      "got": "1",
+      "ok": false,
+      "evidence": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793514804489"
+    },
+    {
+      "case": "chord",
+      "id": "I-520 D-033 ⓑ",
+      "what": "⑵ Ctrl-K 만 → 시간 초과 뒤 Toggle Left Dock 실행",
+      "expect": "menu-exec action=workspace::ToggleLeftDock via=shortcut, 900ms 이상",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793514804489 (dt=106)",
+      "ok": false,
+      "evidence": "[dev] key keystroke=ctrl-shift-e action=project_panel::ToggleFocus context=Root > Workspace"
+    }
+  ],
+  "shortcutRows": [],
+  "userKeymap": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+    "existedBefore": false,
+    "hashBefore": "<absent>",
+    "existsAfter": false,
+    "hashAfter": "<absent>",
+    "restored": true,
+    "backupPath": null
+  },
+  "finishedAt": "2026-11-01T15:33:26.6422555+09:00",
+  "passed": false
+}

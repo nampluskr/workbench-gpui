@@ -13,7 +13,7 @@
 pub struct Builtin {
     /// gpui 키 표기. 예: `ctrl-k ctrl-o`.
     pub keys: &'static str,
-    /// 컨텍스트 조건식(gpui `KeyBindingContextPredicate` 문법).
+    /// 컨텍스트 조건식(gpui `KeyBindingContextPredicate` 문법). 빈 문자열이면 컨텍스트 없는(전역) 바인딩이다.
     pub context: &'static str,
     /// 액션 이름(`super::ACTIONS` 안의 이름).
     pub action: &'static str,
@@ -65,6 +65,9 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-c", "menu", "menu::Cancel", "I-517"),
     b("right", "menu", "menu::SelectChild", "I-517"),
     b("left", "menu", "menu::SelectParent", "I-517"),
+    // 전역(컨텍스트 없음, 빈 문자열). 02 9.2절 키 열(A-18.11)의 ☰ 메뉴 항목 키 (D-2 이후 변경, D-031 ③).
+    b("ctrl-q", "", "zed::Quit", "I-341"),
+    b("ctrl-shift-w", "", "workspace::CloseWindow", "I-358"),
     // 창·작업 영역 (I-022~I-024, I-310, A-13.1, A-17.1·A-17.2·A-17.6~A-17.8).
     b("ctrl-b", "Workspace", "workspace::ToggleLeftDock", "I-022, A-17.7"),
     b("ctrl-shift-e", "Workspace", "project_panel::ToggleFocus", "I-023, A-17.8"),

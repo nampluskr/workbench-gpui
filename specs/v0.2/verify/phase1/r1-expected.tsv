@@ -1,6 +1,9 @@
 # R-1 기대 표. 01-zed 02-INTERACTION 1절(I-022~I-024, I-030~I-037, I-039~I-043, I-310), 9절 I-517, 04-APP-SPEC A-13.1·A-17 의 키를 원문 표에서 옮겨 적었다.
+# I-341·I-358 두 줄은 02 9.2절 키 열(A-18.11)에서 더했다(DECISIONS D-2 이후 변경, D-031 ③). 컨텍스트 - 는 컨텍스트 없는(전역) 바인딩이다.
 # 키는 gpui 표기(수식키 순서 ctrl-win-alt-shift), 컨텍스트는 gpui 조건식, 액션 이름은 D-2 이후 변경(D-027 ②)의 이름이다.
 # 열: id	keys	context	action
+I-341	ctrl-q	-	zed::Quit
+I-358	ctrl-shift-w	-	workspace::CloseWindow
 I-022	ctrl-b	Workspace	workspace::ToggleLeftDock
 I-023	ctrl-shift-e	Workspace	project_panel::ToggleFocus
 I-024	ctrl-alt-j	Workspace	multi_workspace::ToggleWorkspaceSidebar

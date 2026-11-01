@@ -99,7 +99,175 @@
 
 ### Phase 2 — 툴팁·메뉴 단축키 표시
 
-아직 없음.
+- **G-111 소스 대조: gpui·gpui-kit 툴팁·메뉴 기본 동작 vs 01-zed** (2026-11-01)
+  - 무엇을 했나: gpui-pre 0.3.10(`elements/div.rs`, `window.rs`)과 gpui-component 0.8.1(`tooltip.rs`, `kbd.rs`, `menu/popup_menu.rs`)을 읽어, 툴팁(L-206~L-216)과 메뉴(I-504~I-521, L-219) 값을 대조했다.
+  - 결과:
+    - gpui 툴팁 동작은 같다. 지연 500ms(`div.rs:53` `DEFAULT_TOOLTIP_SHOW_DELAY`, 요소별 변경 가능), 위치는 마우스 + (1, 1)(`window.rs:3835`), 오른쪽·아래가 창을 넘으면 커서 왼쪽·위쪽(−폭−1, −높이−1)으로 뒤집는다(`window.rs:3841-3860`). L-206·L-208·L-210 과 같다.
+    - gpui-kit `Tooltip` 의 모양은 다르다. 바깥 여백 사방 12(`m_3`, L-209 는 왼쪽 8·위 10), 안쪽 위아래 2·좌우 8(`py_0p5`·`px_2`, L-213 은 4·8), 제목과 단축키 사이 gap 12(`gap_3`, L-215 는 16), 나타날 때 미끄러지는 애니메이션이 있다. 단축키는 `Kbd` 형식이다.
+    - gpui-kit `Kbd::format` 은 `Ctrl+Alt+Shift+Win+A` 꼴이다(`kbd.rs:105-125`, 구분자 `+`, Win 이 마지막). L-219(구분자 `-`, Ctrl → Win → Alt → Shift)와 다르다. 메뉴와 툴팁 모두 이 형식을 쓴다.
+    - gpui-kit `PopupMenu` 는 몇 값을 상수로 박아 두었다. 항목 높이 26(`popup_menu.rs:1242`), 항목 안 좌우 8(1236, I-507 은 6), 목록 `p_1`·항목 사이 2(I-507 은 목록 위아래 4, 항목 사이 간격 없음), 구분선 2px·위아래 2(1285, I-512 는 1px·위아래 6)다. 최소 폭은 기본 8rem 이고 `min_w`, 최대 높이는 기본 창 절반·450 이고 `max_h` 로 바꿀 수 있다. 키는 자기 `PopupMenu` 컨텍스트의 6개뿐이다(I-517 의 Tab·Ctrl-N·Ctrl-P·Home·End·PageUp·PageDown·Ctrl-C 없음).
+  - 검증: 소스 읽기(위 파일·행).
+  - 특이사항: D-5("gpui-kit menu·Tooltip 을 쓰고 다른 점만 보정")로는 상수로 박힌 값을 맞출 수 없어, 구현 전에 leader 에게 물었다(아래).
+
+- **구현 보류: 결정 질문** (2026-11-01)
+  - 무엇을 했나: 원문만으로 정할 수 없는 것 다섯 가지를 leader 에게 물었다. 메뉴를 그리는 방법, 툴팁을 그리는 방법, v0.2 내장 키맵에 없는 메뉴 항목 키(Quit·Close Window), Phase 3 동작이 필요한 메뉴 항목(Open Folder..., Toggle/Focus Folder Sidebar), 메뉴의 앱 이름이다.
+  - 결과: leader 가 다섯 가지 모두 추천안 (a)로 답했다(docs/HERDR-DECISIONS.md D-031). ① ☰ 메뉴는 gpui 요소로 직접, ② 툴팁 뷰는 직접 그리되 gpui `.tooltip` 장치를 쓴다, ③ Quit Ctrl-Q·Close Window Ctrl-Shift-W 를 내장 키맵에 더한다, ④ 동작하는 항목만 두고 세 항목은 Phase 3 이월, ⑤ 앱 이름은 workbench-gpui 다.
+  - 검증: 없음.
+  - 특이사항: 없음.
+
+- **DECISIONS D-031 반영** (2026-11-01)
+  - 무엇을 했나: `DECISIONS.md` 에 "이후 변경"(leader 결정 D-031)을 덧붙였다. D-5 에 ①·②(근거는 G-111 대조의 파일·행), D-2 에 ③, D-13 에 ④·⑤ 를 적었다.
+  - 결과: 위 세 결정에 이후 변경 단락이 하나씩 생겼다(삽입만 했다).
+  - 검증: `git diff specs/v0.2/DECISIONS.md` 가 삽입만인지 확인했다.
+  - 특이사항: 없음.
+
+- **내장 키맵에 Quit·Close Window 키 추가 (D-031 ③)** (2026-11-01)
+  - 무엇을 했나:
+    - 액션 `zed::Quit`·`workspace::CloseWindow`·`zed::Minimize`·`zed::Zoom` 을 더했다(이름은 01-zed 9.2절 액션 열).
+    - 내장 키맵에 전역(컨텍스트 없음) 바인딩 `ctrl-q` → `zed::Quit`(I-341), `ctrl-shift-w` → `workspace::CloseWindow`(I-358) 을 더했다. 내장 표에서 컨텍스트 빈 문자열은 전역이다.
+    - R-1 기대 표 `specs/v0.2/verify/phase1/r1-expected.tsv` 에 두 줄을 더하고, Phase 1 스크립트의 대조표 머리말을 고쳤다.
+  - 결과: R-1 기대 62줄, 앱 내장 바인딩 54개.
+  - 검증: Phase 1 스크립트를 다시 돌렸다. 9개 사례 실패 0, R-1 62줄 일치·표 밖 0. 결과는 `specs/v0.2/verify/phase1/d031-rerun/`(README 포함)에 있다.
+  - 특이사항: 처음에는 다시 돌린 결과가 Phase 1 증거 폴더를 덮어썼다. 그런데 그 폴더는 Phase 1 검증 보고서(`REPORT.md`)가 줄 번호로 인용한다. 그래서 그 파일들(stdout·results.json·r1-bindings.md·알림 스크린샷)은 HEAD 것으로 되돌리고, 다시 돌린 결과를 하위 폴더에 따로 두었다. 기대 표(`r1-expected.tsv`)만 바뀐 채로 둔다.
+
+- **툴팁·☰ 앱 메뉴 구현 (R-5~R-9)** (2026-11-01)
+  - 무엇을 했나:
+    - `src/ui/tooltip.rs`:
+      - gpui `.tooltip()` 장치 안에 넣는 우리 툴팁 뷰를 만들었다. 치수는 L-209 투명 여백 8·10, L-211 모서리 8·테두리 1·그림자 두 겹(L-212), L-213 여백 4·8, L-214 14px, L-215 제목 최대 288·gap 16, L-216 메타 줄, L-232 두 줄 툴팁이다.
+      - 단축키는 지금 포커스의 컨텍스트에서 고르고(I-704), 없으면 키맵 전체에서 고른다. 형식은 우리 표시 문자열이다(L-219~L-221). 바인딩이 없으면 제목만 보인다(L-223).
+    - `src/ui/app_menu.rs`:
+      - ☰ 앱 메뉴 엔티티를 만들었다. 02 9.2절 전체 구조를 `definition()` 한 곳에 두고, 동작하는 액션만 거른다(D-13). 걸러 낸 결과는 workbench-gpui[Quit workbench-gpui] / File[Close Window] / View[Toggle Left Dock, 구분선, Project Panel] / Window[Minimize, Zoom] 이다.
+      - 닫히면 ☰ 하나, 열리면 가로 메뉴 바다(I-302). 이름 hover 로 전환하고(I-303), 팝업은 이름 왼쪽 아래에서 x −5, 창 가장자리 여유 8 에 둔다(I-314).
+      - 치수는 바깥 최소 폭 202(안쪽 200, I-313), 최대 높이 75%·스크롤, 목록 위아래 4, 항목 바깥 4·안 6, 줄 높이 1.618, 14px, 단축키 앞 16, 구분선 1·위아래 6 이다.
+      - 키는 `menu` 컨텍스트에서 우리 `menu::` 액션으로 받는다. 다음·이전·처음·끝, Enter, Escape·Ctrl-C, Left/Right 메뉴 순환이다(I-517·I-518·I-303).
+      - 닫힘은 메뉴 밖 누름·포커스 잃음·실행 뒤다(I-519). 실행 전에 원래 포커스로 돌린다(I-309). 열린 채 항목의 단축키를 누르면 선택 표시 후 50ms 뒤 실행한다(I-520).
+    - `src/ui/title_bar.rs`: 왼쪽 묶음 [☰][폴더 이름 버튼]을 넣었다(L-87, gap 2). 폴더 이름 버튼은 `Open Recent Project`(Muted)와 툴팁 `Recent Projects` 만 있다(D-16).
+    - `src/ui/layout.rs`: 사이드바·탭 바·상태 표시줄 아이콘 버튼에 R-7 표의 툴팁을 달았다. 상태 표시줄 프로젝트 패널 토글은 Dock 이 열리면 `Close Left Dock`, 닫히면 `Project Panel` 이다.
+    - `src/ui/mod.rs`:
+      - F10(`app_menu::Toggle`), Quit(`cx.quit`), Close Window(`remove_window`), Minimize, Zoom 처리기를 넣었다.
+      - dev 출력에 포커스 자리·창 활성 상태 변화(`[dev] focus-state`)를 더했다.
+    - `src/ui/layout_probe.rs`: 경계마다 프레임 번호를 둬서, 스냅숏에 마지막 프레임의 요소만 나오게 했다. 이유는 아래 특이사항.
+  - 결과: `cargo build` 경고 0, `cargo test` 19개 통과(메뉴 구조 테스트 2개 추가), apply-manifest 세 항목 true.
+  - 검증: 아래 "Phase 2 검증 스크립트·증거" 항목.
+  - 특이사항:
+    - gpui 는 툴팁을 감춘 뒤에도 툴팁 뷰를 프레임 버퍼에 한 프레임 더 들고 있다. 그래서 뷰의 Drop(`[dev] tooltip-hidden`)이 다음 그리기(다음 마우스 이동 등) 때까지 늦게 온다. 사라짐 판정은 Drop 대신 레이아웃 스냅숏(프레임 단위)으로 한다. `tooltip-hidden` 줄은 참고로만 남겼다.
+    - Window > Zoom(`zed::Zoom` → `window.zoom_window()`)은 gpui-pre-windows 0.3.10 에서 `SW_MAXIMIZE` 만 한다(토글 아님, `window.rs` 947~950행). 이미 최대화돼 있으면 아무 변화가 없다. 01-zed I-446 "창 확대(최대화)"와 같다.
+    - 메뉴 바가 다시 나타날 때 마우스가 어떤 메뉴 이름 위에 있으면 hover 로 그 메뉴가 바로 열린다(I-303 동작). 검증 스크립트는 키 시험 전에 마우스를 비켜 둔다.
+
+- **Phase 2 검증 스크립트·증거** (2026-11-01)
+  - 무엇을 했나:
+    - `tools/verify-v02-phase2.ps1` 를 만들었다. 사례는 tooltip, menu, reload(Phase 1 에서 이월한 R-4 화면 판정), quit, closewin 이다.
+    - 안전 규칙은 Phase 1 과 같다. 실행 중인 앱이 있으면 멈추고, 띄운 PID 만 닫고, 입력 직전마다 전면 창과 커서 아래 최상위 창을 확인한다. 사용자 keymap.json 은 가장 먼저 독립 try/finally 로 복원하고 전후 해시를 남긴다(D-028·D-029).
+    - 입력 대상의 경계가 스냅숏에 없으면 입력하지 않고 멈춘다(`Need-Box`).
+    - 띄운 창만 최대화해서 잰다. 기본 창이 200% 에서 작업 영역보다 크기 때문이다.
+  - 결과: 판정 118개 모두 통과, R-5 대조 21줄 불일치 0(`specs/v0.2/verify/phase2/r5-shortcuts.md`). 증거와 판정하지 못한 것 목록은 `specs/v0.2/verify/phase2/EVIDENCE.md` 에 있다.
+    - 툴팁 지연은 10개 요소 모두 500~515ms 다.
+    - 위치는 (마우스+1)+(8,10), 오른쪽·아래 뒤집기 모두 ±1 안이다.
+    - 메뉴 치수(I-313~I-318, I-321), 목록 키 15가지, I-520 단축키 실행 50ms 를 확인했다.
+    - R-4: keymap.json 을 바꿔 저장하면 ☰ View 메뉴와 상태 표시줄 툴팁의 Toggle Left Dock 키가 `Ctrl-B` → `Alt-B` 로 바뀌고, Alt-B 가 실행된다.
+  - 검증: 전체 실행(`pwsh -NoProfile -File tools/verify-v02-phase2.ps1`) 뒤 Phase 1 스크립트도 다시 돌려 둘 다 실패 0 을 확인했다.
+  - 특이사항:
+    - 실행 중 한 번은 tooltip 사례에서 커서 아래 최상위 창이 우리 창이 아니어서(화면 오른쪽 위 (2742,97), 다른 창으로 보인다) 스크립트가 입력을 보내지 않고 멈췄다. 다시 돌린 전체 실행은 통과했다.
+    - Phase 1 base 사례에서 두 번 연속, ProjectPanel 에 있던 포커스가 아무 액션 기록 없이 가운데로 옮겨 가 실패 3 이 났다(alt-shift-c 뒤). 원인을 찾으려고 `[dev] focus-state` 출력을 더한 뒤 base 를 4번, 전체를 1번 더 돌렸지만 재현되지 않았다. 원인은 확인하지 못했다(Alt 키를 뗄 때의 창 메뉴 모드나 같은 데스크톱의 다른 입력으로 짐작한다). 다시 나오면 `focus-state` 줄로 원인을 좁힐 수 있다.
+    - 판정하지 못한 것: I-313 최대 높이·스크롤(항목이 적어 넘치지 않음, 코드로만 확인), I-515 비활성 항목(v0.2 메뉴에 없음), L-213~L-216 상자 안 치수(바깥 경계만 잼, 메타 줄 쓰는 툴팁 없음), 색·그림자(테마 매핑 전). Phase 3 이월: 메뉴 세 항목, L-251 툴팁. Phase 4 이월: 프로젝트 패널 항목 툴팁(L-247).
+
+- **리뷰 1회차 (wg-reviewer)** (2026-11-01)
+  - 무엇을 했나: Phase 2 리뷰 지적 Major 3건을 모두 반영했다(leader 채택, docs/HERDR-DECISIONS.md D-032).
+    - **① `src/ui/app_menu.rs`:** I-520 50ms 지연 실행이 항목 번호만 들고 있다가 그때 열린 메뉴에서 다시 찾았다. 그래서 50ms 안에 메뉴가 바뀌면 다른 액션(예: File 의 Close Window)이 실행됐다.
+      - 이제 예약은 액션 자체와 예약 세대를 들고 있다(`pending: Option<(Box<dyn Action>, u64)>`).
+      - 메뉴를 열거나 바꾸거나 닫으면 `cancel_pending` 이 예약을 지우고 세대를 올린다.
+      - 50ms 뒤 세대가 같을 때만 원래 포커스로 돌리고 예약한 액션을 보낸다.
+    - **② `src/ui/keymap.rs` `shortcut_for_name`:** 그 컨텍스트에서 가려져 후보가 없으면 키맵 전체의 마지막 바인딩(`bindings_for_action().last()`)으로 돌아가, 가려진 키를 다시 보였다.
+      - 그 대체 조회를 뺐다. 이제 메뉴를 열기 직전 포커스(툴팁은 지금 포커스)의 컨텍스트에서 고르고, 없으면 지금 포커스 핸들의 컨텍스트에서 고른다. 두 조회 모두 gpui 가 가려짐을 확인한다.
+      - 둘 다 없으면 단축키 없이 제목만 보인다(L-223).
+    - **③ `src/ui/app_menu.rs`:** 메뉴의 표시 키는 열기 직전 컨텍스트에서 골랐지만, 입력은 메뉴 컨텍스트(`Root > Workspace > menu`)에서만 해석했다. 그래서 원래 영역 전용 사용자 바인딩이 실행되지 않았다.
+      - 이제 메뉴가 열려 있는 동안 `cx.intercept_keystrokes`(디스패치 전)로 키를 본다.
+      - 메뉴 컨텍스트에서 `menu::` 액션이나 F10(`app_menu::Toggle`)으로 풀리는 키는 그대로 둔다(목록 키 우선).
+      - 그 밖의 키는 열린 메뉴 항목마다, 열기 직전 포커스의 컨텍스트에서 가려지지 않은 바인딩(`Window::bindings_for_action_in`)과 맞춘다. 끝까지 맞으면 그 항목을 ①의 방식으로 예약하고 키를 소비하며, chord 앞부분이면 다음 키를 기다린다.
+      - 예전에 메뉴 요소에 붙였던 항목 액션별 `on_action` 가로채기는 뺐다.
+    - **같이 고친 것:** 툴팁처럼 `focus` 없이 부르면, 예전에는 `Window::highest_precedence_binding_for_action` 을 썼다. 이 API 는 디스패치 트리에 마지막으로 그린 요소의 컨텍스트 스택을 써서(gpui-pre `window.rs` 6809행) 포커스 자리와 다를 수 있다. 이전에는 ②의 대체 조회가 이 차이를 가렸는데, 대체 조회를 빼자 툴팁 단축키가 모두 사라졌다. 그래서 지금 포커스 핸들(`window.focused`)로 직접 고르게 했다.
+    - **검증 스크립트:** `tools/verify-v02-phase2.ps1` 에 재현 사례 셋을 더했다. 지연 없는 키 묶음(`Send-Batch`, SendInput 한 번)도 함께 더했다.
+      - pending(①): View 에서 Ctrl-B 와 Left 를 50ms 안에 보낸다.
+      - shadow(②): 사용자 키맵 Workspace ctrl-b → zed::Minimize.
+      - prevctx(③): ProjectPanel 의 ctrl-y → ToggleLeftDock, down → ToggleFocus. 패널에 포커스를 둔 채 메뉴를 연다.
+  - 결과: `cargo build` 경고 0, `cargo test` 19개 통과, apply-manifest 세 항목 true.
+  - 검증:
+    - **고치기 전:** 고치기 전 소스(index 의 두 파일)로 만든 실행 파일에서 새 사례 셋은 판정 11개 중 7개가 실패했다(pending 은 앱이 Close Window 로 닫힘, shadow 는 `Ctrl-B` 표시, prevctx 는 Ctrl-Y 무반응). 결과는 `specs/v0.2/verify/phase2/d032-rerun/before-fix/`.
+    - **고친 뒤:** Phase 2 전체 8개 사례의 판정 129개 모두 통과, R-5 대조 24줄 불일치 0(`specs/v0.2/verify/phase2/d032-rerun/`). Phase 1 9개 사례 실패 0, R-1 62줄 일치(`specs/v0.2/verify/phase1/d032-rerun/`). 사용자 keymap.json 은 모두 `<absent>` → `<absent>` 다.
+  - 특이사항:
+    - 다시 돌린 결과는 하위 폴더(`d032-rerun/`)에 두었다. `phase2/`·`phase1/d031-rerun/` 의 증거는 Phase 2 검증 보고서(`specs/v0.2/verify/phase2/REPORT.md`, wg-checker)가 줄 번호로 인용하기 때문이다.
+    - 처음 새 사례만 돌릴 때 `phase2/results.json`·`r5-shortcuts.md` 를 덮어썼다. 그래서 index 의 것(보고서가 본 판)으로 되돌리고, 그 실행의 새 파일은 지웠다.
+    - REPORT.md 는 내용을 고치지 않고 stage 만 했다.
+    - 새 사례를 처음 돌리려 할 때 작업 PC 가 잠겨(LogonUI, 전면 창 없음) 스크립트가 입력을 보내지 않고 멈췄다. 잠금이 풀린 뒤 다시 돌렸다.
+
+- **리뷰 2회차 (wg-reviewer)** (2026-11-01)
+  - 무엇을 했나: 리뷰 2회차는 1회차 ①·③을 해결로, ②를 부분 미해결로 보았고 새 Major 2건을 냈다. 모두 반영했다(leader 채택, docs/HERDR-DECISIONS.md D-033).
+    - **② `src/ui/keymap.rs` `shortcut_for_name`:** 열기 직전 포커스에서 가려져 없으면 메뉴 포커스(`Root > Workspace > menu`)로 다시 찾아, 원래 자리에서 가려진 내장 키를 되살렸다.
+      - 이제 `focus` 를 주면 그 자리에서만 고르고, 없으면 표시하지 않는다(L-223).
+      - `focus` 가 없을 때(툴팁, 또는 열기 직전 포커스가 없던 메뉴)만 지금 포커스 핸들의 컨텍스트에서 고른다.
+    - **ⓐ `src/ui/app_menu.rs` `run_pending`:** 세대를 비교하기 전에 예약을 꺼내, 오래된 타이머가 새 예약을 버렸다. 이제 세대가 같을 때만 꺼내 실행한다.
+    - **ⓑ `src/ui/app_menu.rs` `intercept`:** 첫 완전 일치를 바로 예약해, 다른 항목의 chord 접두 대기를 무시했다.
+      - 이제 메뉴를 열기 직전에 기록한 컨텍스트 스택(`prev_stack`, gpui `Window::context_stack`)으로 gpui `Keymap::bindings_for_input` 을 불러, 이기는 바인딩과 접두 여부를 함께 본다.
+      - 접두면 키를 소비하고 기다린다. gpui 와 같은 1초(`PENDING_INPUT_TIMEOUT`) 동안 다음 키가 없으면, 기다린 키들 가운데 가장 긴 앞부분으로 확정한다.
+      - 이어지지 않는 키가 오면 기다린 키들을 먼저 확정하고 그 키를 새로 처리한다.
+      - 확정된 액션이 열린 메뉴의 항목일 때만 예약한다.
+    - **검증 스크립트:** `tools/verify-v02-phase2.ps1` 에 재현 사례 셋을 더했다.
+      - shadowpp(②): ProjectPanel 에서 ctrl-b → zed::Minimize, 패널에서 View 를 연다.
+      - rapid(ⓐ): View 에서 Ctrl-B 와 Ctrl-Shift-E 를 SendInput 한 번에 보낸다.
+      - chord(ⓑ): ProjectPanel 에 ctrl-k → Toggle Left Dock, ctrl-k ctrl-y → Project Panel. 두 키를 다 누르는 경우와 Ctrl-K 만 누르는 경우를 본다.
+  - 결과: `cargo build` 경고 0, `cargo test` 19개 통과, apply-manifest 세 항목 true.
+  - 검증:
+    - **고치기 전**(D-032 반영판 실행 파일, `specs/v0.2/verify/phase2/d033-rerun/before-fix/`): 새 사례 판정 7개 중 2개만 통과했다.
+      - shadowpp 는 1개 중 0개(`Ctrl-B` 표시).
+      - rapid 는 2개 중 1개(두 번 예약됐지만 아무것도 실행 안 됨).
+      - chord 는 4개 중 1개(Ctrl-K 에서 약 0.1초 만에 Toggle Left Dock 실행).
+    - **고친 뒤**(`specs/v0.2/verify/phase2/d033-rerun/`): shadowpp 1/1, rapid 2/2, chord 4/4. Phase 2 전체 11개 사례의 판정 136개 모두 통과, R-5 대조 24줄 불일치 0.
+    - Phase 1 은 9개 사례 실패 0, R-1 62줄 일치(`specs/v0.2/verify/phase1/d033-rerun/`).
+    - 사용자 keymap.json 은 모두 `<absent>` → `<absent>`.
+  - 특이사항:
+    - perl 로 한 줄을 넣다가 구분자(`|`)가 코드의 `|f|` 와 겹쳐, `app_menu.rs` 머리 주석 한가운데에 코드가 들어갔다. 빌드 오류로 바로 알았고 손으로 고쳤다.
+    - checker 보고서 `specs/v0.2/verify/phase2/REPORT.md` 는 작업 트리에서 checker 가 갱신한 판을 내용을 고치지 않고 다시 stage 했다.
+    - 전체 재실행 뒤 `app_menu.rs` 머리 주석(단축키 고르는 규칙 설명)만 고쳐 다시 빌드했다. 코드 동작은 바뀌지 않았다.
+
+- **완료 조건 검증 (wg-checker)** (2026-11-01)
+  - 무엇을 했나: PLAN Phase 2 완료 조건과 SPEC R-4(Phase 1 에서 이월한 화면 부분)·R-5~R-9 를 세 번 검증했다. 앱을 다시 띄우지 않고, 원래 출력(`*-stdout.txt`)·스크린샷·코드·원문을 직접 대조했다.
+    - 1회차: 처음 구현.
+    - 2회차: 리뷰 1회차 수정(D-032) 뒤, `d032-rerun/`.
+    - 3회차: 리뷰 2회차 수정(D-033) 뒤 R-5·R-9 범위를 한정해, `d033-rerun/`.
+  - 결과: `specs/v0.2/verify/phase2/REPORT.md`. 세 번 모두 불일치 0건이다.
+    - R-4(화면 부분)·R-5 통과. R-5 대조표는 1회차 21줄, 2·3회차 24줄로 불일치 0 이다.
+    - R-6~R-9 는 범위 안에서 통과다.
+    - 3회차 시점 판정 136개 중 실패 0 이다. 고치기 전 새 사례 7개는 실패 5 였다.
+    - Phase 1 R-1 62줄 일치가 유지됐다.
+  - 검증: 보고서 `specs/v0.2/verify/phase2/REPORT.md`(1회차, 2회차 절, 3회차 절).
+  - 특이사항:
+    - 판정 불가·이월(보고서 "판정 불가·이월" 표):
+      - Phase 3: 사이드바가 닫혔을 때의 `Open Folder Sidebar` 툴팁(L-251), 메뉴 항목 `Open Folder...`·`Toggle Folder Sidebar`·`Focus Folder Sidebar`(D-031 ④).
+      - Phase 4: 프로젝트 패널 항목 툴팁(L-247).
+      - 해당 동작이 생기는 버전: `Zoom Out` 문구.
+      - 테마 매핑(PoC 7단계): 색·그림자.
+      - 코드로만 확인: 툴팁 상자 안쪽 치수·메타 줄, I-506 최대 높이·스크롤, I-519 포커스 잃음 닫힘, I-515 비활성, I-511 아이콘.
+    - 보고서의 관찰(불일치 아님):
+      - R-5 의 `<none>` 7줄은 계산값이 아니라 "바인딩 없음"이라, checker 가 내장 바인딩 목록으로 따로 확인했다.
+      - 사이드바 폴더 줄 툴팁 없음은 자리표시 글자에서 잰 것이라 Phase 3 에서 다시 본다.
+      - `r8-closed.png`·`menu-start.png` 에 상태 표시줄 툴팁이 함께 찍혀 있다.
+      - D-031 은 "대리 응답"으로 기록돼 있다.
+      - 3회차 chord ⑵ 의 예약 → 실행 간격이 약 109ms 로 다른 경로(58~63ms)보다 길다. 이 판정은 "900ms 이상 뒤 실행"만 본다.
+      - chord ⑵ 판정의 `evidence` 칸에 무관한 앞 단계 줄이 붙어 있다(`got`·`expect` 는 맞다).
+      - chord 대기 중 `Escape`·메뉴 밖 누름 취소, I-519 포커스 잃음 닫힘은 증거로 시험되지 않았다(코드만 읽음).
+    - 2회차 표의 "리뷰 결과 PROGRESS 기록 부분 충족"은 3회차에서 충족으로 바뀌었다(PROGRESS "리뷰 1회차"·"리뷰 2회차").
+    - checker 는 agy(Argon) 개별 한도 소진으로 Claude Sonnet 5.5 · high 로 교체된 상태에서 검증했다(docs/HERDR-SETUP.md 9절, Phase 1 과 같다).
+    - 리뷰는 2회로 마감했다. D-033 수정은 leader 가 재현 결과와 코드로 확인했다.
+
+- **Phase 2 완료** (2026-11-01)
+  - 무엇을 했나: PLAN Phase 2 완료 조건을 대조했다.
+  - 결과:
+    - R-5~R-9 가 통과로 판정되었다(R-6~R-9 는 범위 안, 이월 항목은 위 표). Phase 1 에서 이월한 R-4 화면 부분도 통과다.
+    - `specs/v0.2/verify/phase2/` 에 검증 보고서가 있고, R-5 "화면 단축키 / 키맵 적용 결과" 대조표(`r5-shortcuts.md`, 최신 `d033-rerun/r5-shortcuts.md` 24줄)에 불일치가 없다.
+    - wg-reviewer 리뷰 결과(1·2회차)가 기록되어 있다.
+    - 미해결 실패가 없어 Phase 2 를 완료로 본다.
+  - 검증: `specs/v0.2/verify/phase2/REPORT.md`, `specs/v0.2/verify/phase2/d033-rerun/results.json`, 이 PROGRESS 기록.
+  - 특이사항: PLAN 의 Phase 2 완료 조건 중 "Phase 2 커밋이 있다"는 이 기록 뒤의 커밋으로 채운다.
 
 ### Phase 3 — 사이드바 폴더 등록·선택·해제
 

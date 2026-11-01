@@ -1,0 +1,182 @@
+{
+  "startedAt": "2026-11-01T14:27:00.9189758+09:00",
+  "keymapPath": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+  "cases": {
+    "pending": {
+      "pid": 2756,
+      "hwnd": "0x730A30",
+      "lines": [
+        "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793510827109",
+        "[dev] menu-open index=1 name=File t_ms=1793510827113",
+        "[dev] menu-exec action=workspace::CloseWindow via=shortcut t_ms=1793510827160"
+      ]
+    },
+    "shadow": {
+      "pid": 22008,
+      "hwnd": "0x100814"
+    },
+    "prevctx": {
+      "pid": 30168,
+      "hwnd": "0x100708"
+    }
+  },
+  "failures": [
+    "pending: I-520 D-032 ① 전환 뒤 예약 실행 없음: 기대 없음, 실제 [dev] menu-exec action=workspace::CloseWindow via=shortcut t_ms=1793510827160",
+    "pending: I-520 D-032 ① 앱이 살아 있음(Close Window 오실행 없음): 기대 True, 실제 False",
+    "shadow: I-704 L-223 D-032 ② View 의 Toggle Left Dock 단축키: 기대 Toggle Left Dock|<none>, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+    "shadow: R-5 메뉴 View (ctrl-b 를 Minimize 로 덮음) 'Toggle Left Dock': 화면 Ctrl-B, 키맵 적용 결과 <none>",
+    "shadow: I-704 L-223 D-032 ② Close Left Dock 툴팁 단축키: 기대 Close Left Dock|<none>, 실제 Close Left Dock|Ctrl-B",
+    "shadow: R-5 툴팁 status-btn-project-panel (ctrl-b 를 Minimize 로 덮음) 'Close Left Dock': 화면 Ctrl-B, 키맵 적용 결과 <none>",
+    "prevctx: I-520 D-032 ③ Ctrl-Y → 항목 예약: 기대 menu-shortcut action=workspace::ToggleLeftDock, 실제 ",
+    "prevctx: I-520 D-032 ③ Ctrl-Y → 50ms 뒤 실행: 기대 menu-exec action=workspace::ToggleLeftDock via=shortcut, 실제 ",
+    "prevctx: I-309 D-032 ③ 실행 때 원래 포커스(project_panel): 기대 focus=project_panel, 실제 "
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "Ctrl-B 로 예약됨",
+      "expect": "menu-shortcut action=workspace::ToggleLeftDock",
+      "got": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793510827109",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "50ms 안에 Left → File 로 전환",
+      "expect": "menu-open index=1",
+      "got": "[dev] menu-open index=1 name=File t_ms=1793510827113",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "전환 뒤 예약 실행 없음",
+      "expect": "없음",
+      "got": "[dev] menu-exec action=workspace::CloseWindow via=shortcut t_ms=1793510827160",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "앱이 살아 있음(Close Window 오실행 없음)",
+      "expect": "True",
+      "got": "False",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "shadow",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "View 의 Toggle Left Dock 단축키",
+      "expect": "Toggle Left Dock|<none>",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": false,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "shadow",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "Close Left Dock 툴팁 단축키",
+      "expect": "Close Left Dock|<none>",
+      "got": "Close Left Dock|Ctrl-B",
+      "ok": false,
+      "evidence": "[dev] tooltip-shown id=status-btn-project-panel t_ms=1793510835504 mouse=315.00,837.00 rows=Close Left Dock|Ctrl-B"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-307 D-032 ③",
+      "what": "View 단축키(패널 컨텍스트 기준)",
+      "expect": "Toggle Left Dock|Ctrl-Y / Project Panel|Down",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\t---\tProject Panel|Down",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\t---\tProject Panel|Down"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-517 D-032 ③",
+      "what": "Down 은 메뉴 목록 키 우선(선택 이동)",
+      "expect": "menu-selected index=0, 실행 없음",
+      "got": "[dev] menu-selected index=0 / exec=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-520 D-032 ③",
+      "what": "Ctrl-Y → 항목 예약",
+      "expect": "menu-shortcut action=workspace::ToggleLeftDock",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "prevctx",
+      "id": "I-520 D-032 ③",
+      "what": "Ctrl-Y → 50ms 뒤 실행",
+      "expect": "menu-exec action=workspace::ToggleLeftDock via=shortcut",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "prevctx",
+      "id": "I-309 D-032 ③",
+      "what": "실행 때 원래 포커스(project_panel)",
+      "expect": "focus=project_panel",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    }
+  ],
+  "shortcutRows": [
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Ctrl-B",
+      "computed": "<none>",
+      "original": "가려짐 → 없음",
+      "ok": false,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "툴팁 status-btn-project-panel (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Close Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Ctrl-B",
+      "computed": "<none>",
+      "original": "가려짐 → 없음",
+      "ok": false,
+      "evidence": "shadow-tooltip.png"
+    }
+  ],
+  "userKeymap": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+    "existedBefore": false,
+    "hashBefore": "<absent>",
+    "existsAfter": false,
+    "hashAfter": "<absent>",
+    "restored": true,
+    "backupPath": null
+  },
+  "finishedAt": "2026-11-01T14:27:30.8557751+09:00",
+  "passed": false
+}

@@ -2,6 +2,7 @@
 //!
 //! 진입 순서는 gpui-kit 0.8.1 crate 문서의 예시(application → init → open_window)를 따른다.
 
+mod app_menu;
 mod editor_poc;
 mod keymap;
 mod layout;
@@ -9,6 +10,7 @@ mod layout_probe;
 mod metrics;
 mod rem;
 mod title_bar;
+mod tooltip;
 
 use std::time::Duration;
 
@@ -37,6 +39,8 @@ struct Workbench {
     dock_width: Option<Pixels>,
     /// 직전 레이아웃의 Workspace 본문 폭. 사이드바 폭·창 크기가 바뀌면 달라지고, 달라지면 다시 그린다.
     body_width: Option<Pixels>,
+    /// dev 출력: 마지막으로 낸 (포커스 자리, 창 활성) 상태.
+    last_focus_log: String,
     /// 왼쪽 Dock 이 열려 있는가 (Ctrl-B, I-022). 처음에는 열려 있다.
     dock_open: bool,
     /// 키 컨텍스트 `Sidebar` 자리의 포커스 (D-3 이후 변경, D-027 ④).
@@ -45,6 +49,8 @@ struct Workbench {
     panel_focus: FocusHandle,
     /// 가운데 Pane 자리의 포커스. 창이 뜨면 여기에 포커스를 둔다.
     center_focus: FocusHandle,
+    /// ☰ 앱 메뉴 (Phase 2, R-8·R-9).
+    app_menu: Entity<app_menu::AppMenu>,
 }
 
 /// 왼쪽 Dock 핸들을 끄는 동안의 끌기 값 (L-30). 화면에는 아무것도 그리지 않는다.
@@ -117,6 +123,46 @@ impl Workbench {
             self.sidebar_focus.focus(window, cx);
         }
         cx.notify();
+    }
+
+    /// F10: ☰ 앱 메뉴 열기, 열린 채 F10 = 닫기 (I-310, A-18.1).
+    fn on_toggle_app_menu(
+        &mut self,
+        action: &keymap::app_menu::Toggle,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        self.app_menu.update(cx, |menu, cx| menu.toggle(window, cx));
+    }
+
+    /// Quit workbench-gpui (I-341).
+    fn on_quit(&mut self, action: &keymap::zed::Quit, window: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        cx.quit();
+    }
+
+    /// Close Window (I-358). 창이 하나라 창을 닫으면 앱도 끝난다.
+    fn on_close_window(
+        &mut self,
+        action: &keymap::workspace::CloseWindow,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        window.remove_window();
+    }
+
+    /// Window > Minimize (I-445).
+    fn on_minimize(&mut self, action: &keymap::zed::Minimize, window: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        window.minimize_window();
+    }
+
+    /// Window > Zoom (I-446): 창 확대(최대화)·복원.
+    fn on_zoom(&mut self, action: &keymap::zed::Zoom, window: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        window.zoom_window();
     }
 
     /// 왼쪽 Dock 폭 한계 (L-31): 하한 = 핸들 6, 상한 = 폭 − 6. 오른쪽 Dock 은 없다(L-14).
@@ -280,6 +326,16 @@ impl Workbench {
 
 impl Render for Workbench {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        // 레이아웃 탐침의 프레임 번호(사라진 툴팁·메뉴 경계를 스냅숏에서 빼려고). 창 루트라 프레임마다 그린다.
+        layout_probe::begin_frame();
+        // dev: 포커스 자리나 창 활성 상태가 바뀌면 낸다(키 판정에서 포커스가 어디로 갔는지 추적).
+        if crate::ui::keymap::dev_flag() {
+            let state = format!("focus={} active={}", self.focus_name(window), window.is_window_active());
+            if state != self.last_focus_log {
+                println!("[dev] focus-state {state}");
+                self.last_focus_log = state;
+            }
+        }
         let theme = cx.theme();
         let border = theme.border;
         let background = theme.background;
@@ -306,7 +362,12 @@ impl Render for Workbench {
             .on_children_prepainted(probe(&["title-bar", "work-area", "status-bar"]))
             .size_full()
             .bg(background)
-            .child(title_bar::title_bar(self.glyph_font.clone(), window, cx))
+            .child(title_bar::title_bar(
+                self.glyph_font.clone(),
+                self.app_menu.clone().into(),
+                window,
+                cx,
+            ))
             .child(
                 div()
                     .on_children_prepainted(track_body)
@@ -318,7 +379,7 @@ impl Render for Workbench {
                     .border_color(border)
                     .child(self.body(window, cx)),
             )
-            .child(layout::status_bar(cx));
+            .child(layout::status_bar(self.dock_open, cx));
 
         // L-11 창 최상위 가로 배치: [왼쪽 사이드바] → [Workspace]. 오른쪽 사이드바는 없다.
         // L-12 사이드바는 창 전체 높이를 차지하고 Workspace 의 타이틀 바는 사이드바 오른쪽에서 시작한다.
@@ -353,6 +414,11 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_toggle_left_dock))
             .on_action(cx.listener(Self::on_toggle_project_panel_focus))
             .on_action(cx.listener(Self::on_focus_sidebar))
+            .on_action(cx.listener(Self::on_toggle_app_menu))
+            .on_action(cx.listener(Self::on_quit))
+            .on_action(cx.listener(Self::on_close_window))
+            .on_action(cx.listener(Self::on_minimize))
+            .on_action(cx.listener(Self::on_zoom))
             .size_full()
             .child(content);
 
@@ -433,10 +499,12 @@ pub fn run(dev: DevOptions) {
                         editor_poc,
                         dock_width: None,
                         body_width: None,
+                        last_focus_log: String::new(),
                         dock_open: true,
                         sidebar_focus: cx.focus_handle(),
                         panel_focus: cx.focus_handle(),
                         center_focus: cx.focus_handle(),
+                        app_menu: cx.new(|cx| app_menu::AppMenu::new(window, cx)),
                     };
                     this.center_focus.focus(window, cx);
                     keymap::register_place("center", this.center_focus.clone(), cx);

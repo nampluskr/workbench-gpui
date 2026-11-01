@@ -1,0 +1,4 @@
+[
+  { "context": "Workspace", "bindings": { "ctrl-b": "workspace::NoSuchAction", "f10": "workspace::ToggleLeftDock" } },
+  { "bindings": { "ctrl-alt-j": "zed::Unknown" } }
+]
