@@ -279,4 +279,29 @@
 
 ## 버전 종료
 
-진행 중.
+- 사용자 종료 판단: 사용자가 v0.1 종료를 결정했다(2026-11-01, 사용자 말 "버전 0.1 을 종료합니다", leader 전달). PLAN Phase 0~3 이 모두 완료되었다(위 Phase별 진행의 "Phase n 완료" 항목). 커밋: 0cabfe8(Phase 0), c4a406e(Phase 1), 1cc4712(Phase 2), 00127e7(Phase 3).
+- 남은 것:
+  1. **편집기 직접 구현 필요 12건** (`specs/v0.1/verify/phase2/POC-TABLE.md` R-11 요약):
+     1. 거터 줄 번호 최소 4자리 (gpui-kit 3자리 고정)
+     2. 커서 2px (gpui-kit 1px 고정)
+     3. 선택 모서리 0.15×줄 높이 (gpui-kit 직선)
+     4. Ctrl+Shift 드래그 열 선택 (gpui-kit 은 Alt+Shift)
+     5. 선택 끌어 옮기기 (gpui-kit 없음)
+     6. 스크롤바 15px (gpui-kit 16px, 렌더러 훅으로)
+     7. 스크롤바 마커 (gpui-kit 없음, 렌더러 훅으로)
+     8. 큰 파일 + soft wrap 켜짐 열기 (10만 줄 첫 프레임 draw·present 까지 7.6초, opt)
+     9. UTF-16 LE 열기·저장 (앱이 인코딩 감지·변환)
+     10. CP949 열기·저장 (앱이 인코딩 감지·변환)
+     11. CP949 로 옮길 수 없는 글자의 저장 손실 막기
+     12. 한글 혼합 줄 기준선 (영문 기준선이 1 논리 px 내려감)
+  2. **DECISIONS 미결 사항** (`specs/v0.1/DECISIONS.md` "미결 사항" 절에 남아 있는 것):
+     - Zed 글꼴(.ZedSans/.ZedMono) 자산 도입 — 앱에 넣을지, 그때 R-10 한글 대체 글꼴 측정을 다시 할지 정하지 않았다.
+     - 닫기 외 창 버튼 hover·누름 색 — 테마 매핑(G-106) 전까지 gpui-kit 기본 테마 색을 임시로 쓴다(Zed 토큰은 `ghost_element_hover`·`ghost_element_active`).
+     - 글리프 글꼴 선택 기준 — L-83 의 빌드 번호 22000 기준 대신 `Segoe Fluent Icons` 설치 여부로 고른다.
+     - G-121 — Rust 최소 버전 두 값(crates.io `rust_version` 1.90, 설치 문서 1.92) 중 어느 것을 기준으로 둘지 정하지 않았다.
+     - G-100·G-101·G-102·G-103·G-112·G-128·G-129·G-139 — 미결 사항 절에 처음 적은 질문 그대로 남아 있다. 확인 결과는 Phase 1(G-103·G-112·G-128)과 Phase 2(G-100·G-101·G-102·G-129·G-139)의 PROGRESS 기록과 검증 보고서에 있지만, 미결 사항 절에서 지우지는 않았다.
+  3. **R-4 모니터 이동 판정 불가** — 모니터가 하나라 배율이 다른 모니터로 창을 옮기는 시험을 하지 못했다(SPEC R-4 가 판정 불가로 적는 것을 허용).
+  4. **260자 넘는 경로의 실제 열기 미확인** — 레지스트리 LongPathsEnabled 가 0 이라 319자 경로 열기가 win32_error=3 으로 실패했다(`RtlAreLongPathsEnabled=false`). 매니페스트에는 longPathAware 가 들어 있다. 시스템 설정은 바꾸지 않았다.
+  5. **빌드마다 `tools/apply-manifest.ps1` 재실행 필요** — gpui-pre 가 넣는 매니페스트에 longPathAware 가 없어 빌드 뒤 mt.exe 로 병합한다. cargo 빌드를 하면 병합이 사라진다.
+  6. **임시 아이콘·기본 테마 색** — 레이아웃 뼈대의 아이콘은 gpui-kit 기본 묶음에서 가까운 것을 임시로 썼고, 색은 gpui-kit 기본 테마다. Zed 아이콘 테마·테마 매핑은 PoC 7단계 범위다.
+  7. **사이드바 푸터 높이 31 vs A-11.4 의 30** — padding 4×2 + 버튼 22 + 위 테두리 1 = 31 이다. leader 가 판정 대상이 아니라고 승인했다(docs/HERDR-DECISIONS.md D-018).
