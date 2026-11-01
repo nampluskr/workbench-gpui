@@ -1,0 +1,31 @@
+{
+  "script": "target/prefix-d037/tools/verify-v02-phase3.ps1",
+  "startedAt": "2026-11-01T19:54:33.6363644+09:00",
+  "cases": {
+    "running": {
+      "abortedEarlyMessage": false,
+      "runningAppKeymapReloads": 1,
+      "keymapBefore": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "keymapAfter": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "stateBefore": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF",
+      "stateAfter": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF",
+      "ok": false
+    },
+    "locked": {
+      "keymapBefore": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "keymapAfter": "<absent>",
+      "keymapRestored": false,
+      "scriptReportedFailure": true
+    }
+  },
+  "failures": [
+    "running: 실행 중 앱이 사용자 파일 변경을 보았거나(keymap 다시 읽기 1 번) 파일이 바뀌었다",
+    "locked: state.json 을 지울 수 없을 때 사용자 keymap.json 이 되돌려지지 않았다"
+  ],
+  "userFiles": {
+    "before": {},
+    "after": {},
+    "restored": true
+  },
+  "finishedAt": "2026-11-01T19:54:50.0140816+09:00"
+}

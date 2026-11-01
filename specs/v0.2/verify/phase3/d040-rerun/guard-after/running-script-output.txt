@@ -1,0 +1,6 @@
+cases: 
+checks: 0, failed: 0
+failures: 1
+user files restored: True
+  - 이미 실행 중인 workbench-gpui 가 있다 (PID 24356). 사용자 파일을 바꾸기 전에 중단한다
+

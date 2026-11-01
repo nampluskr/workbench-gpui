@@ -1,0 +1,60 @@
+{
+  "script": "target/d037-script/verify-v02-phase3.ps1",
+  "startedAt": "2026-11-01T20:30:25.4616745+09:00",
+  "cases": {
+    "running-preexisting": {
+      "file": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\left-by-earlier-run-c63078f4ccfc441ba86ca0f1efa93139\\keep.txt",
+      "hashBefore": "9EE211CFA19EB360FFA77B892E9461F12A0303C9B9D62801A32560F0AD06394A",
+      "hashAfter": "<absent>",
+      "runFoldersLeft": 0,
+      "ok": false
+    },
+    "running": {
+      "abortedEarlyMessage": true,
+      "runningAppKeymapReloads": 0,
+      "keymapBefore": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "keymapAfter": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "stateBefore": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF",
+      "stateAfter": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF",
+      "ok": true
+    },
+    "locked-preexisting": {
+      "file": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\left-by-earlier-run-c63078f4ccfc441ba86ca0f1efa93139\\keep.txt",
+      "hashBefore": "9EE211CFA19EB360FFA77B892E9461F12A0303C9B9D62801A32560F0AD06394A",
+      "hashAfter": "<absent>",
+      "runFoldersLeft": 0,
+      "ok": false
+    },
+    "locked": {
+      "keymapBefore": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "keymapAfter": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "keymapRestored": true,
+      "scriptReportedFailure": true
+    },
+    "normal": {
+      "scriptPassed": true,
+      "keymapSame": true,
+      "stateSame": true,
+      "ok": true
+    },
+    "normal-preexisting": {
+      "file": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\left-by-earlier-run-c63078f4ccfc441ba86ca0f1efa93139\\keep.txt",
+      "hashBefore": "9EE211CFA19EB360FFA77B892E9461F12A0303C9B9D62801A32560F0AD06394A",
+      "hashAfter": "<absent>",
+      "runFoldersLeft": 0,
+      "ok": false
+    }
+  },
+  "failures": [
+    "running: 미리 있던 시험 폴더가 바뀌었거나(해시 <absent>) 이번 실행 폴더가 남았다(0)",
+    "locked: 미리 있던 시험 폴더가 바뀌었거나(해시 <absent>) 이번 실행 폴더가 남았다(0)",
+    "normal: 미리 있던 시험 폴더가 바뀌었거나(해시 <absent>) 이번 실행 폴더가 남았다(0)",
+    "표본 지우기: 경로 'D:\\projects\\workbench-gpui\\target\\phase3-folders\\left-by-earlier-run-c63078f4ccfc441ba86ca0f1efa93139'이(가) 없으므로 찾을 수 없습니다."
+  ],
+  "userFiles": {
+    "before": {},
+    "after": {},
+    "restored": true
+  },
+  "finishedAt": "2026-11-01T20:30:39.3509651+09:00"
+}

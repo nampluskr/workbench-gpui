@@ -83,9 +83,9 @@ impl WindowButton {
 const LEFT_GROUP_GAP: Rems = super::rem::rems_from_px(2.);
 
 /// L-87 왼쪽 묶음: [☰ 메뉴] → [폴더 이름]. 폴더 이름 버튼은 이름 표시와 툴팁만 둔다(D-16).
-/// v0.2 Phase 2 에는 등록 폴더가 없어 늘 `Open Recent Project`(Muted, L-227)를 보인다. 툴팁 `Recent Projects`(L-226).
+/// 폴더 이름은 활성 폴더 이름(40자 말줄임, L-88, A-13.9), 폴더가 없으면 `Open Recent Project`(Muted, L-227). 툴팁 `Recent Projects`(L-226).
 /// 툴팁의 액션 `projects::OpenRecent` 는 v0.2 에 없어 단축키 없이 제목만 보인다(R-7, L-223).
-fn left_group(app_menu: AnyView, cx: &App) -> impl IntoElement {
+fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     let hover_bg = theme.secondary_hover;
     h_flex()
@@ -104,13 +104,13 @@ fn left_group(app_menu: AnyView, cx: &App) -> impl IntoElement {
                 .h(super::metrics::BUTTON_DEFAULT)
                 .px(super::rem::rems_from_px(6.))
                 .text_sm()
-                .text_color(theme.muted_foreground)
+                .text_color(if folder_name.is_some() { theme.foreground } else { theme.muted_foreground })
                 .hover(move |s| s.bg(hover_bg))
                 .tooltip(super::tooltip::build(super::tooltip::Spec::one(
                     "title-folder-name",
                     super::tooltip::Line::action("Recent Projects", "projects::OpenRecent"),
                 )))
-                .child("Open Recent Project"),
+                .child(folder_name.unwrap_or_else(|| "Open Recent Project".into())),
         )
 }
 
@@ -118,6 +118,7 @@ fn left_group(app_menu: AnyView, cx: &App) -> impl IntoElement {
 pub fn title_bar(
     glyph_font: SharedString,
     app_menu: AnyView,
+    folder_name: Option<String>,
     window: &Window,
     cx: &App,
 ) -> impl IntoElement {
@@ -141,7 +142,7 @@ pub fn title_bar(
         .flex_shrink_0()
         .w_full()
         .h(TITLE_BAR_HEIGHT)
-        .child(left_group(app_menu, cx))
+        .child(left_group(app_menu, folder_name, cx))
         .child(
             h_flex()
                 .id("title-bar-drag")

@@ -1,0 +1,8 @@
+cases: 
+checks: 0, failed: 0
+failures: 3
+user files restored: False
+  - The process cannot access the file 'C:\Users\nampl\AppData\Roaming\workbench-gpui\state.json' because it is being used by another process.
+  - 사용자 파일(state.json·keymap.json)이 실행 전과 다르다
+  - 정리 오류: 사용자 파일 복원: The process cannot access the file 'C:\Users\nampl\AppData\Roaming\workbench-gpui\state.json' because it is being used by another process.
+

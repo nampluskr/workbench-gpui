@@ -1,0 +1,33 @@
+{
+  "startedAt": "2026-11-01T20:29:53.4536960+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-3f113e9c817d4cfbab70dba69adc1b23",
+  "cases": {},
+  "failures": [
+    "이미 실행 중인 workbench-gpui 가 있다 (PID 24356). 사용자 파일을 바꾸기 전에 중단한다"
+  ],
+  "errors": [],
+  "checks": [],
+  "abortedBeforeChanges": true,
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {
+      "keymap.json": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "state.json": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF"
+    },
+    "after": {
+      "keymap.json": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "state.json": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF"
+    },
+    "restored": true,
+    "backupDir": null
+  },
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase3-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-3f113e9c817d4cfbab70dba69adc1b23",
+    "runFolderLeft": false,
+    "baseLeft": true
+  },
+  "finishedAt": "2026-11-01T20:29:53.4895130+09:00",
+  "passed": false
+}

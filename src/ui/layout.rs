@@ -19,7 +19,7 @@ use super::tooltip::{self, Line, Spec};
 /// L-12 맨 위 줄 높이 = 타이틀 바 높이 32, 아래 테두리(L-302), 창 끌기 영역(A-11.2).
 /// L-34 폴더 줄(자리 표시), L-35 푸터: padding 4, gap 4, 위 테두리, Small 14 아이콘 버튼.
 /// A-11.8 사이드바가 열린 상태의 푸터: 왼쪽 사이드바 토글, 오른쪽 끝 폴더 추가. L-303 오른쪽 테두리.
-pub fn sidebar(cx: &App) -> impl IntoElement {
+pub fn sidebar(list: AnyElement, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     v_flex()
         .on_children_prepainted(probe(&["sidebar-header", "sidebar-list", "sidebar-footer"]))
@@ -38,24 +38,12 @@ pub fn sidebar(cx: &App) -> impl IntoElement {
                 .window_control_area(WindowControlArea::Drag),
         )
         .child(
-            // 폴더 줄 목록 자리(list·VirtualList 자리). 지금은 자리 표시 줄 하나.
-            v_flex()
-                .on_children_prepainted(probe(&["sidebar-folder-row"]))
+            // 폴더 줄 목록(A-12, A-16.7 세로 스크롤). 사이드바 빈 공간에는 우클릭 메뉴가 없다(I-937).
+            div()
+                .id("sidebar-list")
                 .flex_1()
                 .min_h_0()
-                .child(
-                    h_flex()
-                        .on_children_prepainted(probe(&["sidebar-folder-row-label"]))
-                        .flex_shrink_0()
-                        .w_full()
-                        .h(SIDEBAR_ROW_HEIGHT)
-                        .pl(SIDEBAR_ROW_PADDING_LEFT)
-                        .pr(SIDEBAR_ROW_PADDING_RIGHT)
-                        .items_center()
-                        .text_sm()
-                        .text_color(theme.muted_foreground)
-                        .child(div().flex_1().min_w_0().child("folder (placeholder)")),
-                ),
+                .child(list),
         )
         .child(
             // 왼쪽 그룹을 flex_1 로 늘려 오른쪽 그룹을 끝에 붙인다(justify_between 과 보이는 결과가 같다).
@@ -86,7 +74,7 @@ pub fn sidebar(cx: &App) -> impl IntoElement {
                                 Line::action("Focus Sidebar", "multi_workspace::FocusWorkspaceSidebar"),
                             )),
                             cx,
-                        ))
+                        ).on_click(dispatch("multi_workspace::ToggleWorkspaceSidebar")))
                         .when(layout_probe::is_enabled(), |d| {
                             d.child(measure_placeholder())
                         }),
@@ -104,9 +92,22 @@ pub fn sidebar(cx: &App) -> impl IntoElement {
                                 Line::action("Add Project", "workspace::Open"),
                             )),
                             cx,
-                        )),
+                        ).on_click(dispatch("workspace::Open"))),
                 ),
         )
+}
+
+
+/// 버튼을 누르면 액션 이름 `name` 을 보낸다(지금 포커스 자리에서 디스패치한다).
+fn dispatch(name: &'static str) -> impl Fn(&ClickEvent, &mut Window, &mut App) + 'static {
+    move |_, window, cx| {
+        if crate::ui::keymap::dev_enabled(cx) {
+            println!("[dev] button-click action={name}");
+        }
+        if let Ok(action) = cx.build_action(name, None) {
+            window.dispatch_action(action, cx);
+        }
+    }
 }
 
 /// 아이콘 버튼과 그 안의 아이콘 경계를 함께 기록한다(A-32.16 아이콘 14 확인용).
@@ -116,7 +117,7 @@ fn icon_with_probe(
     icon: IconName,
     tooltip: Option<Spec>,
     cx: &App,
-) -> impl IntoElement {
+) -> Stateful<Div> {
     let theme = cx.theme();
     let hover_bg = theme.secondary_hover;
     div()
@@ -252,8 +253,9 @@ fn rems_1px() -> Rems {
 
 /// 상태 표시줄 (L-28 padding 4, L-29 그룹 사이 8·그룹 안 4, L-91 좌·우 목록).
 ///
-/// A-11.8 사이드바가 열린 상태: 왼쪽에 프로젝트 패널 토글. 오른쪽에 커서 위치(L-97, 자리 표시 "1:1").
-pub fn status_bar(dock_open: bool, cx: &App) -> impl IntoElement {
+/// A-11.8 사이드바가 열린 상태: 왼쪽에 프로젝트 패널 토글. A-11.9 닫힌 상태: 사이드바 토글·폴더 추가·프로젝트 패널 토글.
+/// 오른쪽에 커서 위치(L-97, 자리 표시 "1:1").
+pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     // 왼쪽 그룹을 flex_1 로 늘려 오른쪽 그룹을 끝에 붙인다(justify_between 과 보이는 결과가 같다).
     // 이렇게 하면 두 그룹 사이가 정확히 gap 8 이 되어 레이아웃으로 잴 수 있다.
@@ -265,23 +267,55 @@ pub fn status_bar(dock_open: bool, cx: &App) -> impl IntoElement {
         .p(STATUS_BAR_PADDING)
         .gap(STATUS_BAR_GROUP_GAP)
         .bg(theme.status_bar)
-        .child(
-            h_flex()
-                .on_children_prepainted(probe(&[
+        .child({
+            // A-11.9 사이드바가 닫히면 [사이드바 토글][폴더 추가][프로젝트 패널 토글] 순서.
+            let pp_action = if dock_open { "workspace::ToggleLeftDock" } else { "project_panel::ToggleFocus" };
+            let pp = icon_with_probe(
+                "status-btn-project-panel",
+                &["status-icon-project-panel"],
+                IconName::FolderOpen,
+                Some(project_panel_toggle_tooltip(dock_open)),
+                cx,
+            )
+            .on_click(dispatch(pp_action));
+            let left = h_flex().flex_1().gap(STATUS_BAR_ITEM_GAP);
+            if sidebar_open {
+                left.on_children_prepainted(probe(&["status-btn-project-panel", "status-left-placeholder"]))
+                    .child(pp)
+                    .when(measuring, |d| d.child(measure_placeholder()))
+            } else {
+                left.on_children_prepainted(probe(&[
+                    "status-btn-sidebar-toggle",
+                    "status-btn-folder-add",
                     "status-btn-project-panel",
-                    "status-left-placeholder",
                 ]))
-                .flex_1()
-                .gap(STATUS_BAR_ITEM_GAP)
-                .child(icon_with_probe(
-                    "status-btn-project-panel",
-                    &["status-icon-project-panel"],
-                    IconName::FolderOpen,
-                    Some(project_panel_toggle_tooltip(dock_open)),
-                    cx,
-                ))
-                .when(measuring, |d| d.child(measure_placeholder())),
-        )
+                .child(
+                    icon_with_probe(
+                        "status-btn-sidebar-toggle",
+                        &["status-icon-sidebar-toggle"],
+                        IconName::PanelLeft,
+                        // L-251 사이드바가 닫혔을 때: `Open Folder Sidebar` + 사이드바 토글 키.
+                        Some(Spec::one(
+                            "status-btn-sidebar-toggle",
+                            Line::action("Open Folder Sidebar", "multi_workspace::ToggleWorkspaceSidebar"),
+                        )),
+                        cx,
+                    )
+                    .on_click(dispatch("multi_workspace::ToggleWorkspaceSidebar")),
+                )
+                .child(
+                    icon_with_probe(
+                        "status-btn-folder-add",
+                        &["status-icon-folder-add"],
+                        IconName::Folder,
+                        Some(Spec::one("status-btn-folder-add", Line::action("Add Project", "workspace::Open"))),
+                        cx,
+                    )
+                    .on_click(dispatch("workspace::Open")),
+                )
+                .child(pp)
+            }
+        })
         .child(
             h_flex()
                 .on_children_prepainted(probe(&["status-right-placeholder", "status-cursor"]))
@@ -302,22 +336,6 @@ pub fn status_bar(dock_open: bool, cx: &App) -> impl IntoElement {
 /// 그룹 안 항목이 하나뿐이면 gap 을 잴 수 없어(SPEC R-13), 그룹당 두 개가 되도록 하나 더 둔다.
 fn measure_placeholder() -> Div {
     div().flex_shrink_0().size(BUTTON_DEFAULT)
-}
-
-/// 왼쪽 Dock 안의 프로젝트 패널 자리(자리 표시).
-pub fn project_panel_placeholder(cx: &App) -> impl IntoElement {
-    let theme = cx.theme();
-    v_flex()
-        .size_full()
-        .bg(theme.sidebar)
-        .p(rems_from_px_local(8.))
-        .text_sm()
-        .text_color(theme.muted_foreground)
-        .child("project panel (placeholder)")
-}
-
-fn rems_from_px_local(px: f32) -> Rems {
-    super::rem::rems_from_px(px)
 }
 
 /// 상태 표시줄 프로젝트 패널 토글의 툴팁(L-253, L-254, L-266). 패널이 열려 있고 활성이면 `Close Left Dock`

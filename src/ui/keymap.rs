@@ -30,7 +30,7 @@ const BUILTIN_META: KeyBindingMetaIndex = KeyBindingMetaIndex(3);
 /// 키맵 파일 이름 (A-20.4).
 const KEYMAP_FILE: &str = "keymap.json";
 /// 앱 데이터 폴더 이름 (D-11).
-const APP_DIR: &str = "workbench-gpui";
+pub const APP_DIR: &str = "workbench-gpui";
 
 pub mod workspace {
     gpui_kit::actions!(

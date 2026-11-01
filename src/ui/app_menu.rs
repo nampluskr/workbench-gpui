@@ -35,25 +35,25 @@ use super::tooltip::{self, Line, Spec};
 pub const APP_NAME: &str = "workbench-gpui";
 
 /// I-313 최소 폭 200px (px 상수, rem 과 무관, I-312).
-const MIN_WIDTH: Pixels = px(200.);
+pub(super) const MIN_WIDTH: Pixels = px(200.);
 /// I-313 최대 높이 = 창 높이 × 0.75.
-const MAX_HEIGHT_RATIO: f32 = 0.75;
+pub(super) const MAX_HEIGHT_RATIO: f32 = 0.75;
 /// I-315 목록 위아래 4.
-const LIST_PAD_Y: Rems = rems_from_px(4.);
+pub(super) const LIST_PAD_Y: Rems = rems_from_px(4.);
 /// I-316 항목 바깥 좌우 4, 안 좌우 6, 라벨–단축키 최소 16.
-const ROW_MARGIN_X: Rems = rems_from_px(4.);
-const ROW_PAD_X: Rems = rems_from_px(6.);
+pub(super) const ROW_MARGIN_X: Rems = rems_from_px(4.);
+pub(super) const ROW_PAD_X: Rems = rems_from_px(6.);
 const SHORTCUT_GAP: Rems = rems_from_px(16.);
 /// I-317 라벨 14px, 줄 높이 1.618.
-const ROW_TEXT: Rems = rems_from_px(14.);
-const ROW_LINE_HEIGHT: f32 = 1.618;
+pub(super) const ROW_TEXT: Rems = rems_from_px(14.);
+pub(super) const ROW_LINE_HEIGHT: f32 = 1.618;
 /// I-318 구분선 위아래 6.
-const SEPARATOR_MARGIN_Y: Rems = rems_from_px(6.);
+pub(super) const SEPARATOR_MARGIN_Y: Rems = rems_from_px(6.);
 /// I-315 모서리 8.
-const RADIUS: Rems = rems_from_px(8.);
+pub(super) const RADIUS: Rems = rems_from_px(8.);
 /// I-314 팝업 x 오프셋 −5, 창 가장자리 여유 8.
 const POPUP_OFFSET_X: Rems = rems_from_px(-5.);
-const WINDOW_MARGIN: Pixels = px(8.);
+pub(super) const WINDOW_MARGIN: Pixels = px(8.);
 /// I-321 메뉴 이름 글자 12px, 버튼 사이 4.
 const NAME_TEXT: Rems = rems_from_px(12.);
 const NAME_GAP: Rems = rems_from_px(4.);
@@ -64,8 +64,8 @@ const SHORTCUT_FLASH: Duration = Duration::from_millis(50);
 /// chord 앞부분을 기다리는 시간. gpui-pre 0.3.10 `window.rs` 의 `PENDING_INPUT_TIMEOUT`(1초, crate 비공개)과 같은 값이다.
 const CHORD_TIMEOUT: Duration = Duration::from_secs(1);
 
-/// v0.2 Phase 2 에서 동작하는 액션(D-13, D-031 ④). Phase 3 에서 `workspace::Open`,
-/// `multi_workspace::ToggleWorkspaceSidebar`, `multi_workspace::FocusWorkspaceSidebar` 를 더한다.
+/// v0.2 에서 동작하는 액션(D-13, D-031 ④). Phase 3 에서 `workspace::Open`,
+/// `multi_workspace::ToggleWorkspaceSidebar`, `multi_workspace::FocusWorkspaceSidebar` 를 더했다.
 const AVAILABLE: &[&str] = &[
     "zed::Quit",
     "workspace::CloseWindow",
@@ -73,6 +73,10 @@ const AVAILABLE: &[&str] = &[
     "project_panel::ToggleFocus",
     "zed::Minimize",
     "zed::Zoom",
+    // Phase 3 (D-031 ④, D-035): 폴더 등록과 사이드바 표시·포커스.
+    "workspace::Open",
+    "multi_workspace::ToggleWorkspaceSidebar",
+    "multi_workspace::FocusWorkspaceSidebar",
 ];
 
 #[derive(Clone)]
@@ -876,13 +880,16 @@ mod tests {
     }
 
     #[test]
-    fn phase2_menus_follow_9_2_order() {
+    fn phase3_menus_follow_9_2_order() {
         let menus = visible_menus();
         let names: Vec<_> = menus.iter().map(|(n, _)| n.as_str()).collect();
         assert_eq!(names, ["workbench-gpui", "File", "View", "Window"]);
         assert_eq!(labels(&menus[0].1), ["Quit workbench-gpui"]);
-        assert_eq!(labels(&menus[1].1), ["Close Window"]);
-        assert_eq!(labels(&menus[2].1), ["Toggle Left Dock", "---", "Project Panel"]);
+        assert_eq!(labels(&menus[1].1), ["Open Folder...", "---", "Close Window"]);
+        assert_eq!(
+            labels(&menus[2].1),
+            ["Toggle Left Dock", "Toggle Folder Sidebar", "Focus Folder Sidebar", "---", "Project Panel"]
+        );
         assert_eq!(labels(&menus[3].1), ["Minimize", "Zoom"]);
     }
 

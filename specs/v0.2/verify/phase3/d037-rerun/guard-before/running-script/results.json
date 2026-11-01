@@ -1,0 +1,29 @@
+{
+  "startedAt": "2026-11-01T19:54:44.7816504+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase3-folders",
+  "cases": {
+    "empty": {}
+  },
+  "failures": [
+    "empty: 이미 실행 중인 workbench-gpui 가 있다 (PID 11140). 닫고 다시 실행하라"
+  ],
+  "errors": [],
+  "checks": [],
+  "lockedAcl": "처리된 파일: D:\\projects\\workbench-gpui\\target\\phase3-folders\\locked 1 파일을 처리했으며 0 파일은 처리하지 못했습니다.",
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {
+      "keymap.json": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "state.json": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF"
+    },
+    "after": {
+      "keymap.json": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "state.json": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF"
+    },
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p3-backup-f097fbc1-d8bf-4107-a239-81725f4cbe95"
+  },
+  "finishedAt": "2026-11-01T19:54:46.3489410+09:00",
+  "passed": false
+}

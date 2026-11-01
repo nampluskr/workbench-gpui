@@ -1,0 +1,30 @@
+{
+  "startedAt": "2026-11-01T19:54:48.9977998+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase3-folders",
+  "cases": {},
+  "failures": [
+    "The process cannot access the file 'C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json' because it is being used by another process.",
+    "사용자 파일(state.json·keymap.json)이 실행 전과 다르다",
+    "정리 오류: 사용자 파일 복원: The process cannot access the file 'C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json' because it is being used by another process."
+  ],
+  "errors": [
+    "사용자 파일 복원: The process cannot access the file 'C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json' because it is being used by another process."
+  ],
+  "checks": [],
+  "lockedAcl": "처리된 파일: D:\\projects\\workbench-gpui\\target\\phase3-folders\\locked 1 파일을 처리했으며 0 파일은 처리하지 못했습니다.",
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {
+      "keymap.json": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945",
+      "state.json": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF"
+    },
+    "after": {
+      "state.json": "42BAFE75EFA2E1E30C50AD62D0BD5F4F889F70CF9A9060B47A911A646F0B8ADF"
+    },
+    "restored": false,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p3-backup-f2751730-7025-40fa-866d-172e0dfd4b89"
+  },
+  "finishedAt": "2026-11-01T19:54:49.8394665+09:00",
+  "passed": false
+}

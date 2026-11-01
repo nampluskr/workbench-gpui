@@ -18,6 +18,7 @@
 //!   app = BOM·UTF-8 유효성으로 인코딩을 고르고(UTF-8, UTF-8 BOM, UTF-16 LE/BE, 그 밖은 CP949)
 //!   같은 인코딩으로 다시 쓴다. CP949 는 Win32 MultiByteToWideChar/WideCharToMultiByte(코드 페이지 949).
 //! - `--dev-measure`: 한글 혼합 줄과 영문 줄의 줄 높이·폭·거터·커서 위치를 낸다 (R-10).
+//! - `--dev-pick-folder <파일>`: 폴더 선택 창 대신 파일에 적힌 경로를 고른 것으로 한다 (v0.2 Phase 3, R-10).
 //! - Editor·Input 값이 바뀔 때마다 `[dev] value ...` 를 낸다 (R-6 IME 결과 확인용).
 
 #[derive(Debug, Default, Clone)]
@@ -40,6 +41,9 @@ pub struct DevOptions {
     /// `--dev-keymap-startup-delay <ms>`: 키맵 최초 로드 직후에 이만큼 멈춘다. 그 사이에 바뀐
     /// keymap.json 도 반영되는지 보는 시험용이다 (v0.2 Phase 1 리뷰 1회차 ②).
     pub keymap_startup_delay_ms: Option<u64>,
+    /// `--dev-pick-folder <파일>`: 폴더 선택 창 대신 이 파일의 첫 줄을 고른 경로로 쓴다(v0.2 Phase 3, R-10, D-035).
+    /// 파일이 없거나 비었거나 `<cancel>` 이면 취소로 본다. 열 때마다 다시 읽는다.
+    pub pick_folder_file: Option<String>,
 }
 
 /// R-9 파일 읽기·쓰기 방식.
@@ -92,6 +96,7 @@ impl DevOptions {
                 "--dev-keymap-startup-delay" => {
                     options.keymap_startup_delay_ms = args.next().and_then(|v| v.parse().ok())
                 }
+                "--dev-pick-folder" => options.pick_folder_file = args.next(),
                 _ => {}
             }
         }

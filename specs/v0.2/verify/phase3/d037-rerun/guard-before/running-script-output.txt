@@ -1,0 +1,6 @@
+cases: empty
+checks: 0, failed: 0
+failures: 1
+user files restored: True
+  - empty: 이미 실행 중인 workbench-gpui 가 있다 (PID 11140). 닫고 다시 실행하라
+

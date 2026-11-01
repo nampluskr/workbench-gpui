@@ -183,6 +183,14 @@ $backupPath = Join-Path ([System.IO.Path]::GetTempPath()) ("wg-keymap-backup-{0}
 $hadKeymap = Test-Path -LiteralPath $keymapPath
 # 사용자 keymap.json 의 실행 전 해시. 끝날 때 복원한 파일과 비교해 results.userKeymap 에 남긴다(리뷰 2회차, D-029).
 $userHashBefore = if ($hadKeymap) { (Get-FileHash -LiteralPath $keymapPath -Algorithm SHA256).Hash } else { '<absent>' }
+# Phase 3 뒤(D-035): workspace::Open(Ctrl-K Ctrl-O)이 실제 폴더 선택 창을 연다. 이 시험은 키 디스패치만 보므로 선택 창 대신
+# `--dev-pick-folder` 로 늘 취소를 주입한다(선택 창에 키가 가거나 폴더가 등록되지 않게). state.json 은 바뀌지 않아야 한다.
+# 리뷰 1회차 ④(Phase 3, D-037)와 같은 규칙: 사용자 파일을 바꾸기 전에 기존 앱 실행을 검사하고 즉시 멈춘다(Start-App 의 재검사도 둔다).
+if (@(Get-Process -Name 'workbench-gpui' -ErrorAction SilentlyContinue).Count -gt 0) { throw "이미 실행 중인 workbench-gpui 가 있다. 사용자 파일을 바꾸기 전에 중단한다" }
+$pickCancel = Join-Path ([System.IO.Path]::GetTempPath()) ("wg-pick-cancel-{0}.txt" -f [guid]::NewGuid())
+[System.IO.File]::WriteAllText($pickCancel, '<cancel>', [System.Text.UTF8Encoding]::new($false))
+$statePathGuard = Join-Path $env:APPDATA 'workbench-gpui\state.json'
+$stateHashBefore = if (Test-Path -LiteralPath $statePathGuard) { (Get-FileHash -LiteralPath $statePathGuard -Algorithm SHA256).Hash } else { '<absent>' }
 # 이번 실행이 만든 임시 파일 경로. 끝날 때 이것만 지운다.
 $script:createdTemps = [System.Collections.Generic.List[string]]::new()
 
@@ -320,7 +328,7 @@ function Start-App([string]$Case, [string[]]$AppArgs = @(), [scriptblock]$OnLaun
     $script:stdout = Join-Path $out "$Case-stdout.txt"
     if (Test-Path -LiteralPath $script:stdout) { Remove-Item -LiteralPath $script:stdout -Force }
     $exePath = (Resolve-Path -LiteralPath $Exe).Path
-    $p = Start-Process -FilePath $exePath -ArgumentList (@('--dev-keymap') + $AppArgs) -RedirectStandardOutput $script:stdout -PassThru
+    $p = Start-Process -FilePath $exePath -ArgumentList (@('--dev-keymap', '--dev-pick-folder', $pickCancel) + $AppArgs) -RedirectStandardOutput $script:stdout -PassThru
     $script:launched = $p
     $script:appPid = $p.Id
     if ($OnLaunched) { & $OnLaunched | Out-Null }
@@ -723,6 +731,14 @@ finally {
     }
 
     # 정리 오류도 실패로 센다(종료 코드 1).
+    # state.json 은 이 시험이 바꾸지 않는다(Phase 3 뒤 추가). 다르면 실패로 남긴다.
+    try {
+        $stateHashAfter = if (Test-Path -LiteralPath $statePathGuard) { (Get-FileHash -LiteralPath $statePathGuard -Algorithm SHA256).Hash } else { '<absent>' }
+        $results.userState = [ordered]@{ path = $statePathGuard; hashBefore = $stateHashBefore; hashAfter = $stateHashAfter; unchanged = ($stateHashBefore -eq $stateHashAfter) }
+        if ($stateHashBefore -ne $stateHashAfter) { $results.failures += '사용자 state.json 이 실행 전과 다르다' }
+        Remove-Item -LiteralPath $pickCancel -Force -ErrorAction SilentlyContinue
+    }
+    catch { $results.errors += "state.json 확인: $($_.Exception.Message)" }
     foreach ($e in $results.errors) { $results.failures += "정리 오류: $e" }
 }
 

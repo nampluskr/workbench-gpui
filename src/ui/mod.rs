@@ -3,7 +3,9 @@
 //! 진입 순서는 gpui-kit 0.8.1 crate 문서의 예시(application → init → open_window)를 따른다.
 
 mod app_menu;
+mod context_menu;
 mod editor_poc;
+mod folders;
 mod keymap;
 mod layout;
 mod layout_probe;
@@ -51,6 +53,14 @@ struct Workbench {
     center_focus: FocusHandle,
     /// ☰ 앱 메뉴 (Phase 2, R-8·R-9).
     app_menu: Entity<app_menu::AppMenu>,
+    /// 등록 폴더·활성·커서·state.json (Phase 3, R-10~R-16·R-28).
+    folders: folders::FolderList,
+    /// 사이드바가 열려 있는가(A-11.7: 처음에는 열려 있다). 저장하지 않는다(D-10 범위 밖).
+    sidebar_open: bool,
+    /// 사이드바로 포커스를 옮기기 직전의 포커스(A-17.1·A-17.2 돌아갈 자리).
+    sidebar_prev_focus: Option<FocusHandle>,
+    /// 사이드바·Workspace 분할 상태. 사이드바를 닫았다 열어도 폭을 그대로 둔다.
+    split: Entity<gpui_kit::component::ResizableState>,
 }
 
 /// 왼쪽 Dock 핸들을 끄는 동안의 끌기 값 (L-30). 화면에는 아무것도 그리지 않는다.
@@ -110,21 +120,6 @@ impl Workbench {
         cx.notify();
     }
 
-    fn on_focus_sidebar(
-        &mut self,
-        action: &keymap::multi_workspace::FocusWorkspaceSidebar,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
-        keymap::log_handled(action, self.focus_name(window), cx);
-        if self.sidebar_focus.is_focused(window) {
-            self.center_focus.focus(window, cx);
-        } else {
-            self.sidebar_focus.focus(window, cx);
-        }
-        cx.notify();
-    }
-
     /// F10: ☰ 앱 메뉴 열기, 열린 채 F10 = 닫기 (I-310, A-18.1).
     fn on_toggle_app_menu(
         &mut self,
@@ -139,6 +134,7 @@ impl Workbench {
     /// Quit workbench-gpui (I-341).
     fn on_quit(&mut self, action: &keymap::zed::Quit, window: &mut Window, cx: &mut Context<Self>) {
         keymap::log_handled(action, self.focus_name(window), cx);
+        self.flush_save(Some(window), "quit", cx);
         cx.quit();
     }
 
@@ -150,6 +146,8 @@ impl Workbench {
         cx: &mut Context<Self>,
     ) {
         keymap::log_handled(action, self.focus_name(window), cx);
+        // 창이 사라지기 전에 쓰지 않은 변경을 쓴다(A-24.3, 리뷰 1회차 ①).
+        self.flush_save(Some(window), "close-window", cx);
         window.remove_window();
     }
 
@@ -187,7 +185,8 @@ impl Workbench {
     }
 
     /// 본문: [왼쪽 Dock] → [가운데 Pane], 그리고 Dock 오른쪽 경계에 걸친 6px 핸들 (L-14, L-16, L-30).
-    fn body(&self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement + use<> {
+    fn body(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement + use<> {
+        let project_panel = self.render_project_panel(cx);
         let theme = cx.theme();
         let handle = to_px(DOCK_HANDLE_WIDTH, window);
         // Dock 폭과 핸들 위치 모두 유효 폭 기준이다.
@@ -214,7 +213,8 @@ impl Workbench {
                 .w(dock_width)
                 .border_r_1()
                 .border_color(theme.border)
-                .child(layout::project_panel_placeholder(cx))
+                .bg(theme.sidebar)
+                .child(project_panel)
                 .into_any_element()
         });
 
@@ -358,6 +358,8 @@ impl Render for Workbench {
 
         // L-13 Workspace 세로 배치: 타이틀 바 → 본문 → 상태 표시줄.
         // L-301 본문 상자는 위·아래 1px 테두리를 갖는다(타이틀 바 아래 선, 상태 표시줄 위 선).
+        let title = self.title_folder_name();
+        folders::log_title(&title, cx);
         let workspace = v_flex()
             .on_children_prepainted(probe(&["title-bar", "work-area", "status-bar"]))
             .size_full()
@@ -365,6 +367,7 @@ impl Render for Workbench {
             .child(title_bar::title_bar(
                 self.glyph_font.clone(),
                 self.app_menu.clone().into(),
+                title,
                 window,
                 cx,
             ))
@@ -379,33 +382,56 @@ impl Render for Workbench {
                     .border_color(border)
                     .child(self.body(window, cx)),
             )
-            .child(layout::status_bar(self.dock_open, cx));
+            .child(layout::status_bar(self.dock_open, self.sidebar_open, cx));
 
         // L-11 창 최상위 가로 배치: [왼쪽 사이드바] → [Workspace]. 오른쪽 사이드바는 없다.
         // L-12 사이드바는 창 전체 높이를 차지하고 Workspace 의 타이틀 바는 사이드바 오른쪽에서 시작한다.
-        // 사이드바 = resizable 패널(기본 300, 200~800, D-10 이후 변경).
-        let content = h_resizable("workbench-split")
-            .child(
-                resizable_panel()
-                    .size(to_px(SIDEBAR_DEFAULT_WIDTH, window))
-                    .size_range(to_px(SIDEBAR_MIN_WIDTH, window)..to_px(SIDEBAR_MAX_WIDTH, window))
-                    .child(
-                        div()
-                            .key_context(crate::keymap::builtin::SIDEBAR_CONTEXT)
-                            .track_focus(&self.sidebar_focus)
-                            .on_children_prepainted(probe(&["sidebar"]))
-                            .size_full()
-                            .child(layout::sidebar(cx)),
-                    ),
-            )
-            .child(
-                resizable_panel().child(
-                    div()
-                        .on_children_prepainted(probe(&["workspace"]))
-                        .size_full()
-                        .child(workspace),
-                ),
-            );
+        // 사이드바 = resizable 패널(기본 300, 200~800, D-10 이후 변경). 폭은 state.json 에 저장한다(R-28, A-11.1).
+        // 닫히면(A-17.1) 분할 자체를 그리지 않는다. 분할 상태(`split`)는 남아 다시 열면 폭이 그대로다.
+        let workspace = div()
+            .on_children_prepainted(probe(&["workspace"]))
+            .size_full()
+            .child(workspace);
+        let content: AnyElement = if self.sidebar_open {
+            let list = self.render_folder_list(window, cx);
+            let width = self
+                .folders
+                .state
+                .sidebar_width
+                .map(|w| px(w as f32))
+                .unwrap_or_else(|| to_px(SIDEBAR_DEFAULT_WIDTH, window));
+            let weak = cx.entity().downgrade();
+            h_resizable("workbench-split")
+                .with_state(&self.split)
+                .on_resize(move |state, window, cx| {
+                    let Some(w) = state.read(cx).sizes().first().copied() else {
+                        return;
+                    };
+                    let _ = weak.update(cx, |this, cx| this.on_sidebar_resized(w, window, cx));
+                })
+                .child(
+                    resizable_panel()
+                        .size(width)
+                        .size_range(to_px(SIDEBAR_MIN_WIDTH, window)..to_px(SIDEBAR_MAX_WIDTH, window))
+                        .child(
+                            div()
+                                .key_context(crate::keymap::builtin::SIDEBAR_CONTEXT)
+                                .track_focus(&self.sidebar_focus)
+                                .on_action(cx.listener(Self::on_sidebar_next))
+                                .on_action(cx.listener(Self::on_sidebar_previous))
+                                .on_action(cx.listener(Self::on_sidebar_confirm))
+                                .on_action(cx.listener(Self::on_sidebar_remove))
+                                .on_children_prepainted(probe(&["sidebar"]))
+                                .size_full()
+                                .child(layout::sidebar(list, cx)),
+                        ),
+                )
+                .child(resizable_panel().child(workspace))
+                .into_any_element()
+        } else {
+            workspace.into_any_element()
+        };
+        let context_menu = self.folders.context_menu.as_ref().map(|m| m.menu.clone());
 
         // 키 컨텍스트 `Workspace`(I-022~I-024): 사이드바와 Workspace 를 함께 감싸, 어느 자리에 포커스가 있어도
         // 창 단위 키가 듣는다. 깊이는 Workspace > Sidebar, Workspace > ProjectPanel 이다.
@@ -414,13 +440,16 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_toggle_left_dock))
             .on_action(cx.listener(Self::on_toggle_project_panel_focus))
             .on_action(cx.listener(Self::on_focus_sidebar))
+            .on_action(cx.listener(Self::on_toggle_sidebar))
+            .on_action(cx.listener(Self::on_open_folder))
             .on_action(cx.listener(Self::on_toggle_app_menu))
             .on_action(cx.listener(Self::on_quit))
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()
-            .child(content);
+            .child(content)
+            .children(context_menu);
 
         client_decorations(window, border, root)
     }
@@ -490,9 +519,11 @@ pub fn run(dev: DevOptions) {
             let glyph_font = title_bar::glyph_font(cx);
             let poc_options = dev.editor_poc.then(|| dev.clone());
             let layout_dump = dev.layout;
+            let pick_file = dev.pick_folder_file.clone();
             let (window_handle, _) = gpui_kit::open_window(window_options(), cx, |window, cx| {
                 let editor_poc = poc_options
                     .map(|options| cx.new(|cx| editor_poc::EditorPoc::new(options, window, cx)));
+                let (folders, loaded) = folders::FolderList::load(pick_file);
                 cx.new(|cx| {
                     let this = Workbench {
                         glyph_font,
@@ -505,7 +536,36 @@ pub fn run(dev: DevOptions) {
                         panel_focus: cx.focus_handle(),
                         center_focus: cx.focus_handle(),
                         app_menu: cx.new(|cx| app_menu::AppMenu::new(window, cx)),
+                        folders,
+                        sidebar_open: true,
+                        sidebar_prev_focus: None,
+                        split: cx.new(|_| gpui_kit::component::ResizableState::default()),
                     };
+                    // 알림은 gpui-kit Root 가 생긴 뒤에 띄운다(창을 연 다음 차례).
+                    cx.defer_in(window, move |this: &mut Workbench, window, cx| {
+                        this.start_folders(&loaded, window, cx);
+                    });
+                    // A-16.3 최소 대응: 창이 다시 활성화되면 경로를 다시 본다.
+                    cx.observe_window_activation(window, |this: &mut Workbench, window, cx| {
+                        if window.is_window_active() {
+                            this.refresh_on_activation(cx);
+                        }
+                    })
+                    .detach();
+                    // A-24.3 종료 직전에 아직 쓰지 않은 변경을 쓴다(바뀐 것이 없으면 쓰지 않는다, 판단).
+                    // 리뷰 1회차 ①(D-037): Workbench 를 강하게 붙잡는 App 수준 종료 처리기로 둔다. 창이 먼저 사라지는
+                    // 경로에서도 엔티티가 살아 있어 쓸 수 있다. 창이 사라지기 전 경로(Close Window·창 닫기 버튼)는 따로 먼저 쓴다.
+                    let strong = cx.entity();
+                    App::on_app_quit(cx, move |cx| {
+                        strong.update(cx, |this, cx| this.flush_save(None, "app-quit", cx));
+                        async {}
+                    })
+                    .detach();
+                    let weak_close = cx.entity().downgrade();
+                    window.on_window_should_close(cx, move |window, cx| {
+                        let _ = weak_close.update(cx, |this, cx| this.flush_save(Some(window), "window-close", cx));
+                        true
+                    });
                     this.center_focus.focus(window, cx);
                     keymap::register_place("center", this.center_focus.clone(), cx);
                     keymap::register_place("sidebar", this.sidebar_focus.clone(), cx);

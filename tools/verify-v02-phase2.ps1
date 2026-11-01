@@ -207,6 +207,14 @@ $keymapPath = Join-Path $env:APPDATA 'workbench-gpui\keymap.json'
 $backupPath = Join-Path ([System.IO.Path]::GetTempPath()) ("wg-keymap-backup-{0}.json" -f [guid]::NewGuid())
 $hadKeymap = Test-Path -LiteralPath $keymapPath
 $userHashBefore = if ($hadKeymap) { (Get-FileHash -LiteralPath $keymapPath -Algorithm SHA256).Hash } else { '<absent>' }
+# Phase 3 뒤(D-035): workspace::Open(Ctrl-K Ctrl-O)이 실제 폴더 선택 창을 연다. 이 시험은 키 디스패치만 보므로 선택 창 대신
+# `--dev-pick-folder` 로 늘 취소를 주입한다(선택 창에 키가 가거나 폴더가 등록되지 않게). state.json 은 바뀌지 않아야 한다.
+# 리뷰 1회차 ④(Phase 3, D-037)와 같은 규칙: 사용자 파일을 바꾸기 전에 기존 앱 실행을 검사하고 즉시 멈춘다(Start-App 의 재검사도 둔다).
+if (@(Get-Process -Name 'workbench-gpui' -ErrorAction SilentlyContinue).Count -gt 0) { throw "이미 실행 중인 workbench-gpui 가 있다. 사용자 파일을 바꾸기 전에 중단한다" }
+$pickCancel = Join-Path ([System.IO.Path]::GetTempPath()) ("wg-pick-cancel-{0}.txt" -f [guid]::NewGuid())
+[System.IO.File]::WriteAllText($pickCancel, '<cancel>', [System.Text.UTF8Encoding]::new($false))
+$statePathGuard = Join-Path $env:APPDATA 'workbench-gpui\state.json'
+$stateHashBefore = if (Test-Path -LiteralPath $statePathGuard) { (Get-FileHash -LiteralPath $statePathGuard -Algorithm SHA256).Hash } else { '<absent>' }
 
 $results = [ordered]@{ startedAt = (Get-Date).ToString('o'); keymapPath = $keymapPath; cases = [ordered]@{}; failures = @(); errors = @(); checks = @(); shortcutRows = @() }
 
@@ -368,7 +376,7 @@ function Start-App([string]$Case) {
     $script:stdout = Join-Path $out "$Case-stdout.txt"
     if (Test-Path -LiteralPath $script:stdout) { Remove-Item -LiteralPath $script:stdout -Force }
     $exePath = (Resolve-Path -LiteralPath $Exe).Path
-    $p = Start-Process -FilePath $exePath -ArgumentList @('--dev-keymap', '--dev-layout') -RedirectStandardOutput $script:stdout -PassThru
+    $p = Start-Process -FilePath $exePath -ArgumentList @('--dev-keymap', '--dev-layout', '--dev-pick-folder', $pickCancel) -RedirectStandardOutput $script:stdout -PassThru
     $script:launched = $p
     $script:appPid = $p.Id
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
@@ -543,7 +551,8 @@ try {
         }
 
         # 툴팁 없는 요소(L-228 창 버튼, L-231 사이드바 폴더 줄): 1.5초 올려 두어도 tooltip-shown 이 없다.
-        foreach ($nid in 'window-btn-min', 'window-btn-close', 'sidebar-folder-row-label') {
+        # 사이드바 폴더 줄(A-12.8)은 Phase 3 에서 자리 표시 줄을 실제 목록으로 바꿨다. 폴더 줄 툴팁 없음은 Phase 3 items 사례가 판정한다.
+        foreach ($nid in 'window-btn-min', 'window-btn-close') {
             $n = Need-Box 'active-item'; Move-To ($n.x + $n.w / 2) ($n.y + $n.h / 2) 'neutral'
             Start-Sleep -Milliseconds 400
             $b = Need-Box $nid
@@ -570,11 +579,11 @@ try {
     # ================================================================ menu: R-8·R-9·R-5
     Run-Case 'menu' $null {
         param($res, $p)
-        $orig = @{ 'Quit workbench-gpui' = @('zed::Quit', 'Ctrl+Q'); 'Close Window' = @('workspace::CloseWindow', 'Ctrl+Shift+W'); 'Toggle Left Dock' = @('workspace::ToggleLeftDock', 'Ctrl+B'); 'Project Panel' = @('project_panel::ToggleFocus', 'Ctrl+Shift+E'); 'Minimize' = @('zed::Minimize', '없음'); 'Zoom' = @('zed::Zoom', '없음 (F11 은 다른 액션)') }
+        $orig = @{ 'Open Folder...' = @('workspace::Open', 'Ctrl+K Ctrl+O'); 'Toggle Folder Sidebar' = @('multi_workspace::ToggleWorkspaceSidebar', 'Ctrl+Alt+J'); 'Focus Folder Sidebar' = @('multi_workspace::FocusWorkspaceSidebar', 'Ctrl+Alt+;'); 'Quit workbench-gpui' = @('zed::Quit', 'Ctrl+Q'); 'Close Window' = @('workspace::CloseWindow', 'Ctrl+Shift+W'); 'Toggle Left Dock' = @('workspace::ToggleLeftDock', 'Ctrl+B'); 'Project Panel' = @('project_panel::ToggleFocus', 'Ctrl+Shift+E'); 'Minimize' = @('zed::Minimize', '없음'); 'Zoom' = @('zed::Zoom', '없음 (F11 은 다른 액션)') }
         $expectRows = @{
             0 = 'Quit workbench-gpui|Ctrl-Q'
-            1 = 'Close Window|Ctrl-Shift-W'
-            2 = "Toggle Left Dock|Ctrl-B`t---`tProject Panel|Ctrl-Shift-E"
+            1 = "Open Folder...|Ctrl-K Ctrl-O`t---`tClose Window|Ctrl-Shift-W"
+            2 = "Toggle Left Dock|Ctrl-B`tToggle Folder Sidebar|Ctrl-Alt-J`tFocus Folder Sidebar|Ctrl-Alt-;`t---`tProject Panel|Ctrl-Shift-E"
             3 = "Minimize|<none>`tZoom|<none>"
         }
         $names = @('workbench-gpui', 'File', 'View', 'Window')
@@ -630,19 +639,20 @@ try {
         $nb = Need-Box 'menu-name-2'; Move-To ($nb.x + $nb.w / 2) ($nb.y + $nb.h / 2) 'hover View'
         Start-Sleep -Milliseconds 700
         $box = Wait-Box 'menu-box' 3
-        $r0 = Need-Box 'menu-row-00'; $r1 = Need-Box 'menu-row-01'; $r2 = Need-Box 'menu-row-02'
-        $res.viewBox = $box; $res.viewRows = @($r0, $r1, $r2)
+        # Phase 3 뒤 View: 0 Toggle Left Dock, 1 Toggle Folder Sidebar, 2 Focus Folder Sidebar, 3 구분선, 4 Project Panel.
+        $rf = Need-Box 'menu-row-00'; $r0 = Need-Box 'menu-row-02'; $r1 = Need-Box 'menu-row-03'; $r2 = Need-Box 'menu-row-04'
+        $res.viewBox = $box; $res.viewRows = @($rf, $r0, $r1, $r2)
         if ($box -and $r0 -and $r1 -and $r2) {
             Check 'menu' 'I-313' '최소 바깥 폭(200 + 테두리 2)' '>= 202' ('{0:N2}' -f $box.w) ($box.w -ge 201) 'menu-box'
             Check 'menu' 'I-314' '팝업 x = 이름 버튼 왼쪽 − 5' ('{0:N2}' -f ($nb.x - 5)) ('{0:N2}' -f $box.x) (Near $box.x ($nb.x - 5)) 'menu-box, menu-name-2'
             Check 'menu' 'I-314' '팝업 y = 이름 버튼 아래' ('{0:N2}' -f ($nb.y + $nb.h)) ('{0:N2}' -f $box.y) (Near $box.y ($nb.y + $nb.h)) 'menu-box, menu-name-2'
-            Check 'menu' 'I-315' '목록 위 여백 4 (테두리 1 안)' 5 ('{0:N2}' -f ($r0.y - $box.y)) (Near ($r0.y - $box.y) 5) 'menu-row-00'
-            Check 'menu' 'I-315' '목록 아래 여백 4 (테두리 1 안)' 5 ('{0:N2}' -f (($box.y + $box.h) - ($r2.y + $r2.h))) (Near (($box.y + $box.h) - ($r2.y + $r2.h)) 5) 'menu-row-02'
-            Check 'menu' 'I-316' '항목 바깥 좌우 4 (테두리 1 안)' 5 ('{0:N2}' -f ($r0.x - $box.x)) (Near ($r0.x - $box.x) 5) 'menu-row-00'
-            Check 'menu' 'I-317' '항목 줄 높이 14 × 1.618' '22.65' ('{0:N2}' -f $r0.h) (Near $r0.h 22.652) 'menu-row-00'
-            Check 'menu' 'I-318' '구분선 높이 1' 1 ('{0:N2}' -f $r1.h) (Near $r1.h 1 0.5) 'menu-row-01'
-            Check 'menu' 'I-318' '구분선 위 margin 6' 6 ('{0:N2}' -f ($r1.y - ($r0.y + $r0.h))) (Near ($r1.y - ($r0.y + $r0.h)) 6) 'menu-row-00·01'
-            Check 'menu' 'I-318' '구분선 아래 margin 6' 6 ('{0:N2}' -f ($r2.y - ($r1.y + $r1.h))) (Near ($r2.y - ($r1.y + $r1.h)) 6) 'menu-row-01·02'
+            Check 'menu' 'I-315' '목록 위 여백 4 (테두리 1 안)' 5 ('{0:N2}' -f ($rf.y - $box.y)) (Near ($rf.y - $box.y) 5) 'menu-row-00'
+            Check 'menu' 'I-315' '목록 아래 여백 4 (테두리 1 안)' 5 ('{0:N2}' -f (($box.y + $box.h) - ($r2.y + $r2.h))) (Near (($box.y + $box.h) - ($r2.y + $r2.h)) 5) 'menu-row-04'
+            Check 'menu' 'I-316' '항목 바깥 좌우 4 (테두리 1 안)' 5 ('{0:N2}' -f ($rf.x - $box.x)) (Near ($rf.x - $box.x) 5) 'menu-row-00'
+            Check 'menu' 'I-317' '항목 줄 높이 14 × 1.618' '22.65' ('{0:N2}' -f $rf.h) (Near $rf.h 22.652) 'menu-row-00'
+            Check 'menu' 'I-318' '구분선 높이 1' 1 ('{0:N2}' -f $r1.h) (Near $r1.h 1 0.5) 'menu-row-03'
+            Check 'menu' 'I-318' '구분선 위 margin 6' 6 ('{0:N2}' -f ($r1.y - ($r0.y + $r0.h))) (Near ($r1.y - ($r0.y + $r0.h)) 6) 'menu-row-02·03'
+            Check 'menu' 'I-318' '구분선 아래 margin 6' 6 ('{0:N2}' -f ($r2.y - ($r1.y + $r1.h))) (Near ($r2.y - ($r1.y + $r1.h)) 6) 'menu-row-03·04'
         }
         else { Check 'menu' 'R-9' 'View 메뉴 경계' 'menu-box·row' '<없음>' $false }
 
@@ -654,8 +664,8 @@ try {
             Check 'menu' 'I-303' "$($step[0]) → 메뉴 $($step[1])" "index=$($step[1])" $(if ($l) { ($l -replace '.*(index=\d+).*', '$1') } else { '<없음>' }) ($l -match "index=$($step[1]) ") $l
         }
 
-        # 목록 키(I-517·I-518). View: 항목 0, 구분선 1, 항목 2.
-        foreach ($k in @(@('down', 0), @('down', 2), @('down', 0), @('up', 2), @('up', 0), @('end', 2), @('home', 0), @('tab', 2), @('shift-tab', 0), @('ctrl-n', 2), @('ctrl-p', 0), @('pagedown', 2), @('pageup', 0), @('shift-pagedown', 2), @('shift-pageup', 0))) {
+        # 목록 키(I-517·I-518). View(Phase 3 뒤): 항목 0·1·2, 구분선 3, 항목 4.
+        foreach ($k in @(@('down', 0), @('down', 1), @('down', 2), @('down', 4), @('down', 0), @('up', 4), @('up', 2), @('end', 4), @('home', 0), @('tab', 1), @('shift-tab', 0), @('ctrl-n', 1), @('ctrl-p', 0), @('pagedown', 4), @('pageup', 0), @('shift-pagedown', 4), @('shift-pageup', 0))) {
             $before = Count-Lines '^\[dev\] menu-selected '
             Send-Keys $k[0]
             $l = Wait-NewLine '^\[dev\] menu-selected ' $before 2
@@ -789,7 +799,7 @@ try {
             foreach ($row in $Matches[1].Split("`t")) {
                 if ($row -eq '---') { continue }
                 $label, $shortcut = $row.Split('|', 2)
-                $act = @{ 'Toggle Left Dock' = 'workspace::ToggleLeftDock'; 'Project Panel' = 'project_panel::ToggleFocus' }[$label]
+                $act = @{ 'Toggle Left Dock' = 'workspace::ToggleLeftDock'; 'Toggle Folder Sidebar' = 'multi_workspace::ToggleWorkspaceSidebar'; 'Focus Folder Sidebar' = 'multi_workspace::FocusWorkspaceSidebar'; 'Project Panel' = 'project_panel::ToggleFocus' }[$label]
                 Add-ShortcutRow 'reload' '메뉴 View (keymap.json 바꾼 뒤)' $label $act $shortcut '사용자 keymap.json' 'r4-menu-after.png'
             }
         }
@@ -838,7 +848,7 @@ try {
             foreach ($row in $Matches[1].Split("`t")) {
                 if ($row -eq '---') { continue }
                 $label, $shortcut = $row.Split('|', 2)
-                $act = @{ 'Toggle Left Dock' = 'workspace::ToggleLeftDock'; 'Project Panel' = 'project_panel::ToggleFocus' }[$label]
+                $act = @{ 'Toggle Left Dock' = 'workspace::ToggleLeftDock'; 'Toggle Folder Sidebar' = 'multi_workspace::ToggleWorkspaceSidebar'; 'Focus Folder Sidebar' = 'multi_workspace::FocusWorkspaceSidebar'; 'Project Panel' = 'project_panel::ToggleFocus' }[$label]
                 Add-ShortcutRow 'shadow' '메뉴 View (ctrl-b 를 Minimize 로 덮음)' $label $act $shortcut '가려짐 → 없음' 'shadow-menu.png'
             }
         }
@@ -860,7 +870,7 @@ try {
         Send-Keys 'ctrl-shift-e'; Start-Sleep -Milliseconds 400
         Send-Keys 'f10'; Start-Sleep -Milliseconds 300; Send-Keys 'left'; Send-Keys 'left'; Start-Sleep -Milliseconds 600
         $r = @(Get-Lines '^\[dev\] menu-render index=2 ')[-1]
-        Check 'prevctx' 'I-307 D-032 ③' 'View 단축키(패널 컨텍스트 기준)' "Toggle Left Dock|Ctrl-Y / Project Panel|Down" $r ($r -match "rows=Toggle Left Dock\|Ctrl-Y\t---\tProject Panel\|Down") $r
+        Check 'prevctx' 'I-307 D-032 ③' 'View 단축키(패널 컨텍스트 기준)' "Toggle Left Dock|Ctrl-Y / Project Panel|Down" $r ($r -match "rows=Toggle Left Dock\|Ctrl-Y\t(?:[^\t]*\t){2}---\tProject Panel\|Down") $r
         [void](Save-Window 'prevctx-menu')
         $bsel = Count-Lines '^\[dev\] menu-selected '; $bx = Count-Lines '^\[dev\] menu-exec '
         Send-Keys 'down'
@@ -922,7 +932,7 @@ try {
         Send-Keys 'ctrl-shift-e'; Start-Sleep -Milliseconds 400
         Send-Keys 'f10'; Start-Sleep -Milliseconds 300; Send-Keys 'left'; Send-Keys 'left'; Start-Sleep -Milliseconds 600
         $r = @(Get-Lines '^\[dev\] menu-render index=2 ')[-1]
-        Check 'chord' 'I-307 D-033 ⓑ' 'View 단축키(패널 컨텍스트)' 'Toggle Left Dock|Ctrl-K / Project Panel|Ctrl-K Ctrl-Y' $r ($r -match "rows=Toggle Left Dock\|Ctrl-K\t---\tProject Panel\|Ctrl-K Ctrl-Y") $r
+        Check 'chord' 'I-307 D-033 ⓑ' 'View 단축키(패널 컨텍스트)' 'Toggle Left Dock|Ctrl-K / Project Panel|Ctrl-K Ctrl-Y' $r ($r -match "rows=Toggle Left Dock\|Ctrl-K\t(?:[^\t]*\t){2}---\tProject Panel\|Ctrl-K Ctrl-Y") $r
         [void](Save-Window 'chord-menu')
         $bx = Count-Lines '^\[dev\] menu-exec '
         Send-Keys 'ctrl-k ctrl-y'
@@ -987,6 +997,14 @@ finally {
     if ($backupDone -and $results.userKeymap -and $results.userKeymap.restored) {
         try { Remove-Item -LiteralPath $backupPath -Force } catch { $results.errors += "백업 지우기: $($_.Exception.Message)" }
     }
+    # state.json 은 이 시험이 바꾸지 않는다(Phase 3 뒤 추가). 다르면 실패로 남긴다.
+    try {
+        $stateHashAfter = if (Test-Path -LiteralPath $statePathGuard) { (Get-FileHash -LiteralPath $statePathGuard -Algorithm SHA256).Hash } else { '<absent>' }
+        $results.userState = [ordered]@{ path = $statePathGuard; hashBefore = $stateHashBefore; hashAfter = $stateHashAfter; unchanged = ($stateHashBefore -eq $stateHashAfter) }
+        if ($stateHashBefore -ne $stateHashAfter) { $results.failures += '사용자 state.json 이 실행 전과 다르다' }
+        Remove-Item -LiteralPath $pickCancel -Force -ErrorAction SilentlyContinue
+    }
+    catch { $results.errors += "state.json 확인: $($_.Exception.Message)" }
     foreach ($e in $results.errors) { $results.failures += "정리 오류: $e" }
 }
 

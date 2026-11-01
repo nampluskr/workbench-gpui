@@ -1,5 +1,6 @@
 mod dev;
 mod keymap;
+mod state;
 mod ui;
 
 fn main() {

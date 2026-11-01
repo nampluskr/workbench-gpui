@@ -271,7 +271,122 @@
 
 ### Phase 3 — 사이드바 폴더 등록·선택·해제
 
-아직 없음.
+- **구현 보류: 결정 질문** (2026-11-01)
+  - 무엇을 했나: SPEC R-10~R-16·R-28, DECISIONS D-6·D-7·D-10·D-11·D-14·D-16·D-18, 01-zed A-10~A-17·A-20·A-22·A-24·A-28 을 읽었다. gpui-kit `h_resizable`(`on_resize`·`ResizablePanel::visible`)도 확인했다. 원문만으로 정할 수 없는 것 셋을 leader 에게 물었다.
+    - 트리·탭에 기대는 판정(R-12 의 폴더별 펼침·선택·스크롤과 탭, R-13 의 해제 때 탭 닫기와 루트 항목 우클릭 `Remove from Project`)의 범위.
+    - `state.json` 읽기 오류 알림 문구.
+    - A-24(state.json 쓰기·읽기 복구 규칙)를 이번에 적용할지.
+  - 결과: leader 가 셋 모두 (a) 로 정했다(D-035). 그 사이 코드는 바꾸지 않았다.
+  - 검증: 없음.
+  - 특이사항: 사이드바 폭 저장은 gpui-kit `ResizablePanelGroup::on_resize`, 사이드바 숨김은 `ResizablePanel::visible` 로 할 수 있어 질문하지 않았다. `folders[].id`(UUID v4, A-22.3)는 새 크레이트 없이 Windows `CoCreateGuid`(FFI)로 만들 계획이다.
+
+- **D-035 반영** (2026-11-01)
+  - 무엇을 했나: `specs/v0.2/DECISIONS.md` 의 D-6·D-7·D-10 에 "이후 변경(leader 결정 D-035)"을 덧붙였다(rfd 0.17.2·`--dev-pick-folder`, Phase 3 범위와 키보드 커서, 읽기 오류 문구·A-24.1~A-24.7·CoCreateGuid·ISO 8601 UTC·A-28·resizable).
+  - 결과: 덧붙이기만 했다. 기존 문장은 고치지 않았다.
+  - 검증: `git diff specs/v0.2/DECISIONS.md` 가 추가 줄만이다.
+
+- **구현: 폴더 등록·선택·해제·순서, 표시·포커스 키, state.json** (2026-11-01)
+  - 무엇을 했나:
+    - `Cargo.toml`: `rfd = "=0.17.2"`(D-6, G-018).
+    - `src/state/`(새): `path.rs` A-28 정규화·비교 키·이름, `win.rs` `CoCreateGuid`·`ReplaceFileW`/`MoveFileExW` FFI, `time.rs` ISO 8601 UTC·bad 파일 시각, `mod.rs` state.json 읽기·쓰기(A-22 필드, 알 수 없는 키 보존, A-24.1 tmp→sync_all→교체, A-24.4 50ms×3 재시도·`Could not save the window state.`, A-24.5 tmp 복구, A-24.6 `.bad-YYYYMMDD-HHMMSS` 3개 보관·`Could not read the window state.`, A-24.7 버전 큰 파일 읽기만).
+    - `src/ui/folders.rs`(새): 등록(rfd 선택 창 또는 `--dev-pick-folder`, 앱이 직접 검사 → `Cannot open this folder.`, 중복 → 기존 활성), 활성화(폴더마다 Workspace 엔티티, 처음 활성화 때 생성·해제까지 유지), 해제(아래·위·빈 상태), Move Up/Down, 우클릭 메뉴, 사이드바 Up/Down/Enter/Delete, Ctrl+Alt+J·Ctrl+Alt+; 이전 포커스 복귀, 500ms 묶어 쓰기·종료 직전 쓰기, 사이드바 폭 저장, 폴더 줄 그리기(A-12), 프로젝트 패널 빈 상태·경로 없음·루트 한 줄, 타이틀 이름(40자 말줄임).
+    - `src/ui/context_menu.rs`(새): ☰ 메뉴와 같은 치수의 우클릭 메뉴(비활성 항목, `menu` 키, 닫힘·포커스 복원).
+    - `src/ui/mod.rs`·`layout.rs`·`title_bar.rs`·`app_menu.rs`·`keymap.rs`·`dev.rs`: Workbench 에 폴더 상태·사이드바 열림·분할 상태, 사이드바 닫힘 때 분할을 그리지 않음, 상태 표시줄 A-11.8·A-11.9 배치와 L-251 툴팁, 푸터·상태 표시줄 버튼 누름, ☰ File `Open Folder...`·View `Toggle/Focus Folder Sidebar`(D-031 ④ 이월), `--dev-pick-folder`.
+    - `tools/verify-v02-phase3.ps1`(새). Phase 1·2 스크립트는 `--dev-pick-folder <취소>` 와 state.json 전후 해시 확인을 더했고, Phase 2 는 새 메뉴 항목에 맞춰 기대값을 고쳤다.
+  - 결과: R-10~R-16·R-28 의 Phase 3 범위가 동작한다. 트리·탭 의존 부분은 Phase 4 로 넘긴다(아래).
+  - 검증:
+    - `cargo build` 경고 0, `cargo test` 29개 통과, `tools/apply-manifest.ps1` 적용.
+    - `tools/verify-v02-phase3.ps1` 판정 114개 실패 0, 사용자 파일(keymap.json·state.json*) 전후 해시 같음. 증거 `specs/v0.2/verify/phase3/EVIDENCE.md`, `results.json`.
+    - 폴더 선택: 실제 rfd 선택 창(SendInput: 경로 입력·Enter·확인 버튼, Escape 취소)과 `--dev-pick-folder` 주입을 둘 다 썼다(EVIDENCE 에 사례별로 적음).
+    - 등록 해제 전후 디스크 목록(폴더 이름, 파일 크기·수정 시각·SHA-256) 같음(`remove-disk-before.txt`·`remove-disk-after.txt`).
+    - Phase 1 다시 돌리기 `phase1/d035-rerun/` 실패 0, Phase 2 `phase2/d035-rerun/` 판정 137 실패 0·단축키 대조 31줄 불일치 0. 앞선 증거 폴더는 덮어쓰지 않았다.
+  - 특이사항:
+    - 판단(우리 값): 읽기 오류 문구(D-035 ②), bad 파일 시각 UTC, 타이틀 40자 + `…`, 사이드바 Up/Down 순환(I-518 따름), 아이콘–이름 간격 4, 색 토큰(구별만 판정), 종료 직전 쓰기는 쓰지 않은 변경이 있을 때만, 사이드바 닫힘 때 `visible(false)` 대신 분할을 그리지 않음, 경로 없음은 시작·활성화·창 다시 활성화 때 확인.
+    - Phase 4 로 이월(D-035 ①): 폴더별 트리 펼침·선택·스크롤 유지, 폴더별 탭과 해제 때 탭 닫기, 루트 항목 우클릭 `Remove from Project`(I-555). Phase 5 로 이월: 실행 중 사라진 폴더의 즉시 반영(A-16.3, R-24).
+    - Phase 1 다시 돌리기에서 결함 하나를 찾아 고쳤다: ☰ 메뉴가 열린 채 Ctrl+Alt+; 로 사이드바에 갔다 돌아오면 닫힌 메뉴로 포커스가 가서 사라졌다. 지금 화면에 있는 자리로만 돌아가게 했다(Phase 3 keys 판정 추가).
+    - 고치기 전 Phase 1 스크립트로 다시 돌렸을 때 실제 선택 창이 열려 `D:\projects` 가 등록되고 사용자 폴더에 state.json 이 생겼다. 실행 전 사용자 폴더가 비어 있던 것을 확인했으므로 그 파일을 지웠다. 이후 실행은 state.json 전후 해시가 같다.
+    - Phase 3 리뷰(wg-reviewer)와 커밋은 아직이다.
+
+- **리뷰 1회차 (wg-reviewer)** (2026-11-01)
+  - 무엇을 했나: 리뷰 1회차 지적 6건(Major 4, Minor 2)을 모두 반영했다(leader 채택, docs/HERDR-DECISIONS.md D-037).
+    - **① `src/ui/mod.rs`·`folders.rs` 종료 저장:** 창이 사라지는 경로(Close Window, 창 닫기 버튼)에서 마지막 변경을 잃었다. 이제 `flush_save` 가 Close Window(창 제거 전)·`on_window_should_close`·Quit 에서 먼저 쓰고, App 수준 `on_app_quit` 이 Workbench 를 강하게 붙잡아 쓴다.
+    - **② `folders.rs` `save_now`:** 저장 결과와 상관없이 `saved_generation` 을 올렸다. 이제 쓰기 직전 세대를 잡아 두고 성공했을 때만 올린다. 실패는 A-24.4 재시도·알림 뒤 남겨 종료 직전 쓰기에서 다시 시도한다.
+    - **③ `tools/verify-v02-phase3.ps1` 복원:** 사용자 파일 복원을 파일마다 따로 한다(백업 파일 복사 먼저, 시험이 만든 파일 지우기 나중). 한 파일 실패가 keymap.json 복원을 막지 않는다.
+    - **④ 같은 스크립트 시작:** 사용자 파일·시험 폴더를 바꾸기 전에 기존 앱 실행을 검사하고 멈춘다. Phase 1·2 스크립트에도 같은 앞 검사를 넣었다.
+    - **⑤ `src/state/path.rs` `compare_key`:** `to_lowercase` 대신 A-28.5 단순 케이스 폴딩(소문자화와 다른 C·S 항목 표 + 한 글자 소문자화). 같은 이름 표시(A-12.6)도 같은 키를 쓴다.
+    - **⑥ `folders.rs` Ctrl+Alt+J 닫기:** 사이드바에 포커스가 없으면 가운데 Pane 으로 옮긴다(R-16).
+    - **재현 사례:** Phase 3 스크립트에 `closesave`·`xclosesave`(①), `savefail`(②), `sigma`(⑤), `keys` 판정 추가(⑥). 새 하네스 `tools/verify-v02-phase3-guard.ps1` 의 `running`(④)·`locked`(③).
+  - 결과: 6건 모두 고쳤다. 6건 모두 고치기 전 실패·고친 뒤 통과를 남겼다.
+  - 검증:
+    - `cargo build` 경고 0, `cargo test` 30개 통과(⑤ 단위 시험 추가), apply-manifest 적용.
+    - 고치기 전 exe(stage 된 리뷰 대상 트리를 꺼내 따로 빌드): 새 사례 판정 28, 실패 5(①×2·②·⑤·⑥). 고친 exe: 같은 사례 실패 0.
+    - 하네스: 고치기 전 스크립트는 running(실행 중 앱이 keymap 삭제를 봄)·locked(keymap.json 잃음) 실패, 고친 스크립트는 둘 다 통과.
+    - 전체: Phase 3 판정 122 실패 0(`phase3/d037-rerun/after/`), Phase 1 실패 0(`phase1/d037-rerun/`), Phase 2 판정 137 실패 0·단축키 대조 31줄 불일치 0(`phase2/d037-rerun/`). 사용자 파일은 모든 실행에서 전후 해시가 같다.
+    - 증거 `specs/v0.2/verify/phase3/d037-rerun/EVIDENCE.md`. 앞선 증거 폴더는 덮어쓰지 않았다.
+  - 특이사항:
+    - ⑤: 이 PC 의 D: 볼륨에서 σ·ς 는 다른 이름이다(둘 다 만들 수 있다). 그래서 리뷰의 "같은 폴더를 가리킨다"는 이 볼륨에서는 맞지 않는다. 수정은 A-28.5 원문(단순 케이스 폴딩, 대소문자를 구분하는 폴더도 구분하지 않음·판단)대로 했다. 그 결과 서로 다른 σ·ς 폴더는 같은 항목으로 본다.
+    - ①: 처음 만든 사례는 닫기가 500ms 묶어 쓰기보다 늦어 고치기 전 exe 도 통과했다. 닫기를 묶어 쓰기 전에 보내도록 고친 뒤 재현했다.
+    - 작업 폴더가 있는 D:(USB 드라이브)가 큰 빌드 중에 두 번 끊겼다(`STATUS_IN_PAGE_ERROR`, os error 1006). 고치기 전 exe 는 C: 의 대상 폴더로 빌드했다. 끊긴 동안의 편집은 다시 확인해 다시 넣었다.
+    - checker 보고서 `specs/v0.2/verify/phase3/REPORT.md` 는 내용을 고치지 않고 stage 만 했다.
+
+- **리뷰 2회차 (wg-reviewer)** (2026-11-01)
+  - 무엇을 했나: 리뷰 2회차는 1회차 ①②③④⑥을 해결로, ⑤를 부분 미해결로 보았고 새 Minor 1건을 냈다. leader 결정 D-040 대로 반영했다.
+    - **ⓐ 새 Minor `tools/verify-v02-phase3.ps1`:** 가드로 일찍 멈춰도 끝에서 고정 시험 폴더(`target\phase3-folders`)를 통째로 지웠다.
+      - 이제 실행마다 `run-<id>` 폴더와 표지 파일(`.wg-p3-run`, 내용 = 실행 id)을 만든다. 이미 있으면 멈춘다.
+      - 표지가 이번 실행 것일 때만 그 폴더를 지운다. 바탕 폴더는 이번 실행이 만들었고 비어 있을 때만 지운다.
+      - 가드로 일찍 멈추면 아무것도 지우지 않는다.
+      - `tools/verify-v02-phase3-guard.ps1` 에 "미리 있던 시험 폴더는 남는다" 판정(세 사례마다)과 `normal` 사례(앱 없이 정상 실행)를 더했다.
+    - **ⓑ ⑤ 남은 부분:** 수작업 표가 단순 케이스 폴딩 전체가 아닌 점(U+1FD3·U+1FE3·U+FB05 등 빠짐)을 `specs/v0.2/DECISIONS.md` "미결 사항"에 알려진 한계로 적었다. 이후 버전에서 Unicode CaseFolding C/S 표를 들여온다. `compare_key` 주석에도 적었다. 동작은 바꾸지 않았다.
+  - 결과: ⓐ 고쳤다. ⓑ 기록했다.
+  - 검증:
+    - 하네스 고치기 전(D-037 판 스크립트, `phase3/d040-rerun/guard-before/`): running·locked·normal 모두에서 미리 있던 폴더가 지워졌다(일찍 멈춘 running 포함).
+    - 하네스 고친 뒤(`guard-after/`): running(일찍 멈춤, 앱 keymap 다시 읽기 0)·locked(keymap.json 복원)·normal(통과) 모두 통과했다. 미리 있던 폴더는 세 사례 모두 그대로였고 `run-*` 는 남지 않았다.
+    - Phase 3 전체(`phase3/d040-rerun/after/`): 판정 122, 실패 0. 이번 실행 폴더·바탕 폴더 모두 남지 않았다. 사용자 파일 전후 해시가 같다.
+    - 그 뒤 `path.rs` 주석만 더해 `cargo build`(경고 0)·`cargo test`·apply-manifest 를 다시 했다.
+  - 특이사항: 2회차 checker 보고서 `specs/v0.2/verify/phase3/REPORT.md` 는 내용을 고치지 않고 stage 만 했다.
+
+- **완료 조건 검증 (wg-checker)** (2026-11-01)
+  - 무엇을 했나: PLAN Phase 3 완료 조건과 SPEC R-10~R-16·R-28(+ Phase 1·2 이월분)을 두 번 검증했다. 앱을 다시 띄우지 않고, 원래 출력(`*-stdout.txt`)·`results.json`·`state-*.json`·`remove-disk-*.txt`·스크린샷·코드·원문을 직접 대조했다.
+    - 1회차: 처음 구현, `phase3/`(판정 114개).
+    - 2회차: 리뷰 1회차 수정(D-037·D-038) 뒤, `d037-rerun/`(판정 122개, 1회차 114개는 모두 남아 통과하고 새 판정 8개).
+  - 결과: `specs/v0.2/verify/phase3/REPORT.md`. 두 번 모두 불일치(명세 값과 다른 실제 값) 0건이다.
+    - R-10·R-11·R-14·R-16·R-28 통과. R-12·R-13·R-15 는 Phase 3 범위 안에서 통과다.
+    - 이월분(R-3 사이드바 Delete, ☰ `Open Folder...`·`Toggle/Focus Folder Sidebar`, L-251 툴팁, 사이드바 이전 포커스 복귀) 통과.
+    - 2회차에 종료 저장 3경로(Ctrl-Q·Ctrl-Shift-W·창 닫기 버튼)와 저장 실패 뒤 재저장을 추가로 확인했다.
+    - Phase 1 R-1 62줄 일치, Phase 2 R-4~R-9 가 유지됐다(`d035-rerun/`·`d037-rerun/`).
+  - 검증: 보고서 `specs/v0.2/verify/phase3/REPORT.md`(1회차, 2회차 절).
+  - 특이사항:
+    - 판정 불가·이월(보고서 §13·§2-11):
+      - Phase 4(D-035 ①): 폴더별 트리 펼침·선택·스크롤(A-15.2), 폴더별 탭과 해제 때 탭 닫기(A-15.1·A-13.4), 루트 우클릭 `Remove from Project`(I-555), 루트 `Delete` 무동작·휴지통(R-3 이월분의 나머지).
+      - Phase 5: 실행 중 사라진 폴더의 즉시 반영(A-16.3, R-24).
+      - 판정 대상 아님: 색 토큰 값(R-11, 테마 매핑 전).
+      - 코드·단위 시험으로만 확인: 폭 200~800 막힘, 행 padding·아이콘 14, A-24.2·A-24.4 재시도·A-24.6 일부, A-28.7~13 표, `app-quit` 경로.
+    - 허용 오차(±1 px) 끝 값(통과로 보되 알림): 사이드바 맨 위 줄 아래 선과 타이틀 바 아래 선의 1 논리 px 단차(A-11.2), 사이드바–프로젝트 패널 경계 폭 2(A-11.5).
+    - leader 판단이 필요하다고 적힌 것:
+      - A-24.3 을 "쓰지 않은 변경이 있을 때만" 쓰는 판단(§11-가).
+      - A-16.1(타이틀 바 이름 = 앱 이름)과 A-13.9·L-227·SPEC R-12(`Open Recent Project`)의 문서 충돌. 구현은 SPEC R-12 를 따랐다(§11-나).
+      - σ/ς 두 폴더가 한 항목으로 합쳐지는 것(A-28.5 원문대로, D-038, §2-9-가).
+    - 보고서의 관찰(불일치 아님):
+      - 상태 표시줄 폴더 추가 버튼 클릭은 툴팁 판정뿐이고 클릭 입력 증거가 없다(코드로 확인).
+      - 활성 줄 위 hover 색이 활성 색을 덮는다. 마우스로 활성화한 줄에도 키보드 포커스 테두리가 보인다. 스크롤 직후 hover 갱신이 한 박자 늦다.
+      - 종료 때 같은 내용을 한 번 더 쓴다(`quitsave`, 파일 내용 같음).
+      - `phase2/d035-rerun/r5-shortcuts.md` 의 shadow 새 두 행 "01-zed 원문" 칸 표기 흠.
+      - 코드 주석 `src/state/path.rs` 의 "NTFS 도 같은 이름으로 본다"는 이 볼륨 증거(σ·ς 두 폴더 공존)와 맞지 않는다(판정 영향 없음, 주석만).
+    - 리뷰는 2회로 마감했다. D-040 수정(시험 폴더 소유 표지)은 leader 가 가드 하네스 결과(고치기 전 미리 있던 폴더 삭제 → 고친 뒤 보존)로 확인했다.
+
+- **Phase 3 완료** (2026-11-01)
+  - 무엇을 했나: PLAN Phase 3 완료 조건을 대조했다.
+  - 결과:
+    - R-10~R-16·R-28 이 통과로 판정되었다. R-12·R-13·R-15 는 Phase 3 범위 안이다(트리·탭 의존 부분은 D-035 ① 로 Phase 4).
+    - `specs/v0.2/verify/phase3/` 에 검증 보고서, 등록 해제 전후 디스크 비교(`remove-disk-*.txt`), 재시작 전후 `state.json`·복원 결과가 있다.
+    - wg-reviewer 리뷰 결과(1·2회차)가 기록되어 있다.
+    - 미해결 실패가 없어 Phase 3 을 완료로 본다.
+  - 검증: `specs/v0.2/verify/phase3/REPORT.md`, `specs/v0.2/verify/phase3/d040-rerun/after/results.json`(판정 122, 실패 0), `d040-rerun/guard-after/guard-results.json`, 이 PROGRESS 기록.
+  - 특이사항:
+    - 이월: Phase 4 — 트리·탭에 기대는 판정(폴더별 트리 펼침·선택·스크롤 유지, 폴더별 탭과 해제 때 탭 닫기, 루트 우클릭 `Remove from Project`, 루트 `Delete` 무동작·휴지통). Phase 5 — 실행 중 사라진 폴더의 즉시 반영(A-16.3, R-24).
+    - 알려진 한계: A-28.5 비교 키의 수작업 표가 Unicode 단순 케이스 폴딩 C·S 전체가 아니다(`specs/v0.2/DECISIONS.md` 미결 사항, D-040). 이후 버전에서 Unicode CaseFolding C/S 표를 들여온다.
+    - Phase 3 구현 항목 끝의 "Phase 3 리뷰(wg-reviewer)와 커밋은 아직이다"는 그 시점의 기록이다. 리뷰는 위 "리뷰 1회차"·"리뷰 2회차" 항목에 있다.
+    - PLAN 의 Phase 3 완료 조건 중 "Phase 3 커밋이 있다"는 이 기록 뒤의 커밋으로 채운다.
 
 ### Phase 4 — 프로젝트 패널 트리·파일 작업과 시나리오
 
