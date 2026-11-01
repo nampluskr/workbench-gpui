@@ -194,3 +194,4 @@ PoC 3단계 레이아웃 뼈대의 영역별 구성 요소는 다음과 같다.
 - **D-10의 "또는"** — 사이드바를 `sidebar`로 할지 `list`·`VirtualList`로 할지, 왼쪽 Dock을 `dock`(DockArea)으로 할지 `resizable` 패널로 할지 정하지 않았다.
 - **닫기 외 창 버튼 색 (Phase 1, 2026-10-31 추가)** — 최소화·최대화(복원) 버튼의 hover·누름 색은 테마 매핑(G-106, v0.1 범위 밖)이 정해지기 전까지 gpui-kit 기본 테마 색(`secondary_hover`·`secondary_active`)을 임시로 쓴다. Zed가 쓰는 토큰은 `ghost_element_hover`·`ghost_element_active`다(L-84).
 - **글리프 글꼴 선택 기준 (Phase 1, 2026-10-31 추가)** — L-83은 Windows 11(빌드 22000 이상)이면 `Segoe Fluent Icons`, 그 이전이면 `Segoe MDL2 Assets`를 쓴다. 구현은 빌드 번호 대신 `Segoe Fluent Icons`가 설치되어 있는지로 고른다. 빌드 22000 이상인데 이 글꼴이 없거나, 이전 빌드에 글꼴을 따로 설치한 경우에는 L-83과 결과가 다르다.
+- **Zed 글꼴(.ZedSans/.ZedMono) 자산 도입 (Phase 2, 2026-11-01 추가)** — G-139는 `.ZedSans`(IBM Plex Sans)·`.ZedMono`(Lilex)를 전제하지만, 두 글꼴은 이 PC에 설치되어 있지 않고 앱에 자산으로 넣지도 않았다. Phase 2 R-10은 leader 결정(docs/HERDR-DECISIONS.md D-014)으로 gpui-kit 기본 고정폭 글꼴(이 PC에서는 Consolas)로 측정했다. Zed 글꼴을 앱 자산으로 넣을지(G-024, T-14~T-17)와 그때 한글 대체 글꼴 측정을 다시 할지는 정하지 않았다.

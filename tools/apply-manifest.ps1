@@ -27,7 +27,7 @@
   병합할 매니페스트 조각. 기본 resources\windows\longpath.manifest.xml.
 
 .PARAMETER DumpTo
-  병합 뒤 exe 에서 꺼낸 매니페스트를 저장할 경로. 기본 specs\v0.1\verify\phase1\manifest.xml.
+  병합 뒤 exe 에서 꺼낸 매니페스트를 저장할 경로. 기본 target\manifest\manifest.xml (빌드 산출물 쪽, 커밋되지 않는다). 검증 증거로 남길 때만 -DumpTo 로 specs 아래 경로를 준다.
 
 .EXAMPLE
   pwsh -NoProfile -File tools/apply-manifest.ps1
@@ -36,7 +36,7 @@
 param(
     [string]$Exe = 'target\debug\workbench-gpui.exe',
     [string]$Fragment = 'resources\windows\longpath.manifest.xml',
-    [string]$DumpTo = 'specs\v0.1\verify\phase1\manifest.xml'
+    [string]$DumpTo = 'target\manifest\manifest.xml'
 )
 
 $ErrorActionPreference = 'Stop'

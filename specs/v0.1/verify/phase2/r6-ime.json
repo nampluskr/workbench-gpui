@@ -1,0 +1,70 @@
+{
+  "startedAt": "2026-11-01T09:08:25.2814636+09:00",
+  "pid": 11236,
+  "hwnd": "0x570830",
+  "layout": {
+    "line": "[dev] layout scale=2 editor=15.00,89.00,1406.00,794.00 input=19.00,46.00,1402.00,20.00",
+    "scale": 2.0,
+    "clientRect": {
+      "x": 0,
+      "y": -6,
+      "width": 2880,
+      "height": 1800
+    }
+  },
+  "fields": {
+    "editor": {
+      "clickScreen": [
+        190,
+        312
+      ],
+      "imeWnd": "0x3C07DA",
+      "openBefore": 0,
+      "modeBefore": 0,
+      "openAfter": 1,
+      "modeAfter": 1,
+      "hangulMode": true,
+      "composingScreenshot": "r6-editor-composing.png",
+      "valueLinesWhileComposing": [],
+      "candidateScreenshot": "r6-editor-candidate.png",
+      "newWindowsAfterHanja": [],
+      "committedScreenshot": "r6-editor-committed.png",
+      "lastValueLine": "[dev] value field=editor len=114 head=\"abcdehiklm\\n가나다라마바사아자차\\nabc가나다def\\n한 가나 \\nfn main() {\\n    println!(\\\"hello 안녕\\\");\\n}\\n\"",
+      "expectedSubstring": "한 가나 ",
+      "committedTextFound": true,
+      "visualCheck": {
+        "status": "수동 판정 대기",
+        "composing": "r6-editor-composing.png: 조합 중 글자 '한' 이 밑줄과 함께 입력 위치에 보이는가",
+        "candidate": "r6-editor-candidate.png: 한자 후보창이 조합 중 글자 바로 아래에 붙어 뜨는가"
+      }
+    },
+    "input": {
+      "clickScreen": [
+        118,
+        106
+      ],
+      "imeWnd": "0x3C07DA",
+      "openBefore": 1,
+      "modeBefore": 1,
+      "openAfter": 1,
+      "modeAfter": 1,
+      "hangulMode": true,
+      "composingScreenshot": "r6-input-composing.png",
+      "valueLinesWhileComposing": [],
+      "candidateScreenshot": "r6-input-candidate.png",
+      "newWindowsAfterHanja": [],
+      "committedScreenshot": "r6-input-committed.png",
+      "lastValueLine": "[dev] value field=input text=\"한 가나 \"",
+      "expectedSubstring": "한 가나 ",
+      "committedTextFound": true,
+      "visualCheck": {
+        "status": "수동 판정 대기",
+        "composing": "r6-input-composing.png: 조합 중 글자 '한' 이 밑줄과 함께 입력 위치에 보이는가",
+        "candidate": "r6-input-candidate.png: 한자 후보창이 조합 중 글자 바로 아래에 붙어 뜨는가"
+      }
+    }
+  },
+  "blocked": null,
+  "errors": [],
+  "finishedAt": "2026-11-01T09:08:41.0326901+09:00"
+}

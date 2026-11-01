@@ -1,0 +1,5 @@
+[dev] cp949-selftest case=korean-crlf expect=ok got=ok bytes=36 pass=true
+[dev] cp949-selftest case=ascii-backslash expect=ok got=ok bytes=12 pass=true
+[dev] cp949-selftest case=won-sign-U+20A9 expect=error got=error error="cp949: lossy conversion, characters not in CP949: U+20A9" pass=true
+[dev] cp949-selftest case=yen-sign-U+00A5 expect=error got=error error="cp949: lossy conversion, characters not in CP949: U+00A5" pass=true
+[dev] cp949-selftest done pass=4/4

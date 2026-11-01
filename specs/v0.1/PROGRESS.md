@@ -121,7 +121,82 @@
 
 ### Phase 2 — 편집기 PoC
 
-아직 없음.
+- **apply-manifest 출력 경로 변경** (2026-11-01)
+  - 무엇을 했나: leader 결정(docs/HERDR-DECISIONS.md D-014 ③)으로 `tools/apply-manifest.ps1`의 기본 출력 경로를 `specs\v0.1\verify\phase1\manifest.xml`에서 `target\manifest\manifest.xml`로 바꿨다.
+  - 결과: 빌드마다 병합을 다시 해도 Phase 1 증거 파일이 바뀌지 않는다.
+  - 검증: `git status`에서 `specs/v0.1/verify/phase1/manifest.xml` 변경 없음(커밋된 내용 그대로).
+  - 특이사항: 없음.
+
+- **편집기 PoC 화면** (2026-11-01)
+  - 무엇을 했나: 디버그 빌드 전용 플래그 `--dev-editor-poc`로 gpui-kit 0.8.1 `Input`(한 줄)과 `Editor`(여러 줄 코드 편집기)를 본문에 띄우는 화면을 만들었다. 파일 열기(`--dev-poc-file`), soft wrap 끄기(`--dev-no-wrap`), 성능 측정(`--dev-perf`), 열기→저장(`--dev-roundtrip-out`, `--dev-roundtrip-mode naive|app`), 측정(`--dev-measure`) 플래그와, 값이 바뀔 때 `[dev] value ...` 출력을 넣었다.
+  - 결과: `src/ui/editor_poc.rs`(새 파일), `src/ui/mod.rs`, `src/dev.rs`. 인코딩 감지·변환(UTF-8, UTF-8 BOM, UTF-16 LE/BE, CP949)은 새 크레이트 없이 표준 라이브러리와 Win32 MultiByteToWideChar/WideCharToMultiByte 로 했다.
+  - 검증: `cargo build` 경고 없이 성공, `tools/apply-manifest.ps1` 세 항목 true. PoC 화면 스크린샷 `specs/v0.1/verify/phase2/r7-editor.png`.
+  - 특이사항: 없음.
+
+- **R-6 한글 IME 자동화** (2026-11-01)
+  - 무엇을 했나: `tools/verify-ime.ps1`을 만들어 실행했다. 대상 창의 기본 IME 창(ImmGetDefaultIMEWnd)에 WM_IME_CONTROL 로 IME 를 열고 한글 모드로 바꾼 뒤, SendInput 가상 키로 "한"을 조합하고 한자 키로 후보창을 띄우고, Space 로 확정하고 "가나"를 이어 쳤다. Editor 와 Input 둘 다 했다.
+  - 결과: 자동화가 됐다. 두 필드 모두 조합 중 밑줄 표시, 조합 글자 바로 아래 후보창, 확정 글자 "한 가나 "가 값에 들어감을 확인했다.
+  - 검증: `specs/v0.1/verify/phase2/r6-ime.json`(committedTextFound 둘 다 true, IME 변환 모드 전후 값), `r6-editor-composing.png`, `r6-editor-candidate.png`, `r6-editor-committed.png`, `r6-input-*.png`, `r6-stdout.txt`.
+  - 특이사항: 첫 실행에서 PowerShell 함수가 한 개짜리 배열을 문자열로 풀어 오류가 나 `@()`로 감싸 고쳤다. 한자 키 뒤 새로 나타난 최상위 창은 창 목록에서 찾지 못해, 후보창 위치는 모니터 전체 캡처로 판정했다.
+
+- **R-7 Editor 동작 지원 범위** (2026-11-01)
+  - 무엇을 했나: G-101 항목마다 gpui-base 0.8.1 소스 위치와 PoC 화면으로 지원 여부를 확인했다.
+  - 결과: `specs/v0.1/verify/phase2/POC-TABLE.md` G-101 표. 직접 구현 필요는 줄 번호 최소 4자리, 커서 2px, 선택 모서리 둥글림, 열 선택 조작 키, 선택 끌어 옮기기, 스크롤바 15px, 스크롤바 마커다.
+  - 검증: 판정표의 소스 파일·줄, `r7-editor.png`.
+  - 특이사항: 없음.
+
+- **R-8 큰 파일** (2026-11-01)
+  - 무엇을 했나: `tools/verify-phase2.ps1 -Steps r8`로 5만·10만 줄 파일(줄마다 약 78바이트, `target\phase2-data\`, 커밋 안 함)을 열고 스크롤 20회·입력 20회를 했다. 측정은 앱 안에서 변경을 적용한 시점부터 그 변경이 그려진 프레임 직후까지다(leader 승인, HERDR-DECISIONS D-014 ②). 디버그 빌드와, 최적화 빌드에 debug_assertions 만 켠 빌드(`target\opt-dbgassert`, dev 플래그가 동작하게) 두 가지로 쟀다.
+  - 결과: opt 기준 10만 줄 set_value 185ms, 그 뒤 첫 프레임 8,356ms(5만 줄 5,007ms). soft wrap 을 끄면 첫 프레임 328ms. 스크롤 평균 8.41ms(최대 16.67), 입력 평균 10.63ms(최대 15.86).
+  - 검증: `specs/v0.1/verify/phase2/r8-perf-opt.json`, `r8-perf-debug.json`, `r8-*-stdout.txt`, `r8-100k-opt-nowrap-stdout.txt`, `r8-*-after.png`.
+  - 특이사항: 디버그 빌드만으로는 수치를 믿기 어려워 최적화 빌드를 따로 만들었다(빌드 4분 10초). 이 빌드에도 `tools/apply-manifest.ps1`을 적용했다(세 항목 true). 첫 프레임 지연의 원인은 문서 전체의 soft wrap 계산이다. → 리뷰 1회차에서 계측 시점이 draw·present 이전이라는 지적이 있어 다시 쟀다(아래 "리뷰 1회차" 항목). 이 항목의 수치와 증거 파일은 그 재측정으로 대체되었다.
+
+- **R-9 줄 끝·인코딩** (2026-11-01)
+  - 무엇을 했나: `tools/verify-phase2.ps1 -Steps r9`로 LF UTF-8, CRLF UTF-8, CRLF UTF-16 LE(BOM), CRLF CP949 파일을 만들고, naive·app 두 방식으로 열기→Editor 값 다시 읽기→저장 후 바이트를 비교했다.
+  - 결과: LF·CRLF UTF-8 은 두 방식 모두 바이트가 같다(Editor 가 `\r`을 그대로 둔다). UTF-16 LE 와 CP949 는 naive 에서 바이트가 달라지고(96→126, 56→76), app 에서는 같다(96→96, 56→56).
+  - 검증: `specs/v0.1/verify/phase2/r9-roundtrip.json`, `r9/`(입력·출력 파일과 실행 출력).
+  - 특이사항: 이 저장소는 `core.autocrlf=true`라 git 이 증거 파일의 LF/CRLF 를 바꿀 수 있다. 루트에 `.gitattributes`를 새로 두어 `r9/in-*`, `r9/out-*`를 `-text`(변환 안 함)로 지정했고, 스테이징한 바이트 수가 디스크와 같음을 확인했다(예: in-crlf-utf8.txt 65=65).
+
+- **R-10 한글 대체 글꼴** (2026-11-01)
+  - 무엇을 했나: `--dev-measure`로 영문 줄·한글 줄·혼합 줄의 줄 위치·폭·거터·커서를 내고, 각 줄을 편집기 글꼴로 다시 배치해 글자 묶음마다 쓰인 글꼴을 냈다. 스크린샷 픽셀로 잉크 아래 끝(기준선 근사)과 잉크 폭을 쟀다(`tools/verify-phase2.ps1 -Steps r10`).
+  - 결과: 줄 높이 20(세 줄 같음), 거터 45.44, 10글자 폭 영문 71.47·한글 130.00, 줄 끝 커서 x 는 줄 시작+줄 폭과 같다. 잉크 아래 끝은 영문 줄 14, 혼합 줄 영문 15, 한글 16 이다(한글이 섞인 줄은 영문 기준선이 1 내려간다).
+  - 검증: `specs/v0.1/verify/phase2/r10-stdout.txt`, `r10-pixels.json`, `r10-measure.png`.
+  - 특이사항: leader 결정(HERDR-DECISIONS D-014 ①)으로 gpui-kit 기본 고정폭 글꼴로 쟀다. 이 PC 에서는 Consolas 13px 이고, Consolas 에는 한글이 없어 한글 묶음은 대체 글꼴로 그려진다. gpui 가 알려 준 대체 글꼴 이름은 `.SystemUIFont`(gpui 의 시스템 UI 글꼴 별칭)이고, DirectWrite 가 실제로 고른 글꼴 파일 이름은 알 수 없었다. Zed 글꼴 자산 도입은 DECISIONS 미결 사항에 추가했다. 픽셀 측정 첫 실행에서 구간의 배경색을 다음 글자 위에서 잡는 버그가 있어, 편집기 오른쪽 빈 곳에서 잡도록 고쳐 다시 쟀다.
+
+- **R-11 PoC 판정표** (2026-11-01)
+  - 무엇을 했나: R-6~R-10 결과를 `항목 / gpui-kit 지원 / 직접 구현 필요 / 증거` 판정표 하나로 모았다.
+  - 결과: `specs/v0.1/verify/phase2/POC-TABLE.md`. 모든 행에 직접 구현 필요/불필요 결정과 근거가 있고, 판정 불가 행은 없다. 직접 구현 필요는 11건(줄 번호 4자리, 커서 2px, 선택 모서리, 열 선택 조작 키, 선택 끌어 옮기기, 스크롤바 15px, 스크롤바 마커, 큰 파일 wrap 열기, UTF-16 LE, CP949, 한글 혼합 줄 기준선)이다.
+  - 검증: 판정표의 증거 파일과 소스 위치.
+  - 특이사항: 리뷰(wg-reviewer)·검증(wg-checker)과 커밋은 아직이다(leader 지시 대기). → 리뷰 1회차 반영으로 판정표가 바뀌었다(직접 구현 필요 12건, 아래 항목).
+
+- **리뷰 (wg-reviewer) 1회차** (2026-11-01)
+  - 무엇을 했나: Phase 2 변경 리뷰에서 Major 3건이 나왔고, leader 가 모두 채택했다(docs/HERDR-DECISIONS.md D-016). 3건을 반영하고 R-6·R-8·R-9 를 다시 실행했다.
+  - 결과:
+    - ① R-8 계측: 기존 값은 `on_next_frame` 콜백 시점이라, 같은 프레임의 draw·present 보다 먼저 찍혔다(gpui-pre 0.3.10 `src/window.rs` 1878~1912행). 콜백에서 foreground 작업을 예약해 프레임 핸들러(draw·present)가 끝난 뒤 시간을 재도록 바꿨다(`src/ui/editor_poc.rs` after_present). 측정마다 그 시점까지 화면이 실제로 다시 그려졌는지 세어 출력한다. 재측정(opt): 10만 줄 열기(wrap 켜짐) 첫 프레임 7,619ms, wrap 끔 302ms, 스크롤 평균 11.71·최대 19.53ms, 입력 평균 12.70·최대 18.11ms, 모든 측정 drawn=20/20. 최대값이 한 프레임(16.7ms)을 넘어 "한 프레임 안" 근거를 버리고, "줄 수·wrap 에 따라 지연이 달라지지 않는다"로 스크롤·입력 판정 근거를 바꿨다(결정은 불필요 그대로). 스크립트에 10만 줄 wrap 끔 측정을 넣었다.
+    - ② CP949 인코딩: WideCharToMultiByte 를 flags 0 으로 불러 best-fit 치환(U+20A9→0x5C, U+00A5→0xA1CD)이 손실 없이 성공으로 나오던 것을 고쳤다. `WC_NO_BEST_FIT_CHARS` 를 쓰고, 두 호출의 반환값·used_default 를 검사하고, 결과를 다시 풀어 원문과 같은지 확인한다. 디코드 쪽 두 번째 호출의 반환값도 검사한다. 시험을 두 가지 넣었다: 단위 테스트 4개(`cargo test --bin workbench-gpui dev::tests`, 4 passed), 앱 자기 시험 `--dev-cp949-selftest`(R-9 단계에서 실행, 4/4 통과, ₩·¥ 는 오류로 잡힘). 판정표에 "CP949 로 옮길 수 없는 글자의 저장 손실" 행(직접 구현 필요)을 더했다.
+    - ③ verify-ime.ps1: IME 조회의 음수 실패값과 열림 상태를 먼저 검사하고 그다음 한글 모드 비트를 본다. committedTextFound 가 false 면 errors 에 넣어 종료 코드 1 로 끝낸다. 조합 표시·후보창 위치는 자동 판정이 없어 `r6-ime.json` visualCheck 에 "수동 판정 대기"로 남기고, 판정표에 스크린샷 판정이라고 적었다. 재실행: 두 필드 모두 open 1, mode 1, committedTextFound true, errors 0, 종료 코드 0.
+  - 검증: `cargo build` 경고 없음, `tools/apply-manifest.ps1` 세 항목 true(디버그·opt 빌드 둘 다). 증거 `specs/v0.1/verify/phase2/r8-perf-opt.json`, `r8-perf-debug.json`, `r8-*-stdout.txt`, `r9-cp949-selftest.json`, `r9/r9-cp949-selftest-stdout.txt`, `r9/r9-cp949-unittest.txt`, `r9-roundtrip.json`(바이트 비교 결과 이전과 같음), `r6-ime.json`, `r6-*.png`, `POC-TABLE.md`.
+  - 특이사항: R-8 이전 증거 파일(`r8-*`)은 지우고 새 계측으로 다시 만들었다. 커밋은 하지 않았다(leader 지시 대기).
+
+- **리뷰 (wg-reviewer) 2회차** (2026-11-01)
+  - 무엇을 했나: 1회차 반영분을 다시 리뷰했다.
+  - 결과: 1회차 Major 3건(R-8 계측 시점, CP949 저장 손실, verify-ime.ps1 실패의 성공 처리)이 모두 해결됐다고 확인했다. 새 지적은 없다.
+  - 검증: 리뷰 결과에 근거로 `r8-perf-opt.json`(세 구성 모두 firstFrameDrawn=true, drawn=20), `r9-cp949-selftest.json`(4/4), `tools/verify-ime.ps1`의 실패 분기가 적혀 있다.
+  - 특이사항: 없음.
+
+- **완료 조건 검증 (wg-checker)** (2026-11-01)
+  - 무엇을 했나: R-6~R-11 을 SPEC 판정 방법대로 검증했다. 1회차(08:58)는 리뷰 반영 전 증거로, 2회차(09:15)는 리뷰 1회차 반영 뒤 다시 모은 증거로 했다.
+  - 결과: 보고서 `specs/v0.1/verify/phase2/REPORT.md`.
+    - 1회차: R-6~R-11 모두 통과.
+    - 2회차(최종): R-6~R-11 모두 통과. R-6 의 조합 표시·후보창 위치(visualCheck "수동 판정 대기")는 검증 담당이 새 스크린샷을 직접 보고 통과로 판정했다. R-8 은 draw·present 이후 재측정값(drawn=20/20)으로, R-9 는 CP949 단위 테스트 4건·자기 시험 4/4·바이트 비교로 확인했다. R-11 판정표는 35행(직접 구현 필요 12, 불필요 23, 판정 불가 0)이다.
+  - 검증: 보고서 `specs/v0.1/verify/phase2/REPORT.md`와 `specs/v0.1/verify/phase2/`의 증거 파일.
+  - 특이사항: 없음.
+
+- **Phase 2 완료** (2026-11-01)
+  - 무엇을 했나: PLAN Phase 2 완료 조건을 대조했다.
+  - 결과: `specs/v0.1/verify/phase2/POC-TABLE.md` 판정표가 있고, R-6~R-10 이 각각 통과(증거 포함), R-11 통과(모든 항목에 직접 구현 필요/불필요 결정과 근거), wg-reviewer 리뷰 결과(1·2회차) 기록됨. 미해결 실패가 없어 Phase 2 를 완료로 본다.
+  - 검증: `specs/v0.1/verify/phase2/REPORT.md`와 이 PROGRESS 기록.
+  - 특이사항: PLAN 의 Phase 2 완료 조건 중 "Phase 2 커밋이 있다"는 이 기록 뒤의 커밋으로 채운다. 직접 구현이 필요한 12건은 이후 구현 단계의 범위다.
 
 ### Phase 3 — 레이아웃 뼈대
 

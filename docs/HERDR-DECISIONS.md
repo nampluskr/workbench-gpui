@@ -153,3 +153,43 @@
 - 근거: 사용자 답 "leader가 배율을 바꿔도 됨"
 - 결과: 100% 32 물리=32 논리 px, 150% 48 물리=32 논리 px. checker 3회차 R-1~R-5 모두 통과(모니터 이동은 단일 모니터라 판정 불가, SPEC 허용)
 - 보고: 2026-11-01
+
+### D-014 · 2026-11-01 · wg-coder
+
+- 상황: 질문 (Phase 2 진행 중 판단 요청 3건)
+- 질문: ① R-10 은 `.ZedSans`(IBM Plex Sans)·`.ZedMono`(Lilex)를 전제하는데 두 글꼴이 PC 에 없고 앱에도 없다 ② R-8 은 앱 안에서 스크롤·입력을 일으킨 뒤 다음 프레임까지 시간을 잰다(실제 키 입력→화면 지연 아님) ③ `tools/apply-manifest.ps1` 이 빌드마다 Phase 1 증거 `verify/phase1/manifest.xml` 을 덮어쓴다
+- 구분: 대리 응답 (사용자 지시 2026-11-01 "결정이 필요한 사항은 리더가 승인하고 결과와 근거를 문서에 기록")
+- 답변: ① 승인 — gpui-kit 기본 고정폭 글꼴로 측정한다. 판정표 R-10 행과 PROGRESS 특이사항에 "Zed 글꼴 미설치, 기본 글꼴로 측정, 그 글꼴에 한글이 없어 DirectWrite 대체가 일어남을 확인"을 적는다. Zed 글꼴 자산 도입은 v0.1 범위 밖으로 DECISIONS 미결 사항에 둔다 ② 승인 — 측정 방식(앱 내부 이벤트→다음 프레임)을 판정표에 명시한다 ③ 수정 — apply-manifest.ps1 의 기본 출력 경로를 `target/` 아래로 바꾸고, Phase 1 증거 파일은 커밋된 내용 그대로 둔다
+- 근거: ① 글꼴 파일은 로컬에 없고(D:\projects·C:\Windows\Fonts 검색) 받으려면 외부 다운로드라 위임 밖과 가깝다. G-139 의 핵심은 "한글 없는 글꼴 → DirectWrite 대체가 줄 높이·기준선·폭을 바꾸는가"이고, 한글 없는 기본 고정폭 글꼴로도 같은 메커니즘을 잴 수 있다. SPEC R-10 은 측정값 기록이 결과다 ② SPEC R-8 "통과 기준 수치는 원문에 없으므로 측정값과 관찰을 기록하는 것까지" ③ AGENTS.md 정신(지난 증거 보존), Phase 1 은 커밋으로 마감됨
+- 결과: wg-coder 에 전달
+- 보고: 최종 보고에서 알림
+
+### D-015 · 2026-11-01 · wg-leader
+
+- 상황: specs/v0.1/DECISIONS.md 미결 사항 "D-10 의 또는" (Phase 3 시작 전 결정 필요)
+- 질문: 사이드바를 `sidebar` 로 할지 `list`·`VirtualList` 로 할지, 왼쪽 Dock 을 `dock`(DockArea)로 할지 `resizable` 패널로 할지
+- 구분: 대리 응답 (사용자 지시 2026-11-01)
+- 답변: 사이드바 = gpui-kit `resizable` 패널(기본 300, size_range 200~800) 안에 직접 조립한 div, 폴더 줄 목록은 `list`·`VirtualList` 자리. `sidebar` 컴포넌트는 쓰지 않는다. 왼쪽 Dock = `resizable` 계열(gpui-base `resize_handle`)로 폭을 직접 관리하고, 6px 핸들·더블클릭 240 복원·하한 6/상한 창 폭−6 은 앱 코드로 맞춘다. 핸들 폭을 6 으로 맞출 수 없으면 gpui 드래그 이벤트로 직접 구현한다. `dock`(DockArea)는 쓰지 않는다
+- 근거: gpui-component 0.8.1 `sidebar/mod.rs` 27행 DEFAULT_WIDTH 255·접기 애니메이션 내장으로 L-33(기본 300, 200~800)·L-34/L-35 치수와 다르다. `dock` DockArea 는 자체 TabPanel·줌·직렬화 모델을 가져와 L-14(왼쪽 Dock 만, 오른쪽·아래 없음)·L-22~L-27 탭 바 치수를 우리가 통제하기 어렵다. gpui-base `resizable/resize_handle.rs` 는 더블클릭 등 리스너를 호출자가 붙이도록 설계되어(12~13행 HANDLE_PADDING 4·HANDLE_SIZE 1, 문서 주석) L-30 규칙을 앱이 얹을 수 있다. 두 선택 모두 D-10 표 안의 대안이라 v0.1 범위를 바꾸지 않는다
+- 결과: Phase 3 시작 때 wg-coder 가 specs/v0.1/DECISIONS.md D-10 에 "이후 변경"으로 반영하고 미결 사항에서 지운다
+- 보고: 최종 보고에서 알림
+
+### D-016 · 2026-11-01 · wg-reviewer → wg-coder
+
+- 상황: Phase 2 리뷰 1회차 지적 (Major 3)
+- 질문: ① R-8 타이머가 on_next_frame 콜백(draw·present 전)에서 끝나 렌더 비용이 빠진다(gpui-pre window.rs 1878~1895) ② CP949 WideCharToMultiByte flags=0 이라 best-fit 손실 변환(U+20A9→5C)을 성공으로 본다 ③ verify-ime.ps1 이 확정 문자열 불일치·IME 조회 실패를 오류로 처리하지 않는다
+- 구분: 대리 응답
+- 답변: 3건 모두 채택. ① 다음 프레임의 draw·present 이후 시점으로 계측을 바꾸고 R-8 증거·판정을 다시 수집 ② WC_NO_BEST_FIT_CHARS 와 반환값·used_default 검사, 손실 역변환 사례 시험 추가 ③ 실패를 errors 로 반영하고 종료 코드 1
+- 근거: 세 지적 모두 소스 위치와 재현이 있고, 판정표 결론(R-8 지연, R-9 CP949 보존, R-6 확정)의 근거를 직접 흔든다. D-014 ② 승인은 "앱 내부 이벤트→다음 프레임 렌더 완료" 의미였다
+- 결과: wg-coder 수정 → 리뷰 2회차
+- 보고: 최종 보고에서 알림
+
+### D-017 · 2026-11-01 · wg-reviewer, wg-checker
+
+- 상황: Phase 2 리뷰 2회차·검증 2회차 결과
+- 질문: Phase 2 를 마감하고 커밋할 수 있는가
+- 구분: 대리 응답
+- 답변: 승인. 리뷰 2회차 1회차 Major 3건 모두 해결·새 지적 없음, checker 2회차 R-6~R-11 모두 통과(직접 구현 필요 12, 불필요 23, 판정 불가 0). 미해결 실패가 없어 Phase 2 를 커밋하고 Phase 3 로 넘어간다. 진행 중 하위 에이전트의 승인 창은 명령 전체가 보이는 읽기 전용·지정 파일 쓰기만 승인했고, 줄이 숨겨진 명령 1건은 취소 후 짧은 명령으로 다시 하게 했다
+- 근거: PLAN.md "모든 Phase는 끝날 때" 4단계 순서, "미해결 실패가 있으면 다음 Phase로 넘어가지 않는다", 가이드 검토 왕복 최대 2회
+- 결과: Phase 2 커밋
+- 보고: 최종 보고에서 알림

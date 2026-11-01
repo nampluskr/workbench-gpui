@@ -1,0 +1,98 @@
+{
+  "r8-50k-debug": {
+    "method": "앱 내부: 변경(set_value·set_scroll_offset·insert)을 적용한 시점부터, 그 변경이 그려진 프레임의 draw·present 가 끝난 뒤 실행되는 foreground 작업까지 (on_next_frame 콜백에서 예약, gpui-pre window.rs 1878~1912). drawn = 그 시점까지 화면이 다시 그려진 측정 수. 실제 키 입력→화면 지연이 아니다",
+    "softWrap": true,
+    "file": "D:\\projects\\workbench-gpui\\target\\phase2-data\\lines-50000.txt",
+    "fileBytes": 3900000,
+    "lines": 50001,
+    "readMs": 0.98,
+    "decodeMs": 2.02,
+    "setValueMs": 441.68,
+    "firstFrameAfterSetValueMs": 7760.16,
+    "firstFrameDrawn": "true",
+    "processStartToWindowMs": 804.4,
+    "scroll": {
+      "n": "20",
+      "drawn": "20",
+      "avgMs": "16.85",
+      "minMs": "8.94",
+      "maxMs": "26.40",
+      "raw": "[dev] perf scroll n=20 avg=16.85 min=8.94 max=26.40 drawn=20 last_visible_rows=Some(25000..25042) total_lines=50001"
+    },
+    "insert": {
+      "n": "20",
+      "drawn": "20",
+      "avgMs": "17.88",
+      "minMs": "13.37",
+      "maxMs": "24.21",
+      "raw": "[dev] perf insert n=20 avg=17.88 min=13.37 max=24.21 drawn=20 at_line=25000"
+    },
+    "timedOut": false,
+    "stdout": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r8-50k-debug-stdout.txt",
+    "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r8-50k-debug-after.png"
+  },
+  "r8-100k-debug": {
+    "method": "앱 내부: 변경(set_value·set_scroll_offset·insert)을 적용한 시점부터, 그 변경이 그려진 프레임의 draw·present 가 끝난 뒤 실행되는 foreground 작업까지 (on_next_frame 콜백에서 예약, gpui-pre window.rs 1878~1912). drawn = 그 시점까지 화면이 다시 그려진 측정 수. 실제 키 입력→화면 지연이 아니다",
+    "softWrap": true,
+    "file": "D:\\projects\\workbench-gpui\\target\\phase2-data\\lines-100000.txt",
+    "fileBytes": 7800000,
+    "lines": 100001,
+    "readMs": 2.76,
+    "decodeMs": 3.78,
+    "setValueMs": 914.27,
+    "firstFrameAfterSetValueMs": 15588.99,
+    "firstFrameDrawn": "true",
+    "processStartToWindowMs": 767.7,
+    "scroll": {
+      "n": "20",
+      "drawn": "20",
+      "avgMs": "16.14",
+      "minMs": "9.37",
+      "maxMs": "23.45",
+      "raw": "[dev] perf scroll n=20 avg=16.14 min=9.37 max=23.45 drawn=20 last_visible_rows=Some(25000..25042) total_lines=100001"
+    },
+    "insert": {
+      "n": "20",
+      "drawn": "20",
+      "avgMs": "18.94",
+      "minMs": "15.26",
+      "maxMs": "23.02",
+      "raw": "[dev] perf insert n=20 avg=18.94 min=15.26 max=23.02 drawn=20 at_line=50000"
+    },
+    "timedOut": false,
+    "stdout": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r8-100k-debug-stdout.txt",
+    "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r8-100k-debug-after.png"
+  },
+  "r8-100k-nowrap-debug": {
+    "method": "앱 내부: 변경(set_value·set_scroll_offset·insert)을 적용한 시점부터, 그 변경이 그려진 프레임의 draw·present 가 끝난 뒤 실행되는 foreground 작업까지 (on_next_frame 콜백에서 예약, gpui-pre window.rs 1878~1912). drawn = 그 시점까지 화면이 다시 그려진 측정 수. 실제 키 입력→화면 지연이 아니다",
+    "softWrap": false,
+    "file": "D:\\projects\\workbench-gpui\\target\\phase2-data\\lines-100000.txt",
+    "fileBytes": 7800000,
+    "lines": 100001,
+    "readMs": 2.91,
+    "decodeMs": 4.02,
+    "setValueMs": 912.19,
+    "firstFrameAfterSetValueMs": 1315.59,
+    "firstFrameDrawn": "true",
+    "processStartToWindowMs": 780.7,
+    "scroll": {
+      "n": "20",
+      "drawn": "20",
+      "avgMs": "17.00",
+      "minMs": "9.78",
+      "maxMs": "26.18",
+      "raw": "[dev] perf scroll n=20 avg=17.00 min=9.78 max=26.18 drawn=20 last_visible_rows=Some(25000..25042) total_lines=100001"
+    },
+    "insert": {
+      "n": "20",
+      "drawn": "20",
+      "avgMs": "18.73",
+      "minMs": "14.10",
+      "maxMs": "24.32",
+      "raw": "[dev] perf insert n=20 avg=18.73 min=14.10 max=24.32 drawn=20 at_line=50000"
+    },
+    "timedOut": false,
+    "stdout": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r8-100k-nowrap-debug-stdout.txt",
+    "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r8-100k-nowrap-debug-after.png"
+  }
+}

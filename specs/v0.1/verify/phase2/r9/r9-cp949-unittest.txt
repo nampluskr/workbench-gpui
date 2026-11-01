@@ -1,0 +1,11 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.34s
+     Running unittests src\main.rs (target\debug\deps\workbench_gpui-fe1da3fb67b7a4ed.exe)
+
+running 4 tests
+test dev::tests::cp949_detected_and_written_back_identically ... ok
+test dev::tests::cp949_lossless_cases_round_trip ... ok
+test dev::tests::cp949_rejects_yen_sign ... ok
+test dev::tests::cp949_rejects_won_sign ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

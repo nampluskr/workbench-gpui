@@ -1,0 +1,12 @@
+[dev] layout scale=2 editor=15.00,89.00,1406.00,794.00 input=19.00,46.00,1402.00,20.00
+[dev] poc done
+[dev] value field=editor len=106 head="abcdehiklm\n가나다라마바사아자차\nabc가나다def\n한\nfn main() {\n    println!(\"hello 안녕\");\n}\n"
+[dev] value field=editor len=107 head="abcdehiklm\n가나다라마바사아자차\nabc가나다def\n한 \nfn main() {\n    println!(\"hello 안녕\");\n}\n"
+[dev] value field=editor len=110 head="abcdehiklm\n가나다라마바사아자차\nabc가나다def\n한 가\nfn main() {\n    println!(\"hello 안녕\");\n}\n"
+[dev] value field=editor len=113 head="abcdehiklm\n가나다라마바사아자차\nabc가나다def\n한 가나\nfn main() {\n    println!(\"hello 안녕\");\n}\n"
+[dev] value field=editor len=114 head="abcdehiklm\n가나다라마바사아자차\nabc가나다def\n한 가나 \nfn main() {\n    println!(\"hello 안녕\");\n}\n"
+[dev] value field=input text="한"
+[dev] value field=input text="한 "
+[dev] value field=input text="한 가"
+[dev] value field=input text="한 가나"
+[dev] value field=input text="한 가나 "

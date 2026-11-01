@@ -1,0 +1,34 @@
+{
+  "done": "[dev] cp949-selftest done pass=4/4",
+  "cases": [
+    {
+      "case": "korean-crlf",
+      "expect": "ok",
+      "got": "ok",
+      "pass": true,
+      "line": "[dev] cp949-selftest case=korean-crlf expect=ok got=ok bytes=36 pass=true"
+    },
+    {
+      "case": "ascii-backslash",
+      "expect": "ok",
+      "got": "ok",
+      "pass": true,
+      "line": "[dev] cp949-selftest case=ascii-backslash expect=ok got=ok bytes=12 pass=true"
+    },
+    {
+      "case": "won-sign-U+20A9",
+      "expect": "error",
+      "got": "error",
+      "pass": true,
+      "line": "[dev] cp949-selftest case=won-sign-U+20A9 expect=error got=error error=\"cp949: lossy conversion, characters not in CP949: U+20A9\" pass=true"
+    },
+    {
+      "case": "yen-sign-U+00A5",
+      "expect": "error",
+      "got": "error",
+      "pass": true,
+      "line": "[dev] cp949-selftest case=yen-sign-U+00A5 expect=error got=error error=\"cp949: lossy conversion, characters not in CP949: U+00A5\" pass=true"
+    }
+  ],
+  "allPass": true
+}

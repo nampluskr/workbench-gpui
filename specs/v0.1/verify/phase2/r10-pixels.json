@@ -1,0 +1,128 @@
+{
+  "scale": 2.0,
+  "editorInputBounds": {
+    "x": 15.0,
+    "y": 89.0,
+    "w": 1406.0,
+    "h": 794.0
+  },
+  "lineHeight": "Some(20.0)",
+  "gutterLogical": 45.44,
+  "fonts": [
+    "[dev] measure font row=0 family=\"Consolas\" size=13 width=71.47 ascent=11.96 descent=3.26 runs=[\"Consolas:10glyphs\"]",
+    "[dev] measure font row=1 family=\"Consolas\" size=13 width=130.00 ascent=14.15 descent=3.14 runs=[\".SystemUIFont:10glyphs\"]",
+    "[dev] measure font row=2 family=\"Consolas\" size=13 width=81.88 ascent=14.15 descent=3.26 runs=[\"Consolas:3glyphs\", \".SystemUIFont:3glyphs\", \"Consolas:3glyphs\"]"
+  ],
+  "cursors": [
+    "[dev] measure cursor row=0 at_end_of_line cursor=131.92,90.50,1.00,17.00 line_height=Some(20.0)",
+    "[dev] measure cursor row=1 at_end_of_line cursor=190.44,110.50,1.00,17.00 line_height=Some(20.0)",
+    "[dev] measure cursor row=2 at_end_of_line cursor=142.33,130.50,1.00,17.00 line_height=Some(20.0)"
+  ],
+  "pixels": [
+    {
+      "kind": "line",
+      "row": 0,
+      "name": "abcdehiklm",
+      "boxLogical": {
+        "x": 60.44,
+        "y": 89.0,
+        "w": 71.47,
+        "h": 20.0
+      },
+      "inkCount": 931,
+      "inkTopFromBoxTopPhysical": 10,
+      "inkBottomFromBoxTopPhysical": 28,
+      "inkBottomFromBoxTopLogical": 14.0,
+      "inkWidthPhysical": 138,
+      "inkWidthLogical": 69.0
+    },
+    {
+      "kind": "line",
+      "row": 1,
+      "name": "가나다라마바사아자차",
+      "boxLogical": {
+        "x": 60.44,
+        "y": 109.0,
+        "w": 130.0,
+        "h": 20.0
+      },
+      "inkCount": 1702,
+      "inkTopFromBoxTopPhysical": 9,
+      "inkBottomFromBoxTopPhysical": 32,
+      "inkBottomFromBoxTopLogical": 16.0,
+      "inkWidthPhysical": 254,
+      "inkWidthLogical": 127.0
+    },
+    {
+      "kind": "line",
+      "row": 2,
+      "name": "abc가나다def",
+      "boxLogical": {
+        "x": 60.44,
+        "y": 129.0,
+        "w": 81.88,
+        "h": 20.0
+      },
+      "inkCount": 1021,
+      "inkTopFromBoxTopPhysical": 9,
+      "inkBottomFromBoxTopPhysical": 32,
+      "inkBottomFromBoxTopLogical": 16.0,
+      "inkWidthPhysical": 159,
+      "inkWidthLogical": 79.5
+    },
+    {
+      "kind": "segment",
+      "row": 2,
+      "name": "abc",
+      "boxLogical": {
+        "x": 60.44,
+        "y": 129.0,
+        "w": 21.44,
+        "h": 20.0
+      },
+      "inkCount": 271,
+      "inkTopFromBoxTopPhysical": 13,
+      "inkBottomFromBoxTopPhysical": 30,
+      "inkBottomFromBoxTopLogical": 15.0,
+      "inkWidthPhysical": 38,
+      "inkWidthLogical": 19.0
+    },
+    {
+      "kind": "segment",
+      "row": 2,
+      "name": "ga-na-da",
+      "boxLogical": {
+        "x": 81.88,
+        "y": 129.0,
+        "w": 39.0,
+        "h": 20.0
+      },
+      "inkCount": 461,
+      "inkTopFromBoxTopPhysical": 9,
+      "inkBottomFromBoxTopPhysical": 32,
+      "inkBottomFromBoxTopLogical": 16.0,
+      "inkWidthPhysical": 72,
+      "inkWidthLogical": 36.0
+    },
+    {
+      "kind": "segment",
+      "row": 2,
+      "name": "def",
+      "boxLogical": {
+        "x": 120.88,
+        "y": 129.0,
+        "w": 21.44,
+        "h": 20.0
+      },
+      "inkCount": 273,
+      "inkTopFromBoxTopPhysical": 13,
+      "inkBottomFromBoxTopPhysical": 30,
+      "inkBottomFromBoxTopLogical": 15.0,
+      "inkWidthPhysical": 38,
+      "inkWidthLogical": 19.0
+    }
+  ],
+  "note": "inkBottom = 상자 위에서 잉크 맨 아래 행까지(기준선 근사). 측정 줄은 아래로 내려가는 글자가 없는 글자만 쓴다(abcdehiklm, def)",
+  "screenshot": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r10-measure.png",
+  "stdout": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r10-stdout.txt"
+}

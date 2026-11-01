@@ -2,6 +2,7 @@
 //!
 //! 진입 순서는 gpui-kit 0.8.1 crate 문서의 예시(application → init → open_window)를 따른다.
 
+mod editor_poc;
 mod metrics;
 mod title_bar;
 
@@ -18,15 +19,21 @@ const APP_TITLE: &str = "workbench-gpui";
 
 struct Workbench {
     glyph_font: SharedString,
+    /// Phase 2 편집기 PoC (디버그 전용 `--dev-editor-poc`). 없으면 본문은 비어 있다.
+    editor_poc: Option<Entity<editor_poc::EditorPoc>>,
 }
 
 impl Render for Workbench {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let body = match &self.editor_poc {
+            Some(poc) => div().flex_1().min_h_0().child(poc.clone()),
+            None => div().flex_1(),
+        };
         let content = v_flex()
             .size_full()
             .bg(cx.theme().background)
             .child(title_bar::title_bar(self.glyph_font.clone(), window, cx))
-            .child(div().flex_1());
+            .child(body);
 
         client_decorations(window, cx.theme().border, content)
     }
@@ -89,8 +96,14 @@ pub fn run(dev: DevOptions) {
     gpui_kit::application().run(move |cx| {
         gpui_kit::init(cx);
         let glyph_font = title_bar::glyph_font(cx);
-        gpui_kit::open_window(window_options(), cx, |_, cx| {
-            cx.new(|_| Workbench { glyph_font })
+        let poc_options = dev.editor_poc.then(|| dev.clone());
+        gpui_kit::open_window(window_options(), cx, |window, cx| {
+            let editor_poc = poc_options
+                .map(|options| cx.new(|cx| editor_poc::EditorPoc::new(options, window, cx)));
+            cx.new(|_| Workbench {
+                glyph_font,
+                editor_poc,
+            })
         })
         .expect("failed to open window");
 

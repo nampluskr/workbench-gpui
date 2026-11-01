@@ -1,0 +1,98 @@
+{
+  "startedAt": "2026-11-01T09:07:58.8078104+09:00",
+  "exe": "D:\\projects\\workbench-gpui\\target\\debug\\workbench-gpui.exe",
+  "steps": {
+    "r9": [
+      {
+        "input": "lf-utf8.txt",
+        "mode": "naive",
+        "detectedEncoding": "utf-8",
+        "inBytes": 62,
+        "outBytes": 62,
+        "bytesIdentical": true,
+        "firstDiffOffset": null,
+        "appLine": "[dev] roundtrip result=ok mode=naive encoding=utf-8 in_bytes=62 out_bytes=62 bytes_identical=true editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-naive-lf-utf8.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-naive-lf-utf8.txt"
+      },
+      {
+        "input": "lf-utf8.txt",
+        "mode": "app",
+        "detectedEncoding": "utf-8",
+        "inBytes": 62,
+        "outBytes": 62,
+        "bytesIdentical": true,
+        "firstDiffOffset": null,
+        "appLine": "[dev] roundtrip result=ok mode=app encoding=utf-8 in_bytes=62 out_bytes=62 bytes_identical=true editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-app-lf-utf8.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-app-lf-utf8.txt"
+      },
+      {
+        "input": "crlf-utf8.txt",
+        "mode": "naive",
+        "detectedEncoding": "utf-8",
+        "inBytes": 65,
+        "outBytes": 65,
+        "bytesIdentical": true,
+        "firstDiffOffset": null,
+        "appLine": "[dev] roundtrip result=ok mode=naive encoding=utf-8 in_bytes=65 out_bytes=65 bytes_identical=true editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-naive-crlf-utf8.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-naive-crlf-utf8.txt"
+      },
+      {
+        "input": "crlf-utf8.txt",
+        "mode": "app",
+        "detectedEncoding": "utf-8",
+        "inBytes": 65,
+        "outBytes": 65,
+        "bytesIdentical": true,
+        "firstDiffOffset": null,
+        "appLine": "[dev] roundtrip result=ok mode=app encoding=utf-8 in_bytes=65 out_bytes=65 bytes_identical=true editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-app-crlf-utf8.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-app-crlf-utf8.txt"
+      },
+      {
+        "input": "crlf-utf16le-bom.txt",
+        "mode": "naive",
+        "detectedEncoding": "utf-8",
+        "inBytes": 96,
+        "outBytes": 126,
+        "bytesIdentical": false,
+        "firstDiffOffset": 0,
+        "appLine": "[dev] roundtrip result=ok mode=naive encoding=utf-8 in_bytes=96 out_bytes=126 bytes_identical=false editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-naive-crlf-utf16le-bom.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-naive-crlf-utf16le-bom.txt"
+      },
+      {
+        "input": "crlf-utf16le-bom.txt",
+        "mode": "app",
+        "detectedEncoding": "utf-16le",
+        "inBytes": 96,
+        "outBytes": 96,
+        "bytesIdentical": true,
+        "firstDiffOffset": null,
+        "appLine": "[dev] roundtrip result=ok mode=app encoding=utf-16le in_bytes=96 out_bytes=96 bytes_identical=true editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-app-crlf-utf16le-bom.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-app-crlf-utf16le-bom.txt"
+      },
+      {
+        "input": "crlf-cp949.txt",
+        "mode": "naive",
+        "detectedEncoding": "utf-8",
+        "inBytes": 56,
+        "outBytes": 76,
+        "bytesIdentical": false,
+        "firstDiffOffset": 5,
+        "appLine": "[dev] roundtrip result=ok mode=naive encoding=utf-8 in_bytes=56 out_bytes=76 bytes_identical=false editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-naive-crlf-cp949.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-naive-crlf-cp949.txt"
+      },
+      {
+        "input": "crlf-cp949.txt",
+        "mode": "app",
+        "detectedEncoding": "cp949",
+        "inBytes": 56,
+        "outBytes": 56,
+        "bytesIdentical": true,
+        "firstDiffOffset": null,
+        "appLine": "[dev] roundtrip result=ok mode=app encoding=cp949 in_bytes=56 out_bytes=56 bytes_identical=true editor_value_equals_decoded=true out=\"D:\\\\projects\\\\workbench-gpui\\\\specs\\\\v0.1\\\\verify\\\\phase2\\\\r9\\\\out-app-crlf-cp949.txt\"",
+        "out": "D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-app-crlf-cp949.txt"
+      }
+    ]
+  },
+  "errors": [],
+  "finishedAt": "2026-11-01T09:08:10.1099602+09:00"
+}

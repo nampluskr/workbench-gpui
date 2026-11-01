@@ -1,0 +1,15 @@
+[dev] layout scale=2 editor=15.00,89.00,1406.00,794.00 input=19.00,46.00,1402.00,20.00
+[dev] measure editor scale=2 line_height=Some(20.0) input_bounds=15.00,89.00,1406.00,794.00 text_bounds=15.00,89.00,1406.00,794.00 gutter_width=Some(0.0)
+[dev] measure line row=0 text="abcdehiklm" bytes=10 bounds=60.44,89.00,71.47,20.00
+[dev] measure line row=1 text="가나다라마바사아자차" bytes=30 bounds=60.44,109.00,130.00,20.00
+[dev] measure line row=2 text="abc가나다def" bytes=15 bounds=60.44,129.00,81.88,20.00
+[dev] measure font row=0 family="Consolas" size=13 width=71.47 ascent=11.96 descent=3.26 runs=["Consolas:10glyphs"]
+[dev] measure font row=1 family="Consolas" size=13 width=130.00 ascent=14.15 descent=3.14 runs=[".SystemUIFont:10glyphs"]
+[dev] measure font row=2 family="Consolas" size=13 width=81.88 ascent=14.15 descent=3.26 runs=["Consolas:3glyphs", ".SystemUIFont:3glyphs", "Consolas:3glyphs"]
+[dev] measure segment row=2 name=abc bounds=60.44,129.00,21.44,20.00
+[dev] measure segment row=2 name=ga-na-da bounds=81.88,129.00,39.00,20.00
+[dev] measure segment row=2 name=def bounds=120.88,129.00,21.44,20.00
+[dev] measure cursor row=0 at_end_of_line cursor=131.92,90.50,1.00,17.00 line_height=Some(20.0)
+[dev] measure cursor row=1 at_end_of_line cursor=190.44,110.50,1.00,17.00 line_height=Some(20.0)
+[dev] measure cursor row=2 at_end_of_line cursor=142.33,130.50,1.00,17.00 line_height=Some(20.0)
+[dev] poc done

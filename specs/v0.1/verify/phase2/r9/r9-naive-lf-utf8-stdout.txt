@@ -1,0 +1,2 @@
+[dev] load result=ok path="D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\in-lf-utf8.txt" mode=naive encoding=utf-8 bytes=62 chars=44 lines=4 read_ms=0.22 decode_ms=0.02 set_value_ms=2.27
+[dev] roundtrip result=ok mode=naive encoding=utf-8 in_bytes=62 out_bytes=62 bytes_identical=true editor_value_equals_decoded=true out="D:\\projects\\workbench-gpui\\specs\\v0.1\\verify\\phase2\\r9\\out-naive-lf-utf8.txt"
