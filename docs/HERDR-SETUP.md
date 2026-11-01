@@ -96,3 +96,4 @@ checker 운영 규칙
 | --- | --- | --- |
 | 2026-10-31 | 초안 작성, plan 승인으로 승인 | 사용자 승인 |
 | 2026-10-31 | coder Opus · medium 상향, checker(agy Argon) 추가 (사용자 지시·선택) | 사용자 승인 |
+| 2026-11-01 | checker 를 agy Argon → Claude Sonnet 5.5 · high 로 교체 (agy 개별 한도 소진, 초기화 120시간 뒤). 같은 패널 wB:p5, 이름 wg-checker 유지 | 4절 "agy 한도 소진 시 교체" 규칙 (사전 승인) |

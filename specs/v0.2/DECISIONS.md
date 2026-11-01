@@ -51,6 +51,8 @@ v0.1 결정은 버전과 무관한 구현 방식이고, v0.2 범위(PoC 4~5단�
 
 - **Zed 키맵 JSON 원문(`default-windows.json` + `linux/vscode.json`)을 앱에 넣고 실행할 때 합치기** — README 3절이 키맵 JSON 원문을 가져오지 않는다고 정했다. 배제.
 
+**이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-027 ②)으로 액션 이름을 정했다(2026-11-01). 01-zed·02-gpui 에 이름이 나온 액션은 그 이름을 그대로 쓴다. 문서에 이름이 없는 액션은 Zed 와 같은 `namespace::Name` 꼴로 우리가 짓고, 그 목록을 PROGRESS 와 검증 보고서(`specs/v0.2/verify/phase1/`)에 "우리가 지은 이름"으로 남긴다.
+
 ---
 
 ## D-3. 키 충돌·해제·표시 규칙은 01-zed I-702·I-703·I-704 와 L-217~L-221 을 그대로 따르고, 키 엔진은 gpui 의 actions·KeyBinding·key_context 를 쓴다
@@ -71,6 +73,12 @@ v0.1 결정은 버전과 무관한 구현 방식이고, v0.2 범위(PoC 4~5단�
 **배제한 대안**
 
 없음.
+
+**이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-027 ④·⑤)으로 다음을 정했다(2026-11-01).
+
+- 사이드바의 키 컨텍스트 이름은 `Sidebar` 다(④). A-17 아래 설명이 Zed 의 `ThreadsSidebar` 를 쓰지 않고 우리 앱 값을 쓴다고 했고, 이름은 Zed 패널 컨텍스트(`ProjectPanel`)와 같은 꼴로 한다.
+- G-105 확인 결과(PROGRESS Phase 1): `KeyBindingContextPredicate` 는 gpui-kit 재수출로 공개이고, `null` 해제는 gpui `NoAction` 바인딩으로 표현한다. 사용자 바인딩에 내장보다 강한 등급(`KeyBindingMetaIndex`)을 주어 I-703 의 출처 등급을 맞춘다.
+- R-3·R-4 의 Phase 1 판정(⑤): 사이드바·프로젝트 패널 자리 표시에 포커스와 컨텍스트를 달아 키를 넣고, dev 출력의 "실행된 액션 이름"과 "액션별 표시 문자열"로 판정한다. 실제 결과(디스크 상태, 사이드바 목록, 메뉴·툴팁 화면)는 Phase 2~4 판정에서 다시 확인한다.
 
 ---
 
@@ -112,6 +120,8 @@ v0.1 결정은 버전과 무관한 구현 방식이고, v0.2 범위(PoC 4~5단�
 **배제한 대안**
 
 - **Windows 네이티브 메뉴(`native_menu`)로 ☰ 메뉴 만들기** — 01-zed I-301 이 Zed 는 직접 그린 메뉴이고 우리도 직접 그린다고 정했다. 배제.
+
+**이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-027 ③)으로 메뉴 키 컨텍스트를 정했다(2026-11-01). I-516·I-517 대로 `menu` 컨텍스트에 I-517 의 키를 우리 `menu::` 액션으로 묶고, Phase 2 에서 메뉴 요소에 `menu` 컨텍스트를 달아 그 액션을 gpui-kit PopupMenu 동작으로 잇는다. gpui-component 0.8.1 PopupMenu 가 자기 컨텍스트 `PopupMenu` 에 넣는 바인딩(enter·escape·up·down·left·right, `menu/popup_menu.rs` 22~29행)은 gpui-kit 것으로 두고 R-1 대조에서 뺀다.
 
 ---
 
@@ -282,6 +292,13 @@ v0.2 의 탭은 다음 다섯 가지만 한다.
 
 없음.
 
+**이후 변경** — Phase 1 구현 중 leader 결정(위임 권한, docs/HERDR-DECISIONS.md D-027 ①)으로 `keymap.json` 읽기 오류 문구를 정했다(2026-11-01).
+
+- 파일을 읽지 못하거나 형식이 틀리면 `Failed to load keymap file`(01-zed 02-INTERACTION K-091 원문 문구).
+- 없는 액션 이름이면 `Action '{이름}' not found`(K-085 원문 문구, `{이름}` 자리에 파일에 적힌 이름).
+- 오류가 여럿이면 알림 하나에 한 줄씩 잇는다.
+- 오류 항목만 빼고 나머지 바인딩은 적용한다(leader 판단).
+
 ---
 
 ## D-15. 프로젝트 패널 우클릭 메뉴의 Open Markdown Preview 는 비활성으로 둔다
@@ -356,7 +373,6 @@ v0.2 의 탭은 다음 다섯 가지만 한다.
 
 v0.2 에서 남은 것:
 
-- **G-105 키맵 엔진 확인** — gpui `KeyBindingContextPredicate` 가 gpui-kit 재수출로 공개되는지, 사용자 키맵의 `null`(해제, I-703)을 gpui 로 어떻게 표현할지는 미확인이다(02-gpui G-105, P0). PLAN Phase 1 에서 확인하고 결과를 PROGRESS 에 기록한다.
 - **사이드바 폭 조절 핸들(A-11.12)** — 위치·너비·커서·더블클릭 초기화가 01-zed 에서 확인되지 않았다(v0.1 에서 이어짐). v0.2 는 v0.1 의 resizable 핸들을 그대로 쓴다.
 
 v0.1 에서 이어지는 미결(이번 버전 범위 밖, `specs/v0.1/PROGRESS.md` "버전 종료" 남은 것 2):

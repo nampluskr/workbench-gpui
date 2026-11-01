@@ -1,0 +1,63 @@
+# R-1 기대 표. 01-zed 02-INTERACTION 1절(I-022~I-024, I-030~I-037, I-039~I-043, I-310), 9절 I-517, 04-APP-SPEC A-13.1·A-17 의 키를 원문 표에서 옮겨 적었다.
+# 키는 gpui 표기(수식키 순서 ctrl-win-alt-shift), 컨텍스트는 gpui 조건식, 액션 이름은 D-2 이후 변경(D-027 ②)의 이름이다.
+# 열: id	keys	context	action
+I-022	ctrl-b	Workspace	workspace::ToggleLeftDock
+I-023	ctrl-shift-e	Workspace	project_panel::ToggleFocus
+I-024	ctrl-alt-j	Workspace	multi_workspace::ToggleWorkspaceSidebar
+I-024	ctrl-alt-;	Workspace	multi_workspace::FocusWorkspaceSidebar
+A-13.1	ctrl-k ctrl-o	Workspace	workspace::Open
+I-310	f10	Workspace	app_menu::Toggle
+A-17.3	up	Sidebar	menu::SelectPrevious
+A-17.3	down	Sidebar	menu::SelectNext
+A-17.4	enter	Sidebar	menu::Confirm
+A-17.5	delete	Sidebar	project_panel::RemoveFromProject
+I-030	up	menu	menu::SelectPrevious
+I-030	down	menu	menu::SelectNext
+I-030	home	menu	menu::SelectFirst
+I-030	end	menu	menu::SelectLast
+I-030	tab	menu	menu::SelectNext
+I-030	shift-tab	menu	menu::SelectPrevious
+I-031	left	ProjectPanel	project_panel::CollapseSelectedEntry
+I-031	right	ProjectPanel	project_panel::ExpandSelectedEntry
+I-032	ctrl-left	ProjectPanel	project_panel::CollapseAllEntries
+I-032	ctrl-right	ProjectPanel	project_panel::ExpandAllEntries
+I-033	space	ProjectPanel && not_editing	project_panel::Open
+I-034	enter	ProjectPanel	project_panel::Rename
+I-034	f2	ProjectPanel	project_panel::Rename
+I-035	enter	menu	menu::Confirm
+I-035	escape	menu	menu::Cancel
+I-036	ctrl-n	ProjectPanel	project_panel::NewFile
+I-036	alt-n	ProjectPanel	project_panel::NewDirectory
+I-037	ctrl-c	ProjectPanel	project_panel::Copy
+I-037	ctrl-insert	ProjectPanel	project_panel::Copy
+I-037	ctrl-x	ProjectPanel	project_panel::Cut
+I-037	ctrl-v	ProjectPanel	project_panel::Paste
+I-037	shift-insert	ProjectPanel	project_panel::Paste
+I-039	delete	ProjectPanel	project_panel::Trash
+I-039	backspace	ProjectPanel	project_panel::Trash
+I-040	shift-delete	ProjectPanel	project_panel::Delete
+I-040	ctrl-delete	ProjectPanel	project_panel::Delete
+I-040	ctrl-backspace	ProjectPanel	project_panel::Delete
+I-041	alt-shift-c	ProjectPanel	workspace::CopyPath
+I-041	ctrl-k ctrl-shift-c	ProjectPanel	workspace::CopyRelativePath
+I-042	menu	ProjectPanel	project_panel::DeployContextMenu
+I-042	shift-f10	ProjectPanel	project_panel::DeployContextMenu
+I-043	shift-up	ProjectPanel	project_panel::SelectPreviousExtend
+I-043	shift-down	ProjectPanel	project_panel::SelectNextExtend
+I-517	down	menu	menu::SelectNext
+I-517	tab	menu	menu::SelectNext
+I-517	ctrl-n	menu	menu::SelectNext
+I-517	up	menu	menu::SelectPrevious
+I-517	shift-tab	menu	menu::SelectPrevious
+I-517	ctrl-p	menu	menu::SelectPrevious
+I-517	home	menu	menu::SelectFirst
+I-517	pageup	menu	menu::SelectFirst
+I-517	shift-pageup	menu	menu::SelectFirst
+I-517	end	menu	menu::SelectLast
+I-517	pagedown	menu	menu::SelectLast
+I-517	shift-pagedown	menu	menu::SelectLast
+I-517	enter	menu	menu::Confirm
+I-517	escape	menu	menu::Cancel
+I-517	ctrl-c	menu	menu::Cancel
+I-517	right	menu	menu::SelectChild
+I-517	left	menu	menu::SelectParent

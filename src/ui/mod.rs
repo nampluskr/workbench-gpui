@@ -3,6 +3,7 @@
 //! 진입 순서는 gpui-kit 0.8.1 crate 문서의 예시(application → init → open_window)를 따른다.
 
 mod editor_poc;
+mod keymap;
 mod layout;
 mod layout_probe;
 mod metrics;
@@ -36,6 +37,14 @@ struct Workbench {
     dock_width: Option<Pixels>,
     /// 직전 레이아웃의 Workspace 본문 폭. 사이드바 폭·창 크기가 바뀌면 달라지고, 달라지면 다시 그린다.
     body_width: Option<Pixels>,
+    /// 왼쪽 Dock 이 열려 있는가 (Ctrl-B, I-022). 처음에는 열려 있다.
+    dock_open: bool,
+    /// 키 컨텍스트 `Sidebar` 자리의 포커스 (D-3 이후 변경, D-027 ④).
+    sidebar_focus: FocusHandle,
+    /// 키 컨텍스트 `ProjectPanel` 자리의 포커스 (I-002).
+    panel_focus: FocusHandle,
+    /// 가운데 Pane 자리의 포커스. 창이 뜨면 여기에 포커스를 둔다.
+    center_focus: FocusHandle,
 }
 
 /// 왼쪽 Dock 핸들을 끄는 동안의 끌기 값 (L-30). 화면에는 아무것도 그리지 않는다.
@@ -49,6 +58,67 @@ impl Render for DockResize {
 }
 
 impl Workbench {
+    /// 지금 포커스가 있는 자리 이름 (dev 출력용).
+    fn focus_name(&self, window: &Window) -> &'static str {
+        if self.sidebar_focus.is_focused(window) {
+            "sidebar"
+        } else if self.panel_focus.is_focused(window) {
+            "project_panel"
+        } else if self.center_focus.is_focused(window) {
+            "center"
+        } else {
+            "none"
+        }
+    }
+
+    /// Phase 1 에서 화면 요소가 직접 받는 액션. 나머지는 `keymap` 의 자리 처리기가 받는다.
+    /// 포커스 이동은 R-3·R-4 시험에서 포커스 자리를 바꾸는 데 쓰는 최소 동작이다. 이전 포커스로 돌아가기 등
+    /// A-17.1·A-17.2·I-098~I-100 의 전체 동작은 Phase 3(R-16)에서 맞춘다.
+    fn on_toggle_left_dock(
+        &mut self,
+        action: &keymap::workspace::ToggleLeftDock,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        self.dock_open = !self.dock_open;
+        if !self.dock_open && self.panel_focus.is_focused(window) {
+            self.center_focus.focus(window, cx);
+        }
+        cx.notify();
+    }
+
+    fn on_toggle_project_panel_focus(
+        &mut self,
+        action: &keymap::project_panel::ToggleFocus,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        if self.panel_focus.is_focused(window) {
+            self.center_focus.focus(window, cx);
+        } else {
+            self.dock_open = true;
+            self.panel_focus.focus(window, cx);
+        }
+        cx.notify();
+    }
+
+    fn on_focus_sidebar(
+        &mut self,
+        action: &keymap::multi_workspace::FocusWorkspaceSidebar,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        keymap::log_handled(action, self.focus_name(window), cx);
+        if self.sidebar_focus.is_focused(window) {
+            self.center_focus.focus(window, cx);
+        } else {
+            self.sidebar_focus.focus(window, cx);
+        }
+        cx.notify();
+    }
+
     /// 왼쪽 Dock 폭 한계 (L-31): 하한 = 핸들 6, 상한 = 폭 − 6. 오른쪽 Dock 은 없다(L-14).
     /// "창 폭"은 Dock 이 들어 있는 Workspace 본문 폭으로 본다(사이드바는 Workspace 밖, L-11).
     fn clamp_dock_width(width: Pixels, body_width: Pixels, window: &Window) -> Pixels {
@@ -82,8 +152,32 @@ impl Workbench {
             None => div().size_full().bg(theme.background).into_any_element(),
         };
 
+        // 프로젝트 패널 자리의 키 컨텍스트: `ProjectPanel` 과 `menu` 를 함께 가진다(I-002, I-030 "ProjectPanel + menu").
+        // 이름 편집 칸이 아직 없으므로 늘 `not_editing` 이다(I-033).
+        let mut panel_context = KeyContext::default();
+        panel_context.add(crate::keymap::builtin::PROJECT_PANEL_CONTEXT);
+        panel_context.add(crate::keymap::builtin::MENU_CONTEXT);
+        panel_context.add(crate::keymap::builtin::NOT_EDITING);
+
+        let dock: Option<AnyElement> = self.dock_open.then(|| {
+            div()
+                .key_context(panel_context)
+                .track_focus(&self.panel_focus)
+                .flex_shrink_0()
+                .h_full()
+                .w(dock_width)
+                .border_r_1()
+                .border_color(theme.border)
+                .child(layout::project_panel_placeholder(cx))
+                .into_any_element()
+        });
+
         div()
-            .on_children_prepainted(probe(&["dock", "center", "dock-handle"]))
+            .on_children_prepainted(probe(if self.dock_open {
+                &["dock", "center", "dock-handle"][..]
+            } else {
+                &["center"][..]
+            }))
             .id("workspace-body")
             .relative()
             .flex()
@@ -96,17 +190,10 @@ impl Workbench {
                     cx.notify();
                 },
             ))
-            .child(
-                div()
-                    .flex_shrink_0()
-                    .h_full()
-                    .w(dock_width)
-                    .border_r_1()
-                    .border_color(theme.border)
-                    .child(layout::project_panel_placeholder(cx)),
-            )
+            .children(dock)
             .child(
                 v_flex()
+                    .track_focus(&self.center_focus)
                     .on_children_prepainted(probe(&["tab-bar", "active-item"]))
                     .flex_1()
                     .min_w_0()
@@ -114,7 +201,8 @@ impl Workbench {
                     .child(layout::tab_bar(cx))
                     .child(div().flex_1().min_h_0().child(item)),
             )
-            .child(
+            .when(self.dock_open, |body| {
+                body.child(
                 // L-30 핸들: 폭 6, Dock 오른쪽 테두리 위에 절반씩 걸친다(−3). 가운데 영역보다 뒤에 두어 위에 그린다.
                 div()
                     .id("dock-handle")
@@ -129,7 +217,8 @@ impl Workbench {
                         this.dock_width = None;
                         cx.notify();
                     })),
-            )
+                )
+            })
     }
 
     /// `--dev-layout`: 레이아웃 경계가 바뀔 때마다 이름별 경계와 rem·Dock 폭을 표준출력에 낸다.
@@ -241,6 +330,8 @@ impl Render for Workbench {
                     .size_range(to_px(SIDEBAR_MIN_WIDTH, window)..to_px(SIDEBAR_MAX_WIDTH, window))
                     .child(
                         div()
+                            .key_context(crate::keymap::builtin::SIDEBAR_CONTEXT)
+                            .track_focus(&self.sidebar_focus)
                             .on_children_prepainted(probe(&["sidebar"]))
                             .size_full()
                             .child(layout::sidebar(cx)),
@@ -255,7 +346,17 @@ impl Render for Workbench {
                 ),
             );
 
-        client_decorations(window, border, div().size_full().child(content))
+        // 키 컨텍스트 `Workspace`(I-022~I-024): 사이드바와 Workspace 를 함께 감싸, 어느 자리에 포커스가 있어도
+        // 창 단위 키가 듣는다. 깊이는 Workspace > Sidebar, Workspace > ProjectPanel 이다.
+        let root = div()
+            .key_context(crate::keymap::builtin::WORKSPACE_CONTEXT)
+            .on_action(cx.listener(Self::on_toggle_left_dock))
+            .on_action(cx.listener(Self::on_toggle_project_panel_focus))
+            .on_action(cx.listener(Self::on_focus_sidebar))
+            .size_full()
+            .child(content);
+
+        client_decorations(window, border, root)
     }
 }
 
@@ -319,10 +420,11 @@ pub fn run(dev: DevOptions) {
         .with_assets(gpui_kit::assets::Assets)
         .run(move |cx| {
             gpui_kit::init(cx);
+            keymap::init(dev.keymap, cx);
             let glyph_font = title_bar::glyph_font(cx);
             let poc_options = dev.editor_poc.then(|| dev.clone());
             let layout_dump = dev.layout;
-            gpui_kit::open_window(window_options(), cx, |window, cx| {
+            let (window_handle, _) = gpui_kit::open_window(window_options(), cx, |window, cx| {
                 let editor_poc = poc_options
                     .map(|options| cx.new(|cx| editor_poc::EditorPoc::new(options, window, cx)));
                 cx.new(|cx| {
@@ -331,7 +433,15 @@ pub fn run(dev: DevOptions) {
                         editor_poc,
                         dock_width: None,
                         body_width: None,
+                        dock_open: true,
+                        sidebar_focus: cx.focus_handle(),
+                        panel_focus: cx.focus_handle(),
+                        center_focus: cx.focus_handle(),
                     };
+                    this.center_focus.focus(window, cx);
+                    keymap::register_place("center", this.center_focus.clone(), cx);
+                    keymap::register_place("sidebar", this.sidebar_focus.clone(), cx);
+                    keymap::register_place("project_panel", this.panel_focus.clone(), cx);
                     if layout_dump {
                         this.start_layout_dump(window, cx);
                     }
@@ -339,6 +449,23 @@ pub fn run(dev: DevOptions) {
                 })
             })
             .expect("failed to open window");
+
+            // 창(gpui-kit Root 포함)이 생긴 뒤에 키맵을 읽는다. 읽기 오류 알림(D-14)은 창의 Root 가 띄운다.
+            // 감시를 먼저 등록하고 나서 최초 로드를 한다. 그래야 등록 전후 어느 때 저장해도 놓치지 않는다:
+            // 등록 전 저장은 최초 로드가 읽고, 등록 뒤 저장은 감시가 다시 읽는다(리뷰 1회차 ②).
+            let startup_delay = dev.keymap_startup_delay_ms;
+            window_handle
+                .update(cx, |_, window, cx| {
+                    keymap::watch(window, cx);
+                    keymap::load(window, cx);
+                    // 시험용: 최초 로드 직후에 멈춰, 그 사이 저장을 감시가 잡는지 본다. 감시를 로드 뒤에 등록하던
+                    // 이전 순서에서는 이 구간의 저장을 놓쳤다.
+                    if let Some(ms) = startup_delay {
+                        println!("[dev] keymap-startup-pause delay_ms={ms}");
+                        std::thread::sleep(Duration::from_millis(ms));
+                    }
+                })
+                .expect("failed to load keymap");
 
             if dev.is_active() {
                 // 창이 뜬 뒤에 시험한다. TaskDialog 는 자체 메시지 루프를 돌리므로

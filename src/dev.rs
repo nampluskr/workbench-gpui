@@ -35,6 +35,11 @@ pub struct DevOptions {
     pub cp949_selftest: bool,
     /// `--dev-layout`: 레이아웃 경계(이름별 바깥 상자)·rem·Dock 폭을 바뀔 때마다 낸다 (Phase 3, R-12~R-15).
     pub layout: bool,
+    /// `--dev-keymap`: 키맵 바인딩 전체·표시 문자열·오류·키 입력 결과를 낸다 (v0.2 Phase 1, R-1~R-4).
+    pub keymap: bool,
+    /// `--dev-keymap-startup-delay <ms>`: 키맵 최초 로드 직후에 이만큼 멈춘다. 그 사이에 바뀐
+    /// keymap.json 도 반영되는지 보는 시험용이다 (v0.2 Phase 1 리뷰 1회차 ②).
+    pub keymap_startup_delay_ms: Option<u64>,
 }
 
 /// R-9 파일 읽기·쓰기 방식.
@@ -83,6 +88,10 @@ impl DevOptions {
                 "--dev-measure" => options.measure = true,
                 "--dev-cp949-selftest" => options.cp949_selftest = true,
                 "--dev-layout" => options.layout = true,
+                "--dev-keymap" => options.keymap = true,
+                "--dev-keymap-startup-delay" => {
+                    options.keymap_startup_delay_ms = args.next().and_then(|v| v.parse().ok())
+                }
                 _ => {}
             }
         }
