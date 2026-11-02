@@ -493,3 +493,12 @@
 - 근거: project-workflow-compact WORKFLOW 4절, v0.1 종료(c61acb4)와 같은 절차. 종료 직후 D:(USB) 가 끊겼다가 사용자가 다시 연결함
 - 결과: 커밋 `v0.2 종료: PROGRESS 버전 종료 기록`. 이후 specs/v0.2/ 는 읽기만 한다
 - 보고: 2026-11-02
+
+### D-050 · 2026-11-02 · 사용자
+
+- 상황: 사용자 지시 "깃헙 레포를 public 으로 생성하고 푸시해 주세요"
+- 구분: 사용자 지시 실행 (HERDR-SETUP 7절에서 push·원격 설정은 위임 밖 — 사용자가 직접 지시함)
+- 답변: 푸시 전 점검 — 추적 파일에 비밀키·토큰 없음(검색에 걸린 publicKeyToken 은 Microsoft 공개 값), Zed 코드·자산 없음. 증거 파일에 Windows 사용자 폴더 이름이 든 경로가 있고 커밋 작성자 메일이 공개됨. `gh repo create nampluskr/workbench-gpui --public --source=. --remote=origin --push` 로 생성·푸시, 원격 master = 로컬 afd76c3 확인
+- 근거: 사용자 지시
+- 결과: https://github.com/nampluskr/workbench-gpui (PUBLIC, 기본 브랜치 master). HERDR-SETUP 9절 변경 이력에 기록
+- 보고: 2026-11-02
