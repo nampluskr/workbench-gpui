@@ -502,3 +502,12 @@
 - 근거: 사용자 지시
 - 결과: https://github.com/nampluskr/workbench-gpui (PUBLIC, 기본 브랜치 master). HERDR-SETUP 9절 변경 이력에 기록
 - 보고: 2026-11-02
+
+### D-051 · 2026-11-02 · 사용자
+
+- 상황: 사용자 지시 "Apache-2.0 라이선스 추가해 주세요"
+- 구분: 사용자 지시 실행
+- 답변: 루트에 LICENSE(Apache License 2.0 원문, GitHub 라이선스 API `licenses/apache-2.0`)를 추가하고 Cargo.toml `[package]` 에 `license = "Apache-2.0"` 를 넣음. 커밋 뒤 origin/master 푸시
+- 근거: 사용자 지시. 의존하는 gpui·gpui-kit 도 Apache-2.0 이고, Zed 앱 코드(GPL-3.0)는 복사하지 않는다(AGENTS.md)
+- 결과: 공개 저장소에 라이선스 적용
+- 보고: 2026-11-02
