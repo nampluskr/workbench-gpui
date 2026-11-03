@@ -317,3 +317,74 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 범위: `specs/v0.3/verify/phase2/`, `verify/reviews/measure-phase2.md`
 - 검증 수준: V3
 - 완료 조건: P0-6 측정 목록(S1~S7) 중 Phase 2에서 바뀐 화면을 P0-6과 같은 방법으로 재측정해 같은지 표로(덤프 JSON·compare.ps1 우선). R-12 9개 재실행 기준선 대조. reviewer가 R-10 집계 0건 확인
+
+## Phase 3 — 공통 컴포넌트 (lead 작성 2026-11-04, 위임 H-26)
+
+순서: Phase 2 완료(`v0.3-phase-2`) 뒤 시작. P3-1 → P3-2 → P3-3 → P3-4(impl-ui, 순차, 카드마다 커밋 하나) → review 묶음 리뷰 → 병합 → P3-E → Phase 3 뒤 P3-D1·P3-D2. 공통: 동작·값을 바꾸지 않는다(Phase 1~3 리팩토링). gpui-kit에 같은 기능(메뉴·목록)이 있으면 먼저 검토하고, 크기나 동작이 기준선과 다르면 자체 구현을 남기고 이유를 보고에 적는다(R-11). 미사용 의존성: AUDIT 결론 0개 → Cargo 변경 없음. 공통 모듈은 lead가 지정한 `src/ui/menu_common.rs`(새 파일, P3-1·P3-2)와 기존 `src/dev.rs`(P3-4)만 쓴다.
+
+### P3-1 메뉴 행·팝업 바탕 스타일 공통화
+- 상태: todo
+- 담당: impl-ui (새 파일 `src/ui/menu_common.rs` 지정)
+- 브랜치: work/ui
+- 요구·결정: R-11, D-3, AUDIT 8
+- 범위: `src/ui/app_menu.rs`(AUDIT 기준 694–788 부근), `src/ui/context_menu.rs`(240–323 부근), `src/ui/menu_common.rs`
+- 검증 수준: V0 (+ `cargo test ui::`). 렌더 대조는 P3-E V3(S5 앱 메뉴, S6 컨텍스트 메뉴)
+- 완료 조건: 두 메뉴가 같은 행 바탕·팝업 바탕(최소 폭·padding·스크롤·구분선·행 margin·padding·글자·단축키 열·테두리·그림자)을 공통 함수 하나씩으로 만든다. enabled 상태·이벤트·포커스·probe ID는 각 메뉴에 남긴다. 스펙 ID가 다른 수치는 별개 인자로 유지. 체인 순서가 바뀌어 결과가 달라질 수 있는 곳(나중 호출이 앞 값을 덮는 경우)은 순서 보존
+- 비고: 두 메뉴의 현재 차이(행 높이 23 등 Q-11 기록)는 그대로 둔다
+
+### P3-2 chord 대기·접두 해석 공통화
+- 상태: todo
+- 담당: impl-ui (`src/ui/menu_common.rs`)
+- 브랜치: work/ui
+- 요구·결정: R-11, D-3, AUDIT 9, v0.2 D-032·D-033
+- 범위: `src/ui/app_menu.rs`(505–668 부근), `src/ui/context_menu.rs`(334–449 부근), `src/ui/menu_common.rs`
+- 검증 수준: V1
+- 완료 조건: 입력 접두 보관·바인딩 해석·1초 대기 token(세대 보호)·접두 재처리만 공통 타입/함수로 뺀다. 실행 대상(앱 메뉴는 액션, 컨텍스트 메뉴는 항목 인덱스)·50ms 예약·F10·닫힘·포커스는 각자 유지. 세대 보호(늦은 타이머가 새 대기를 끊지 않음)와 비활성 항목 규칙을 잡는 테스트를 공통 코드에 최소 1개. 기존 관련 테스트 통과
+- 비고: 상호작용 확인은 `#[test]`/`#[gpui::test]`로만 한다. 앱을 띄워 누르지 않는다
+
+### P3-3 프로젝트 패널 안내 화면 바탕 공통화
+- 상태: todo
+- 담당: impl-ui
+- 브랜치: work/ui
+- 요구·결정: R-11, AUDIT 10
+- 범위: `src/ui/folders.rs`(안내 화면 두 분기)
+- 검증 수준: V0
+- 완료 조건: 폴더 없음·경로 없음 화면의 같은 바탕(size·padding·gap·글자색)만 로컬 closure 하나로. 문구·버튼·probe는 각 분기에. 새 파일 없음
+
+### P3-4 밀리초 로그 시각 함수 공통화
+- 상태: todo
+- 담당: impl-ui (이 카드에 한해 `src/dev.rs` 지정)
+- 브랜치: work/ui
+- 요구·결정: R-11, AUDIT 11
+- 범위: `src/ui/app_menu.rs`·`context_menu.rs`·`tooltip.rs`의 같은 함수 3개, `src/dev.rs`
+- 검증 수준: V0
+- 완료 조건: SystemTime → UNIX_EPOCH 밀리초(실패 시 0) 함수 하나를 `src/dev.rs`에 두고 세 곳이 쓴다. 반환형·실패값 그대로. watch의 다른 epoch 형식은 합치지 않는다
+
+### P3-E Phase 3 끝: V3 실측, R-12 재실행, R-11 재감사
+- 상태: todo
+- 담당: measure(V3·R-12), reviewer(R-11 재감사·최종 확인·R-12 판정)
+- 브랜치: master
+- 요구·결정: R-11, R-12
+- 범위: `specs/v0.3/verify/phase3/`, `verify/reviews/measure-phase3.md`
+- 검증 수준: V3
+- 완료 조건: P0-6 S5(앱 메뉴)·S6(컨텍스트 메뉴)·프로젝트 패널 안내 화면을 P0-6과 같은 방법으로 재측정해 같은지 표로. R-12 9개 재실행 기준선 대조(phase4 계열은 H-28 클립보드 비우기). reviewer가 AUDIT 8~11 처리 확인(R-11)
+
+### P3-D1 복사 목적 파일 배타 생성 (Phase 3 뒤, 동작 변경)
+- 상태: todo
+- 담당: impl-ui
+- 브랜치: work/ui (별도 커밋, Phase 3 커밋과 섞지 않음)
+- 요구·결정: AUDIT 1, PLAN "Phase 3 뒤"
+- 범위: `src/fsops/ops.rs` 공통 파일 복사 지점
+- 검증 수준: V1
+- 완료 조건: 목적 파일을 `OpenOptions::new().write(true).create_new(true)`로 만들고 스트림 복사. 이미 있으면 덮어쓰지 않고 오류(AlreadyExists)로 돌려준다. 하위 파일 복사도 같은 지점을 지난다. 이미 있는 목적 파일이 보존되는 테스트 1개. 호출부(`panel_ops.rs`)의 오류 처리 경로는 그대로(AUDIT 3은 v0.4)
+- 비고: 권한·타임스탬프 등 `fs::copy`가 하던 일 중 빠지는 것이 있으면 보고에 적는다(예: 파일 권한 복사)
+
+### P3-D2 다른 볼륨 이동 원본 변경 대조 (Phase 3 뒤, 동작 변경)
+- 상태: todo
+- 담당: impl-ui
+- 브랜치: work/ui (별도 커밋)
+- 요구·결정: AUDIT 2, PLAN "Phase 3 뒤"
+- 범위: `src/fsops/ops.rs` 다른 볼륨 이동(208–225 부근)
+- 검증 수준: V1
+- 완료 조건: 복사 전과 복사 뒤(삭제 직전) 원본의 파일 목록·크기·수정 시각을 대조해 다르면 원본을 지우지 않고 오류로 끝낸다(복사본은 남긴다). 대조 뒤 삭제까지의 경쟁은 막지 못한다는 한계를 `shortcut:` 주석으로. 복사 뒤 원본이 바뀌면 원본이 남는 테스트 1개
+- 비고: 두 카드는 reviewer가 묶어 리뷰. v0.2 검증 재실행에서 달라지는 결과는 "의도한 동작 변경"으로 기록
