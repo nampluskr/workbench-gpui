@@ -111,6 +111,14 @@
 - 검증: 다섯 문서의 상태 줄을 grep으로 확인했다. 파일을 다시 읽어 한글이 깨지지 않았음을 확인했다.
 - 상태: 완료
 
+### .serena를 .gitignore에 추가 (2026-11-03)
+
+- 요청: ".serena 는 .gitignore 에 추가해 주세요"
+- 조치: `.gitignore`에 `.serena/` 한 줄을 더했다.
+- 결과: `git status`에 `.serena/`가 더 나오지 않는다.
+- 검증: `git status --short`의 결과가 ` M .gitignore`뿐이다.
+- 상태: 완료(커밋 전)
+
 ## 버전 종료
 
 - 사용자 종료 판단: 진행 중.
