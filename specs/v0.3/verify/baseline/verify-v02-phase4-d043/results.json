@@ -1,0 +1,195 @@
+{
+  "startedAt": "2026-11-03T21:26:46.8626569+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-469feb204fe449feaab64c50036c4c3b",
+  "cases": {
+    "d043-rename": {
+      "pid": 31392,
+      "hwnd": "0x220B82",
+      "diskChanges": []
+    },
+    "d043-ctrlclick": {
+      "pid": 14720,
+      "hwnd": "0x5906CA"
+    },
+    "d043-crossmove": {
+      "pid": 12024,
+      "hwnd": "0x530696"
+    },
+    "d043-dialog": {
+      "pid": 31716,
+      "hwnd": "0x4506BC"
+    },
+    "d043-junction": {
+      "pid": 24580,
+      "hwnd": "0x970ABA",
+      "nestedDirs": 0
+    },
+    "d043-loop": {
+      "pid": 27280,
+      "hwnd": "0x5509DA",
+      "expandedCount": 12
+    }
+  },
+  "failures": [],
+  "errors": [],
+  "checks": [
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①·I-091·P-022",
+      "what": "이름 변경 \"..\\outside.txt\" → 거부(입력칸 유지), 등록 루트 밖에 파일이 생기지 않음",
+      "expect": "README.md 그대로, run\\outside.txt 없음, 입력칸 열림",
+      "got": "README=True, outside=False, [dev] edit what=rejected active=true kind=rename target=README.md value=\"..\\\\outside.txt\" selected=14..14 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "이름 변경에 절대 경로 → 거부",
+      "expect": "notes.txt 그대로, run\\abs.txt 없음",
+      "got": "notes=True, abs=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "이름 변경에 구분자(하위 폴더로 이동) → 거부",
+      "expect": "ops\\f1.txt 그대로, ops\\sub\\moved.txt 없음",
+      "got": "f1=True, moved=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "대체 데이터 스트림(:) 이름 → 거부",
+      "expect": "ops\\f2.txt 그대로, 입력칸 열림",
+      "got": "f2=True, [dev] edit what=rejected active=true kind=rename target=ops\\f2.txt value=\"f2.txt:ads\" selected=10..10 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-rename",
+      "id": "D-043 ①",
+      "what": "예약 장치 이름(con) → 거부, 입력칸 열림",
+      "expect": "f3.txt 그대로, active=true",
+      "got": "f3=True, [dev] edit what=rejected active=true kind=rename target=ops\\f3.txt value=\"con.txt\" selected=7..7 selected_text=\"\" validation=none text=\"\"",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-ctrlclick",
+      "id": "D-043 ③·I-090·I-562",
+      "what": "2개→1개 해제 뒤 Delete 대상은 남은 f1.txt",
+      "expect": "trash `f1.txt`",
+      "got": "marked=ops\\f1.txt selected=ops\\f1.txt / [dev] task-dialog-open title=\"workbench-gpui\" instruction=\"Do you want to trash `f1.txt`?\" content=None buttons=Trash|Cancel default=Cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-ctrlclick",
+      "id": "D-043 ③",
+      "what": "1개→0개 해제 뒤 Delete → 대상 없음(확인창 없음)",
+      "expect": "selected=none, delete-skipped, 확인창 0",
+      "got": "marked= selected=none, skipped+1, dialog+0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-crossmove",
+      "id": "D-043 ④·R-21·R-27·A-15",
+      "what": "폴더 A 의 탭으로 연 파일을 B 로 잘라 붙이면 A 의 탭 경로가 B 의 새 경로",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-469feb204fe449feaab64c50036c4c3b\\proj2\\notes.txt",
+      "got": "moved=True, tab=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-469feb204fe449feaab64c50036c4c3b\\proj2\\notes.txt",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-crossmove",
+      "id": "D-043 ④",
+      "what": "출발 폴더 트리에서 옮긴 파일이 사라진다",
+      "expect": "notes.txt 행 없음",
+      "got": "proj / deep \\ l1 \\ l2 / docs \\ guides / many / ops / src / README.md",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-dialog",
+      "id": "D-043 ⑥",
+      "what": "확인창 3번 → comctl32 올리기 1번(프로세스 수명 캐시)",
+      "expect": "1,1,1",
+      "got": "1,1,1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-junction",
+      "id": "D-043 ②·R-21",
+      "what": "정션 link(→A) 에 A 를 붙여넣기 → 자기 안 복사로 거부, 폴더가 생기지 않음",
+      "expect": "paste-copy failed (into itself), A 아래 폴더 0",
+      "got": "nested=0, [dev] fs-op op=paste-copy result=failed targets=D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-469feb204fe449feaab64c50036c4c3b\\proj\\A;D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-469feb204fe449feaab64c50036c4c3b\\proj\\link\\A error=cannot copy a folder into itself",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-loop",
+      "id": "D-043 ②·L-42",
+      "what": "자기를 가리키는 정션이 하나뿐인 폴더 → 접기가 순환하지 않는다",
+      "expect": "loopdir 줄 조각 2개 이하",
+      "got": "조각=1, 글자수=7",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "d043-loop",
+      "id": "D-043 ②·I-032",
+      "what": "proj 를 가리키는 정션(up)이 있어도 Ctrl+Right 전체 펼치기가 끝난다",
+      "expect": "10초 안에 트리 갱신, 앱 살아 있음, 펼침 수 유한",
+      "got": "갱신=True, alive=True, expanded=12",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "clipboardFormatsBefore": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "trashBefore": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "restoreSteps": {
+    "restored": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p4-backup-6662d272-63d3-4387-9033-f964309ca7b0"
+  },
+  "clipboardFormatsAfter": [
+    13,
+    16,
+    1,
+    7
+  ],
+  "clipboardRestored": true,
+  "trashPurge": [
+    "[dev] trash-done op=purge count=0 total=0"
+  ],
+  "trashAfter": [
+    "[dev] trash-done op=list count=0 total=0"
+  ],
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase4-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase4-folders\\run-469feb204fe449feaab64c50036c4c3b",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-03T21:28:21.4740550+09:00",
+  "passed": true
+}

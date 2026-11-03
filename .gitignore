@@ -1,2 +1,4 @@
 target/
 .serena/
+.worktrees/
+specs/v0.3/verify/**/appdata/

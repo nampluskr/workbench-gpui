@@ -102,7 +102,7 @@ herdr session
     └── pane: shell             (cargo build / run)
 ```
 
-- worktree는 herdr로 만든다(`herdr worktree create`). herdr가 worktree를 워크스페이스로 관리한다. worktree를 지워도 브랜치는 지우지 않는다.
+- worktree는 `git worktree add`로 `D:\projects\workbench-gpui\.worktrees\<이름>`에 만들고(`.worktrees/`는 `.gitignore`), herdr 워크스페이스로 연다. 이 데스크톱에서 `herdr worktree create`·`worktree list`가 응답하지 않는다(F5 Q-5, 2026-11-03). worktree를 지워도 브랜치는 지우지 않는다.
 - 병합은 `lead`만 한다. 병합 대상 브랜치는 `master`다.
 - `workbench-gpui` 워크스페이스(wD)는 이미 있다. 탭과 패널만 더한다.
 
@@ -152,9 +152,10 @@ herdr tab create --label verify
 # pane id 확인 (생성 순서에 따라 달라진다)
 herdr pane layout --current
 
-# worktree 워크스페이스 (구문은 herdr worktree create --help 로 확인)
-#   wt-ui     : branch work/ui     (상시)
-#   wt-editor : branch work/editor (impl-editor 카드가 생길 때만)
+# worktree 워크스페이스 (herdr worktree create 대신, F5 Q-5)
+git worktree add .worktrees\ui -b work/ui master          # wt-ui (상시)
+git worktree add .worktrees\editor -b work/editor master  # wt-editor (impl-editor 카드가 생길 때만)
+herdr workspace create --cwd D:\projects\workbench-gpui\.worktrees\ui --label wt-ui --no-focus
 ```
 
 - 각 pane에서 에이전트를 실행한 뒤 역할 이름을 붙인다. pane id는 `herdr pane layout --current`의 실제 값으로 바꾼다.
@@ -178,10 +179,13 @@ claude --model opus --effort high
 claude --model opus --effort medium
 
 # reviewer
-codex --model gpt-6.1-sol -c model_reasoning_effort='"medium"'
+codex     # 옵션 없이 띄운다. -c·--profile은 공유 서버를 끄고 단독(embedded) 모드로 돈다(H-3).
+          # 세션 안에서 /model → GPT-6.1-Sol → Medium → s(세션 한정). ~/.codex/config.toml 기본값은 바꾸지 않는다.
 
 # spec, impl-ui
-agy    # 세션 안에서 모델 선택: spec = gemini-3.8-flash, impl-ui = Claude Sonnet 5.5 (thinking)
+agy --model gemini-3.8-flash-medium     # spec. 세션 안에서 shift+tab으로 편집 자동 승인 모드를 쓴다(F5 Q-4)
+agy --model claude-sonnet-5-5-medium    # impl-ui. 기본 모드 유지(F5 Q-4)
+# agy 모델 ID는 effort 접미사가 붙는다(`agy models`, H-1).
 ```
 
 ### 3.6 Windows 설정 (herdr config)
@@ -203,9 +207,9 @@ switch_ascii_input_source_in_prefix = true
 
 | 항목 | 값 | 데스크톱 현황 (2026-11-03) |
 | --- | --- | --- |
-| Rust | 1.99.1 (rustup 기본 툴체인, clippy 포함) | 미설치. Phase 0 P0-0에서 설치한다. |
-| MSVC | Visual Studio Build Tools 2022 최신 버전 (C++ 빌드 도구) | 미설치. 지금은 Build Tools 2026(18.6.2)만 있다. Phase 0 P0-0a에서 2022를 설치하고 2026을 삭제한다(D-5). |
-| Windows SDK | 10.0.26100.0 | 설치되어 있다(22621·28000도 있음). |
+| Rust | 1.99.1 (rustup 기본 툴체인, clippy 포함) | 설치(P0-0a). rustup 1.29.2, clippy 0.1.99. 설치 전에 만든 pane은 PATH 앞에 `%USERPROFILE%\.cargo\bin`을 붙인다. |
+| MSVC | Visual Studio Build Tools 2022 최신 버전 (C++ 빌드 도구) | 설치(P0-0a). 17.14.37827.9, MSVC 14.44.35207. Build Tools 2026은 삭제했다. |
+| Windows SDK | 10.0.26100.0 | 26100만 있다. 22621·28000은 2026 삭제 때 함께 없어졌다. 빌드는 26100으로 된다(P0-0b). |
 | PowerShell | 7 | 7.6.9 |
 | Python (필요할 때만) | `C:\winpython\WPy64-31180_cpu\python-3.11.8.amd64\python.exe` (GPU 작업은 `C:\winpython\WPy64-31180_gpu\python-3.11.8.amd64\python.exe`) | 3.11.8. 시스템 PATH의 `python`은 WindowsApps 스텁이므로 항상 전체 경로로 부른다(D-12). |
 
@@ -243,9 +247,9 @@ switch_ascii_input_source_in_prefix = true
 | `specs/v0.3/verify/finalize/` | `lead` | 의도·결정 검토, 플랜 대조 (FINALIZE F2) |
 | `specs/v0.3/verify/baseline/` | `reviewer` | v0.2 검증 스크립트 기준선 |
 | `tools/measure/` | `reviewer` | V3 측정 스크립트(PowerShell, `tools/capture.ps1` 재사용) |
-| 에디터 코어: 후보 `src/ui/editor_poc.rs` | `impl-editor` | P0-5에서 사용자가 확정한다. |
-| UI 셸: 후보 그 밖의 `src/ui/*`, `src/keymap/`, `src/fsops/`, `src/state/` | `impl-ui` | P0-5에서 사용자가 확정한다. |
-| 공통 모듈(`src/ui/metrics.rs`, 테마, 공통 컴포넌트), `src/dev.rs`, `Cargo.toml` | `lead`가 카드 단위로 지정 | |
+| 에디터 코어: `src/ui/editor_poc.rs` | `impl-editor` | P0-5 사용자 확정 (2026-11-03) |
+| UI 셸: `src/ui/` 의 나머지 파일(공통 제외), `src/keymap/`, `src/fsops/`, `src/state/`, `src/main.rs` | `impl-ui` | P0-5 사용자 확정 (2026-11-03) |
+| 공통 모듈(`src/ui/mod.rs`, `src/ui/metrics.rs`, `src/ui/rem.rs`, `src/ui/layout_probe.rs`, 테마, 공통 컴포넌트), `src/dev.rs`, `Cargo.toml` | `lead`가 카드 단위로 지정 | P0-5 사용자 확정 (2026-11-03) |
 
 - 소유자가 아니면 그 파일을 고치지 않는다. 고쳐야 하면 `lead`에게 요청한다.
 - 지난 버전 폴더(`specs/v0.1/`, `specs/v0.2/`), `docs/HERDR-*.md`, `docs/refs/`는 아무도 고치지 않는다.
@@ -352,7 +356,8 @@ V3 실측 결과는 루트 `AGENTS.md` 8장의 `[MEASURED]` 형식으로 보고�
 
 ### 6.4 사람이 처리하는 것
 
-- 승인과 권한 프롬프트는 사용자가 직접 처리한다.
+- 하위 에이전트의 승인·권한 프롬프트는 `lead`가 `herdr agent read`로 내용을 보고 판단해 처리하고 `HERDR-DECISIONS.md`에 남긴다(사용자 위임 2026-11-03, H-4). 6.5의 위임 밖 항목은 사용자에게 올린다.
+- Git Bash에서 `/model` 같은 슬래시 명령을 보낼 때는 `MSYS_NO_PATHCONV=1`과 `herdr pane send-text`를 쓴다(경로로 바뀌어 프롬프트로 들어간 일이 있다, H-3).
 - herdr의 '막힘' 판정은 엄격해서, 처음 보는 프롬프트가 '대기'로 표시될 수 있다. `lead`는 대기 상태라는 이유만으로 입력을 보내지 않는다. 먼저 `herdr pane read`로 화면을 확인한다.
 - agy는 백그라운드 작업이 남아 있어도 프롬프트로 돌아오면 '대기'로 표시된다. `impl-ui`와 `spec`의 완료는 완료 보고와 결과물로 판정한다.
 
@@ -390,11 +395,12 @@ V3 실측 결과는 루트 `AGENTS.md` 8장의 `[MEASURED]` 형식으로 보고�
 - 세션을 시작할 때 herdr workspace list로 동시에 도는 워크스페이스를 확인해 토큰 부담(HERDR-SETUP 1.3)을 점검한다.
 
 첫 작업 (Phase 0):
-1. PLAN.md Phase 0의 카드(P0-0, F0, P0-1~P0-6, F1~F5)를 specs/v0.3/agents/TASKS.md에 작성해라. 카드마다 검증 수준을 지정하고 기본값은 V0로 한다(HERDR-SETUP 6.3).
+1. PLAN.md Phase 0의 카드(P0-0a~c, F0, P0-1~P0-6, F1~F5)를 specs/v0.3/agents/TASKS.md에 작성해라. 카드마다 검증 수준을 지정하고 기본값은 V0로 한다(HERDR-SETUP 6.3).
 2. F0: 입력 문서 경로와 분량을 확인해 보고해라(실측 문서 docs/refs/01-zed/ 네 개, 지난 버전 문서 specs/v0.1·v0.2).
 3. P0-5로 저장소 구조를 파악하고, HERDR-SETUP 4장의 에디터 코어·UI 셸 경로 후보를 확정안으로 제안해라. 확정은 사용자에게 받는다.
 4. 카드 목록을 사용자에게 보고하고, 승인 후 지시를 시작해라.
-   - F1·F2는 병렬로 하고, P0-1·P0-2·P0-4도 그와 병렬로 할 수 있다.
+   - P0-0a(Rust 1.99.1 설치, Build Tools 2022 최신 설치, Build Tools 2026 삭제)는 시스템 변경이므로 사용자 승인 뒤 사용자와 함께 진행한다. 빌드가 필요한 카드(P0-0b, P0-0c, P0-2, P0-4)는 P0-0a 뒤에 한다.
+   - F1·F2는 P0-0a와 상관없이 먼저 병렬로 시작할 수 있다.
    - P0-6(V3 기준 실측)은 F5 뒤에 지시한다.
 5. Phase 0가 끝나면 PLAN.md의 Phase 종료 절차를 수행하고, Phase 1 카드 초안을 만들어 사용자에게 보고해라.
 
@@ -406,6 +412,7 @@ Phase 0 동안 src는 아무도 수정하지 않는다.
 ```text
 너는 spec 담당이다. specs/v0.3/HERDR-SETUP.md와 AGENTS.md를 먼저 읽어라.
 이 세션에서는 ponytail 규칙을 적용하지 않는다. 측정 데이터는 줄이거나 단순화하지 않는다.
+셸 명령은 승인이 필요하니 되도록 쓰지 말고, 파일 읽기·쓰기는 내장 파일 도구로 해라.
 
 역할:
 - Zed 실측 결과를 spec/zed-metrics.toml로 관리한다. 너는 spec/ 아래 파일(zed-metrics.toml, INDEX.md, ambiguous.md)만 수정한다.
@@ -465,6 +472,7 @@ V3 실측 작업 카드를 받으면 AGENTS.md 3A.4 절차를 따른다:
 작업 위치는 worktree work/ui다. 담당 범위는 UI 셸(HERDR-SETUP 4장에서 확정된 경로: 메뉴, 패널, 타이틀 바, 사이드바, 툴팁 등)이다.
 
 규칙:
+- 셸 명령은 승인이 필요하니 빌드·테스트 외에는 되도록 쓰지 말고, 파일 읽기·쓰기는 내장 파일 도구로 한다.
 - ponytail full 모드. 기존 코드, 공통 컴포넌트, gpui·gpui-kit 기능을 먼저 재사용한다.
 - gpui-kit 컴포넌트가 있으면 먼저 검토하되, 크기나 동작이 기준선과 다르면 자체 구현을 유지한다.
 - Zed 수치는 spec/zed-metrics.toml의 항목 ID로만 사용한다. 코드 값과 스펙 값이 다르면 코드 값을 바꾸지 말고 완료 보고에 적는다(v0.3은 동작 불변).
@@ -526,3 +534,5 @@ Phase별 목표, 작업 카드, 완료 기준, 시작·종료 절차는 `specs/v
 | --- | --- | --- |
 | 2026-11-03 | refactor-draft HERDR.md·HERDR-SETUP.md를 데스크톱·워크스페이스·토큰 부담에 맞게 합쳐 작성. impl-editor 필요할 때만, reviewer 묶음 리뷰, agy Flash·Claude Sonnet만, 측정 도구 PowerShell, Python WinPython, 운영 문서 `specs/v0.3/` 아래 | 사용자 확정 (2026-11-03) |
 | 2026-11-03 | agy 한도 "둘 다 충분" 반영, P0-0c는 reviewer 전부, Build Tools 2022 최신 설치·2026 삭제 | 사용자 답 |
+| 2026-11-03 | F5 반영(F4 V-1~V-6): 실행 명령(agy `--model`, codex 옵션 없이 `/model`), 6.4 승인은 lead 판단, 7.1 프롬프트 갱신, 7.2·7.4 셸 최소, worktree는 `git worktree add`, 3.7 설치 현황 | 사용자 승인("제안대로") |
+| 2026-11-03 | P0-5 담당 경로 확정: 에디터 코어 `editor_poc.rs`, 공통에 `ui/mod.rs`·`rem.rs`·`layout_probe.rs` 추가, UI 셸에 `main.rs` 명시 | 사용자 승인 |

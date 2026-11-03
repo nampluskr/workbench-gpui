@@ -1,0 +1,246 @@
+﻿[
+    {
+        "script":  "verify-v02-phase1",
+        "cases":  9,
+        "checks":  0,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "base",
+                          "override",
+                          "null",
+                          "unknown",
+                          "jsonc",
+                          "broken",
+                          "order",
+                          "startup",
+                          "reload"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase1/d047-rerun",
+        "notebookFailures":  0,
+        "restored":  null,
+        "keymapRestored":  true
+    },
+    {
+        "script":  "verify-v02-phase2",
+        "cases":  11,
+        "checks":  137,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "tooltip",
+                          "menu",
+                          "reload",
+                          "pending",
+                          "shadow",
+                          "prevctx",
+                          "shadowpp",
+                          "rapid",
+                          "chord",
+                          "quit",
+                          "closewin"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase2/d047-rerun",
+        "notebookFailures":  0,
+        "restored":  null,
+        "keymapRestored":  true
+    },
+    {
+        "script":  "verify-v02-phase3",
+        "cases":  23,
+        "checks":  122,
+        "failedChecks":  2,
+        "failures":  2,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "empty",
+                          "add",
+                          "items",
+                          "scroll",
+                          "switch",
+                          "title",
+                          "remove",
+                          "order",
+                          "order-restart",
+                          "keys",
+                          "menus",
+                          "state",
+                          "state-restart",
+                          "broken",
+                          "tmp",
+                          "dialog",
+                          "quitsave",
+                          "quitnochange",
+                          "closesave",
+                          "xclosesave",
+                          "savefail",
+                          "sigma",
+                          "version"
+                      ],
+        "failedDetails":  [
+                              "state: R-28 시작 폭 300: 기대 300, 실제 375",
+                              "state-restart: R-28 다시 시작 → 사이드바 폭 복원: 기대 494, 실제 617"
+                          ],
+        "notebookPath":  "phase3/d047-rerun",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    },
+    {
+        "script":  "verify-v02-phase4",
+        "cases":  12,
+        "checks":  208,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  1,
+        "caseNames":  [
+                          "layout",
+                          "keys",
+                          "inline",
+                          "trash",
+                          "clip",
+                          "menu",
+                          "reveal",
+                          "readonly",
+                          "tooltip",
+                          "a332",
+                          "a334",
+                          "menukeys"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase4/d047-rerun",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    },
+    {
+        "script":  "verify-v02-phase4-d043",
+        "cases":  6,
+        "checks":  13,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "d043-rename",
+                          "d043-ctrlclick",
+                          "d043-crossmove",
+                          "d043-dialog",
+                          "d043-junction",
+                          "d043-loop"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase4/d043-rerun/after",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    },
+    {
+        "script":  "verify-v02-phase4-d044",
+        "cases":  3,
+        "checks":  6,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "d044-alias",
+                          "d044-xmove-link",
+                          "d044-xmove-plain"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase4/d044-rerun/after",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    },
+    {
+        "script":  "verify-v02-phase5",
+        "cases":  7,
+        "checks":  62,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "tree",
+                          "tab",
+                          "root",
+                          "switch",
+                          "own",
+                          "flood",
+                          "junction"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase5/d047-rerun/phase5-full",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    },
+    {
+        "script":  "verify-v02-phase5-d046",
+        "cases":  6,
+        "checks":  23,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "d046-own",
+                          "d046-defer",
+                          "d046-replace",
+                          "d046-moved",
+                          "d046-junction",
+                          "d046-io"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase5/d047-rerun/d046-after",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    },
+    {
+        "script":  "verify-v02-phase5-d047",
+        "cases":  4,
+        "checks":  16,
+        "failedChecks":  0,
+        "failures":  0,
+        "errors":  0,
+        "undetermined":  0,
+        "caseNames":  [
+                          "d047-expire",
+                          "d047-order",
+                          "d047-extra-fail",
+                          "d047-extra-replace"
+                      ],
+        "failedDetails":  [
+
+                          ],
+        "notebookPath":  "phase5/d047-rerun/after",
+        "notebookFailures":  0,
+        "restored":  true,
+        "keymapRestored":  null
+    }
+]

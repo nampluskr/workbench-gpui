@@ -8,7 +8,145 @@
 
 ### Phase 0 — 기준선: 데스크톱 환경·현재 상태 고정·감사·스펙 파일화
 
-아직 시작하지 않았다. v0.3 문서 확정 뒤 `lead`가 카드를 쓰고 시작한다.
+#### Phase 0 카드 작성, F0, P0-5 제안 (2026-11-03, lead)
+
+- 무엇을: PLAN Phase 0 카드 14개(P0-0a~c, F0, P0-1~P0-6, F1~F5)를 `specs/v0.3/agents/TASKS.md`에 HERDR-SETUP 5.1 형식으로 썼다. `HANDOFF.md`를 만들었다. F0 입력 문서를 확인하고, P0-5 경로 확정안을 만들었다.
+- 결과
+  - 검증 수준: P0-0b·P0-4 V0, P0-0c·P0-6 V3(PLAN 그대로), 나머지는 코드를 바꾸지 않는 카드(-).
+  - F0: 01-zed 네 문서 합계 4,320줄·718,706바이트. v0.1·v0.2 문서 다섯 개씩 모두 있다. `spec/` 폴더는 아직 없다. 상세는 TASKS F0 카드.
+  - P0-5: 에디터 코어 `src/ui/editor_poc.rs`, 공통에 `src/ui/mod.rs`·`rem.rs`·`layout_probe.rs` 추가 제안. 상세는 HANDOFF.
+  - herdr: 워크스페이스 `workbench-gpui` 하나, pane은 lead 하나뿐. 다른 에이전트 pane과 `wt-ui`가 아직 없다.
+- 검증: `wc`로 분량, `grep '^## '`로 화면 영역, `grep -rn editor_poc src`로 참조처, `grep '^## R-' SPEC.md`로 카드의 요구 번호를 대조했다. src 변경 없음.
+- 상태: 사용자 승인(2026-11-03 "승인합니다. 진행"). P0-5 경로를 HERDR-SETUP 4장에 반영했다.
+
+#### herdr 레이아웃·에이전트 실행 (2026-11-03, lead)
+
+- 무엇을: 탭 `control`(lead `wD:p1`, spec `wD:p2`), `verify`(reviewer `wD:p3`, shell `wD:p4`)를 만들고 pane 이름을 에이전트 이름으로 붙였다(사용자 요청). spec(agy `gemini-3.8-flash-medium`), reviewer(codex, `/model` GPT-6.1-Sol medium 세션 한정)를 띄웠다.
+- 결과: 실행 중 생긴 판단은 HERDR-DECISIONS H-1~H-5. `herdr worktree create`가 응답하지 않아 `wt-ui`는 아직 없다(review-notes N-8).
+- 검증: `herdr pane list`·`herdr agent list`로 이름과 pane id 대조.
+
+#### P0-0a 데스크톱 빌드 환경 (2026-11-03, 사용자·lead)
+
+- 무엇을: winget으로 rustup 설치 → `rustup toolchain install 1.99.1 --profile minimal --component clippy`, `rustup default 1.99.1`. Build Tools 2022(VCTools 워크로드, 권장 구성 요소 포함) 설치, Build Tools 2026 삭제.
+- 결과
+
+  | 항목 | 값 |
+  | --- | --- |
+  | rustup | 1.29.2 |
+  | Rust | rustc 1.99.1 (58cf8f9c3 2026-10-13), 기본 툴체인 `1.99.1-x86_64-pc-windows-msvc` |
+  | clippy | 0.1.99 (58cf8f9c35 2026-10-13) |
+  | MSVC | Visual Studio Build Tools 2022 17.14.37827.9, MSVC 14.44.35207 |
+  | Build Tools 2026 | 삭제(vswhere 목록에서 빠짐, `18\BuildTools` 제거). 빈 `18\` 폴더는 사용자 지시로 지우려 했으나 관리자 권한이 필요해 남았다 |
+  | Windows SDK | 10.0.26100.0만 남음. 22621·28000은 2026 삭제와 함께 없어진 것으로 보인다 |
+
+- 검증: `rustc --version`, `rustup default`, `rustup component list --installed`, `cargo-clippy --version`, `vswhere -all -products *`, `ls Windows Kits/10/Lib`. 빌드 확인은 P0-0b.
+- 상태: 완료. `winget uninstall` 결과 "성공적으로 제거됨"(exit 0). 빈 `18\` 폴더만 남음(관리자 권한 필요, 사용자 처리)
+
+#### F1 실측 정리 (2026-11-03, spec)
+
+- 무엇을: `spec/INDEX.md`(145줄), `spec/zed-metrics.toml`(568줄), `spec/ambiguous.md`(90줄)를 만들었다. 01 → 02 → 03 → 04 순서로 문서마다 저장했다.
+- 결과(spec 보고): 측정 조건 3개(`reference_mocha`·`reference_latte`·`default`), 영역 섹션 20개, 항목 282개, 모호·추정 43개(01: 19, 02: 8, 03: 7, 04: 9), 문서 간 충돌 7개(프로젝트 패널 폭, 사이드바 폭, 들여쓰기 단계 폭, 행 높이, Latte 비활성 탭·패널 배경색, 사이드바 기본 위치, 기본 키맵 스킴).
+- 검증(lead, 형식만): WinPython `tomllib`로 파싱 성공. 최상위 섹션 29개, `value`가 있는 항목 388개가 모두 `unit`·`src`·`cond`를 갖는다. spec 보고의 282와 lead 집계 388이 다르다(집계 기준 차이로 보임, F3에서 확인). 값의 정확성은 F3 표본 대조에서 본다.
+- 상태: 완료(F3 대기)
+
+#### P0-0b master 기준선 (2026-11-03, reviewer)
+
+- 무엇을: master `c6b680a`에서 build·test·clippy --all-targets·apply-manifest·cargo run 1회.
+- 결과: 빌드 경고 0(첫 빌드 3분 24초), 테스트 49/49, clippy 고유 경고 10개(exit 0, `-D warnings` 없이 기록), 매니페스트 commonControlsV6·perMonitorV2·longPathAware 모두 true, 창 생성 뒤 정상 종료. 노트북 기록(v0.2 PROGRESS 626행 등)과 같다. clippy는 노트북 기준 수치가 없다.
+- 검증: `specs/v0.3/verify/reviews/baseline-2026-11-03.md`와 같은 폴더의 `p0-0b-*.log`. 판정 PASS. 데스크톱 SDK 26100만으로 빌드됨을 확인했다(P0-0a 검증 완료).
+- 상태: 완료
+
+#### P0-2 ponytail 감사 (2026-11-03, reviewer)
+
+- 무엇을: `@ponytail-audit` 저장소 전체 + 정확성 검토 → `specs/v0.3/AUDIT.md`. src 수정 없음.
+- 결과: 11건. 데이터 손실 위험 2(1 복사 대상 덮어쓰기 경쟁, 2 교차 볼륨 이동 중 원본 변경 유실), 오류 은폐 1(3), UI 정지 1(4), 하드코딩 수치·색상 3(5~7), 반복 스타일 체인 2(8·10), 중복 컴포넌트 1(9), 기타 1(11). 미사용 의존성 0.
+- 검증: 근거 로그 `verify/reviews/p0-2-usage.log`, `p0-2-literals.log`. 1~4는 코드 추적이며 실행 재현은 하지 않았다.
+- 상태: 완료(채택·보류 확정)
+
+#### F3 스펙 표본 대조 (2026-11-03, reviewer)
+
+- 무엇을: `spec/zed-metrics.toml` 388개 가운데 85개(21.9%, 테이블마다 처음 3개)의 value·unit·cond·src를 원문 절과 대조했다. 앱 실행 없음.
+- 결과: 76/85 일치(89.4%), 판정 REWORK. 불일치 9개는 모두 값이 아니라 적용 조건 또는 출처 절이다. 재검토 섹션: window, project_panel, interaction, theme.fallback, verification.tolerance. 기준 배율 2.0·DPI 192가 역산값이라는 불확실성 미표시, L-104 이중 취급, spec 보고 282는 재현되지 않음(실제 388).
+- 검증: `specs/v0.3/verify/phase0/spec-sample-check.md`
+- 상태: 완료 → spec에 F1-R1 지시
+
+#### F1-R1 스펙 재검토 (2026-11-03, spec)
+
+- 무엇을: F3 REWORK 다섯 섹션(window, project_panel, interaction, theme.fallback, verification.tolerance) 전체를 원문과 다시 대조했다. 기준 배율 역산 불확실성 표시, L-104 이중 취급 정리, 항목 수 재집계.
+- 결과: 측정 조건 6개 추가(`window_unmaximized`, `project_panel_comfortable`·`project_panel_standard`, `focus_follows_mouse`, `theme_token_fallback`, `reference_image_200`). `project_panel.item.height.standard` 1개 추가, `markdown_preview.heading.margin_top/bottom`은 원문이 추정값이라 toml에서 빼고 ambiguous에만 둠. 항목 387개. 앞선 282는 확인 불가.
+- 검증(lead, 형식): `tomllib` 파싱 성공, 387개 모두 unit·src·cond 있음, cond가 가리키는 조건 9개 모두 정의됨. 값 재대조는 F3-R1(reviewer, 불일치였던 9개만).
+- 상태: 완료(F3-R1 대기)
+
+#### P0-0c v0.2 검증 스크립트 기준선 (2026-11-03, reviewer, V3)
+
+- 무엇을: `verify-v02-*` 10개 가운데 9개를 `-OutDir specs\v0.3\verify\baseline\<스크립트>`로 한 번씩 실행(래퍼 `verify/baseline/run-p0-0c.ps1`, 앱 데이터 백업·해시 대조·복원). phase1은 기대표 누락으로 1회 재실행. d043-clip은 `-Before` 원본(노트북 임시 폴더)이 없어 건너뜀.
+- 결과: checks가 있는 8개 합계 585 통과 / 2 실패. phase1 9사례 실패 0(R-1 62/62). phase2·phase4·d043·d044·phase5·d046·d047은 노트북과 같다.
+  - phase3 R-28 사이드바 폭 2건: 시작 폭 기대 300 → 실제 375, 저장 폭 복원 494 → 617(약 1.25배). 앱 로그는 scale=1·rem=16, 주 화면 viewport 1920×1032. 원인 미확정(코드 경로 `src/ui/mod.rs:500` 부근 sidebar_width 전달, resizable 정규화가 후보). src는 v0.2 그대로라 리팩토링 회귀가 아니라 화면 크기에 따른 기존 동작 차이로 보인다(lead 판단, 확인 전).
+  - 휴지통 A-14.3 휴지통 쪽·A-14.5: 판정 불가. D:는 Fixed NTFS지만 휴지통 설정 `NukeOnDelete=1`(바로 지움)이다. 노트북과 같은 이유.
+- 검증: `specs/v0.3/verify/baseline/README.md`, `comparison.json`, `run-index.json`, `_backup/after.json`·`final.json`(restored=true, exe 해시 불변). 지난 버전 폴더·src·Cargo 변경 없음(`git status`).
+- 상태: 완료(판정 REWORK 2건은 F5 결정 대상, 고치지 않음)
+
+#### F3-R1 재대조, F4 개정안 (2026-11-03, reviewer·lead)
+
+- 무엇을: reviewer가 F3 불일치 9개와 새 조건 6개, 기준 배율 불확실성 표기만 다시 대조했다. lead가 F2·F3·P0-0c·ambiguous를 묶어 F4 개정안을 썼다.
+- 결과: F3-R1 PASS(9개 해소, 조건 6개 일치). F4 `specs/v0.3/verify/finalize/revision.md`: 문서 변경안 V-1~V-8, 사용자 결정 Q-1~Q-17, 문서 간 충돌 7건(spec 처리안대로 제안), 범위 밖 기능의 모호 항목 일괄 보류 제안.
+- 검증: `spec-sample-check.md` "F3-R1 재대조" 절. F4 번호는 DECISIONS `D-n`과 겹치지 않게 `Q-n`으로 매겼다.
+- 상태: 완료(F5 대기)
+
+#### F5 확정 (2026-11-03, 사용자)
+
+- 요청: F4 개정안(`verify/finalize/revision.md`)의 V-1~V-8, Q-1~Q-17, 문서 간 충돌 7건, 범위 밖 모호 항목 보류를 "제안대로" 승인.
+- 결정(요지): Q-1 v0.2 한계·미결은 v0.4 / Q-2 `tools/*.ps1` 리팩토링 안 함 / Q-3 v0.1 스크립트는 R-12에 넣지 않음 / Q-4 spec만 agy 편집 자동 승인 / Q-5 worktree는 `git worktree add .worktrees\<이름>` / Q-6 허용 오차 논리 px ±1, 색 채널 ±2(toml 우선) / Q-7 기준 200% 그대로 / Q-8 P0-6은 색·아이콘 제외 / Q-9 푸터 31은 측정 후 불일치 목록 / Q-10 관찰 폭 toml 제외 / Q-11 추정값은 기록만 / Q-12 폭 핸들 판정 제외 / Q-13 글리프 글꼴 기준 닫음 / Q-14 앱 판단 값 닫음 / Q-15 phase3 폭 2건 포함 데스크톱 결과를 R-12 기준선, 원인은 v0.4 후보 / Q-16 휴지통 판정 불가 유지 / Q-17 d043-clip 제외. 충돌 7건은 spec 처리안대로. 범위 밖 모호 항목은 보류.
+- 반영
+  - HERDR-SETUP: 2장 worktree 문구, 3.4 worktree 명령, 3.5 실행 명령, 3.7 설치 현황, 6.4 승인 처리, 7.1 lead 프롬프트, 7.2·7.4 셸 최소, 변경 이력(V-1~V-6)
+  - DECISIONS: D-5 본문의 G-121 문구, 미결의 G-121·글리프 글꼴 기준을 닫음(V-7, Q-13)
+  - PLAN: Phase 종료 1번(R-12 대상 9개·기준선), P0-0c 카드에서 d043-clip 제외(V-8)
+  - `.gitignore`에 `.worktrees/`, `git worktree add .worktrees/ui -b work/ui master`, herdr 워크스페이스 `wt-ui`(wE: impl-ui `wE:p1`, shell `wE:p2`)
+  - toml 변경은 필요 없다(관찰값·추정값은 이미 toml 밖).
+- 검증: `git diff --stat`, 바꾼 줄을 `sed -n`으로 다시 읽음, `git worktree list`.
+- 상태: 완료
+
+#### P0-4 worktree work/ui 빌드·구조 요약 (2026-11-03, impl-ui, V0)
+
+- 무엇을: `.worktrees/ui`(work/ui)에서 공유 target으로 `cargo build`(30.8초) + `apply-manifest.ps1 -Exe <절대 경로>`. 담당 범위 모듈 구조, 반복 스타일 체인, 비슷한 컴포넌트를 요약하고 AUDIT 5~11과 대조했다. 코드 수정 없음.
+- 결과: 빌드 통과, 매니페스트 세 항목 true. worktree에서는 `-Exe` 절대 경로가 필요하다(AGENTS 2장 규칙대로). 감사가 놓친 것: 시간 로컬 상수(watch TICK 100·TICK_LATE 250, folders SAVE_DEBOUNCE 500, panel_view NAME_TOOLTIP_DELAY 1500), rem을 거치지 않는 raw f32(INDENT 20, GUIDE_OFFSET 15, ROW_LINE_HEIGHT 1.618, MAX_HEIGHT_RATIO 0.75), 트리 가이드선 `px(1.)`, title_bar.rs:200의 `white()`, tooltip.rs:206의 구분선 체인. 이것들은 Phase 2·3 카드의 범위에 더한다(AUDIT 5·6·8 채택 항목의 연장).
+- 검증: 보고 전문 `specs/v0.3/agents/P0-4-report.md`. impl-ui `git status` 깨끗함.
+- 상태: 완료
+
+#### P0-6 V3 기준 실측 (2026-11-03, reviewer, V3)
+
+- 무엇을: master 빌드를 `--dev-layout --dev-keymap --dev-pick-folder`로 1회 실행해 S1~S7 상태를 만들고, 레이아웃 덤프 우선·부족분만 캡처 픽셀로 쟀다. 측정 도구 `tools/measure/`(p0-session·p0-input·p0-show·p0-pixels·p0-report)를 새로 만들었다(reviewer 소유).
+- 측정 조건: DISPLAY1 1920×1080, DPI 96·100%, 최대화, 기본 라이트 테마, rem=16.
+- 결과: 통과 47, 기록만 6, 불일치 1, 측정 불가·미적용 125(대부분 현재 화면에 없는 상태·아이콘 그림·글꼴 크기 등, 사유는 보고서에 있음).
+  - 불일치: `sidebar.default_width` 기대 300 → 실제 375(+75). P0-0c phase3과 같은 방향. v0.4 이후(Q-15).
+  - 푸터 31 vs 30: ±1 안이라 PASS, 기준선 31 보존(Q-9).
+  - S6 컨텍스트 메뉴 행 23px, 패널 아이콘 16: 기록만(Q-11).
+  - V2 이전 후보 10줄(타이틀 바·창 버튼, 경계선, 패널 행·들여쓰기, 탭 바, 툴팁 외곽, 메뉴 행, 인라인 입력) → Phase 1 P1-3 입력.
+- 진행 중 일: S4 전환 중 OpenWith.exe "Open With" 창이 전면을 막아, 사용자 지시로 reviewer가 그 창만 Esc로 닫았다(H-18, 연결 앱 선택·설정 변경 없음). 앱이 숨김 창으로 떠서 `p0-show.ps1`로 표시·최대화했다.
+- 검증: `specs/v0.3/verify/reviews/measure-p0.md`, `p0-measure/`(S1~S7 덤프·캡처·measurements.json·actions.log), `_p0-6-backup/after.json`(restored=true, fixtureRemoved=true, exeUnchanged=true). src·spec·지난 버전 폴더 변경 없음.
+- 참고: 실행 파일 SHA-256이 P0-0c 때(844E…)와 다르다(FEF3…). 그 사이 P0-4에서 impl-ui가 같은 커밋 `c6b680a`를 worktree에서 공유 target으로 다시 빌드했기 때문이다(소스 같음, 경로·디버그 정보 차이).
+- 상태: 완료
+
+#### Phase 0 종료 (2026-11-03, lead)
+
+- 무엇을: PLAN "Phase 종료 때" 절차. 1번(R-12 재실행)은 Phase 0이라 제외. 2·3번 V3는 P0-0c·P0-6으로 했다. 4번 사용자 확인 필요(V4) 항목: 없음(모든 완료 보고가 "없음"). 5번 `/ponytail-debt`. 6번 HANDOFF·PROGRESS 갱신, 커밋, 태그. lead가 미커밋 변경을 `/ponytail-review`로 검토했다(사용자 요청).
+- 결과
+  - `/ponytail-debt`: 표식 1건 — `tools/measure/p0-report.ps1:8` toml 한 줄 레코드 파싱(형식이 바뀌면 TOML 파서). 트리거 없는 표식 0. `AGENTS.md`·`AGENTS.draft.md`의 것은 규칙 예시.
+  - 리뷰 지적 5건: 1 백업 `appdata/`가 커밋될 위험 → `.gitignore`에 `specs/v0.3/verify/**/appdata/` 추가(사용자 "제안대로"). 2 숨김 창 시작, 3 `p0-show.ps1` 중복, 4 100%·주 모니터 좌표 한계 미표시, 5 원래 없던 앱 데이터 폴더가 남음 → P1-5로 넘김.
+  - Phase 0 완료 조건: R-1~R-6·R-13~R-15 산출물이 모두 있다. HERDR-SETUP 4장 경로 확정, F5 결정 기록, Phase 0 동안 `src/`·`specs/v0.1·v0.2/` 변경 없음(`git status`).
+  - Phase 1 카드 초안을 TASKS에 썼다(사용자 승인 대기).
+- 검증: `git check-ignore -v`로 두 백업 경로가 무시됨을 확인, `git status --short src specs/v0.1 specs/v0.2` 빈 결과.
+- 상태: 완료(커밋·태그는 아래 커밋)
+
+#### 감사 채택·보류, 동작 변경 범위, P0-0c 시점 결정 (2026-11-03, 사용자)
+
+- 요청: lead가 세 가지 안을 내고 사용자가 "제안대로"로 승인했다.
+- 결정
+  1. AUDIT 채택: 5·6·7 → Phase 2, 8·9·10·11 → Phase 3(9는 V1). 보류: 3·4 → v0.4 이후. `AUDIT.md` 결정란에 기록했다.
+  2. 데이터 손실 위험 AUDIT 1·2는 v0.3 안에서 Phase 3 뒤 별도 카드(P3-D1·P3-D2)·별도 커밋으로 고친다. v0.3 INTENT 제외 범위의 "미정"(review-notes N-2)을 닫았다.
+  3. P0-0c는 F3이 끝난 뒤 lead가 묻고, 사용자가 자리를 비울 때 돌린다. 그동안 reviewer에게는 다른 일을 주지 않고 F4는 lead가 쓴다(Codex 주간 한도 41%).
+- 반영(F3 기록은 아래): `specs/v0.3/INTENT.md` 제외 범위 한 줄, `specs/v0.3/PLAN.md`에 "Phase 3 뒤" 절 추가(사용자 승인 계획 변경), `AUDIT.md` 결정란.
+- 상태: 완료
 
 ## 사용자 요청 작업
 

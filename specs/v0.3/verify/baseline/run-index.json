@@ -1,0 +1,70 @@
+[
+  {
+    "name": "verify-v02-phase1",
+    "ended": "2026-11-03T21:14:10.4327725+09:00",
+    "exit": 1,
+    "started": "2026-11-03T21:13:20.5517259+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase2",
+    "ended": "2026-11-03T21:17:10.8271700+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:14:10.4468562+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase3",
+    "ended": "2026-11-03T21:20:43.0558171+09:00",
+    "exit": 1,
+    "started": "2026-11-03T21:17:10.8473118+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase4",
+    "ended": "2026-11-03T21:26:45.5570402+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:20:43.0633928+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase4-d043",
+    "ended": "2026-11-03T21:28:21.5353291+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:26:45.5689571+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase4-d043-clip",
+    "status": "SKIP",
+    "reason": "SKIP: historical Before script was in a missing laptop temporary directory; no committed pre-fix version available. Wrapper also has no Exe parameter."
+  },
+  {
+    "name": "verify-v02-phase4-d044",
+    "ended": "2026-11-03T21:29:01.7127407+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:28:21.5562173+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase5",
+    "ended": "2026-11-03T21:30:40.0174341+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:29:01.7246652+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase5-d046",
+    "ended": "2026-11-03T21:32:09.2964593+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:30:40.0263179+09:00",
+    "attempts": 1
+  },
+  {
+    "name": "verify-v02-phase5-d047",
+    "ended": "2026-11-03T21:33:22.4137553+09:00",
+    "exit": 0,
+    "started": "2026-11-03T21:32:09.3080654+09:00",
+    "attempts": 1
+  }
+]

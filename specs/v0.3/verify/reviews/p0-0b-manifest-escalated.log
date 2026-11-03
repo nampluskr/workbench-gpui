@@ -1,0 +1,10 @@
+mt.exe: C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\mt.exe
+{
+  "exe": "D:\\projects\\workbench-gpui\\target\\debug\\workbench-gpui.exe",
+  "manifest": "D:\\projects\\workbench-gpui\\target\\manifest\\manifest.xml",
+  "checks": {
+    "commonControlsV6": true,
+    "perMonitorV2": true,
+    "longPathAware": true
+  }
+}

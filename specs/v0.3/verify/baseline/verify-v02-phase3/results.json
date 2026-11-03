@@ -1,0 +1,1233 @@
+{
+  "startedAt": "2026-11-03T21:17:12.0616394+09:00",
+  "appDir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+  "testRoot": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56",
+  "cases": {
+    "empty": {
+      "pid": 15456,
+      "hwnd": "0x3C07DA",
+      "screenshot": "empty-screen.png (타이틀 바 Open Recent Project, 프로젝트 패널 빈 상태 문구·버튼)"
+    },
+    "add": {
+      "pid": 34132,
+      "hwnd": "0x4A076A"
+    },
+    "items": {
+      "pid": 11388,
+      "hwnd": "0x3F07DA"
+    },
+    "scroll": {
+      "pid": 38008,
+      "hwnd": "0x3806C0"
+    },
+    "switch": {
+      "pid": 19684,
+      "hwnd": "0x790790",
+      "titleShot": "switch-beta.png: 타이틀 바 beta, 프로젝트 패널 루트 줄 beta"
+    },
+    "title": {
+      "pid": 14432,
+      "hwnd": "0x5409D0",
+      "note": "폴더 이름 45자 → 타이틀 바 40자 + … (스크린샷 title-long-name.png), 사이드바는 폭에 맞춰 말줄임"
+    },
+    "remove": {
+      "pid": 11032,
+      "hwnd": "0x310692"
+    },
+    "order": {
+      "pid": 34456,
+      "hwnd": "0x1E0C22"
+    },
+    "order-restart": {
+      "pid": 35536,
+      "hwnd": "0x5809D0"
+    },
+    "keys": {
+      "pid": 12364,
+      "hwnd": "0x4F0C34"
+    },
+    "menus": {
+      "pid": 26616,
+      "hwnd": "0x3B06A2"
+    },
+    "state": {
+      "pid": 36600,
+      "hwnd": "0x5C0750",
+      "width": 494.0
+    },
+    "state-restart": {
+      "pid": 27172,
+      "hwnd": "0x810790"
+    },
+    "broken": {
+      "pid": 35876,
+      "hwnd": "0x6009D0"
+    },
+    "tmp": {
+      "pid": 14996,
+      "hwnd": "0x4205B4"
+    },
+    "dialog": {
+      "pid": 40096,
+      "hwnd": "0x840790",
+      "dialogTitle": "폴더 선택",
+      "steps": "type path, Enter(폴더 안으로 이동), 확인 버튼 '폴더 선택' 누름(SendInput)",
+      "okButton": "폴더 선택"
+    },
+    "quitsave": {
+      "pid": 30396,
+      "hwnd": "0xD0B82"
+    },
+    "quitnochange": {
+      "pid": 960,
+      "hwnd": "0x150862"
+    },
+    "closesave": {
+      "pid": 35632,
+      "hwnd": "0x350B94",
+      "sendMs": 9
+    },
+    "xclosesave": {
+      "pid": 25704,
+      "hwnd": "0x100B82",
+      "sendMs": 205
+    },
+    "savefail": {
+      "pid": 10272,
+      "hwnd": "0x180862"
+    },
+    "sigma": {
+      "pid": 36304,
+      "hwnd": "0x120B82"
+    },
+    "version": {
+      "pid": 9292,
+      "hwnd": "0x2A06BC"
+    }
+  },
+  "failures": [
+    "state: R-28 시작 폭 300: 기대 300, 실제 375",
+    "state-restart: R-28 다시 시작 → 사이드바 폭 복원: 기대 494, 실제 617"
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "case": "empty",
+      "id": "A-16.1",
+      "what": "등록 폴더 없음: 목록 비어 있음",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "A-16.1",
+      "what": "빈 상태 문구 경계",
+      "expect": "project-empty-text",
+      "got": "present",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "A-16.1",
+      "what": "Open Project 버튼 경계",
+      "expect": "project-empty-open",
+      "got": "present",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "R-28",
+      "what": "파일 없음 → 빈 상태(source=none), 알림 없음",
+      "expect": "source=none, notification 0",
+      "got": "[dev] state-load source=none read_only=false bad_moved_to=none, notification 0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "A-13.9·L-227",
+      "what": "폴더 없음 → 타이틀 Open Recent Project",
+      "expect": "[dev] title text=Open Recent Project placeholder=true",
+      "got": "[dev] title text=Open Recent Project placeholder=true",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "A-16.1·A-13.1",
+      "what": "Open Project 버튼 → 선택 창 → 등록",
+      "expect": "folder-add result=added index=0",
+      "got": "[dev] folder-add result=added index=0 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "A-13.3",
+      "what": "등록한 폴더 활성",
+      "expect": "active=0",
+      "got": "active=0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "empty",
+      "id": "A-15.6·A-13.3",
+      "what": "루트 줄(project-root-row) 경계",
+      "expect": "present",
+      "got": "present",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.1·A-18.4",
+      "what": "Ctrl+K Ctrl+O → 등록",
+      "expect": "result=added index=0",
+      "got": "[dev] folder-add result=added index=0 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.1",
+      "what": "사이드바 푸터 폴더 추가 버튼 → 맨 아래에 등록",
+      "expect": "result=added index=1",
+      "got": "[dev] folder-add result=added index=1 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\beta",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.1",
+      "what": "☰ File → Open Folder... → 등록",
+      "expect": "result=added index=2",
+      "got": "[dev] folder-add result=added index=2 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\gamma",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "R-8",
+      "what": "File 메뉴 첫 항목",
+      "expect": "Open Folder...|Ctrl-K Ctrl-O",
+      "got": "[dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.1",
+      "what": "순서·활성(맨 아래가 활성)",
+      "expect": "alpha / beta / gamma, active=2",
+      "got": "alpha / beta / gamma, active=2",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.2·A-16.6",
+      "what": "대소문자·끝 \\ 다른 같은 경로(D:\\PROJECTS\\WORKBENCH-GPUI\\TARGET\\PHASE3-FOLDERS\\RUN-DA976DBC60C241FF83F627523649EF56\\ALPHA\\) → 새 항목 없이 기존 활성",
+      "expect": "result=existing index=0",
+      "got": "[dev] folder-add result=existing index=0 path=D:\\PROJECTS\\WORKBENCH-GPUI\\TARGET\\PHASE3-FOLDERS\\RUN-DA976DBC60C241FF83F627523649EF56\\ALPHA",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.2",
+      "what": "중복 뒤 개수·활성",
+      "expect": "count=3 active=0",
+      "got": "count=3 active=0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-16.4",
+      "what": "없는 경로 → 등록 안 함 + 알림 'Cannot open this folder.'",
+      "expect": "rejected reason=not-found, 알림 +1",
+      "got": "[dev] folder-add result=rejected reason=not-found input=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\no-such-folder, 알림 +1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-16.4",
+      "what": "파일 경로 → 등록 안 함 + 알림 'Cannot open this folder.'",
+      "expect": "rejected reason=not-dir, 알림 +1",
+      "got": "[dev] folder-add result=rejected reason=not-dir input=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\plain-file.txt, 알림 +1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-16.4",
+      "what": "읽을 수 없는 폴더(목록 읽기 거부 ACL) → 등록 안 함 + 알림 'Cannot open this folder.'",
+      "expect": "rejected reason=read-dir-failed, 알림 +1",
+      "got": "[dev] folder-add result=rejected reason=read-dir-failed input=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\locked, 알림 +1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-13.8",
+      "what": "취소 → 아무 일도 없음",
+      "expect": "pick-folder result=cancel",
+      "got": "[dev] pick-folder result=cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-16.4·A-13.8",
+      "what": "거부·취소 뒤 개수",
+      "expect": "3",
+      "got": "3",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "R-28 A-22",
+      "what": "state.json folders 경로·순서",
+      "expect": "alpha, beta, gamma",
+      "got": "alpha, beta, gamma",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-22.3",
+      "what": "id 는 UUID v4",
+      "expect": "xxxxxxxx-xxxx-4xxx-[89ab]xxx-xxxxxxxxxxxx",
+      "got": "57abd2f2-e441-48dd-96d4-3d7c1c681855 95439480-e1d7-4f61-b993-6dd5c60d2eaf 439155a0-70c3-40d7-9220-522039f97599",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-22.5",
+      "what": "added_at ISO 8601 UTC",
+      "expect": "YYYY-MM-DDTHH:MM:SSZ",
+      "got": "2026-11-03T12:17:27Z 2026-11-03T12:17:28Z 2026-11-03T12:17:30Z",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-22.6",
+      "what": "active_folder_id = alpha 의 id",
+      "expect": "57abd2f2-e441-48dd-96d4-3d7c1c681855",
+      "got": "57abd2f2-e441-48dd-96d4-3d7c1c681855",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "add",
+      "id": "A-28",
+      "what": "path 정규화(끝 \\ 없음, 드라이브 대문자)",
+      "expect": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\alpha",
+      "got": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-12.6",
+      "what": "같은 이름 폴더 → 이름 · 위 폴더",
+      "expect": "docs · one / docs · two",
+      "got": "docs · one / docs · two",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-12.7·A-16.2",
+      "what": "없는 경로 → missing",
+      "expect": "vanished missing=true, 나머지 false",
+      "got": "alpha=False docs · one=False docs · two=False vanished=True inner=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-16.5",
+      "what": "안쪽·바깥 폴더(alpha, alpha\\inner) 독립 항목",
+      "expect": "alpha, inner 둘 다 있음",
+      "got": "alpha / docs · one / docs · two / vanished / inner",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-11.3·A-32.12",
+      "what": "항목 줄 높이 31",
+      "expect": "31",
+      "got": "31",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-11.3",
+      "what": "항목 줄 폭 = 사이드바 폭 − 오른쪽 테두리 1",
+      "expect": "374",
+      "got": "374",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-11.3",
+      "what": "줄 간격 31(빈틈 없음)",
+      "expect": "31",
+      "got": "31",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-12.8",
+      "what": "항목 hover 2초 → 툴팁 없음",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-17.3·A-12.5",
+      "what": "사이드바 포커스, Down×2 → 커서 1(활성 0 은 그대로)",
+      "expect": "cursor=1 active=0 focus=sidebar",
+      "got": "cursor=1 active=0 focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-16.2·A-12.7",
+      "what": "없는 경로 활성 → This folder no longer exists. + Remove",
+      "expect": "project-missing-text, project-missing-remove",
+      "got": "True, True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "items",
+      "id": "A-16.2",
+      "what": "Remove 버튼 → 해제, 아래 항목(inner) 활성",
+      "expect": "count=4, active=3(inner)",
+      "got": "count=4, active=3(inner)",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "scroll",
+      "id": "A-16.7",
+      "what": "폴더 32개 등록",
+      "expect": "32",
+      "got": "32",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "scroll",
+      "id": "A-16.7",
+      "what": "목록 휠 → 세로 스크롤(스크롤 위치 음수)",
+      "expect": "offset_y < 0",
+      "got": "[dev] sidebar-scroll offset_y=-23",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-28",
+      "what": "시작 때 활성 alpha",
+      "expect": "active=0",
+      "got": "active=0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-13.3",
+      "what": "클릭 → beta 활성, Workspace 새로 만듦",
+      "expect": "index=1 created=true",
+      "got": "[dev] folder-activate index=1 id=00000000-0000-4000-8000-000000000001 workspace=EntityId(17v1) created=true folder_id=00000000-0000-4000-8000-000000000001",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-15.6",
+      "what": "전환 뒤 포커스 = 사이드바",
+      "expect": "sidebar",
+      "got": "sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-15.2·G-002",
+      "what": "alpha 로 돌아옴 → 같은 Workspace 엔티티(새로 만들지 않음)",
+      "expect": "created=false",
+      "got": "[dev] folder-activate index=0 id=00000000-0000-4000-8000-000000000000 workspace=EntityId(14v1) created=false folder_id=00000000-0000-4000-8000-000000000000",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-15.2",
+      "what": "beta 로 다시 → 처음 만든 엔티티 그대로",
+      "expect": "workspace=EntityId(17v1) created=false",
+      "got": "[dev] folder-activate index=1 id=00000000-0000-4000-8000-000000000001 workspace=EntityId(17v1) created=false folder_id=00000000-0000-4000-8000-000000000001",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-15.2",
+      "what": "Workspace 엔티티 수(폴더마다 하나, 메모리에 남음)",
+      "expect": "2",
+      "got": "2",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-17.3·A-17.4",
+      "what": "Down, Enter → gamma 활성, 포커스 사이드바",
+      "expect": "active=2 cursor=2 focus=sidebar",
+      "got": "active=2 cursor=2 focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-17.3",
+      "what": "끝에서 Down → 처음으로 순환(판단, I-518)",
+      "expect": "cursor=0",
+      "got": "cursor=0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "A-17.3·A-17.4",
+      "what": "Up×2, Enter → beta 활성",
+      "expect": "active=1",
+      "got": "active=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "switch",
+      "id": "R-28",
+      "what": "state.json active_folder_id = beta",
+      "expect": "00000000-0000-4000-8000-000000000001",
+      "got": "00000000-0000-4000-8000-000000000001",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "title",
+      "id": "L-88·A-13.9",
+      "what": "45자 이름 → 타이틀 40자 + …",
+      "expect": "[dev] title text=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa… placeholder=false",
+      "got": "[dev] title text=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa… placeholder=false",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "I-667·A-12.10",
+      "what": "가운데 항목 우클릭 메뉴",
+      "expect": "Move Up|enabled, Move Down|enabled, ---, Remove|enabled",
+      "got": "[dev] context-menu-open rows=Move Up|enabled\tMove Down|enabled\t---\tRemove|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-13.4 ①·A-13.5",
+      "what": "활성 beta 를 우클릭 Remove → 아래 항목(gamma) 활성",
+      "expect": "alpha / gamma / docs, active=1(gamma)",
+      "got": "alpha / gamma / docs, active=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-14.4",
+      "what": "확인창 없음(대화상자 없음)",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-13.4 ②·A-17.5",
+      "what": "사이드바 Delete → 커서 항목(docs) 해제, 활성 그대로",
+      "expect": "alpha / gamma, active=1",
+      "got": "alpha / gamma, active=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-17.5",
+      "what": "Delete 처리기",
+      "expect": "action-handled name=project_panel::RemoveFromProject by=workbench",
+      "got": "[dev] action-handled name=project_panel::RemoveFromProject by=workbench focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-13.5",
+      "what": "맨 아래 활성 해제 → 위 항목 활성",
+      "expect": "alpha, active=0",
+      "got": "alpha, active=0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "I-934",
+      "what": "폴더 하나면 Move Up·Move Down 없음",
+      "expect": "rows=Remove|enabled",
+      "got": "[dev] context-menu-open rows=Remove|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-13.5·A-16.1",
+      "what": "모두 해제 → 빈 상태",
+      "expect": "count=0, project-empty-text",
+      "got": "count=0, True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "A-13.4·A-14.3",
+      "what": "디스크 폴더·파일 목록(경로·크기·수정 시각) 해제 전후 같음",
+      "expect": "57 줄 같음",
+      "got": "57 줄, same=True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "remove",
+      "id": "R-28",
+      "what": "state.json folders 비고 active null",
+      "expect": "folders=0, active=null",
+      "got": "folders=0, active=",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-940",
+      "what": "맨 위 항목: Move Up 비활성",
+      "expect": "Move Up|disabled, Move Down|enabled",
+      "got": "[dev] context-menu-open rows=Move Up|disabled\tMove Down|enabled\t---\tRemove|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-313",
+      "what": "메뉴 상자 최소 폭 200 + 테두리 2",
+      "expect": ">= 202",
+      "got": "202",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-318",
+      "what": "구분선 높이 1, 위아래 6",
+      "expect": "sep h=1, 다음 항목까지 13",
+      "got": "h=1, gap=13",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-940",
+      "what": "비활성 Move Up 누름 → 실행 없음, 메뉴 그대로",
+      "expect": "exec 0, order same",
+      "got": "exec 0, alpha / beta / gamma",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "A-13.6",
+      "what": "alpha Move Down → beta / alpha / gamma",
+      "expect": "beta / alpha / gamma",
+      "got": "beta / alpha / gamma",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-940",
+      "what": "맨 아래 항목: Move Down 비활성",
+      "expect": "Move Up|enabled, Move Down|disabled",
+      "got": "[dev] context-menu-open rows=Move Up|enabled\tMove Down|disabled\t---\tRemove|enabled",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "A-13.6",
+      "what": "gamma Move Up → beta / gamma / alpha",
+      "expect": "beta / gamma / alpha",
+      "got": "beta / gamma / alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-517·I-518",
+      "what": "메뉴 Down, Enter → 첫 활성 항목(Move Up) 실행",
+      "expect": "gamma / beta / alpha",
+      "got": "gamma / beta / alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-309",
+      "what": "메뉴 실행 뒤 포커스 복원",
+      "expect": "center",
+      "got": "center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-519",
+      "what": "Escape → 닫힘, 실행 없음",
+      "expect": "reason=cancel",
+      "got": "[dev] context-menu-close reason=cancel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "I-937·I-939",
+      "what": "사이드바 빈 공간·폴더 추가 버튼 우클릭 → 메뉴 없음",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order",
+      "id": "A-13.6·A-22.2",
+      "what": "state.json folders 순서",
+      "expect": "gamma / beta / alpha",
+      "got": "gamma / beta / alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "order-restart",
+      "id": "A-13.6·R-28",
+      "what": "다시 시작 → 순서 복원",
+      "expect": "gamma / beta / alpha",
+      "got": "gamma / beta / alpha",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-11.7",
+      "what": "처음에는 사이드바 열림, 포커스 center",
+      "expect": "sidebar present, center",
+      "got": "True, center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.1",
+      "what": "열림 + 포커스 center 에서 Ctrl+Alt+J → 닫힘, 포커스 center 그대로",
+      "expect": "open=false focus=center",
+      "got": "open=false focus=center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-11.9",
+      "what": "사이드바 닫힘: 상태 표시줄 왼쪽 순서 사이드바 토글 → 폴더 추가 → 프로젝트 패널 토글",
+      "expect": "x 증가",
+      "got": "4.0 < 30.0 < 56.0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "L-251·L-270",
+      "what": "닫힌 사이드바 토글 툴팁",
+      "expect": "Open Folder Sidebar|Ctrl-Alt-J",
+      "got": "Open Folder Sidebar|Ctrl-Alt-J",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "L-230",
+      "what": "상태 표시줄 폴더 추가 툴팁",
+      "expect": "Add Project|Ctrl-K Ctrl-O",
+      "got": "Add Project|Ctrl-K Ctrl-O",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.1",
+      "what": "닫힘에서 Ctrl+Alt+J → 열림 + 포커스 사이드바",
+      "expect": "open=true focus=sidebar",
+      "got": "open=true focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-11.8",
+      "what": "사이드바 열림: 상태 표시줄 왼쪽은 프로젝트 패널 토글만",
+      "expect": "status-btn-sidebar-toggle 없음",
+      "got": "없음",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.1·I-100",
+      "what": "사이드바 포커스에서 Ctrl+Alt+J → 닫힘, 이전 포커스(center)로",
+      "expect": "open=false focus=center",
+      "got": "open=false focus=center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.2",
+      "what": "닫힘에서 Ctrl+Alt+; → 열고 포커스",
+      "expect": "open=true focus=sidebar",
+      "got": "open=true focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.2·I-099",
+      "what": "사이드바 포커스에서 Ctrl+Alt+; → 이전 포커스로, 닫지 않음",
+      "expect": "open=true focus=center",
+      "got": "open=true focus=center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.8",
+      "what": "Ctrl+Shift+E → 프로젝트 패널 포커스",
+      "expect": "project_panel",
+      "got": "project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.2",
+      "what": "패널에서 Ctrl+Alt+; → 사이드바",
+      "expect": "sidebar",
+      "got": "sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.2",
+      "what": "다시 Ctrl+Alt+; → 이전 포커스(프로젝트 패널)로",
+      "expect": "project_panel",
+      "got": "project_panel",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.8·I-098",
+      "what": "패널에서 Ctrl+Shift+E → center, Dock 은 열린 채",
+      "expect": "center, dock present",
+      "got": "center, dock True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "R-16·A-17.1 (D-037 ⑥)",
+      "what": "패널 포커스에서 Ctrl+Alt+J 로 닫기 → 가운데 Pane",
+      "expect": "before=project_panel, open=false focus=center",
+      "got": "before=project_panel, open=false focus=center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.7",
+      "what": "Ctrl+B → Dock 닫힘",
+      "expect": "dock 없음",
+      "got": "없음",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.8",
+      "what": "Dock 닫힘에서 Ctrl+Shift+E → Dock 열고 패널 포커스",
+      "expect": "project_panel, dock present",
+      "got": "project_panel, dock True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-11.8",
+      "what": "푸터 사이드바 토글 누름 → 닫힘",
+      "expect": "open=false",
+      "got": "open=false focus=center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-11.9",
+      "what": "상태 표시줄 사이드바 토글 누름 → 열림",
+      "expect": "open=true",
+      "got": "open=true focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.2",
+      "what": "메뉴 열린 채 Ctrl+Alt+; → 사이드바 포커스",
+      "expect": "sidebar",
+      "got": "sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "keys",
+      "id": "A-17.2",
+      "what": "다시 Ctrl+Alt+; → 돌아갈 자리(메뉴)가 닫혔으니 center",
+      "expect": "center",
+      "got": "center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menus",
+      "id": "R-8 9.2",
+      "what": "File 메뉴",
+      "expect": "Open Folder...|Ctrl-K Ctrl-O, ---, Close Window|Ctrl-Shift-W",
+      "got": "[dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menus",
+      "id": "R-8 9.2",
+      "what": "View 메뉴",
+      "expect": "Toggle Left Dock|Ctrl-B, Toggle Folder Sidebar|Ctrl-Alt-J, Focus Folder Sidebar|Ctrl-Alt-;, ---, Project Panel|Ctrl-Shift-E",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menus",
+      "id": "A-17.1",
+      "what": "View > Toggle Folder Sidebar → 닫힘, 포커스 center(I-309 복원 뒤 실행)",
+      "expect": "open=false focus=center",
+      "got": "[dev] sidebar open=false dock_open=true focus=center",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menus",
+      "id": "A-17.2",
+      "what": "View > Focus Folder Sidebar → 열고 포커스",
+      "expect": "open=true focus=sidebar",
+      "got": "[dev] sidebar open=true dock_open=true focus=sidebar",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "state",
+      "id": "R-28",
+      "what": "시작 복원: 활성 beta",
+      "expect": "active=1",
+      "got": "active=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "state",
+      "id": "R-28",
+      "what": "시작 폭 300",
+      "expect": "300",
+      "got": "375",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "state",
+      "id": "A-11.1·R-28",
+      "what": "폭 끌기 → 저장",
+      "expect": "state-save result=written",
+      "got": "[dev] state-save result=written",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "state",
+      "id": "R-28 A-22",
+      "what": "state.json sidebar.width = 화면 폭",
+      "expect": "494",
+      "got": "494",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "state",
+      "id": "A-20",
+      "what": "알 수 없는 키 보존(root·window·folder·sidebar)",
+      "expect": "root 값, window 값, 42, True",
+      "got": "root 값, window 값, 42, True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "state-restart",
+      "id": "R-28",
+      "what": "다시 시작 → 사이드바 폭 복원",
+      "expect": "494",
+      "got": "617",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "state-restart",
+      "id": "R-28",
+      "what": "다시 시작 → 목록·활성 복원",
+      "expect": "alpha / beta, active=1",
+      "got": "alpha / beta, active=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "broken",
+      "id": "R-28·A-24.6",
+      "what": "깨진 파일 → 빈 상태, source=empty",
+      "expect": "count=0, source=empty",
+      "got": "count=0, [dev] state-load source=empty read_only=false bad_moved_to=C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json.bad-20261103-121932",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "broken",
+      "id": "D-035 ②",
+      "what": "알림 문구 'Could not read the window state.'(우리 문구)",
+      "expect": "notification text=Could not read the window state.",
+      "got": "[dev] notification text=Could not read the window state.",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "broken",
+      "id": "A-24.6",
+      "what": "state.json.bad-YYYYMMDD-HHMMSS 로 옮김",
+      "expect": "bad 1개, state.json 없음",
+      "got": "bad 1 (state.json.bad-20261103-121932), state.json False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tmp",
+      "id": "A-24.5",
+      "what": "깨진 state.json + 올바른 .tmp → .tmp 로 복구",
+      "expect": "source=tmp, gamma",
+      "got": "[dev] state-load source=tmp read_only=false bad_moved_to=C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json.bad-20261103-121939, gamma",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "tmp",
+      "id": "A-24.6",
+      "what": "깨진 state.json 은 .bad 로 옮기고 알림",
+      "expect": "bad 1, notification",
+      "got": "bad 1, [dev] notification text=Could not read the window state.",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "dialog",
+      "id": "A-13.1·D-6",
+      "what": "Ctrl+K Ctrl+O → OS 폴더 선택 창(#32770, 이 프로세스)",
+      "expect": "found",
+      "got": "found title=폴더 선택",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "dialog",
+      "id": "A-13.8",
+      "what": "선택 창 Escape → 취소, 아무 일 없음",
+      "expect": "result=cancel, count=0",
+      "got": "[dev] pick-folder result=cancel, count=0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "dialog",
+      "id": "A-13.1·A-10.6",
+      "what": "선택 창에 경로 입력 + Enter → 등록·활성",
+      "expect": "result=added index=0 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\beta",
+      "got": "[dev] folder-add result=added index=0 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\beta",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "quitsave",
+      "id": "A-24.3",
+      "what": "Move Down 직후 Ctrl+Q → 끝나기 전에 저장",
+      "expect": "exited, beta / alpha",
+      "got": "exited=True, beta / alpha, saves=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "quitnochange",
+      "id": "A-24.3",
+      "what": "바꾼 것 없이 종료 → state.json 을 만들지 않는다(판단)",
+      "expect": "exited, state.json 없음",
+      "got": "exited=True, exists=False",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "closesave",
+      "id": "D-037 ①",
+      "what": "Move Down 과 닫기를 500ms 묶어 쓰기 안에 보냄",
+      "expect": "< 400ms",
+      "got": "9ms",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "closesave",
+      "id": "A-24.3·R-28 (D-037 ①)",
+      "what": "Move Down 직후 Ctrl-Shift-W → 끝나기 전에 저장",
+      "expect": "exited, beta / alpha, state-flush via=close-window",
+      "got": "exited=True, beta / alpha, [dev] state-flush via=close-window",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "xclosesave",
+      "id": "D-037 ①",
+      "what": "Move Down 과 닫기를 500ms 묶어 쓰기 안에 보냄",
+      "expect": "< 400ms",
+      "got": "205ms",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "xclosesave",
+      "id": "A-24.3·R-28 (D-037 ①)",
+      "what": "Move Down 직후 창 닫기 버튼 → 끝나기 전에 저장",
+      "expect": "exited, beta / alpha, state-flush via=window-close",
+      "got": "exited=True, beta / alpha, [dev] state-flush via=window-close",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "savefail",
+      "id": "A-24.4",
+      "what": "교체가 막히면 3번 다시 시도 뒤 실패 + 알림",
+      "expect": "result=failed, Could not save the window state.",
+      "got": "[dev] state-save result=failed error=Could not save the window state., [dev] notification text=Could not save the window state.",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "savefail",
+      "id": "A-24.3·A-24.4 (D-037 ②)",
+      "what": "실패한 변경은 남아 있다가 종료 직전에 다시 쓴다",
+      "expect": "exited, beta / alpha",
+      "got": "exited=True, beta / alpha, flush=[dev] state-flush via=quit",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "sigma",
+      "id": "A-28.5·A-13.2 (D-037 ⑤)",
+      "what": "σ 등록 뒤 ς 선택 → 새 항목 없이 기존 활성",
+      "expect": "added index=0, existing index=0, count=1",
+      "got": "[dev] folder-add result=added index=0 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\σ / [dev] folder-add result=existing index=0 path=D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\ς / count=1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "version",
+      "id": "A-24.7",
+      "what": "version 2 → 읽음, read_only",
+      "expect": "read_only=true, alpha / beta",
+      "got": "[dev] state-load source=state read_only=true bad_moved_to=none, alpha / beta",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "version",
+      "id": "A-24.7",
+      "what": "바꿔도 쓰지 않음(파일 해시 같음)",
+      "expect": "skipped-read-only, 해시 같음",
+      "got": "[dev] state-save result=skipped-read-only, same=True",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "lockedAcl": "processed file: D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56\\locked Successfully processed 1 files; Failed processing 0 files",
+  "restoreSteps": {
+    "restored": [],
+    "errors": []
+  },
+  "userFiles": {
+    "dir": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui",
+    "before": {},
+    "after": {},
+    "restored": true,
+    "backupDir": "C:\\Users\\nampl\\AppData\\Local\\Temp\\wg-p3-backup-245dbf9e-417c-47a3-a186-c5eae6575e6b"
+  },
+  "testFolders": {
+    "base": "D:\\projects\\workbench-gpui\\target\\phase3-folders",
+    "run": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-da976dbc60c241ff83f627523649ef56",
+    "runFolderLeft": false,
+    "baseLeft": false
+  },
+  "finishedAt": "2026-11-03T21:20:43.0070328+09:00",
+  "passed": false
+}

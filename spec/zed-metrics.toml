@@ -1,0 +1,603 @@
+# zed-metrics.toml — Zed 실측 수치 기준 스펙
+# 소유: spec (spec/zed-metrics.toml)
+# 규칙: 코드에 수치를 직접 하드코딩하지 않고 이 파일의 스펙 항목 ID로 참조한다.
+# 수치 기준: docs/refs/01-zed/ (커밋 14b7b0e)
+
+# ==============================================================================
+# 측정 조건 (Conditions)
+# ==============================================================================
+
+[conditions.reference_mocha]
+name = "Catppuccin Mocha 기준 화면 (노트북)"
+screen_size = "2880x1704"
+scale_factor = 2.0
+dpi = 192
+theme = "Catppuccin Mocha"
+icon_theme = "Catppuccin Latte"
+ui_font_size = 16
+buffer_font_size = 15
+maximized = true
+note = "배율 2.0(DPI 192)은 타이틀 바 64 물리 px 관찰로 역산한 가정치이며 Windows 설정으로 확인하지 않음 (01-LAYOUT 1절, 04-APP-SPEC A-30.1)"
+src = "01-LAYOUT 1절"
+
+[conditions.reference_latte]
+name = "Catppuccin Latte 기준 화면 (노트북, 비최대화)"
+screen_size = "2448x1480"
+scale_factor = 2.0
+dpi = 192
+theme = "Catppuccin Latte"
+icon_theme = "Catppuccin Latte"
+ui_font_size = 16
+buffer_font_size = 15
+maximized = false
+note = "배율 2.0(DPI 192)은 타이틀 바 64 물리 px 관찰로 역산한 가정치이며 Windows 설정으로 확인하지 않음 (01-LAYOUT 1절, 04-APP-SPEC A-30.1)"
+src = "01-LAYOUT 1.1절, L-310"
+
+[conditions.default]
+name = "Zed 기본 논리 환경 (Default)"
+scale_factor = 1.0
+density = "Default (1.0)"
+ui_font_size = 16
+buffer_font_size = 15
+src = "01-LAYOUT 2절, L-01~L-04"
+
+[conditions.window_unmaximized]
+name = "클라이언트 장식 및 비최대화 창 (비tiled 변)"
+decorations = "client"
+maximized = false
+tiled_edges = "none"
+src = "01-LAYOUT 3절 L-311"
+
+[conditions.project_panel_comfortable]
+name = "프로젝트 패널 (간격 comfortable)"
+density = "comfortable"
+src = "01-LAYOUT 4.3절 L-36"
+
+[conditions.project_panel_standard]
+name = "프로젝트 패널 (간격 standard)"
+density = "standard"
+src = "01-LAYOUT 4.3절 L-36"
+
+[conditions.focus_follows_mouse]
+name = "마우스 포커스 이동 설정 활성화 시"
+setting = "focus_follows_mouse.enabled=true"
+src = "02-INTERACTION 6절 I-103"
+
+[conditions.theme_token_fallback]
+name = "테마 토큰 누락 또는 null 시 대체 (fallback_themes::zed_default_dark)"
+trigger = "missing_or_null"
+fallback_theme = "zed_default_dark"
+src = "03-THEME-ICONS 1.2절 T-26"
+
+[conditions.reference_image_200]
+name = "기준 화면 이미지 캡처 (200% 배율, 1 물리 px = 0.5 논리 px)"
+scale_factor = 2.0
+unit_conversion = "1 physical px = 0.5 logical px"
+src = "04-APP-SPEC 7.1절 A-30.2"
+
+# ==============================================================================
+# 1. 단위 체계 및 기본 토큰 (Units, Typography, Spacing, Icons, Buttons)
+# ==============================================================================
+
+[units]
+"rem_size" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-01" }
+"phi" = { value = 1.618, unit = "ratio", cond = "default", src = "01-LAYOUT 2절 L-09" }
+
+[typography]
+"ui_font_size" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-08" }
+"buffer_font_size" = { value = 15, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-08" }
+"size.large" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-05" }
+"size.default" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-05" }
+"size.small" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-05" }
+"size.xsmall" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-05" }
+
+[icons]
+"size.indicator" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-06" }
+"size.xsmall" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-06" }
+"size.small" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-06" }
+"size.medium" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-06" }
+"size.xlarge" = { value = 48, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-06" }
+"viewbox" = { value = 16, unit = "px", cond = "default", src = "03-THEME-ICONS 3.1절 T-09.2" }
+"stroke_width" = { value = 1.2, unit = "px", cond = "default", src = "03-THEME-ICONS 3.1절 T-09.2" }
+"inner_box" = { value = 12, unit = "px", cond = "default", src = "03-THEME-ICONS 3.1절 T-09.2" }
+
+[buttons]
+"height.large" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"height.medium" = { value = 28, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"height.default" = { value = 22, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"height.compact" = { value = 18, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"height.none" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"padding_x.large_medium" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"padding_x.default_compact" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+"gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-07" }
+
+[spacing]
+"base00" = { value = 0, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base01" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base02" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base03" = { value = 3, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base04" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base06" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base08" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base12" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base16" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base20" = { value = 20, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base24" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base32" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base40" = { value = 40, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+"base48" = { value = 48, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-03" }
+
+[borders]
+"radius.sm" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-10" }
+"radius.lg" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 2절 L-10" }
+
+# ==============================================================================
+# 2. 창 및 공통 경계선 (Window & Borders)
+# ==============================================================================
+
+[window]
+"unmaximized.corner_radius" = { value = 10, unit = "px", cond = "window_unmaximized", src = "01-LAYOUT 3절 L-311" }
+"unmaximized.border_width" = { value = 1, unit = "px", cond = "window_unmaximized", src = "01-LAYOUT 3절 L-311" }
+"unmaximized.shadow_size" = { value = 10, unit = "px", cond = "window_unmaximized", src = "01-LAYOUT 3절 L-311" }
+"border_workspace_top" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-301" }
+"border_workspace_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-301" }
+"border_sidebar_header_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-302" }
+"border_sidebar_right" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-303" }
+"border_dock_left" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-16" }
+
+# ==============================================================================
+# 3. 타이틀 바 (Titlebar)
+# ==============================================================================
+
+[titlebar]
+"height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-21" }
+"padding_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-82" }
+"left_group.gap" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-87" }
+"project_name.max_chars" = { value = 40, unit = "chars", cond = "default", src = "01-LAYOUT 4.1절 L-88" }
+"window_button.width" = { value = 36, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-39" }
+"window_button.height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-39" }
+"window_button.glyph_size" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-39" }
+"right_group.padding_right" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-89" }
+"right_group.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-89" }
+"user_menu.button_width" = { value = 22, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-608" }
+"user_menu.button_height" = { value = 22, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-608" }
+"user_menu.button_icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-601" }
+"user_menu.button_corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-609" }
+"user_menu.popup_offset_x" = { value = 5, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-611" }
+"user_menu.popup_offset_y" = { value = 0, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-611" }
+"user_menu.popup_min_width" = { value = 200, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-612" }
+"user_menu.popup_min_outer_width" = { value = 202, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-612" }
+"user_menu.popup_max_height_ratio" = { value = 0.75, unit = "ratio", cond = "default", src = "01-LAYOUT 4.1절 I-612" }
+
+# ==============================================================================
+# 4. 사이드바 (Sidebar)
+# ==============================================================================
+
+[sidebar]
+"default_width" = { value = 300, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-33" }
+"min_width" = { value = 200, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-33" }
+"max_width" = { value = 800, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-33" }
+"header_height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-12" }
+"project_header.height" = { value = 31, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-34" }
+"project_header.padding_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-34" }
+"project_header.padding_right" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-34" }
+"item_row.height" = { value = 31, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-34" }
+"footer.padding" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-35" }
+"footer.height" = { value = 30, unit = "px", cond = "default", src = "04-APP-SPEC 3.2절 A-11.4" }
+"footer.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-35" }
+"footer.border_top" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-35" }
+"footer.icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-35" }
+
+# ==============================================================================
+# 5. 왼쪽 Dock 및 프로젝트 패널 (Dock & Project Panel)
+# ==============================================================================
+
+[dock]
+"resize_handle_width" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-30" }
+"min_width" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-31" }
+
+[project_panel]
+"default_width" = { value = 240, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-32" }
+"item.height" = { value = 26, unit = "px", cond = "project_panel_comfortable", src = "01-LAYOUT 4.3절 L-36" }
+"item.height.standard" = { value = 24, unit = "px", cond = "project_panel_standard", src = "01-LAYOUT 4.3절 L-36" }
+"item.content_height" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-36" }
+"item.border_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-48" }
+"item.border_right_width" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-48" }
+"item.padding_x" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-37" }
+"item.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-37" }
+"indent_step" = { value = 20, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-37" }
+"indent_guide.width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-38" }
+"indent_guide.offset_x" = { value = 15, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-38" }
+"indent_guide.padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-38" }
+"collapsed_path.padding_x" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.3절 L-43" }
+"name_tooltip_delay" = { value = 1500, unit = "ms", cond = "default", src = "01-LAYOUT 4.3절 L-49" }
+
+# ==============================================================================
+# 6. 탭 바 (Tab Bar)
+# ==============================================================================
+
+[tab]
+"bar_height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-22" }
+"content_height" = { value = 31, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-23" }
+"padding_x" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-24" }
+"gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-24" }
+"start_slot.width" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-25" }
+"start_slot.height" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-25" }
+"end_slot.width" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-25" }
+"end_slot.height" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-25" }
+"max_title_chars" = { value = 24, unit = "chars", cond = "default", src = "01-LAYOUT 4.4절 L-26" }
+"end_buttons_area.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-27" }
+"end_buttons_area.padding_x" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-27" }
+"end_buttons_area.border_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-27" }
+"end_buttons_area.border_start_right" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-27" }
+"end_buttons_area.border_end_left" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-27" }
+"bar_icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-300" }
+"overflow.empty_drop_width" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-70" }
+
+# ==============================================================================
+# 7. 편집기·Pane 및 분할 영역 (Pane & PaneGroup)
+# ==============================================================================
+
+[pane]
+"split_line_thickness" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-725" }
+"split_line_mouse_hitbox" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-725" }
+"min_drag_width" = { value = 80, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-726" }
+"min_drag_height" = { value = 100, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-726" }
+"drop_target_size_ratio" = { value = 0.2, unit = "ratio", cond = "default", src = "01-LAYOUT 4.5절 I-712" }
+"directional_drop_overlay_ratio" = { value = 0.5, unit = "ratio", cond = "default", src = "01-LAYOUT 4.5절 I-714" }
+"tab_drop_line_width" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-715" }
+"tab_bar_end_drop_min_width" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-716" }
+"zoomed_padding" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-17" }
+"zoomed_border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-17" }
+
+# ==============================================================================
+# 8. 상태 표시줄 (Status Bar)
+# ==============================================================================
+
+[statusbar]
+"height" = { value = 30, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-28" }
+"padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-28" }
+"button_height" = { value = 22, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-28" }
+"group_gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-29" }
+"item_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-29" }
+"icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-92" }
+"cursor_position.font_size" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-97" }
+
+# ==============================================================================
+# 9. 툴팁 (Tooltip)
+# ==============================================================================
+
+[tooltip]
+"delay_default" = { value = 500, unit = "ms", cond = "default", src = "01-LAYOUT 4.7절 L-206" }
+"cursor_offset_x" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-208" }
+"cursor_offset_y" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-208" }
+"transparent_margin_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-209" }
+"transparent_margin_top" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-209" }
+"corner_radius" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-211" }
+"border_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-211" }
+"padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-213" }
+"padding_x" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-213" }
+"font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-214" }
+"title.max_width" = { value = 288, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-215" }
+"title.shortcut_gap" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-215" }
+"meta.font_size" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-216" }
+"shortcut.padding_x" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-222" }
+"shortcut.padding_y" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-222" }
+"shortcut.chord_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-222" }
+
+# ==============================================================================
+# 10. 메뉴 (Menu: App Menu & Context Menu)
+# ==============================================================================
+
+[menu]
+"min_width" = { value = 200, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-313" }
+"min_outer_width" = { value = 202, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-313" }
+"max_height_ratio" = { value = 0.75, unit = "ratio", cond = "default", src = "01-LAYOUT 4.8절 I-313" }
+"popup_offset_x" = { value = -5, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-314" }
+"popup_offset_y" = { value = 0, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-314" }
+"border_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-315" }
+"corner_radius" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-315" }
+"list_padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-315" }
+"item.margin_x" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-316" }
+"item.padding_x" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-316" }
+"item.shortcut_min_gap" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-316" }
+"item.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-317" }
+"item.line_height" = { value = 22.652, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-317" }
+"separator.height" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-318" }
+"separator.margin_y" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-318" }
+"separator.total_height" = { value = 13, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-318" }
+"app_menu_button.icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-321" }
+"horizontal.item_font_size" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-321" }
+"horizontal.item_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.8절 I-321" }
+"context.window_margin" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.9절 I-501" }
+"context.keyboard_offset_x" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.9절 I-502" }
+"context.keyboard_offset_y" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.9절 I-502" }
+"context.icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.9절 I-511" }
+"context.header_font_size" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.9절 I-513" }
+
+# ==============================================================================
+# 11. 스크롤바 (Scrollbar)
+# ==============================================================================
+
+[scrollbar]
+"width.ui" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.10절 L-308" }
+"width.editor" = { value = 15, unit = "px", cond = "default", src = "01-LAYOUT 4.10절 L-308" }
+"padding" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.10절 L-308" }
+"border_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.10절 L-308" }
+"thumb_min_length" = { value = 25, unit = "px", cond = "default", src = "01-LAYOUT 4.10절 L-308" }
+"auto_hide_delay" = { value = 1000, unit = "ms", cond = "default", src = "02-INTERACTION 14.3절 E-033" }
+
+# ==============================================================================
+# 12. 편집기 코어 (Editor Core & Search)
+# ==============================================================================
+
+[editor]
+"gutter.min_line_number_digits" = { value = 4, unit = "digits", cond = "default", src = "01-LAYOUT 4.12.1절 E-002" }
+"gutter.padding_left_ch" = { value = 3, unit = "ch", cond = "default", src = "01-LAYOUT 4.12.1절 E-003" }
+"gutter.padding_right_ch" = { value = 4, unit = "ch", cond = "default", src = "01-LAYOUT 4.12.1절 E-004" }
+"line_height.comfortable_multiplier" = { value = 1.618, unit = "ratio", cond = "default", src = "01-LAYOUT 4.12.2절 E-010" }
+"line_height.comfortable" = { value = 24.27, unit = "px", cond = "default", src = "01-LAYOUT 4.12.2절 E-010" }
+"line_height.standard_multiplier" = { value = 1.3, unit = "ratio", cond = "default", src = "01-LAYOUT 4.12.2절 E-010" }
+"line_height.standard" = { value = 19.5, unit = "px", cond = "default", src = "01-LAYOUT 4.12.2절 E-010" }
+"scrollbar_track_border_left" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.12.4절 E-031" }
+"toolbar.padding_y" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.12.5절 E-038" }
+"toolbar.padding_x" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.5절 E-038" }
+"toolbar.border_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.12.5절 E-038" }
+"toolbar.min_height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.12.5절 E-038" }
+"toolbar.quick_actions_gap" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.12.5절 E-038" }
+"search_bar.gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-061" }
+"search_input.min_height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-062" }
+"search_input.padding_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-062" }
+"search_input.padding_right" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-062" }
+"search_input.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-062" }
+"search_input.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-062" }
+"search_input.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-063" }
+"search_input.line_height_multiplier" = { value = 1.3, unit = "ratio", cond = "default", src = "01-LAYOUT 4.12.6절 E-063" }
+"search_input.options_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-065" }
+"search_bar.modes_min_width" = { value = 256, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-066" }
+"search_bar.modes_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-066" }
+"search_bar.separator_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-066" }
+"search_bar.separator_padding_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-066" }
+"search_bar.separator_margin_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-066" }
+"search_results_count.font_size" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
+"search_results_count.margin_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
+"search_results_count.min_width" = { value = 40, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
+"search_bar.narrow_threshold" = { value = 340, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-069" }
+"search_error.offset_top" = { value = -4, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
+"search_error.offset_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
+"tab_size" = { value = 4, unit = "chars", cond = "default", src = "02-INTERACTION 12.1절 E-055" }
+"undo.group_interval" = { value = 300, unit = "ms", cond = "default", src = "02-INTERACTION 12.2절 E-059c" }
+"confirm_close.path_max_chars" = { value = 80, unit = "chars", cond = "default", src = "02-INTERACTION 12.4절 E-081" }
+"new_buffer.title_max_chars" = { value = 40, unit = "chars", cond = "default", src = "02-INTERACTION 12.5절 E-089" }
+"vertical_scroll_margin" = { value = 3, unit = "lines", cond = "default", src = "02-INTERACTION 14.3절 E-036" }
+"horizontal_scroll_margin" = { value = 5, unit = "chars", cond = "default", src = "02-INTERACTION 14.3절 E-036" }
+"alt_wheel_multiplier" = { value = 4, unit = "multiplier", cond = "default", src = "02-INTERACTION 14.3절 E-037" }
+
+# ==============================================================================
+# 13. Picker, 대화상자 및 인라인 입력 (Pickers, Dialogs & Inline Input)
+# ==============================================================================
+
+[picker]
+"modal_top_offset" = { value = 80, unit = "px", cond = "default", src = "01-LAYOUT 4.13.1절 P-001" }
+"default_width" = { value = 544, unit = "px", cond = "default", src = "01-LAYOUT 4.13.1절 P-002" }
+"default_max_height" = { value = 384, unit = "px", cond = "default", src = "01-LAYOUT 4.13.1절 P-002" }
+"max_width_ratio" = { value = 0.95, unit = "ratio", cond = "default", src = "01-LAYOUT 4.13.1절 P-002" }
+"max_height_ratio" = { value = 0.95, unit = "ratio", cond = "default", src = "01-LAYOUT 4.13.1절 P-002" }
+"corner_radius" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.13.1절 P-002" }
+"border_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.1절 P-002" }
+"input_divider_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.2절 P-003" }
+"input_row.height" = { value = 36, unit = "px", cond = "default", src = "01-LAYOUT 4.13.2절 P-003" }
+"input_row.padding_x" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.13.2절 P-003" }
+"input_row.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.2절 P-003" }
+"list.padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004" }
+"item.margin_x" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004" }
+"item.padding_x" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004" }
+"item.padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004" }
+"item.corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004" }
+"item.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004" }
+"command_palette.width" = { value = 608, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-007" }
+"command_palette.footer_padding" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-007" }
+"command_palette.footer_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-007" }
+"command_palette.footer_border_top" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-007" }
+"file_finder.width" = { value = 544, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-008" }
+"open_recent_modal.width" = { value = 672, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-009" }
+"open_recent_popover.width" = { value = 320, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-009" }
+"open_recent_popover.height" = { value = 320, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-009" }
+"theme_selector.width" = { value = 544, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-010" }
+"theme_selector.footer_padding" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-010" }
+"theme_selector.footer_border_top" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-010" }
+"icon_theme_selector.width" = { value = 544, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-011" }
+"go_to_line.width" = { value = 384, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-012" }
+
+[dialog]
+"about.width" = { value = 440, unit = "px", cond = "default", src = "01-LAYOUT 4.13.6절 P-018" }
+"about.height" = { value = 300, unit = "px", cond = "default", src = "01-LAYOUT 4.13.6절 P-018" }
+"about.padding" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.13.6절 P-018" }
+"about.gap" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.13.6절 P-018" }
+"about.app_icon_size" = { value = 64, unit = "px", cond = "default", src = "01-LAYOUT 4.13.6절 P-018" }
+
+[inline_input]
+"height" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 4.13.7절 P-019" }
+"border_top_bottom_left" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.7절 P-020" }
+"border_right" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.13.7절 P-020" }
+"banner.padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.13.7절 P-021" }
+"banner.padding_x" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.13.7절 P-021" }
+"banner.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.7절 P-021" }
+
+# ==============================================================================
+# 14. 키맵 편집 화면 (Keymap Editor)
+# ==============================================================================
+
+[keymap_editor]
+"padding" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-010" }
+"gap_vertical" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-010" }
+"top_row.gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-011" }
+"search_input.height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-012" }
+"search_input.padding_x" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-012" }
+"search_input.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-012" }
+"search_input.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-012" }
+"button_group.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-013" }
+"button_group.min_width" = { value = 320, unit = "px", cond = "default", src = "01-LAYOUT 4.14.1절 K-013" }
+"table.icon_column_width" = { value = 36, unit = "px", cond = "default", src = "01-LAYOUT 4.14.2절 K-022" }
+"table.ratio_action" = { value = 0.25, unit = "ratio", cond = "default", src = "01-LAYOUT 4.14.2절 K-022" }
+"table.ratio_arguments" = { value = 0.20, unit = "ratio", cond = "default", src = "01-LAYOUT 4.14.2절 K-022" }
+"table.ratio_keystrokes" = { value = 0.14, unit = "ratio", cond = "default", src = "01-LAYOUT 4.14.2절 K-022" }
+"table.ratio_context" = { value = 0.45, unit = "ratio", cond = "default", src = "01-LAYOUT 4.14.2절 K-022" }
+"table.ratio_source" = { value = 0.08, unit = "ratio", cond = "default", src = "01-LAYOUT 4.14.2절 K-022" }
+"row.border_width" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.14.2절 K-030" }
+"dimmed_row.opacity" = { value = 0.5, unit = "ratio", cond = "default", src = "01-LAYOUT 4.14.2절 K-033" }
+"icon_column_button.size" = { value = 18, unit = "px", cond = "default", src = "01-LAYOUT 4.14.2절 K-036" }
+"keystroke_input.padding_x" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-050" }
+"keystroke_input.gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-050" }
+"keystroke_input.min_height" = { value = 40, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-050" }
+"keystroke_input.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-050" }
+"keystroke_input.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-050" }
+"keystroke_input.side_width" = { value = 64, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-051" }
+"keystroke_rec_badge.height" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-052" }
+"keystroke_rec_badge.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-052" }
+"keystroke_rec_badge.corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.14.3절 K-052" }
+"modal.width" = { value = 544, unit = "px", cond = "default", src = "01-LAYOUT 4.14.4절 K-080" }
+"modal.body_gap" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.14.4절 K-082" }
+"modal.footer_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.14.4절 K-083" }
+"record.max_keystrokes" = { value = 3, unit = "strokes", cond = "default", src = "02-INTERACTION 15.4절 K-055" }
+"record.escape_window" = { value = 300, unit = "ms", cond = "default", src = "02-INTERACTION 15.4절 K-055" }
+
+# ==============================================================================
+# 15. 확장 관리 화면 (Extensions)
+# ==============================================================================
+
+[extensions]
+"header.padding_top" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-45" }
+"header.padding_x" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-45" }
+"header.row_gap" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-45" }
+"install_button.height" = { value = 28, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-45" }
+"search_input.height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.min_width" = { value = 384, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.padding_left" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.padding_right" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"search_input.line_height_multiplier" = { value = 1.3, unit = "ratio", cond = "default", src = "01-LAYOUT 4.15절 X-46" }
+"category_bar.gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-48" }
+"category_bar.padding_y" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-48" }
+"category_bar.padding_x" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-48" }
+"category_bar.border_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-48" }
+"list.padding_x" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"list.padding_bottom" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"card.margin_top" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"card.height" = { value = 110, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"card.padding" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"card.gap_y" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"card.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"card.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 4.15절 X-49" }
+"watch.delay" = { value = 100, unit = "ms", cond = "default", src = "02-INTERACTION 16.4절 X-39" }
+"watch.debounce" = { value = 200, unit = "ms", cond = "default", src = "02-INTERACTION 16.4절 X-39" }
+"uninstall.retry_count" = { value = 3, unit = "count", cond = "default", src = "02-INTERACTION 16.4절 X-41" }
+
+# ==============================================================================
+# 16. 마크다운 미리보기 (Markdown Preview)
+# ==============================================================================
+
+[markdown_preview]
+"max_width" = { value = 800, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-101" }
+"container_padding" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-102" }
+"body.font_size" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-103" }
+"body.line_height_multiplier" = { value = 1.5, unit = "ratio", cond = "default", src = "01-LAYOUT 5절 L-103" }
+"paragraph_gap" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-103" }
+"list_gap" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-103" }
+"heading.font_weight" = { value = 600, unit = "weight", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"heading.line_height_multiplier" = { value = 1.25, unit = "ratio", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h1.font_size" = { value = 28, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h2.font_size" = { value = 22.4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h3.font_size" = { value = 19.2, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h4.font_size" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h5.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h6.font_size" = { value = 13.6, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-104" }
+"h1.padding_bottom" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-105" }
+"h1.border_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-105" }
+"h2.padding_bottom" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-105" }
+"h2.border_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-105" }
+"blockquote.padding_left" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-106" }
+"blockquote.border_left" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-106" }
+"table.border_outer" = { value = 1.5, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
+"table.corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
+"table.cell_padding_x" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
+"table.cell_padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
+"table.cell_border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
+"link.underline_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-108" }
+"inline_code.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
+"code_block.padding" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
+"code_block.margin_y" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
+"code_block.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
+"frontmatter.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
+"frontmatter.corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
+"parse_debounce" = { value = 200, unit = "ms", cond = "default", src = "02-INTERACTION 4.1절 I-082" }
+
+# ==============================================================================
+# 17. 상호작용 및 디바운스 타이밍 (Interaction & Debounce)
+# ==============================================================================
+
+[interaction]
+"mouse_focus_debounce" = { value = 250, unit = "ms", cond = "focus_follows_mouse", src = "02-INTERACTION 6절 I-103" }
+
+# ==============================================================================
+# 18. 테마 기본값 및 폴백 토큰 (Theme Tokens & Fallbacks)
+# ==============================================================================
+
+[theme.fallback]
+"panel.focused_border" = { value = "#62adef", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.5" }
+"panel.indent_guide" = { value = "#3b3d45", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.6" }
+"panel.indent_guide_hover" = { value = "#1b1d23", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.7" }
+"panel.indent_guide_active" = { value = "#1b1d23", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.7" }
+"scrollbar.thumb.border" = { value = "#3b3d45", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.8" }
+"editor.indent_guide" = { value = "#3b3d45", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.9" }
+"editor.indent_guide_active" = { value = "#1b1d23", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.10" }
+"drop_target.border" = { value = "#d7dadf", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.13" }
+
+[theme.reference_mocha]
+"title_bar.background" = { value = "#11111b", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.1" }
+"tab_bar.background" = { value = "#11111b", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.1" }
+"status_bar.background" = { value = "#11111b", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.1" }
+"panel.background" = { value = "#181825", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.2" }
+"editor.background" = { value = "#1e1e2e", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.3" }
+"tab.active_background" = { value = "#1e1e2e", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.3" }
+"tab.inactive_background" = { value = "#0b0b11", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.4" }
+"text" = { value = "#cdd6f4", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.5" }
+"ghost_element.selected_composited" = { value = "#3b3c4f", unit = "hex", cond = "reference_mocha", src = "03-THEME-ICONS 2.3절 T-08.6" }
+
+[theme.reference_latte]
+"title_bar.background" = { value = "#dce0e8", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.7" }
+"panel.background" = { value = "#e6e9ef", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.8" }
+"status_bar.background" = { value = "#dce0e8", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.9" }
+"tab.inactive_background" = { value = "#d2d7e2", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.10" }
+"tab.active_background" = { value = "#eff1f5", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.11" }
+"editor.background" = { value = "#eff1f5", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.11" }
+"ghost_element.selected_composited" = { value = "#c3c7d2", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.12" }
+"border" = { value = "#ccd0da", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.13" }
+"text.muted" = { value = "#5c5f77", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.14" }
+"text" = { value = "#4c4f69", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.15" }
+"icon.disabled" = { value = "#9ca0b0", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.16" }
+"icon.accent" = { value = "#8839ef", unit = "hex", cond = "reference_latte", src = "03-THEME-ICONS 2.3절 T-08.17" }
+
+# ==============================================================================
+# 19. 일치도 판정 허용 오차 (Verification Tolerance)
+# ==============================================================================
+
+[verification.tolerance]
+"dimension" = { value = 1.0, unit = "px", cond = "default", src = "04-APP-SPEC 7.2절 A-31.1" }
+"font_size" = { value = 0.5, unit = "px", cond = "default", src = "04-APP-SPEC 7.2절 A-31.2" }
+"image_reading" = { value = 0.5, unit = "px", cond = "reference_image_200", src = "04-APP-SPEC 7.1절 A-30.2" }
+"color_channel" = { value = 1, unit = "step", cond = "default", src = "04-APP-SPEC 7.2절 A-31.8" }
+
+# ==============================================================================
+# 20. 앱 상태 및 보존 규칙 (App State & Lifecycle)
+# ==============================================================================
+
+[app]
+"state_save_debounce" = { value = 500, unit = "ms", cond = "default", src = "04-APP-SPEC 4.5절 A-24.2" }
+"state_replace_retry_delay" = { value = 50, unit = "ms", cond = "default", src = "04-APP-SPEC 4.5절 A-24.4" }
+"state_replace_retry_count" = { value = 3, unit = "count", cond = "default", src = "04-APP-SPEC 4.5절 A-24.4" }
+"state_bad_max_keep" = { value = 3, unit = "count", cond = "default", src = "04-APP-SPEC 4.5절 A-24.6" }
+"recent_folders_max" = { value = 20, unit = "count", cond = "default", src = "04-APP-SPEC 4.3절 A-22.23" }

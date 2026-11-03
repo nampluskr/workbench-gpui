@@ -1,0 +1,6 @@
+cases: base, override, null, unknown, jsonc, broken, order, startup, reload
+failures: 1
+foreign key lines (warning): 0
+cleanup errors: 0
+user keymap: before=<absent> after=<absent> restored=True
+  - base: 경로 'D:\projects\workbench-gpui\specs\v0.3\verify\baseline\verify-v02-phase1\r1-expected.tsv'이(가) 없으므로 찾을 수 없습니다.
