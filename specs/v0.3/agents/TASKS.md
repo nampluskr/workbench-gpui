@@ -277,7 +277,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 순서: P1-E 통과 뒤 시작. P2-1 → P2-2 → P2-3(impl-ui, 같은 파일을 겹쳐 고치므로 순차, 카드마다 커밋 하나) → review 묶음 리뷰 → 병합 → P2-E. 모든 카드 공통: 값을 바꾸지 않는다(D-9). 코드 값과 스펙 값이 다르면 코드 값을 두고 보고의 "스펙 불일치"에 ID·코드 값·스펙 값·파일 위치로 적는다. 스펙 ID는 `spec/INDEX.md`·`spec/zed-metrics.toml`에서 찾고 추정하지 않는다. 스펙에 없는 수치는 상수로 옮기되 주석을 `// spec: none (app value)`로 단다(H-27, toml에는 넣지 않는다).
 
 ### P2-1 레이아웃 수치 상수화
-- 상태: todo
+- 상태: done (work/ui `a564644`, review PASS `P2-1-2-3.md`, master `0f814a7`)
 - 담당: impl-ui (이 카드에 한해 `src/ui/metrics.rs`·`src/ui/mod.rs`·`src/ui/layout_probe.rs`·`src/dev.rs`와, `src/ui/editor_poc.rs`의 수치 리터럴 줄만 지정 — editor 코어 로직은 건드리지 않는다)
 - 브랜치: work/ui
 - 요구·결정: R-10, D-9, AUDIT 6
@@ -288,7 +288,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 로컬 상수를 `pub(super)`로 다른 모듈이 가져다 쓰던 곳(context_menu ← app_menu 등)은 metrics 상수로 함께 바꾼다
 
 ### P2-2 글자 크기 별칭 명시화
-- 상태: todo
+- 상태: done (work/ui `6949652`, review PASS, master `0f814a7`)
 - 담당: impl-ui
 - 브랜치: work/ui
 - 요구·결정: R-10, D-9, AUDIT 7
@@ -299,7 +299,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 실측 필요 항목으로 해당 화면 상태를 보고에 적는다(P2-E 측정 목록)
 
 ### P2-3 색상 리터럴 테마 경유
-- 상태: todo
+- 상태: done (work/ui `63c5670`, review PASS, master `0f814a7`)
 - 담당: impl-ui (새 공통 모듈 `src/ui/theme.rs`를 이 카드에 한해 지정)
 - 브랜치: work/ui
 - 요구·결정: R-10, D-9, AUDIT 5
@@ -310,7 +310,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 테마 매핑·선택기는 v0.4 이후(D-9). 여기서는 한 곳으로 모으기만
 
 ### P2-E Phase 2 끝: V3 실측, R-12 재실행, R-10 재감사
-- 상태: todo
+- 상태: done (measure R-12 ok 뒤바뀜 0·V3 불일치 0 `7465d39`, reviewer `phase2-final.md` PASS: R-10 잔여 0, 테스트 56, clippy 신규 0)
 - 담당: measure(V3·R-12), reviewer(R-10 재감사·최종 확인·R-12 판정)
 - 브랜치: master
 - 요구·결정: R-10, R-12, D-9

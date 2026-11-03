@@ -197,6 +197,37 @@
 - 검증: reviewer `phase1-final.md` R1 PASS(`cargo test metrics` 5 통과). 전체 테스트 55는 R1 전 1회.
 - 상태: 완료
 
+### Phase 2 — 상수·테마 통합
+
+#### P2-1~P2-3 (2026-11-04, impl-ui·review)
+
+- 무엇을: P2-1 레이아웃 수치를 `metrics.rs`(하위 모듈 menu·project_panel·tooltip)로 모음(AUDIT 5·6), P2-2 `text_sm`/`text_xs` 9곳을 `TEXT_SIZE_DEFAULT`(14)·`TEXT_SIZE_SMALL`(12) 상수로(AUDIT 7), P2-3 색 리터럴을 새 `src/ui/theme.rs`로(닫기 버튼 hover·active, elevation_2 그림자 2개, 개발용 측정 색).
+- 결과: work/ui `a564644`·`6949652`·`63c5670`, review `P2-1-2-3.md` 세 카드 PASS, master 병합 `0f814a7`(12파일 +240/−138). 스펙 없는 앱 값은 `// spec: none (app value)`(H-27). AUDIT 6 위치 밖 `Duration::from_*`(watch·keymap·dev·editor_poc·watch_io·mod)는 카드 범위대로 남김.
+- 검증: V0(빌드·clippy). 값 동일성은 review·reviewer 코드 대조.
+- 상태: 완료
+
+#### P2-E Phase 2 끝: R-12·V3 (2026-11-04, measure)
+
+- 무엇을: master `0f814a7` 빌드(exe SHA-256 `7E22E72F…A6038`, 전후 동일)로 v0.2 검증 9개 재실행(H-28 클립보드 비우기), P0-6 S1~S7 재측정, 닫기 버튼 hover·active 색, 툴팁 그림자, '경로 없음' 화면 변경 전·후 PNG 대조.
+- 결과
+  - R-12: 9개 모두 기준선과 같음(합계 587 중 585 통과, 실패 2는 phase3 Q-15). 실행기 클립보드 도우미 경로 오류로 phase4 계열 3개가 처음엔 SKIP → 고쳐서 1회 재실행, 모두 exit 0.
+  - V3: 불일치 0. 측정 불가: 다크 테마 툴팁 그림자(테마 전환 조작이 범위 밖), 글자 크기 px 값 자체(렌더가 변경 전과 같은 것만 확인).
+- 검증: `verify/phase2/README.md`·`comparison.json`, `verify/reviews/measure-phase2.md`. 커밋 `7465d39`.
+- 상태: 완료
+
+#### Phase 2 최종 확인 (2026-11-04, reviewer)
+
+- 결과: 값·동작 보존(상수·rem 환산·색·그림자 분기 대조), R-10 재감사 잔여 0(metrics.rs 밖 크기 리터럴·theme.rs 밖 색 리터럴·글꼴 별칭), 전체 테스트 56 통과(1회), clippy 기준선 10개·신규 0, `@ponytail-review` Ship, R-12 PASS. 결론 PASS.
+- 검증: `verify/reviews/phase2-final.md`.
+
+#### Phase 2 종료 (2026-11-04, lead, 위임 H-26)
+
+- 결과
+  - `/ponytail-debt`: src에 `shortcut:` 표식 없음(Phase 1과 같음, tools/measure 4건 그대로).
+  - 스펙 불일치: Phase 1 목록과 같음(새 항목 없음).
+  - 사용자 확인 필요(V4): 다크 테마 툴팁 그림자 렌더(코드의 0.06 분기는 보존 확인), 글자 크기 렌더 인상.
+- 상태: 완료
+
 ## 사용자 요청 작업
 
 ### docs\temp 이름 바꾸기·이동 (2026-11-03)

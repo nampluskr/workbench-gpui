@@ -2,6 +2,13 @@
 
 > 소유: `lead`. 세션이 바뀔 때 다음 `lead`가 이어받을 상태만 적는다. 최신이 위.
 
+## 2026-11-04 lead 세션 2 — Phase 2 종료 (계속 Phase 3)
+
+### 현재 상태
+- Phase 2 완료 `v0.3-phase-2`(push 안 함). 기록: PROGRESS "Phase 2", `verify/reviews/phase2-final.md` PASS, `measure-phase2.md`, `verify/phase2/`.
+- 다음: work/ui를 master로 ff, 에이전트 새 세션(HERDR-SETUP 9장), P3-1~P3-4 → 묶음 리뷰 → P3-E → P3-D1·D2.
+- measure가 `cargo clean -p workbench-gpui`를 했다. 다음 빌드는 앱 패키지를 다시 컴파일한다.
+
 ## 2026-11-04 lead 세션 2 — Phase 1 종료 (위임 H-26, 같은 lead 세션이 Phase 2로 계속)
 
 ### 현재 상태
