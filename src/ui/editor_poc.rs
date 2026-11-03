@@ -374,7 +374,7 @@ async fn measure(this: &WeakEntity<EditorPoc>, cx: &mut AsyncWindowContext) {
             let run = TextRun {
                 len: sample.len(),
                 font: font(family.clone()),
-                color: black(),
+                color: super::theme::measure_text(),
                 background_color: None,
                 underline: None,
                 strikethrough: None,

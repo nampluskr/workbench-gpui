@@ -27,10 +27,7 @@ const GLYPH_MAXIMIZE: &str = "\u{E922}";
 const GLYPH_RESTORE: &str = "\u{E923}";
 const GLYPH_CLOSE: &str = "\u{E8BB}";
 
-/// L-84 닫기 hover 배경 #E81120, 누름은 80% 불투명.
-const CLOSE_HOVER_BG: u32 = 0xE81120;
-const CLOSE_ACTIVE_BG: u32 = 0xE81120CC;
-const CLOSE_ACTIVE_FG: u32 = 0xFFFFFFCC;
+// Close button colors (L-84) live in `theme`.
 
 /// 설치된 글꼴로 글리프 글꼴을 고른다. L-83 은 빌드 번호(22000)로 고르지만, 여기서는
 /// `Segoe Fluent Icons` 설치 여부로 대신한다(Windows 11 에 기본 설치).
@@ -196,11 +193,11 @@ fn window_button(
 
     match button {
         WindowButton::Close => base
-            .hover(|style| style.bg(rgb(CLOSE_HOVER_BG)).text_color(white()))
+            .hover(|style| style.bg(super::theme::close_hover_bg()).text_color(super::theme::close_hover_fg()))
             .active(|style| {
                 style
-                    .bg(rgba(CLOSE_ACTIVE_BG))
-                    .text_color(rgba(CLOSE_ACTIVE_FG))
+                    .bg(super::theme::close_active_bg())
+                    .text_color(super::theme::close_active_fg())
             }),
         _ => base
             .hover(move |style| style.bg(colors.hover_bg))

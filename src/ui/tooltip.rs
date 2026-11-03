@@ -142,14 +142,14 @@ impl Drop for TooltipView {
 pub fn elevation_2_shadow(is_dark: bool) -> Vec<BoxShadow> {
     vec![
         BoxShadow {
-            color: hsla(0., 0., 0., 0.12),
+            color: super::theme::elevation_2_shadow_1(),
             offset: point(Pixels::ZERO, SHADOW_1_OFFSET_Y),
             blur_radius: SHADOW_1_BLUR,
             spread_radius: Pixels::ZERO,
             inset: false,
         },
         BoxShadow {
-            color: hsla(0., 0., 0., if is_dark { 0.06 } else { 0.03 }),
+            color: super::theme::elevation_2_shadow_2(is_dark),
             offset: point(Pixels::ZERO, SHADOW_2_OFFSET_Y),
             blur_radius: Pixels::ZERO,
             spread_radius: Pixels::ZERO,

@@ -21,6 +21,7 @@ mod project_panel;
 mod rem;
 mod shell;
 mod task_dialog;
+mod theme;
 mod title_bar;
 mod tooltip;
 mod watch;
