@@ -100,6 +100,12 @@ impl DevOptions {
                 "--dev-measure" => options.measure = true,
                 "--dev-cp949-selftest" => options.cp949_selftest = true,
                 "--dev-layout" => options.layout = true,
+                "--dev-layout-json" => {
+                    if let Some(path) = args.next() {
+                        let _ = LAYOUT_JSON.set(path);
+                        options.layout = true;
+                    }
+                }
                 "--dev-keymap" => options.keymap = true,
                 "--dev-keymap-startup-delay" => {
                     options.keymap_startup_delay_ms = args.next().and_then(|v| v.parse().ok())
@@ -690,6 +696,15 @@ static SLOW_IO: std::sync::OnceLock<(String, u64)> = std::sync::OnceLock::new();
 /// `--dev-ui-stall <이름> <ms>` (v0.2 Phase 5 리뷰 2회차, D-047): 이름이 같은 지점에서 UI 스레드를 이만큼 멈춘다.
 /// 동기 복사·긴 트리 읽기처럼 UI 가 늦어지는 경우를 흉내 내어 감시 묶음 반영의 순서·만료를 본다.
 static UI_STALL: std::sync::OnceLock<(String, u64)> = std::sync::OnceLock::new();
+
+/// `--dev-layout-json <path>` (v0.3 P1-4): also turns on the layout dump and rewrites this file with the
+/// latest snapshot as JSON each time it changes. The stdout format of `--dev-layout` is unchanged.
+static LAYOUT_JSON: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+
+/// Path given to `--dev-layout-json`, if any.
+pub fn layout_json_path() -> Option<&'static str> {
+    LAYOUT_JSON.get().map(String::as_str)
+}
 
 /// 시험 플래그가 없거나 이름이 다르면 아무것도 하지 않는다.
 pub fn ui_stall(name: &str) {

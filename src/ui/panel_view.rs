@@ -32,6 +32,18 @@ use crate::fsops::tree::Row;
 
 /// L-36 행 높이 26(안쪽 24 + 위아래 테두리 1).
 const ROW_HEIGHT: Rems = rems_from_px(26.);
+
+/// P1-3: row height must equal the spec value (rem constant converted to logical px).
+// `use gpui_kit::*` shadows `#[test]` with gpui's macro, so the std one is named explicitly.
+#[cfg(test)]
+#[core::prelude::v1::test]
+fn row_height_matches_spec() {
+    super::metrics::spec::assert_spec(
+        "project_panel[\"item.height\"]",
+        "project_panel_comfortable",
+        ROW_HEIGHT.0 * super::rem::BASE_REM_PX,
+    );
+}
 /// L-37 단계당 20, 안쪽 좌우 padding 6, gap 4.
 const INDENT: f32 = 20.;
 const ROW_PAD_X: Rems = rems_from_px(6.);
