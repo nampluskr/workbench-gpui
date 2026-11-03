@@ -1,0 +1,70 @@
+[
+  {
+    "name": "verify-v02-phase1",
+    "ended": "2026-11-03T23:21:24.8105219+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:20:19.4974687+09:00",
+    "exit": 0
+  },
+  {
+    "name": "verify-v02-phase2",
+    "ended": "2026-11-03T23:24:19.8268173+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:21:24.8229070+09:00",
+    "exit": 0
+  },
+  {
+    "name": "verify-v02-phase3",
+    "ended": "2026-11-03T23:27:42.3939083+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:24:19.8370983+09:00",
+    "exit": 1
+  },
+  {
+    "name": "verify-v02-phase4",
+    "ended": "2026-11-03T23:27:43.9757380+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:27:42.4003550+09:00",
+    "exit": 1
+  },
+  {
+    "name": "verify-v02-phase4-d043",
+    "ended": "2026-11-03T23:27:45.4217178+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:27:43.9832235+09:00",
+    "exit": 1
+  },
+  {
+    "name": "verify-v02-phase4-d043-clip",
+    "reason": "SKIP: same as baseline (P0-0c); no Before script available.",
+    "status": "SKIP"
+  },
+  {
+    "name": "verify-v02-phase4-d044",
+    "ended": "2026-11-03T23:27:46.8805559+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:27:45.4388813+09:00",
+    "exit": 1
+  },
+  {
+    "name": "verify-v02-phase5",
+    "ended": "2026-11-03T23:29:24.0388075+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:27:46.8908920+09:00",
+    "exit": 0
+  },
+  {
+    "name": "verify-v02-phase5-d046",
+    "ended": "2026-11-03T23:30:50.8072923+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:29:24.0473757+09:00",
+    "exit": 0
+  },
+  {
+    "name": "verify-v02-phase5-d047",
+    "ended": "2026-11-03T23:32:02.3913845+09:00",
+    "attempts": 1,
+    "started": "2026-11-03T23:30:50.8159679+09:00",
+    "exit": 0
+  }
+]

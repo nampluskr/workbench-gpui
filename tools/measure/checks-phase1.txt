@@ -1,0 +1,25 @@
+# P1-E checks against specs/v0.3/verify/phase1/layout.json (first screen, no project open, 1920x1032 maximized)
+titlebar["height"] | title-bar | h | default
+titlebar["window_button.width"] | window-btn-min | w | default
+titlebar["window_button.width"] | window-btn-max | w | default
+titlebar["window_button.width"] | window-btn-close | w | default
+titlebar["window_button.height"] | window-btn-min | h | default
+titlebar["window_button.height"] | window-btn-max | h | default
+titlebar["window_button.height"] | window-btn-close | h | default
+sidebar["default_width"] | sidebar | w | default
+sidebar["header_height"] | sidebar-header | h | default
+sidebar["footer.height"] | sidebar-footer | h | default
+sidebar["footer.icon_size"] | sidebar-icon-toggle | w | default
+sidebar["footer.icon_size"] | sidebar-icon-folder-add | w | default
+dock["resize_handle_width"] | dock-handle | w | default
+tab["bar_height"] | tab-bar | h | default
+tab["content_height"] | tab-content | h | default
+tab["start_slot.width"] | tab-slot-start | w | default
+tab["start_slot.height"] | tab-slot-start | h | default
+tab["end_slot.width"] | tab-slot-end | w | default
+tab["end_slot.height"] | tab-slot-end | h | default
+tab["bar_icon_size"] | tab-icon-back | w | default
+tab["bar_icon_size"] | tab-icon-new | w | default
+statusbar["height"] | status-bar | h | default
+statusbar["button_height"] | status-btn-project-panel | h | default
+statusbar["icon_size"] | status-icon-project-panel | w | default

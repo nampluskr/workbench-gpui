@@ -1,0 +1,1 @@
+SKIP: same as baseline (P0-0c); no Before script available.

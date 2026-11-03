@@ -1,0 +1,9 @@
+CLIPBOARD formats before verify-v02-phase4 = 0
+START verify-v02-phase4
+END verify-v02-phase4 exit=0
+CLIPBOARD formats before verify-v02-phase4-d043 = 0
+START verify-v02-phase4-d043
+END verify-v02-phase4-d043 exit=0
+CLIPBOARD formats before verify-v02-phase4-d044 = 0
+START verify-v02-phase4-d044
+END verify-v02-phase4-d044 exit=0

@@ -1,0 +1,26 @@
+| spec id | box | expected | tol | actual | diff | verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| titlebar["height"] | title-bar.h | 32 | ±1 | 32 | 0 | PASS |
+| titlebar["window_button.width"] | window-btn-min.w | 36 | ±1 | 36 | 0 | PASS |
+| titlebar["window_button.width"] | window-btn-max.w | 36 | ±1 | 36 | 0 | PASS |
+| titlebar["window_button.width"] | window-btn-close.w | 36 | ±1 | 36 | 0 | PASS |
+| titlebar["window_button.height"] | window-btn-min.h | 32 | ±1 | 32 | 0 | PASS |
+| titlebar["window_button.height"] | window-btn-max.h | 32 | ±1 | 32 | 0 | PASS |
+| titlebar["window_button.height"] | window-btn-close.h | 32 | ±1 | 32 | 0 | PASS |
+| sidebar["default_width"] | sidebar.w | 300 | ±1 | 375 | 75 | FAIL |
+| sidebar["header_height"] | sidebar-header.h | 32 | ±1 | 32 | 0 | PASS |
+| sidebar["footer.height"] | sidebar-footer.h | 30 | ±1 | 31 | 1 | PASS |
+| sidebar["footer.icon_size"] | sidebar-icon-toggle.w | 14 | ±1 | 14 | 0 | PASS |
+| sidebar["footer.icon_size"] | sidebar-icon-folder-add.w | 14 | ±1 | 14 | 0 | PASS |
+| dock["resize_handle_width"] | dock-handle.w | 6 | ±1 | 6 | 0 | PASS |
+| tab["bar_height"] | tab-bar.h | 32 | ±1 | 32 | 0 | PASS |
+| tab["content_height"] | tab-content.h | 31 | ±1 | 31 | 0 | PASS |
+| tab["start_slot.width"] | tab-slot-start.w | 12 | ±1 | 12 | 0 | PASS |
+| tab["start_slot.height"] | tab-slot-start.h | 12 | ±1 | 12 | 0 | PASS |
+| tab["end_slot.width"] | tab-slot-end.w | 14 | ±1 | 14 | 0 | PASS |
+| tab["end_slot.height"] | tab-slot-end.h | 14 | ±1 | 14 | 0 | PASS |
+| tab["bar_icon_size"] | tab-icon-back.w | 14 | ±1 | 14 | 0 | PASS |
+| tab["bar_icon_size"] | tab-icon-new.w | 14 | ±1 | 14 | 0 | PASS |
+| statusbar["height"] | status-bar.h | 30 | ±1 | 30 | 0 | PASS |
+| statusbar["button_height"] | status-btn-project-panel.h | 22 | ±1 | 22 | 0 | PASS |
+| statusbar["icon_size"] | status-icon-project-panel.w | 14 | ±1 | 14 | 0 | PASS |

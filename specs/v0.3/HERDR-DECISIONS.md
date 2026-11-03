@@ -105,3 +105,8 @@
 - 요청: Phase 2 진행에 DECISIONS 미결 "스펙에 없는 수치를 어떻게 다룰지"가 걸린다. 사용자 부재.
 - 판단: 가장 되돌리기 쉬운 쪽으로 정한다. 스펙에 없는 수치도 `src/ui/metrics.rs` 상수로 옮기고 주석을 `// spec: none (app value)`로 단다. `spec/zed-metrics.toml`에는 넣지 않는다(spec 소유, 추정 입력 금지). R-10 집계에서는 metrics.rs 안이므로 0건 판정에 들어간다. `px(0.)`은 gpui 상수(`Pixels::ZERO` 등)로 바꿔도 값이 같다.
 - 결과: TASKS Phase 2 카드에 반영. DECISIONS.md(사용자 소유)는 고치지 않는다. 사용자 확인 필요 목록에 올린다. 다르게 정하면 주석만 바꾸면 된다.
+
+### H-28 · 2026-11-04 · lead (measure 클립보드, 위임 H-26)
+- 요청: P1-E R-12 phase4·d043·d044가 클립보드 보호 동작으로 두 번 멈췄다. 사용자가 비운 뒤에도 형식 49161(DataObject)·49171(Ole Private Data)과 텍스트 형식(13·16·1·7)이 남았다(OLE 텍스트 복사 래퍼).
+- 판단: 사용자가 클립보드를 비웠고 진행을 지시했으므로 내용은 보존 대상이 아니다. measure가 각 스크립트 직전에 `[System.Windows.Forms.Clipboard]::Clear()`로 비우고 형식 0개를 확인한 뒤 실행한다. 스크립트 보호 동작은 고치지 않는다. 실행 중에는 measure에 프롬프트를 보내지 않는다.
+- 결과: measure에 지시. 감시 스크립트가 보고를 놓쳐 이후 대기는 `herdr agent prompt --wait` 백그라운드로 한다.
