@@ -150,6 +150,14 @@ mod tests {
     use super::*;
 
     #[test]
+    fn spec_missing_id_error_names_the_id() {
+        for id in ["titlebar[\"no_such_key\"]", "no_such_table[\"height\"]"] {
+            let err = spec::lookup(id).unwrap_err();
+            assert!(err.contains(&format!("spec id not found: {id}")), "{err}");
+        }
+    }
+
+    #[test]
     fn spec_lookup_and_titlebar() {
         let e = spec::lookup("titlebar[\"height\"]").unwrap();
         assert_eq!((e.value, e.unit.as_str(), e.cond.as_str()), (32.0, "px", "default"));
