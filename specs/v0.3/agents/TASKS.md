@@ -196,7 +196,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 순서: P1-1 → (P1-2 ∥ P1-4 ∥ P1-5) → P1-3. 카드 리뷰는 `review`(agy Flash high)가 카드마다 하고, 병합 직전 `reviewer`(Codex)가 Phase 묶음 최종 확인을 한 번 한다. Phase 끝 R-12 재실행(9개)은 `measure`, 결과 판정은 `reviewer`.
 
 ### P1-1 레이아웃 테스트 요구사항
-- 상태: done (2026-11-03, `specs/v0.3/verify/phase1/layout-test-req.md`. P1-3 추천: 타이틀 바 3개, 프로젝트 패널 행 높이. `#[gpui::test]`는 gpui-kit `test-support` 필요 → 사용자 결정 대기, 기본안 `#[test]` 상수 대조)
+- 상태: done (2026-11-03, `specs/v0.3/verify/phase1/layout-test-req.md`. P1-3 추천: 타이틀 바 3개, 프로젝트 패널 행 높이. `#[test]` 상수 대조로 사용자 확정, H-24)
 - 담당: lead
 - 브랜치: master
 - 요구·결정: R-7, D-7
@@ -223,7 +223,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 브랜치: work/ui
 - 요구·결정: R-7
 - 스펙 ID: P1-1 추천(후보: `titlebar.height`·`window_button` 36×32, `project_panel.item.height` 26)
-- 범위: 해당 화면 모듈의 `#[gpui::test]` 테스트
+- 범위: 일반 `#[test]`로 `src/ui/metrics.rs` 상수(타이틀 바 3개)와 `src/ui/panel_view.rs` `ROW_HEIGHT`를 스펙 ID 기대값과 대조(사용자 승인 2026-11-03, H-24. `#[gpui::test]`·`test-support`는 쓰지 않는다)
 - 검증 수준: V2
 - 완료 조건: 기대값을 P1-2 헬퍼로 스펙 ID에서 가져온다. 현재 코드 값과 같아 통과하거나, 다르면 테스트가 아니라 불일치로 보고(v0.3은 값 불변). 사이드바 기본 폭(375 vs 300)은 대상에서 뺀다(Q-15)
 - 비고: 선행 P1-1·P1-2

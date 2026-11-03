@@ -74,3 +74,18 @@
 - 요청: HANDOFF "다음 할 일" 2, 사용자 말 "불필요한 herdr 패널을 정리해 주세요"
 - 판단: 워크스페이스는 `workbench-gpui`·`wt-ui` 둘뿐(1.3 가정 그대로). impl-ui는 agy `/clear`로 새 대화. verify 탭에 `review`(`wD:p5`, agy gemini-3.8-flash-high)·`measure`(`wD:p6`, claude sonnet medium) 새로 띄움. 빈 shell `wD:p4`·`wE:p2` 닫음. spec(`wD:p2`, Phase 1 카드 없음)·reviewer(`wD:p3`, 컨텍스트 79%, Phase 끝에 새로 띄움)도 닫으려 했으나 lead 안전 분류기가 막아 사용자에게 올림.
 - 결과: `.worktrees/ui` `git merge --ff-only master` → `6cf94ed`.
+
+### H-22 · 2026-11-03 · impl-ui → lead
+- 요청: P1-2에서 `Cargo.toml`을 "Create file"(내용 3줄: `[dev-dependencies]`, `toml = "=1.1.8"`)로 만들겠다는 승인. 그 전에 읽기 명령 2건(`Select-String`, `git status`) 승인 요청.
+- 판단: 읽기 명령은 1회 승인. "Create file"은 기존 `Cargo.toml` 전체를 덮어써 의존성을 지우므로 거부하고, 파일 끝에 덧붙이라고 지시했다. 다시 온 편집(+4 −1, `trash` 줄 뒤에 빈 줄·`[dev-dependencies]`·`toml = "=1.1.8"`)은 사용자 승인 범위 그대로라 승인.
+- 결과: impl-ui working. lead 감시 스크립트 패턴에 agy 편집 승인 문구를 더했다.
+
+### H-23 · 2026-11-03 · lead (impl-ui 편집 승인 방식)
+- 요청: impl-ui(agy 기본 모드, F5 Q-4)가 편집마다 승인을 묻는다.
+- 판단: agy 모드는 바꾸지 않는다. lead 감시 스크립트가 impl-ui의 "Pending edit" 가운데 이번 카드 범위 파일(`src/ui/metrics.rs`·`layout_probe.rs`·`mod.rs`, `src/dev.rs`, worktree 안)만 승인하고 `scratchpad/auto-approved.log`에 경로를 남긴다. 새 파일 생성, 명령 실행, 범위 밖 경로, `Cargo.toml`은 lead가 직접 본다. 내용은 카드 리뷰(review)가 diff로 본다.
+- 결과: 첫 편집 `src/ui/metrics.rs` +100 −1 승인(P1-2 헬퍼).
+
+### H-24 · 2026-11-03 · 사용자 → lead
+- 요청: lead 제안 두 가지에 사용자 말 "제안대로 진행해 주세요".
+- 판단: (1) P1-3은 일반 `#[test]` 상수 대조. gpui-kit `test-support`(Cargo 변경)는 쓰지 않는다. 렌더 경계는 V3(P1-4 JSON, P1-5)가 맡는다. (2) spec(`wD:p2`)·reviewer(`wD:p3`) pane을 닫는다. reviewer는 Phase 1 끝 최종 확인 때 새로 띄우고 `/model` Sol·Medium을 다시 맞춘다. spec은 카드가 생길 때 띄운다.
+- 결과: TASKS P1-3 범위, `verify/phase1/layout-test-req.md` 6절 갱신. 두 pane 닫음. verify 탭에는 review(`wD:p5`)·measure(`wD:p6`), control 탭에는 lead만 남았다.
