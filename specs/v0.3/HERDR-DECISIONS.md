@@ -89,3 +89,8 @@
 - 요청: lead 제안 두 가지에 사용자 말 "제안대로 진행해 주세요".
 - 판단: (1) P1-3은 일반 `#[test]` 상수 대조. gpui-kit `test-support`(Cargo 변경)는 쓰지 않는다. 렌더 경계는 V3(P1-4 JSON, P1-5)가 맡는다. (2) spec(`wD:p2`)·reviewer(`wD:p3`) pane을 닫는다. reviewer는 Phase 1 끝 최종 확인 때 새로 띄우고 `/model` Sol·Medium을 다시 맞춘다. spec은 카드가 생길 때 띄운다.
 - 결과: TASKS P1-3 범위, `verify/phase1/layout-test-req.md` 6절 갱신. 두 pane 닫음. verify 탭에는 review(`wD:p5`)·measure(`wD:p6`), control 탭에는 lead만 남았다.
+
+### H-25 · 2026-11-03 · 사용자 → lead
+- 요청: P1-5에서 measure가 `tools/measure/p0-session.ps1`→`session.ps1`, `p0-input.ps1`→`input.ps1`로 이름을 바꿨다(옛 경로 삭제라 위임 밖). lead 제안 "받아들이고 README에 대응 한 줄"에 사용자 말 "제안대로 진행해 주세요".
+- 판단: 이름 변경 승인. P0 기록 문서(`measure-p0.md` 등)는 옛 이름 그대로 둔다(내용은 git 이력).
+- 결과: measure에 README 대응 한 줄 지시. 덧붙여 H-23 자동 승인 범위를 넓혔다: impl-ui·review의 읽기 전용 명령(`Select-String`·`Get-Content`·`Get-ChildItem`·`git status/log/diff/show/branch`, 쓰기 토큰 없을 때)도 감시 스크립트가 승인하고 로그에 남긴다.

@@ -207,7 +207,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 짧게(한 쪽). 구현하지 않는다. 구성 변경으로 reviewer → lead(H-20)
 
 ### P1-2 스펙 ID 조회 헬퍼
-- 상태: doing (2026-11-03 지시)
+- 상태: review PASS (`verify/reviews/P1-2-3-4.md`, `e6b6a87`). R-7 판정용 없는 ID 테스트 추가 중(P1-2-R1). master 병합 대기
 - 담당: impl-ui
 - 브랜치: work/ui
 - 요구·결정: R-7, D-7, D-1
@@ -218,7 +218,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 사용자 승인(2026-11-03): `Cargo.toml` `[dev-dependencies]`에 `toml = "=1.1.8"` 한 줄. 이 카드에 한해 `Cargo.toml`·`src/ui/metrics.rs`를 impl-ui에 지정. 근거: `Cargo.lock`에 이미 `toml 1.1.8`(gpui-kit 경유)이 있어 `[dev-dependencies] toml = "=1.1.8"`이면 새 다운로드가 없다. 대안은 한 줄 레코드 직접 파싱(`p0-report.ps1`의 shortcut과 같은 한계).
 
 ### P1-3 대표 레이아웃 테스트 1~2개
-- 상태: todo
+- 상태: review PASS (`verify/reviews/P1-2-3-4.md`, `7c0374a`). master 병합 대기
 - 담당: impl-ui
 - 브랜치: work/ui
 - 요구·결정: R-7
@@ -229,7 +229,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 선행 P1-1·P1-2
 
 ### P1-4 레이아웃 덤프 JSON
-- 상태: doing (2026-11-03 지시, P1-2 다음)
+- 상태: review PASS (`verify/reviews/P1-2-3-4.md`, `70b07ae`). master 병합 대기
 - 담당: impl-ui (공통 파일 `src/ui/layout_probe.rs`·`src/dev.rs`를 이 카드에 한해 지정)
 - 브랜치: work/ui
 - 요구·결정: R-8, D-8
@@ -241,7 +241,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - JSON 형식(lead 지정, P1-5와 공유): 디버그 빌드 옵션 `--dev-layout-json <path>`. 스냅숏이 바뀔 때마다 파일 전체를 다시 쓴다. `{"seq":n,"rem":16.0,"scale":1.0,"viewport":{"w":..,"h":..},"boxes":[{"name":"..","x":..,"y":..,"w":..,"h":..}]}`, 값은 논리 px. `serde_json`(기존 의존성) 사용. 기존 stdout 출력은 그대로. 이 카드에 한해 `src/ui/mod.rs`도 지정(덤프 출력부 `start_layout_dump`)
 
 ### P1-5 V3 측정 스크립트 정리
-- 상태: doing (2026-11-03 지시)
+- 상태: done (measure, review REWORK 1회 → R1 PASS `verify/reviews/P1-5.md`. 이름 변경 H-25. 앱 실행 동작은 R-9 판정·R-12 재실행에서 확인)
 - 담당: measure
 - 브랜치: master
 - 요구·결정: R-9, D-12

@@ -1,5 +1,6 @@
 #Requires -Version 7
-param([ValidateSet('Check','DismissOpenWith','Maximize','Click','DoubleClick','RightClick','Hover','Key')][string]$Action,[string]$Box,[double]$X=-1,[double]$Y=-1,[string]$Key)
+# shortcut: assumes primary monitor at 100% DPI (AGENTS 3A.4); box coordinates are used as screen pixels, add DPI/monitor offset handling if that changes.
+param([ValidateSet('Check','DismissOpenWith','Maximize','Click','DoubleClick','RightClick','Hover','Key')][string]$Action,[string]$Box,[double]$X=-1,[double]$Y=-1,[string]$Key,[string]$Out='D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure')
 $ErrorActionPreference='Stop'
 Set-Location 'D:\projects\workbench-gpui'
 # Reuse only the existing native input declaration, never execute the test harness.
@@ -10,7 +11,7 @@ $native=$ast.FindAll({param($n) $n -is [Management.Automation.Language.IfStateme
 if ($native.Count -ne 1) { throw 'Native declaration is not unique' }
 Invoke-Expression ($native[0].Extent.Text.Replace('static extern uint GetWindowThreadProcessId','public static extern uint GetWindowThreadProcessId'))
 [void][WgP4.Native]::SetThreadDpiAwarenessContext([IntPtr]::new(-4))
-$out='D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure'
+$out = $Out
 $session=Get-Content -Raw (Join-Path $out 'session.json') | ConvertFrom-Json
 $handle=[WgP4.Native]::FindTitled($session.pid,'workbench-gpui')
 if ($handle -eq [IntPtr]::Zero) { throw 'Measurement window not found' }
