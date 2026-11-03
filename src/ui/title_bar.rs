@@ -102,7 +102,7 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
                 .items_center()
                 .h(super::metrics::BUTTON_DEFAULT)
                 .px(super::metrics::TITLE_FOLDER_NAME_PAD_X)
-                .text_sm()
+                .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                 .text_color(if folder_name.is_some() { theme.foreground } else { theme.muted_foreground })
                 .hover(move |s| s.bg(hover_bg))
                 .tooltip(super::tooltip::build(super::tooltip::Spec::one(

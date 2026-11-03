@@ -83,6 +83,10 @@ pub const SIDEBAR_FOOTER_GAP: Rems = rems_from_px(4.);
 // ---- 기타 공통 (P2-1) ----
 /// spacing["base01"] (L-03) 1px 테두리 두께를 rem 으로 둔 값. 탭 아래 테두리 `pb_px`(L-63).
 pub const BORDER_1PX: Rems = rems_from_px(1.);
+/// typography["size.default"] (L-05) 글자 14. gpui `text_sm()` 는 font_size = rems(0.875) 만 설정한다(줄 높이는 건드리지 않는다).
+pub const TEXT_SIZE_DEFAULT: Rems = rems_from_px(14.);
+/// typography["size.small"] (L-05) 글자 12. gpui `text_xs()` 는 font_size = rems(0.75) 만 설정한다(줄 높이는 건드리지 않는다).
+pub const TEXT_SIZE_SMALL: Rems = rems_from_px(12.);
 /// titlebar["left_group.gap"] (L-87) 타이틀 바 왼쪽 그룹 gap 2 (`gap_0p5`).
 pub const TITLE_BAR_LEFT_GROUP_GAP: Rems = rems_from_px(2.);
 // spec: none (app value) — 타이틀 바 폴더 이름 버튼 좌우 padding 6.

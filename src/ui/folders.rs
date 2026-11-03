@@ -756,7 +756,7 @@ impl Workbench {
                     .pr(super::metrics::SIDEBAR_ROW_PADDING_RIGHT)
                     .gap(super::metrics::SIDEBAR_ROW_GAP)
                     .items_center()
-                    .text_sm()
+                    .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                     .border_1()
                     .border_color(if focused { ring } else { gpui_kit::transparent_black() })
                     .text_color(text_color)
@@ -819,7 +819,7 @@ impl Workbench {
                 .rounded(super::metrics::EMPTY_BUTTON_RADIUS)
                 .border_1()
                 .border_color(border)
-                .text_sm()
+                .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                 .hover(move |s| s.bg(hover_bg))
                 .child(label)
         };
@@ -829,7 +829,7 @@ impl Workbench {
                 .size_full()
                 .p(super::metrics::EMPTY_BODY_PADDING)
                 .gap(super::metrics::EMPTY_BODY_GAP)
-                .text_sm()
+                .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                 .text_color(muted)
                 .child(div().child("Choose one of the options below to use the Project Panel"))
                 .child(button("project-open-project", "Open Project").on_click(cx.listener(
@@ -849,7 +849,7 @@ impl Workbench {
                 .size_full()
                 .p(super::metrics::EMPTY_BODY_PADDING)
                 .gap(super::metrics::EMPTY_BODY_GAP)
-                .text_sm()
+                .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                 .text_color(muted)
                 .child(div().child("This folder no longer exists."))
                 .child(button("project-missing-remove", "Remove").on_click(cx.listener(

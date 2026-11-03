@@ -172,7 +172,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                     .px(TAB_PADDING_X)
                     .gap(TAB_GAP)
                     .items_center()
-                    .text_sm()
+                    .text_size(TEXT_SIZE_DEFAULT)
                     .child(div().flex_shrink_0().size(TAB_START_SLOT))
                     .child(div().child("untitled (placeholder)"))
                     .child(div().flex_shrink_0().size(TAB_END_SLOT)),
@@ -202,7 +202,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                         .px(TAB_PADDING_X)
                         .gap(TAB_GAP)
                         .items_center()
-                        .text_sm()
+                        .text_size(TEXT_SIZE_DEFAULT)
                         .when(!tab.active, |d| d.text_color(theme.muted_foreground))
                         .child(div().flex_shrink_0().size(TAB_START_SLOT))
                         .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).child(tab.title.clone()))
@@ -378,7 +378,7 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
                         .flex()
                         .items_center()
                         .h(BUTTON_DEFAULT)
-                        .text_xs()
+                        .text_size(TEXT_SIZE_SMALL)
                         .child("1:1"),
                 ),
         )

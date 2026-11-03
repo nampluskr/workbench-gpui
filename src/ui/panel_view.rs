@@ -296,7 +296,7 @@ fn render_row(
         .border_1()
         .border_r_2()
         .border_color(border)
-        .text_sm()
+        .text_size(super::metrics::TEXT_SIZE_DEFAULT)
         .text_color(c.fg)
         .when(highlighted, |d| d.bg(c.selected))
         .when(!highlighted, |d| d.hover(move |s| s.bg(c.hover)))
