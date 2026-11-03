@@ -1,0 +1,6 @@
+Exception: D:\projects\workbench-gpui\specs\v0.3\verify\phase2\v3-session.ps1:8
+Line |
+   8 |  ¡¦  ($p.ExitCode) { throw "$script $argList failed ($($p.ExitCode))" } }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~¿¡¼­
+     | session.ps1 -Action Snapshot -State C0 -Capture -Out
+     | D:\projects\workbench-gpui\specs\v0.3\verify\phase2\v3-session failed (1)

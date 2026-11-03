@@ -1,0 +1,59 @@
+[
+  {
+    "name": "verify-v02-phase1",
+    "ended": "2026-11-04T07:54:38.5806467+09:00",
+    "attempts": 1,
+    "exit": 0,
+    "started": "2026-11-04T07:53:33.8485553+09:00"
+  },
+  {
+    "name": "verify-v02-phase2",
+    "ended": "2026-11-04T07:57:32.6085833+09:00",
+    "attempts": 1,
+    "exit": 0,
+    "started": "2026-11-04T07:54:38.6084945+09:00"
+  },
+  {
+    "name": "verify-v02-phase3",
+    "ended": "2026-11-04T08:00:54.7963705+09:00",
+    "attempts": 1,
+    "exit": 1,
+    "started": "2026-11-04T07:57:32.6182750+09:00"
+  },
+  {
+    "name": "verify-v02-phase4",
+    "reason": "SKIP: clipboard still has 모든 매개 변수는 대/소문자를 구분하지 않습니다. format(s) after Clear() (H-28)",
+    "status": "SKIP"
+  },
+  {
+    "name": "verify-v02-phase4-d043",
+    "reason": "SKIP: clipboard still has 모든 매개 변수는 대/소문자를 구분하지 않습니다. format(s) after Clear() (H-28)",
+    "status": "SKIP"
+  },
+  {
+    "name": "verify-v02-phase4-d044",
+    "reason": "SKIP: clipboard still has 모든 매개 변수는 대/소문자를 구분하지 않습니다. format(s) after Clear() (H-28)",
+    "status": "SKIP"
+  },
+  {
+    "name": "verify-v02-phase5",
+    "ended": "2026-11-04T08:02:32.2436190+09:00",
+    "attempts": 1,
+    "exit": 0,
+    "started": "2026-11-04T08:00:55.6639959+09:00"
+  },
+  {
+    "name": "verify-v02-phase5-d046",
+    "ended": "2026-11-04T08:03:59.2716392+09:00",
+    "attempts": 1,
+    "exit": 0,
+    "started": "2026-11-04T08:02:32.2570331+09:00"
+  },
+  {
+    "name": "verify-v02-phase5-d047",
+    "ended": "2026-11-04T08:05:09.8307495+09:00",
+    "attempts": 1,
+    "exit": 0,
+    "started": "2026-11-04T08:03:59.2814645+09:00"
+  }
+]

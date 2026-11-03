@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "windows": [
+    {
+      "folders": [
+        {
+          "id": "00000000-0000-4000-8000-000000000000",
+          "path": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-c87e440a82a949b8a84a41e6217f62c5\\alpha",
+          "added_at": "2026-11-01T00:00:00Z",
+          "zz_unknown_folder": 42
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "path": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-c87e440a82a949b8a84a41e6217f62c5\\beta",
+          "added_at": "2026-11-01T00:00:00Z"
+        }
+      ],
+      "active_folder_id": "00000000-0000-4000-8000-000000000001",
+      "zz_unknown_window": "window 값",
+      "sidebar": {
+        "width": 494.0,
+        "zz_unknown_sidebar": true
+      }
+    }
+  ],
+  "zz_unknown_root": {
+    "keep": "root 값"
+  }
+}

@@ -1,0 +1,5 @@
+[
+  { "context": "Workspace", "bindings": { "f10": "workspace::ToggleLeftDock" } },
+  { "context": "Workspace", "bindings": { "f10": "project_panel::ToggleFocus" } },
+  { "context": "Workspace", "bindings": { "delete": "workspace::ToggleLeftDock" } }
+]

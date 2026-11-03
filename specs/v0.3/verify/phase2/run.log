@@ -1,0 +1,19 @@
+START verify-v02-phase1
+END verify-v02-phase1 exit=0
+START verify-v02-phase2
+END verify-v02-phase2 exit=0
+START verify-v02-phase3
+END verify-v02-phase3 exit=1
+'D:projectsworkbench-gpuispecs0.3erifyphase2ear-clipboard.ps1' 인수가 스크립트 파일 이름으로 인식되지 않습니다. 이름의 철자를 확인하거나, 포함된 경로가 올바른지 확인한 후 다시 시도하세요.
+CLIPBOARD formats before verify-v02-phase4 = 모든 매개 변수는 대/소문자를 구분하지 않습니다.
+'D:projectsworkbench-gpuispecs0.3erifyphase2ear-clipboard.ps1' 인수가 스크립트 파일 이름으로 인식되지 않습니다. 이름의 철자를 확인하거나, 포함된 경로가 올바른지 확인한 후 다시 시도하세요.
+CLIPBOARD formats before verify-v02-phase4-d043 = 모든 매개 변수는 대/소문자를 구분하지 않습니다.
+'D:projectsworkbench-gpuispecs0.3erifyphase2ear-clipboard.ps1' 인수가 스크립트 파일 이름으로 인식되지 않습니다. 이름의 철자를 확인하거나, 포함된 경로가 올바른지 확인한 후 다시 시도하세요.
+CLIPBOARD formats before verify-v02-phase4-d044 = 모든 매개 변수는 대/소문자를 구분하지 않습니다.
+START verify-v02-phase5
+END verify-v02-phase5 exit=0
+START verify-v02-phase5-d046
+END verify-v02-phase5-d046 exit=0
+START verify-v02-phase5-d047
+END verify-v02-phase5-d047 exit=0
+done

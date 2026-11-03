@@ -1,0 +1,14 @@
+S1 | title-bar | rect=0,0,1920,32 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S1 | sidebar | rect=0,32,375,1000 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S1 | status-bar | rect=0,1002,1920,30 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S4 | title-bar | rect=0,0,1920,32 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S4 | status-bar | rect=0,1002,1920,30 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S4 | tab-bar-end | rect=1833,33,87,32 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S4 | tooltip-box+16 (shadow) | rect=1844,43,89,65 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 | menu-box+16 | rect=362,11,245,65 | png-diff.ps1: 'Rect' 매개 변수에서 인수 변환을 처리할 수 없습니다. 값 "362,11,245,65"을(를) 형식 "System.Int32[]"(으)로 변환할 수 없습니다. 오류: "값 "362,11,245,65"을(를) 형식 "System.Int32"(으)로 변환할 수 없습니다. 오류: "The input string '362,11,245,65' was not in a correct format.""
+S5 | title-bar | rect=0,0,1920,32 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S6 | ctx-menu-box+16 | rect=478,134,302,393 | png-diff.ps1: 'Rect' 매개 변수에서 인수 변환을 처리할 수 없습니다. 값 "478,134,302,393"을(를) 형식 "System.Int32[]"(으)로 변환할 수 없습니다. 오류: "값 "478,134,302,393"을(를) 형식 "System.Int32"(으)로 변환할 수 없습니다. 오류: "The input string '478,134,302,393' was not in a correct format.""
+S7 | status-bar | rect=0,1002,1920,30 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S7 | sidebar | rect=0,32,375,1000 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 | menu-box+16 | rect=362,11,245,65 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S6 | ctx-menu-box+16 | rect=478,134,302,393 | diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
