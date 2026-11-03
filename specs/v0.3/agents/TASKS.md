@@ -262,3 +262,49 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: (1) master 디버그 빌드 + `tools/apply-manifest.ps1`. (2) R-12: P0-0c와 같은 9개 스크립트를 같은 순서·같은 앱 데이터 보호로 실행, `-OutDir specs0.3erify\phase1\<스크립트 이름>`, `-Exe` 절대 경로, d043-clip 제외, phase1은 `r1-expected.tsv` 미리 복사. 항목 단위로 `verify/baseline` 기준선과 대조(사이드바 375/617은 Q-15 기준선 그대로면 "변화 없음"). (3) R-8: 같은 빌드를 `--dev-layout-json`으로 한 번 띄워 JSON 저장, 파서로 읽히는지와 대상 요소 목록 확인. (4) R-9: 그 JSON에 `tools/measure/compare.ps1`을 돌려 표를 `measure-phase1.md`에 남긴다(불일치는 고치지 않고 목록으로). src·지난 버전 폴더 수정 금지
 - 비고: 실행 전 다른 workbench-gpui 프로세스 없음 확인. 결과를 [MEASURED] P1-E로 보고. 이어서 reviewer(Codex, 새 세션)가 전체 테스트 1회·`@ponytail-review`·R-12 판정
 
+
+## Phase 2 — 상수·테마 통합 (lead 작성 2026-11-03, 위임 H-26, 미결 처리 H-27)
+
+순서: P1-E 통과 뒤 시작. P2-1 → P2-2 → P2-3(impl-ui, 같은 파일을 겹쳐 고치므로 순차, 카드마다 커밋 하나) → review 묶음 리뷰 → 병합 → P2-E. 모든 카드 공통: 값을 바꾸지 않는다(D-9). 코드 값과 스펙 값이 다르면 코드 값을 두고 보고의 "스펙 불일치"에 ID·코드 값·스펙 값·파일 위치로 적는다. 스펙 ID는 `spec/INDEX.md`·`spec/zed-metrics.toml`에서 찾고 추정하지 않는다. 스펙에 없는 수치는 상수로 옮기되 주석을 `// spec: none (app value)`로 단다(H-27, toml에는 넣지 않는다).
+
+### P2-1 레이아웃 수치 상수화
+- 상태: todo
+- 담당: impl-ui (이 카드에 한해 `src/ui/metrics.rs`·`src/ui/mod.rs`·`src/ui/layout_probe.rs`·`src/dev.rs`와, `src/ui/editor_poc.rs`의 수치 리터럴 줄만 지정 — editor 코어 로직은 건드리지 않는다)
+- 브랜치: work/ui
+- 요구·결정: R-10, D-9, AUDIT 6
+- 스펙 ID: 각 상수마다
+- 범위: `src/` 전체에서 `src/ui/metrics.rs` 밖의 `px(숫자)`·`rems_from_px(숫자)`와 AUDIT 6 위치(`app_menu.rs`·`panel_view.rs`·`tooltip.rs`·`title_bar.rs`·`folders.rs`·`panel_menu.rs`)의 로컬 크기·간격·시간 상수와 인라인 리터럴
+- 검증 수준: V0 (+ 기존 `cargo test metrics`·`panel_view` 통과)
+- 완료 조건: 위 집계가 0건(`px(0.)`은 `Pixels::ZERO` 등 gpui 상수로 바꿔도 된다). 옮긴 상수는 이름이나 주석에 스펙 ID가 있다. 같은 값이라도 ID가 다르면 별개 상수. 원래 타입(Pixels/Rems/Duration) 유지. `metrics.rs` 기존 상수의 ID 대응 점검. 집계 명령과 결과를 보고에 적는다
+- 비고: 로컬 상수를 `pub(super)`로 다른 모듈이 가져다 쓰던 곳(context_menu ← app_menu 등)은 metrics 상수로 함께 바꾼다
+
+### P2-2 글자 크기 별칭 명시화
+- 상태: todo
+- 담당: impl-ui
+- 브랜치: work/ui
+- 요구·결정: R-10, D-9, AUDIT 7
+- 스펙 ID: 화면별 글자 크기 ID(없으면 H-27 규칙)
+- 범위: `.text_sm()`·`.text_xs()` 호출부(AUDIT 7 위치)와 `src/ui/metrics.rs`
+- 검증 수준: V2
+- 완료 조건: gpui-kit 소스에서 `text_sm`·`text_xs`가 정확히 무엇을 설정하는지(글자 크기, 줄 높이 여부) 확인해 보고에 적고, 같은 설정을 하는 명시 상수 호출로 바꾼다. 렌더 결과 불변. 관련 레이아웃 테스트가 있으면 실행
+- 비고: 실측 필요 항목으로 해당 화면 상태를 보고에 적는다(P2-E 측정 목록)
+
+### P2-3 색상 리터럴 테마 경유
+- 상태: todo
+- 담당: impl-ui (새 공통 모듈 `src/ui/theme.rs`를 이 카드에 한해 지정)
+- 브랜치: work/ui
+- 요구·결정: R-10, D-9, AUDIT 5
+- 스펙 ID: L-84(닫기 버튼), L-211·L-212(`elevation_2`)
+- 범위: `src/ui/title_bar.rs`, `src/ui/tooltip.rs`, `src/ui/theme.rs`(새 파일), 그 밖에 집계에 걸리는 색상 리터럴(`rgb(`·`rgba(`·`hsla(`·`white()`·`black()`·16진 색)
+- 검증 수준: V0
+- 완료 조건: `src/ui/theme.rs` 밖 색상 리터럴 0건. 토큰 이름은 의미별(예: 닫기 hover·active, elevation_2 그림자 라이트/다크 알파), 주석에 스펙 ID. 값·다크/라이트 분기 그대로. `elevation_2_shadow` 재사용 유지
+- 비고: 테마 매핑·선택기는 v0.4 이후(D-9). 여기서는 한 곳으로 모으기만
+
+### P2-E Phase 2 끝: V3 실측, R-12 재실행, R-10 재감사
+- 상태: todo
+- 담당: measure(V3·R-12), reviewer(R-10 재감사·최종 확인·R-12 판정)
+- 브랜치: master
+- 요구·결정: R-10, R-12, D-9
+- 범위: `specs/v0.3/verify/phase2/`, `verify/reviews/measure-phase2.md`
+- 검증 수준: V3
+- 완료 조건: P0-6 측정 목록(S1~S7) 중 Phase 2에서 바뀐 화면을 P0-6과 같은 방법으로 재측정해 같은지 표로(덤프 JSON·compare.ps1 우선). R-12 9개 재실행 기준선 대조. reviewer가 R-10 집계 0건 확인
