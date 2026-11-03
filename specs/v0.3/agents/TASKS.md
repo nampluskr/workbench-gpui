@@ -207,7 +207,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 짧게(한 쪽). 구현하지 않는다. 구성 변경으로 reviewer → lead(H-20)
 
 ### P1-2 스펙 ID 조회 헬퍼
-- 상태: review PASS (`verify/reviews/P1-2-3-4.md`, `e6b6a87`). R-7 판정용 없는 ID 테스트 추가 중(P1-2-R1). master 병합 대기
+- 상태: done (review PASS, R-7 없는 ID 테스트 `e0a9556` 추가, metrics 4개 통과. master 병합 `3b26320`)
 - 담당: impl-ui
 - 브랜치: work/ui
 - 요구·결정: R-7, D-7, D-1
@@ -218,7 +218,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 사용자 승인(2026-11-03): `Cargo.toml` `[dev-dependencies]`에 `toml = "=1.1.8"` 한 줄. 이 카드에 한해 `Cargo.toml`·`src/ui/metrics.rs`를 impl-ui에 지정. 근거: `Cargo.lock`에 이미 `toml 1.1.8`(gpui-kit 경유)이 있어 `[dev-dependencies] toml = "=1.1.8"`이면 새 다운로드가 없다. 대안은 한 줄 레코드 직접 파싱(`p0-report.ps1`의 shortcut과 같은 한계).
 
 ### P1-3 대표 레이아웃 테스트 1~2개
-- 상태: review PASS (`verify/reviews/P1-2-3-4.md`, `7c0374a`). master 병합 대기
+- 상태: done (review PASS, master 병합 `3b26320`)
 - 담당: impl-ui
 - 브랜치: work/ui
 - 요구·결정: R-7
@@ -229,7 +229,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 선행 P1-1·P1-2
 
 ### P1-4 레이아웃 덤프 JSON
-- 상태: review PASS (`verify/reviews/P1-2-3-4.md`, `70b07ae`). master 병합 대기
+- 상태: done (review PASS, master 병합 `3b26320`)
 - 담당: impl-ui (공통 파일 `src/ui/layout_probe.rs`·`src/dev.rs`를 이 카드에 한해 지정)
 - 브랜치: work/ui
 - 요구·결정: R-8, D-8
@@ -250,3 +250,15 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 검증 수준: -
 - 완료 조건: P0-6 스크립트를 재사용 가능한 형태로 정리. 리뷰 지적(lead, 2026-11-03) 2~5 반영: 앱을 숨김 창으로 띄우지 않기(`-WindowStyle Hidden` 제거), `p0-show.ps1` 삭제(`p0-input -Action Maximize`로 대체), 100%·주 모니터 좌표 한계 `shortcut:` 주석, 원래 없던 앱 데이터 폴더는 복원 때 지우기. P1-4 JSON 덤프를 읽도록
 - 비고: 사용법 한 쪽(README) 포함. 구성 변경으로 reviewer → measure(H-20). 리뷰는 review
+
+### P1-E Phase 1 끝: R-12 재실행, R-8·R-9 판정
+- 상태: todo (사용자 부재 시간 확인 대기 — 앱을 여러 번 띄워 입력을 보낸다)
+- 담당: measure (판정은 reviewer)
+- 브랜치: master `3b26320`
+- 요구·결정: R-8, R-9, R-12, D-1, D-5, D-7
+- 스펙 ID: (R-9) P0-6 S1 타이틀 바·창 버튼, 프로젝트 패널 행 높이 등 덤프에 있는 것
+- 범위: `specs/v0.3/verify/phase1/` (R-12 결과는 `phase1/<스크립트 이름>/`), `specs/v0.3/verify/reviews/measure-phase1.md`
+- 검증 수준: V3
+- 완료 조건: (1) master 디버그 빌드 + `tools/apply-manifest.ps1`. (2) R-12: P0-0c와 같은 9개 스크립트를 같은 순서·같은 앱 데이터 보호로 실행, `-OutDir specs0.3erify\phase1\<스크립트 이름>`, `-Exe` 절대 경로, d043-clip 제외, phase1은 `r1-expected.tsv` 미리 복사. 항목 단위로 `verify/baseline` 기준선과 대조(사이드바 375/617은 Q-15 기준선 그대로면 "변화 없음"). (3) R-8: 같은 빌드를 `--dev-layout-json`으로 한 번 띄워 JSON 저장, 파서로 읽히는지와 대상 요소 목록 확인. (4) R-9: 그 JSON에 `tools/measure/compare.ps1`을 돌려 표를 `measure-phase1.md`에 남긴다(불일치는 고치지 않고 목록으로). src·지난 버전 폴더 수정 금지
+- 비고: 실행 전 다른 workbench-gpui 프로세스 없음 확인. 결과를 [MEASURED] P1-E로 보고. 이어서 reviewer(Codex, 새 세션)가 전체 테스트 1회·`@ponytail-review`·R-12 판정
+
