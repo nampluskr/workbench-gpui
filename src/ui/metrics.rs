@@ -276,7 +276,7 @@ pub mod spec {
         if e.cond != expected_cond {
             panic!("spec cond mismatch: {id} expected cond={expected_cond}, spec cond={}", e.cond);
         }
-        let tol = tolerance(&e.unit, id.starts_with("typography") && id.contains("size"));
+        let tol = tolerance(&e.unit, id.starts_with("typography[") || id.contains("font_size"));
         if (f64::from(actual) - e.value).abs() > tol {
             panic!(
                 "spec mismatch: {id} expected {} {} (±{tol}, cond={}, src={}), actual {actual} {}",
@@ -323,5 +323,12 @@ mod tests {
     #[should_panic(expected = "spec mismatch: titlebar[\"height\"]")]
     fn spec_value_mismatch_fails() {
         spec::assert_spec("titlebar[\"height\"]", "default", 34.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "spec mismatch: statusbar[\"cursor_position.font_size\"]")]
+    fn spec_font_size_tolerance_applies_to_font_size_ids() {
+        // 12.75 differs from 12 by more than the font_size tolerance (0.5).
+        spec::assert_spec("statusbar[\"cursor_position.font_size\"]", "default", 12.75);
     }
 }
