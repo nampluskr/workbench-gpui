@@ -172,7 +172,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                     .px(TAB_PADDING_X)
                     .gap(TAB_GAP)
                     .items_center()
-                    .text_sm()
+                    .text_size(TEXT_SIZE_DEFAULT)
                     .child(div().flex_shrink_0().size(TAB_START_SLOT))
                     .child(div().child("untitled (placeholder)"))
                     .child(div().flex_shrink_0().size(TAB_END_SLOT)),
@@ -202,7 +202,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                         .px(TAB_PADDING_X)
                         .gap(TAB_GAP)
                         .items_center()
-                        .text_sm()
+                        .text_size(TEXT_SIZE_DEFAULT)
                         .when(!tab.active, |d| d.text_color(theme.muted_foreground))
                         .child(div().flex_shrink_0().size(TAB_START_SLOT))
                         .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).child(tab.title.clone()))
@@ -300,7 +300,7 @@ pub fn tab_bar(tabs: &[TabView], cx: &App) -> impl IntoElement {
 
 /// 1 논리 px (rem 16 기준) — 활성 탭 아래 여백(L-63 `pb_px`).
 fn rems_1px() -> Rems {
-    super::rem::rems_from_px(1.)
+    BORDER_1PX
 }
 
 /// 상태 표시줄 (L-28 padding 4, L-29 그룹 사이 8·그룹 안 4, L-91 좌·우 목록).
@@ -378,7 +378,7 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
                         .flex()
                         .items_center()
                         .h(BUTTON_DEFAULT)
-                        .text_xs()
+                        .text_size(TEXT_SIZE_SMALL)
                         .child("1:1"),
                 ),
         )

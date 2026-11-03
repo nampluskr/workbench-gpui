@@ -27,10 +27,7 @@ const GLYPH_MAXIMIZE: &str = "\u{E922}";
 const GLYPH_RESTORE: &str = "\u{E923}";
 const GLYPH_CLOSE: &str = "\u{E8BB}";
 
-/// L-84 닫기 hover 배경 #E81120, 누름은 80% 불투명.
-const CLOSE_HOVER_BG: u32 = 0xE81120;
-const CLOSE_ACTIVE_BG: u32 = 0xE81120CC;
-const CLOSE_ACTIVE_FG: u32 = 0xFFFFFFCC;
+// Close button colors (L-84) live in `theme`.
 
 /// 설치된 글꼴로 글리프 글꼴을 고른다. L-83 은 빌드 번호(22000)로 고르지만, 여기서는
 /// `Segoe Fluent Icons` 설치 여부로 대신한다(Windows 11 에 기본 설치).
@@ -79,8 +76,7 @@ impl WindowButton {
     }
 }
 
-/// L-87 왼쪽 묶음 gap 2 (`gap_0p5`).
-const LEFT_GROUP_GAP: Rems = super::rem::rems_from_px(2.);
+// Left group gap and folder-name padding constants live in `metrics` (titlebar L-87).
 
 /// L-87 왼쪽 묶음: [☰ 메뉴] → [폴더 이름]. 폴더 이름 버튼은 이름 표시와 툴팁만 둔다(D-16).
 /// 폴더 이름은 활성 폴더 이름(40자 말줄임, L-88, A-13.9), 폴더가 없으면 `Open Recent Project`(Muted, L-227). 툴팁 `Recent Projects`(L-226).
@@ -94,7 +90,7 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
         .flex_shrink_0()
         .h_full()
         .pl(TITLE_BAR_PADDING_LEFT)
-        .gap(LEFT_GROUP_GAP)
+        .gap(super::metrics::TITLE_BAR_LEFT_GROUP_GAP)
         .child(app_menu)
         .child(
             div()
@@ -102,8 +98,8 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
                 .flex()
                 .items_center()
                 .h(super::metrics::BUTTON_DEFAULT)
-                .px(super::rem::rems_from_px(6.))
-                .text_sm()
+                .px(super::metrics::TITLE_FOLDER_NAME_PAD_X)
+                .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                 .text_color(if folder_name.is_some() { theme.foreground } else { theme.muted_foreground })
                 .hover(move |s| s.bg(hover_bg))
                 .tooltip(super::tooltip::build(super::tooltip::Spec::one(
@@ -197,11 +193,11 @@ fn window_button(
 
     match button {
         WindowButton::Close => base
-            .hover(|style| style.bg(rgb(CLOSE_HOVER_BG)).text_color(white()))
+            .hover(|style| style.bg(super::theme::close_hover_bg()).text_color(super::theme::close_hover_fg()))
             .active(|style| {
                 style
-                    .bg(rgba(CLOSE_ACTIVE_BG))
-                    .text_color(rgba(CLOSE_ACTIVE_FG))
+                    .bg(super::theme::close_active_bg())
+                    .text_color(super::theme::close_active_fg())
             }),
         _ => base
             .hover(move |style| style.bg(colors.hover_bg))

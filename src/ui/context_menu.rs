@@ -12,13 +12,12 @@ use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-use super::app_menu::{
-    LIST_PAD_Y, MAX_HEIGHT_RATIO, MIN_WIDTH, RADIUS, ROW_LINE_HEIGHT, ROW_MARGIN_X, ROW_PAD_X, SHORTCUT_GAP,
-    ROW_TEXT, SEPARATOR_MARGIN_Y, WINDOW_MARGIN,
+use super::metrics::menu::{
+    CHORD_TIMEOUT, LIST_PAD_Y, MAX_HEIGHT_RATIO, MIN_WIDTH, RADIUS, ROW_LINE_HEIGHT, ROW_MARGIN_X, ROW_PAD_X, ROW_RADIUS,
+    ROW_TEXT, SEPARATOR_HEIGHT, SEPARATOR_MARGIN_Y, SHORTCUT_FLASH, SHORTCUT_GAP, WINDOW_MARGIN,
 };
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
-use super::rem::rems_from_px;
 use super::tooltip;
 
 #[derive(Clone, Debug)]
@@ -55,10 +54,8 @@ const ROW_PROBES: [&str; 28] = [
     "ctx-menu-row-25", "ctx-menu-row-26", "ctx-menu-row-27",
 ];
 
-/// I-520 단축키로 실행할 때 선택 표시 시간(☰ 메뉴와 같다).
-const SHORTCUT_FLASH: std::time::Duration = std::time::Duration::from_millis(50);
-/// chord 대기 시간(gpui `PENDING_INPUT_TIMEOUT` 과 같다).
-const CHORD_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(1);
+// Shortcut flash (I-520) and chord timeout live in `metrics::menu`.
+// Both values are shared with the app menu.
 
 pub struct ContextMenu {
     entries: Vec<CmEntry>,
@@ -255,7 +252,7 @@ impl Render for ContextMenu {
         for (i, entry) in self.entries.clone().into_iter().enumerate() {
             match entry {
                 CmEntry::Separator => {
-                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(px(1.)).w_full().bg(border));
+                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(SEPARATOR_HEIGHT).w_full().bg(border));
                 }
                 CmEntry::Item { label, enabled, shortcut } => {
                     let selected = enabled && self.selected == Some(i);
@@ -264,7 +261,7 @@ impl Render for ContextMenu {
                             .id(("ctx-menu-row", i))
                             .mx(ROW_MARGIN_X)
                             .px(ROW_PAD_X)
-                            .rounded(rems_from_px(4.))
+                            .rounded(ROW_RADIUS)
                             .justify_between()
                             .text_size(ROW_TEXT)
                             .line_height(relative(ROW_LINE_HEIGHT))

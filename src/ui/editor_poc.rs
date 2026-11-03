@@ -293,7 +293,7 @@ async fn perf(this: &WeakEntity<EditorPoc>, cx: &mut AsyncWindowContext) {
         let y = -(i as f32) * 25_000.0;
         if let Some(t) = frame_after(this, cx, move |this, _, cx| {
             this.editor.update(cx, |state, cx| {
-                state.set_scroll_offset(point(px(0.), px(y)), cx)
+                state.set_scroll_offset(point(Pixels::ZERO, px(y)), cx)
             });
         })
         .await
@@ -374,7 +374,7 @@ async fn measure(this: &WeakEntity<EditorPoc>, cx: &mut AsyncWindowContext) {
             let run = TextRun {
                 len: sample.len(),
                 font: font(family.clone()),
-                color: black(),
+                color: super::theme::measure_text(),
                 background_color: None,
                 underline: None,
                 strikethrough: None,

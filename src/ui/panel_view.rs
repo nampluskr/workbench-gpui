@@ -13,7 +13,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::rc::Rc;
-use std::time::Duration;
 
 use gpui_kit::base::Tree;
 use gpui_kit::component::input::Input;
@@ -25,13 +24,11 @@ use super::Workbench;
 use super::layout_probe;
 use super::panel_nav::RowPress;
 use super::project_panel::EditKind;
+use super::metrics::project_panel::*;
 use super::rem::rems_from_px;
 use super::tooltip::{self, Line, Spec};
 use crate::fsops::names::Validation;
 use crate::fsops::tree::Row;
-
-/// L-36 행 높이 26(안쪽 24 + 위아래 테두리 1).
-const ROW_HEIGHT: Rems = rems_from_px(26.);
 
 /// P1-3: row height must equal the spec value (rem constant converted to logical px).
 // `use gpui_kit::*` shadows `#[test]` with gpui's macro, so the std one is named explicitly.
@@ -44,25 +41,6 @@ fn row_height_matches_spec() {
         ROW_HEIGHT.0 * super::rem::BASE_REM_PX,
     );
 }
-/// L-37 단계당 20, 안쪽 좌우 padding 6, gap 4.
-const INDENT: f32 = 20.;
-const ROW_PAD_X: Rems = rems_from_px(6.);
-const ROW_GAP: Rems = rems_from_px(4.);
-/// L-40 파일·폴더 아이콘 16.
-const ICON: Rems = rems_from_px(16.);
-/// L-38 안내선 x = 깊이 × 20 + 15, 위아래 여백 4.
-const GUIDE_OFFSET: f32 = 15.;
-const GUIDE_INSET: Rems = rems_from_px(4.);
-/// L-43 접힌 경로 조각 좌우 padding 2.
-const SEGMENT_PAD_X: Rems = rems_from_px(2.);
-/// P-019 입력칸 높이 24.
-const INPUT_HEIGHT: Rems = rems_from_px(24.);
-/// P-021 배너: 위아래 4, 좌우 8, 글자 14.
-const BANNER_PAD_Y: Rems = rems_from_px(4.);
-const BANNER_PAD_X: Rems = rems_from_px(8.);
-const BANNER_TEXT: Rems = rems_from_px(14.);
-/// L-247 항목 툴팁 지연.
-const NAME_TOOLTIP_DELAY: Duration = Duration::from_millis(1500);
 
 thread_local! {
     static NAMES: RefCell<HashMap<String, &'static str>> = RefCell::new(HashMap::new());
@@ -281,7 +259,7 @@ fn render_row(
             let seg = div()
                 .id(("tree-seg", ix * 64 + si))
                 .px(SEGMENT_PAD_X)
-                .rounded(rems_from_px(2.))
+                .rounded(SEGMENT_RADIUS)
                 .when(active, |d| d.underline())
                 .hover(move |s| s.bg(c.hover))
                 .child(seg_name.clone());
@@ -318,7 +296,7 @@ fn render_row(
         .border_1()
         .border_r_2()
         .border_color(border)
-        .text_sm()
+        .text_size(super::metrics::TEXT_SIZE_DEFAULT)
         .text_color(c.fg)
         .when(highlighted, |d| d.bg(c.selected))
         .when(!highlighted, |d| d.hover(move |s| s.bg(c.hover)))
@@ -341,9 +319,9 @@ fn render_row(
             div()
                 .absolute()
                 .left(rems_from_px(g.depth as f32 * INDENT + GUIDE_OFFSET))
-                .w(px(1.))
-                .top(if g.first { GUIDE_INSET } else { rems_from_px(0.) })
-                .bottom(if g.last { GUIDE_INSET } else { rems_from_px(0.) })
+                .w(GUIDE_WIDTH)
+                .top(if g.first { GUIDE_INSET } else { Rems(0.) })
+                .bottom(if g.last { GUIDE_INSET } else { Rems(0.) })
                 .bg(c.guide),
         );
     }
@@ -359,8 +337,8 @@ fn render_row(
                 div()
                     .absolute()
                     .top(ROW_HEIGHT)
-                    .left(px(-1.))
-                    .right(px(-0.5))
+                    .left(BANNER_OFFSET_LEFT)
+                    .right(BANNER_OFFSET_RIGHT)
                     .py(BANNER_PAD_Y)
                     .px(BANNER_PAD_X)
                     .border_1()
