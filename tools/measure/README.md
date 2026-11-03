@@ -26,7 +26,7 @@ pwsh -File tools/measure/session.ps1 -Action Stop -Out <dir>
 
 ## checks.txt
 
-한 줄에 `스펙ID | 박스이름 | w\|h\|x\|y [| 기대 cond]`, `#` 주석. 스펙 ID는 `테이블["키"]`(P1-1 표기). cond를 적으면 스펙의 cond와 다를 때 실패한다. 허용 오차는 `verification.tolerance`(px 치수 `dimension` ±1, 키에 `font_size`가 들면 ±0.5, px 외 단위는 정확히 일치).
+한 줄에 `스펙ID | 박스이름 | w\|h\|x\|y [| 기대 cond]`, `#` 주석. 스펙 ID는 `테이블["키"]`(P1-1 표기). cond를 적으면 스펙의 cond와 다를 때 실패한다. 허용 오차는 `verification.tolerance`(px 치수 `dimension` ±1, ID가 `typography[`로 시작하거나 키에 `font_size`가 들면 ±0.5, px 외 단위는 정확히 일치).
 
 ```text
 titlebar["height"] | titlebar | h | default

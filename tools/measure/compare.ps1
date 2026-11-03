@@ -16,7 +16,7 @@ foreach ($line in (Get-Content $toml -Encoding utf8)) {
 }
 function Tol($id, $unit) {
     if ($unit -ne 'px') { return 0.0 }
-    $t = if ($id -match 'font_size') { 'font_size' } else { 'dimension' }
+    $t = if ($id.StartsWith('typography[') -or $id -match 'font_size') { 'font_size' } else { 'dimension' }
     return [double]$spec["verification.tolerance[`"$t`"]"].value
 }
 $dump = Get-Content -Raw $Json | ConvertFrom-Json
