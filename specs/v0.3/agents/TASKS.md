@@ -196,7 +196,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 순서: P1-1 → (P1-2 ∥ P1-4 ∥ P1-5) → P1-3. 카드 리뷰는 `review`(agy Flash high)가 카드마다 하고, 병합 직전 `reviewer`(Codex)가 Phase 묶음 최종 확인을 한 번 한다. Phase 끝 R-12 재실행(9개)은 `measure`, 결과 판정은 `reviewer`.
 
 ### P1-1 레이아웃 테스트 요구사항
-- 상태: todo
+- 상태: done (2026-11-03, `specs/v0.3/verify/phase1/layout-test-req.md`. P1-3 추천: 타이틀 바 3개, 프로젝트 패널 행 높이. `#[gpui::test]`는 gpui-kit `test-support` 필요 → 사용자 결정 대기, 기본안 `#[test]` 상수 대조)
 - 담당: lead
 - 브랜치: master
 - 요구·결정: R-7, D-7

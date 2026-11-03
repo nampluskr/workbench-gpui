@@ -69,3 +69,8 @@
   - `measure`: Claude Code Sonnet 5.5 medium. `tools/measure/`, R-12 재실행, V3 실측. measure가 만든 스크립트·결과도 review가 본다.
   - `reviewer`(Codex): Phase당 1회 병합 직전 최종 확인(`@ponytail-review`, 전체 테스트 1회)과 R-12 결과 판정.
 - 결과: HERDR-SETUP 1장 표·1.3 토큰 부담·4장 소유권·변경 이력 반영. Phase 1 카드 담당을 바꾼다(P1-1 lead, P1-5 measure).
+
+### H-21 · 2026-11-03 · lead (Phase 1 새 세션, 9장)
+- 요청: HANDOFF "다음 할 일" 2, 사용자 말 "불필요한 herdr 패널을 정리해 주세요"
+- 판단: 워크스페이스는 `workbench-gpui`·`wt-ui` 둘뿐(1.3 가정 그대로). impl-ui는 agy `/clear`로 새 대화. verify 탭에 `review`(`wD:p5`, agy gemini-3.8-flash-high)·`measure`(`wD:p6`, claude sonnet medium) 새로 띄움. 빈 shell `wD:p4`·`wE:p2` 닫음. spec(`wD:p2`, Phase 1 카드 없음)·reviewer(`wD:p3`, 컨텍스트 79%, Phase 끝에 새로 띄움)도 닫으려 했으나 lead 안전 분류기가 막아 사용자에게 올림.
+- 결과: `.worktrees/ui` `git merge --ff-only master` → `6cf94ed`.
