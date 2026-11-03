@@ -252,7 +252,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 사용법 한 쪽(README) 포함. 구성 변경으로 reviewer → measure(H-20). 리뷰는 review
 
 ### P1-E Phase 1 끝: R-12 재실행, R-8·R-9 판정
-- 상태: todo (사용자 부재 시간 확인 대기 — 앱을 여러 번 띄워 입력을 보낸다)
+- 상태: done (R-12 9개 기준선 대조 ok 뒤바뀜 0, R-8 통과, R-9 24개 중 23 통과·Q-15 1건, `7e09acc`). reviewer 최종 확인 REWORK 1건 → P1-R1
 - 담당: measure (판정은 reviewer)
 - 브랜치: master `3b26320`
 - 요구·결정: R-8, R-9, R-12, D-1, D-5, D-7
@@ -262,6 +262,15 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: (1) master 디버그 빌드 + `tools/apply-manifest.ps1`. (2) R-12: P0-0c와 같은 9개 스크립트를 같은 순서·같은 앱 데이터 보호로 실행, `-OutDir specs0.3erify\phase1\<스크립트 이름>`, `-Exe` 절대 경로, d043-clip 제외, phase1은 `r1-expected.tsv` 미리 복사. 항목 단위로 `verify/baseline` 기준선과 대조(사이드바 375/617은 Q-15 기준선 그대로면 "변화 없음"). (3) R-8: 같은 빌드를 `--dev-layout-json`으로 한 번 띄워 JSON 저장, 파서로 읽히는지와 대상 요소 목록 확인. (4) R-9: 그 JSON에 `tools/measure/compare.ps1`을 돌려 표를 `measure-phase1.md`에 남긴다(불일치는 고치지 않고 목록으로). src·지난 버전 폴더 수정 금지
 - 비고: 실행 전 다른 workbench-gpui 프로세스 없음 확인. 결과를 [MEASURED] P1-E로 보고. 이어서 reviewer(Codex, 새 세션)가 전체 테스트 1회·`@ponytail-review`·R-12 판정
 
+
+### P1-R1 글꼴 크기 허용 오차 판별 통일 (reviewer `phase1-final.md` REWORK 1)
+- 상태: done (master `a8191d4`·`6282e98`(work/ui `eabe60a` cherry-pick), reviewer R1 PASS)
+- 담당: impl-ui(`src/ui/metrics.rs`), measure(`tools/measure/compare.ps1`)
+- 브랜치: work/ui, master
+- 요구·결정: R-7, layout-test-req 2절
+- 검증 수준: V1 (`cargo test metrics`)
+- 완료 조건: 글꼴 오차(`verification.tolerance["font_size"]`)는 ID가 `typography[`로 시작하거나 키에 `font_size`가 들면 적용한다. 두 곳 같은 규칙. typography 밖 글꼴 ID(`statusbar["cursor_position.font_size"]`)에서 0.75px 차이가 실패하는 회귀 테스트 1개
+- 비고: 끝나면 reviewer가 이 1건만 재확인
 
 ## Phase 2 — 상수·테마 통합 (lead 작성 2026-11-03, 위임 H-26, 미결 처리 H-27)
 

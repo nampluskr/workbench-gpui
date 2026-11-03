@@ -155,6 +155,48 @@
 - 반영(F3 기록은 아래): `specs/v0.3/INTENT.md` 제외 범위 한 줄, `specs/v0.3/PLAN.md`에 "Phase 3 뒤" 절 추가(사용자 승인 계획 변경), `AUDIT.md` 결정란.
 - 상태: 완료
 
+### Phase 1 — 스펙 ID 레이아웃 테스트·덤프 JSON·측정 도구
+
+#### P1-1~P1-5 (2026-11-03, lead·impl-ui·measure·review)
+
+- 무엇을: P1-1 요구사항(`verify/phase1/layout-test-req.md`, lead), P1-2 스펙 ID 헬퍼 `metrics::spec`(`lookup`·`assert_spec`, dev-dep `toml =1.1.8` 승인), P1-3 타이틀 바·창 버튼·프로젝트 패널 행 상수 대조 `#[test]`(H-24, gpui-kit test-support 없이), P1-4 `--dev-layout-json <path>`(`layout_probe::layout_json`), P1-5 `tools/measure/` 정리(session·input 이름 변경, compare.ps1, README).
+- 결과: review `P1-2-3-4.md` PASS(P1-2는 R1 뒤), `P1-5.md` REWORK → R1 PASS. master 병합 `3b26320`(src 191줄 추가·0줄 삭제), tools `e036bef`. 테스트 49 → 55.
+- 검증: 카드별 V0~V2(review 기록). clippy 기준선 경고 10개 외 새 경고 0.
+- 상태: 완료
+
+#### P1-E Phase 1 끝: R-12·R-8·R-9 (2026-11-03~04, measure, V3)
+
+- 무엇을: master 빌드(exe SHA-256 `E40C2FDF…23380`, 전후 동일)로 v0.2 검증 스크립트 9개 재실행, `--dev-layout-json` 1회, compare.ps1 대조.
+- 결과
+  - R-12: 9개 모두 기준선과 ok 뒤바뀜·신규·누락 0. 합계 587개 중 585 통과, 실패 2는 phase3 사이드바 폭 375/617(Q-15 기준선 그대로). d043-clip SKIP·휴지통 내부 판정 불가는 기준선과 같은 환경 사유.
+  - phase4·d043·d044는 사용자 클립보드의 OLE 형식(49161·49171) 때문에 보호 동작으로 두 번 멈췄다. 사용자가 비운 뒤 실행 직전 `Clipboard.Clear()`로 재실행(H-28, R2).
+  - R-8: JSON 파싱됨(seq=2, 박스 57개). R-9: 24개 중 23 통과, 불일치 `sidebar["default_width"]` 300 → 375(Q-15).
+- 검증: `verify/phase1/README.md`·`comparison.json`, `verify/reviews/measure-phase1.md`. 커밋 `7e09acc`.
+- 상태: 완료
+
+#### Phase 1 최종 확인 (2026-11-04, reviewer)
+
+- 결과: 전체 테스트 55 통과(1회), clippy 기준선 10개·새 경고 0, R-12 PASS. REWORK 1건: 글꼴 오차 판별이 `typography` 테이블에만 걸려 `statusbar["cursor_position.font_size"]`가 ±1을 받음(compare.ps1은 반대로 `font_size` 키만) → P1-R1: 두 곳 모두 "ID가 `typography[`로 시작하거나 키에 `font_size`" 규칙으로 통일, 회귀 테스트 1개(master `a8191d4`, work/ui `eabe60a`).
+- 검증: `verify/reviews/phase1-final.md`.
+
+#### 스펙 불일치 목록 (v0.4 이후, 고치지 않음)
+
+| 스펙 ID | 스펙 | 코드·실측 | 근거 |
+| --- | ---: | ---: | --- |
+| `sidebar["default_width"]` | 300 | 375 | Q-15, P0-0c·P0-6·P1-E 같은 값 |
+| `sidebar["footer.height"]` | 30 | 31 | 허용 오차 안(Q-9), 기록만 |
+
+#### Phase 1 종료 (2026-11-04, lead, 위임 H-26)
+
+- 무엇을: PLAN "Phase 종료 때" 절차. R-12(P1-E), V3(R-9 대조), 최종 확인(reviewer PASS), `/ponytail-debt`, HANDOFF·PROGRESS·PLAN 갱신, 태그.
+- 결과
+  - P1-R1 src 수정은 work/ui `eabe60a`를 master에 cherry-pick(`6282e98`). work/ui에는 그 앞에 Phase 2 커밋이 있어 브랜치 병합은 Phase 2 때 한다.
+  - `/ponytail-debt`(`shortcut:` 표식): `tools/measure/compare.ps1:9`·`p0-report.ps1:8` 한 줄 레코드 파싱, `session.ps1:2`·`input.ps1:2` 100%·주 모니터 좌표. src에는 표식 없음.
+  - 사용자 확인 필요(V4): 없음.
+  - 위임 중 lead 판단: H-26(위임 범위), H-27(스펙에 없는 수치 `// spec: none (app value)`), H-28(클립보드 비우기). 사용자 확인 목록에 올린다.
+- 검증: reviewer `phase1-final.md` R1 PASS(`cargo test metrics` 5 통과). 전체 테스트 55는 R1 전 1회.
+- 상태: 완료
+
 ## 사용자 요청 작업
 
 ### docs\temp 이름 바꾸기·이동 (2026-11-03)

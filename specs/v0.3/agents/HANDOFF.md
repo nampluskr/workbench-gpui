@@ -2,6 +2,23 @@
 
 > 소유: `lead`. 세션이 바뀔 때 다음 `lead`가 이어받을 상태만 적는다. 최신이 위.
 
+## 2026-11-04 lead 세션 2 — Phase 1 종료 (위임 H-26, 같은 lead 세션이 Phase 2로 계속)
+
+### 현재 상태
+- Phase 1 완료 `v0.3-phase-1`(push 안 함). 기록: PROGRESS "Phase 1", `verify/reviews/phase1-final.md`(R1 PASS), `measure-phase1.md`, `verify/phase1/`.
+- P1-R1은 work/ui `eabe60a`를 master로 cherry-pick(`6282e98`). work/ui 병합 때 같은 변경이라 충돌 없음 예상.
+- Phase 2: P2-1 `a564644`, P2-2 `6949652`, P2-3 `63c5670`(work/ui). review가 묶음 리뷰 중(`verify/reviews/P2-1-2-3.md`). 다음은 병합 → P2-E.
+
+### herdr
+- wD 탭 control: lead `wD:p1`. verify 탭 `wD:t2`: review `wD:p5`, measure `wD:p6`, reviewer `wD:p7`(Codex GPT-6.1-Sol medium). wE: impl-ui `wE:p1`.
+- impl-ui agy 5시간 한도 98%(초기화 12:20) — REWORK가 오면 그 뒤에.
+- measure 클립보드: phase4 계열은 클립보드에 비텍스트 형식이 있으면 멈춘다. 실행 직전 `Clipboard.Clear()`(H-28).
+
+### 주의
+- 사이드바 시작 폭 375(Q-15), 푸터 31(Q-9)은 기준선. 스펙 불일치 목록은 PROGRESS Phase 1 끝.
+- P2-2 실측 필요 목록(글자 크기 바뀐 화면)과 P2-3(닫기 버튼 hover·active 색, 툴팁 그림자)은 P2-E 측정 목록에 넣는다.
+- P2-1은 AUDIT 6 위치 밖 `Duration::from_*`(watch·keymap·dev·editor_poc·watch_io·mod)를 남겼다. 카드 범위대로.
+
 ## 2026-11-03 lead 세션 1 끝 → Phase 1 새 세션으로
 
 ### 현재 상태
