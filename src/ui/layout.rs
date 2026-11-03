@@ -300,7 +300,7 @@ pub fn tab_bar(tabs: &[TabView], cx: &App) -> impl IntoElement {
 
 /// 1 논리 px (rem 16 기준) — 활성 탭 아래 여백(L-63 `pb_px`).
 fn rems_1px() -> Rems {
-    super::rem::rems_from_px(1.)
+    BORDER_1PX
 }
 
 /// 상태 표시줄 (L-28 padding 4, L-29 그룹 사이 8·그룹 안 4, L-91 좌·우 목록).

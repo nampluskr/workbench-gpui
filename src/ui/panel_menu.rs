@@ -9,6 +9,7 @@ use gpui_kit::*;
 use super::Workbench;
 use super::context_menu::{CmEntry, ContextMenu, ContextMenuEvent};
 use super::keymap::{self, project_panel as pp};
+use super::metrics::menu::{KEYBOARD_OFFSET_X, KEYBOARD_OFFSET_Y};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PanelCmd {
@@ -218,8 +219,8 @@ impl Workbench {
         };
         let _ = ix;
         let position = bounds
-            .map(|b| point(b.left() + px(2.), b.bottom() + px(2.)))
-            .unwrap_or_else(|| point(px(2.), px(2.)));
+            .map(|b| point(b.left() + KEYBOARD_OFFSET_X, b.bottom() + KEYBOARD_OFFSET_Y))
+            .unwrap_or_else(|| point(KEYBOARD_OFFSET_X, KEYBOARD_OFFSET_Y));
         self.open_panel_menu(target, position, w, cx);
     }
 

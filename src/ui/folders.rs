@@ -10,7 +10,6 @@
 
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
-use std::time::Duration;
 
 use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
@@ -23,8 +22,6 @@ use crate::state::{self, Folder, path};
 
 /// A-16.4 등록 실패 알림(원문 문구).
 pub const ERR_OPEN: &str = "Cannot open this folder.";
-/// A-24.2 묶어 쓰기 시간.
-const SAVE_DEBOUNCE: Duration = Duration::from_millis(500);
 /// L-88 타이틀 바 폴더 이름 최대 글자 수.
 const TITLE_MAX_CHARS: usize = 40;
 
@@ -252,7 +249,7 @@ impl Workbench {
         self.folders.save_generation += 1;
         let generation = self.folders.save_generation;
         cx.spawn_in(window, async move |this, cx| {
-            cx.background_executor().timer(SAVE_DEBOUNCE).await;
+            cx.background_executor().timer(super::metrics::FOLDERS_SAVE_DEBOUNCE).await;
             let _ = this.update_in(cx, |this, window, cx| {
                 if this.folders.save_generation == generation {
                     this.save_now(Some(window), cx);
@@ -757,7 +754,7 @@ impl Workbench {
                     .h(super::metrics::SIDEBAR_ROW_HEIGHT)
                     .pl(super::metrics::SIDEBAR_ROW_PADDING_LEFT)
                     .pr(super::metrics::SIDEBAR_ROW_PADDING_RIGHT)
-                    .gap(super::rem::rems_from_px(4.))
+                    .gap(super::metrics::SIDEBAR_ROW_GAP)
                     .items_center()
                     .text_sm()
                     .border_1()
@@ -817,9 +814,9 @@ impl Workbench {
         let button = |id: &'static str, label: &'static str| {
             div()
                 .id(id)
-                .px(super::rem::rems_from_px(8.))
-                .py(super::rem::rems_from_px(4.))
-                .rounded(super::rem::rems_from_px(4.))
+                .px(super::metrics::EMPTY_BUTTON_PAD_X)
+                .py(super::metrics::EMPTY_BUTTON_PAD_Y)
+                .rounded(super::metrics::EMPTY_BUTTON_RADIUS)
                 .border_1()
                 .border_color(border)
                 .text_sm()
@@ -830,8 +827,8 @@ impl Workbench {
             return v_flex()
                 .on_children_prepainted(super::layout_probe::probe(&["project-empty-text", "project-empty-open"]))
                 .size_full()
-                .p(super::rem::rems_from_px(8.))
-                .gap(super::rem::rems_from_px(8.))
+                .p(super::metrics::EMPTY_BODY_PADDING)
+                .gap(super::metrics::EMPTY_BODY_GAP)
                 .text_sm()
                 .text_color(muted)
                 .child(div().child("Choose one of the options below to use the Project Panel"))
@@ -850,8 +847,8 @@ impl Workbench {
             return v_flex()
                 .on_children_prepainted(super::layout_probe::probe(&["project-missing-text", "project-missing-remove"]))
                 .size_full()
-                .p(super::rem::rems_from_px(8.))
-                .gap(super::rem::rems_from_px(8.))
+                .p(super::metrics::EMPTY_BODY_PADDING)
+                .gap(super::metrics::EMPTY_BODY_GAP)
                 .text_sm()
                 .text_color(muted)
                 .child(div().child("This folder no longer exists."))

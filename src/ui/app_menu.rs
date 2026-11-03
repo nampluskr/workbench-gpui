@@ -19,7 +19,7 @@
 //! 닫힘(I-519): 메뉴 밖 누름, Escape, 실행 뒤, 포커스 잃음. 실행 전에 원래 포커스를 복원한다(I-309).
 //! 메뉴가 열린 채 항목의 단축키를 누르면 그 항목을 선택 표시하고 50ms 뒤 닫고 실행한다(I-520).
 
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
@@ -27,42 +27,14 @@ use gpui_kit::*;
 
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
+use super::metrics::menu::*;
 use super::metrics::{BUTTON_DEFAULT, ICON_SMALL};
-use super::rem::rems_from_px;
 use super::tooltip::{self, Line, Spec};
 
 /// 앱 이름 (DECISIONS D-13 이후 변경, D-031 ⑤).
 pub const APP_NAME: &str = "workbench-gpui";
 
-/// I-313 최소 폭 200px (px 상수, rem 과 무관, I-312).
-pub(super) const MIN_WIDTH: Pixels = px(200.);
-/// I-313 최대 높이 = 창 높이 × 0.75.
-pub(super) const MAX_HEIGHT_RATIO: f32 = 0.75;
-/// I-315 목록 위아래 4.
-pub(super) const LIST_PAD_Y: Rems = rems_from_px(4.);
-/// I-316 항목 바깥 좌우 4, 안 좌우 6, 라벨–단축키 최소 16.
-pub(super) const ROW_MARGIN_X: Rems = rems_from_px(4.);
-pub(super) const ROW_PAD_X: Rems = rems_from_px(6.);
-pub(super) const SHORTCUT_GAP: Rems = rems_from_px(16.);
-/// I-317 라벨 14px, 줄 높이 1.618.
-pub(super) const ROW_TEXT: Rems = rems_from_px(14.);
-pub(super) const ROW_LINE_HEIGHT: f32 = 1.618;
-/// I-318 구분선 위아래 6.
-pub(super) const SEPARATOR_MARGIN_Y: Rems = rems_from_px(6.);
-/// I-315 모서리 8.
-pub(super) const RADIUS: Rems = rems_from_px(8.);
-/// I-314 팝업 x 오프셋 −5, 창 가장자리 여유 8.
-const POPUP_OFFSET_X: Rems = rems_from_px(-5.);
-pub(super) const WINDOW_MARGIN: Pixels = px(8.);
-/// I-321 메뉴 이름 글자 12px, 버튼 사이 4.
-const NAME_TEXT: Rems = rems_from_px(12.);
-const NAME_GAP: Rems = rems_from_px(4.);
-/// 메뉴 이름 버튼 좌우 여백. 원문 값이 없어(I-321 "hitbox 는 아이콘 크기와 같지 않다") 판정 대상이 아니다.
-const NAME_PAD_X: Rems = rems_from_px(6.);
-/// I-520 단축키로 실행할 때 선택 표시 시간.
-const SHORTCUT_FLASH: Duration = Duration::from_millis(50);
-/// chord 앞부분을 기다리는 시간. gpui-pre 0.3.10 `window.rs` 의 `PENDING_INPUT_TIMEOUT`(1초, crate 비공개)과 같은 값이다.
-const CHORD_TIMEOUT: Duration = Duration::from_secs(1);
+// Menu size/time constants live in `metrics::menu` (I-312~I-321, I-520).
 
 /// v0.2 에서 동작하는 액션(D-13, D-031 ④). Phase 3 에서 `workspace::Open`,
 /// `multi_workspace::ToggleWorkspaceSidebar`, `multi_workspace::FocusWorkspaceSidebar` 를 더했다.
@@ -705,7 +677,7 @@ impl AppMenu {
             match entry {
                 Entry::Separator => {
                     rows_log.push("---".to_string());
-                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(px(1.)).w_full().bg(border));
+                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(SEPARATOR_HEIGHT).w_full().bg(border));
                 }
                 Entry::Item { label, action } => {
                     let shortcut = keymap::shortcut_for_name(action, prev_focus.as_ref(), window, cx);
@@ -719,7 +691,7 @@ impl AppMenu {
                             .id(("app-menu-row", i))
                             .mx(ROW_MARGIN_X)
                             .px(ROW_PAD_X)
-                            .rounded(rems_from_px(4.))
+                            .rounded(ROW_RADIUS)
                             .justify_between()
                             .text_size(ROW_TEXT)
                             .line_height(relative(ROW_LINE_HEIGHT))

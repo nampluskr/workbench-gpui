@@ -79,8 +79,7 @@ impl WindowButton {
     }
 }
 
-/// L-87 왼쪽 묶음 gap 2 (`gap_0p5`).
-const LEFT_GROUP_GAP: Rems = super::rem::rems_from_px(2.);
+// Left group gap and folder-name padding constants live in `metrics` (titlebar L-87).
 
 /// L-87 왼쪽 묶음: [☰ 메뉴] → [폴더 이름]. 폴더 이름 버튼은 이름 표시와 툴팁만 둔다(D-16).
 /// 폴더 이름은 활성 폴더 이름(40자 말줄임, L-88, A-13.9), 폴더가 없으면 `Open Recent Project`(Muted, L-227). 툴팁 `Recent Projects`(L-226).
@@ -94,7 +93,7 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
         .flex_shrink_0()
         .h_full()
         .pl(TITLE_BAR_PADDING_LEFT)
-        .gap(LEFT_GROUP_GAP)
+        .gap(super::metrics::TITLE_BAR_LEFT_GROUP_GAP)
         .child(app_menu)
         .child(
             div()
@@ -102,7 +101,7 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
                 .flex()
                 .items_center()
                 .h(super::metrics::BUTTON_DEFAULT)
-                .px(super::rem::rems_from_px(6.))
+                .px(super::metrics::TITLE_FOLDER_NAME_PAD_X)
                 .text_sm()
                 .text_color(if folder_name.is_some() { theme.foreground } else { theme.muted_foreground })
                 .hover(move |s| s.bg(hover_bg))

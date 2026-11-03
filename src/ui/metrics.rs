@@ -5,6 +5,7 @@
 //! - 그 밖의 레이아웃 치수(A-32.3~A-32.13, A-32.16 의 14): 모두 rem 헬퍼(`rems_from_px`)로 정의한다.
 //! - 1px 테두리는 gpui 의 `border_*_1` 을 쓴다(Zed 도 `border_*_1` 1px 고정, L-16·L-27·L-35·L-301~L-303).
 
+use std::time::Duration;
 use gpui_kit::{Pixels, Rems, Size, px};
 
 use super::rem::rems_from_px;
@@ -79,6 +80,142 @@ pub const SIDEBAR_ROW_PADDING_RIGHT: Rems = rems_from_px(6.);
 pub const SIDEBAR_FOOTER_PADDING: Rems = rems_from_px(4.);
 pub const SIDEBAR_FOOTER_GAP: Rems = rems_from_px(4.);
 
+// ---- 기타 공통 (P2-1) ----
+/// spacing["base01"] (L-03) 1px 테두리 두께를 rem 으로 둔 값. 탭 아래 테두리 `pb_px`(L-63).
+pub const BORDER_1PX: Rems = rems_from_px(1.);
+/// titlebar["left_group.gap"] (L-87) 타이틀 바 왼쪽 그룹 gap 2 (`gap_0p5`).
+pub const TITLE_BAR_LEFT_GROUP_GAP: Rems = rems_from_px(2.);
+// spec: none (app value) — 타이틀 바 폴더 이름 버튼 좌우 padding 6.
+pub const TITLE_FOLDER_NAME_PAD_X: Rems = rems_from_px(6.);
+// spec: none (app value) — A-24.2 폴더 목록 저장 디바운스(toml 에 없음).
+pub const FOLDERS_SAVE_DEBOUNCE: Duration = Duration::from_millis(500);
+// spec: none (app value) — 사이드바 프로젝트 헤더 줄 안 gap 4 (L-34 에 gap 값 없음).
+pub const SIDEBAR_ROW_GAP: Rems = rems_from_px(4.);
+// spec: none (app value) — 빈 프로젝트·사라진 폴더 안내 화면 버튼(좌우 8, 위아래 4, 모서리 4)과 본문(padding 8, gap 8).
+pub const EMPTY_BUTTON_PAD_X: Rems = rems_from_px(8.);
+pub const EMPTY_BUTTON_PAD_Y: Rems = rems_from_px(4.);
+pub const EMPTY_BUTTON_RADIUS: Rems = rems_from_px(4.);
+pub const EMPTY_BODY_PADDING: Rems = rems_from_px(8.);
+pub const EMPTY_BODY_GAP: Rems = rems_from_px(8.);
+/// ☰ 앱 메뉴·컨텍스트 메뉴 (I-312~I-321, I-501~I-502). 두 메뉴가 같은 상수를 쓴다.
+pub mod menu {
+    use std::time::Duration;
+    use gpui_kit::{Pixels, Rems, px};
+    use super::rems_from_px;
+    /// menu["min_width"] (I-313) 최소 폭 200 (px 상수).
+    pub const MIN_WIDTH: Pixels = px(200.);
+    /// menu["max_height_ratio"] (I-313) 최대 높이 = 창 높이 × 0.75.
+    pub const MAX_HEIGHT_RATIO: f32 = 0.75;
+    /// menu["list_padding_y"] (I-315) 목록 위아래 4.
+    pub const LIST_PAD_Y: Rems = rems_from_px(4.);
+    /// menu["item.margin_x"] (I-316) 항목 바깥 좌우 4.
+    pub const ROW_MARGIN_X: Rems = rems_from_px(4.);
+    /// menu["item.padding_x"] (I-316) 항목 안 좌우 6.
+    pub const ROW_PAD_X: Rems = rems_from_px(6.);
+    /// menu["item.shortcut_min_gap"] (I-316) 라벨–단축키 최소 16.
+    pub const SHORTCUT_GAP: Rems = rems_from_px(16.);
+    /// menu["item.font_size"] (I-317) 라벨 14.
+    pub const ROW_TEXT: Rems = rems_from_px(14.);
+    /// units["phi"] (L-09) 줄 높이 배수 1.618 (I-317 의 22.652px = 14 × 1.618).
+    pub const ROW_LINE_HEIGHT: f32 = 1.618;
+    /// menu["separator.height"] (I-318) 구분선 1.
+    pub const SEPARATOR_HEIGHT: Pixels = px(1.);
+    /// menu["separator.margin_y"] (I-318) 구분선 위아래 6.
+    pub const SEPARATOR_MARGIN_Y: Rems = rems_from_px(6.);
+    /// borders["radius.sm"] (L-10) 항목 hover 배경 모서리 4 (메뉴 항목 전용 ID 는 toml 에 없다).
+    pub const ROW_RADIUS: Rems = rems_from_px(4.);
+    /// menu["corner_radius"] (I-315) 메뉴 모서리 8.
+    pub const RADIUS: Rems = rems_from_px(8.);
+    /// menu["popup_offset_x"] (I-314) 팝업 x 오프셋 −5.
+    pub const POPUP_OFFSET_X: Rems = rems_from_px(-5.);
+    /// menu["context.window_margin"] (I-501) 창 가장자리 여유 8.
+    pub const WINDOW_MARGIN: Pixels = px(8.);
+    /// menu["context.keyboard_offset_x"] (I-502) 키보드로 열 때 x 오프셋 2.
+    pub const KEYBOARD_OFFSET_X: Pixels = px(2.);
+    /// menu["context.keyboard_offset_y"] (I-502) 키보드로 열 때 y 오프셋 2.
+    pub const KEYBOARD_OFFSET_Y: Pixels = px(2.);
+    /// menu["horizontal.item_font_size"] (I-321) 메뉴 이름 글자 12.
+    pub const NAME_TEXT: Rems = rems_from_px(12.);
+    /// menu["horizontal.item_gap"] (I-321) 메뉴 이름 버튼 사이 4.
+    pub const NAME_GAP: Rems = rems_from_px(4.);
+    // spec: none (app value) — 메뉴 이름 버튼 좌우 여백 6. 원문 값이 없다(I-321 "hitbox 는 아이콘 크기와 같지 않다").
+    pub const NAME_PAD_X: Rems = rems_from_px(6.);
+    // spec: none (app value) — I-520 단축키로 실행할 때 선택 표시 시간 50ms(toml 에 없음).
+    pub const SHORTCUT_FLASH: Duration = Duration::from_millis(50);
+    // spec: none (app value) — chord 앞부분 대기 1초. gpui-pre 0.3.10 `PENDING_INPUT_TIMEOUT`(crate 비공개)과 같은 값.
+    pub const CHORD_TIMEOUT: Duration = Duration::from_secs(1);
+}
+/// 프로젝트 패널 트리 행 (L-36~L-49, P-019~P-021).
+pub mod project_panel {
+    use std::time::Duration;
+    use gpui_kit::{Pixels, Rems, px};
+    use super::rems_from_px;
+    /// project_panel["item.height"] (L-36, comfortable) 행 높이 26.
+    pub const ROW_HEIGHT: Rems = rems_from_px(26.);
+    /// project_panel["indent_step"] (L-37) 단계당 들여쓰기 20.
+    pub const INDENT: f32 = 20.;
+    /// project_panel["item.padding_x"] (L-37) 안쪽 좌우 6.
+    pub const ROW_PAD_X: Rems = rems_from_px(6.);
+    /// project_panel["item.gap"] (L-37) gap 4.
+    pub const ROW_GAP: Rems = rems_from_px(4.);
+    /// icons["size.medium"] (L-06, L-40) 파일·폴더 아이콘 16.
+    pub const ICON: Rems = rems_from_px(16.);
+    /// project_panel["indent_guide.offset_x"] (L-38) 안내선 x = 깊이 × 20 + 15.
+    pub const GUIDE_OFFSET: f32 = 15.;
+    /// project_panel["indent_guide.padding_y"] (L-38) 안내선 구간 위아래 여백 4.
+    pub const GUIDE_INSET: Rems = rems_from_px(4.);
+    /// project_panel["indent_guide.width"] (L-38) 안내선 폭 1.
+    pub const GUIDE_WIDTH: Pixels = px(1.);
+    /// project_panel["collapsed_path.padding_x"] (L-43) 접힌 경로 조각 좌우 padding 2.
+    pub const SEGMENT_PAD_X: Rems = rems_from_px(2.);
+    // spec: none (app value) — 접힌 경로 조각 hover 배경 모서리 2.
+    pub const SEGMENT_RADIUS: Rems = rems_from_px(2.);
+    /// inline_input["height"] (P-019) 입력칸 높이 24.
+    pub const INPUT_HEIGHT: Rems = rems_from_px(24.);
+    /// inline_input["banner.padding_y"] (P-021) 배너 위아래 4.
+    pub const BANNER_PAD_Y: Rems = rems_from_px(4.);
+    /// inline_input["banner.padding_x"] (P-021) 배너 좌우 8.
+    pub const BANNER_PAD_X: Rems = rems_from_px(8.);
+    /// typography["size.default"] (L-05, P-021) 배너 글자 14.
+    pub const BANNER_TEXT: Rems = rems_from_px(14.);
+    // spec: none (app value) — P-021 배너 왼쪽 −1·오른쪽 −0.5 오프셋(행 테두리 폭에 맞춤, toml 에 없음).
+    pub const BANNER_OFFSET_LEFT: Pixels = px(-1.);
+    pub const BANNER_OFFSET_RIGHT: Pixels = px(-0.5);
+    /// project_panel["name_tooltip_delay"] (L-49, L-247) 항목 이름 툴팁 지연 1500ms.
+    pub const NAME_TOOLTIP_DELAY: Duration = Duration::from_millis(1500);
+}
+/// 툴팁 외형 (L-209~L-232).
+pub mod tooltip {
+    use gpui_kit::{Pixels, Rems, px};
+    use super::rems_from_px;
+    /// tooltip["transparent_margin_left"] (L-209) 투명 여백 왼쪽 8.
+    pub const OUTER_PAD_LEFT: Rems = rems_from_px(8.);
+    /// tooltip["transparent_margin_top"] (L-209) 투명 여백 위 10.
+    pub const OUTER_PAD_TOP: Rems = rems_from_px(10.);
+    /// tooltip["padding_y"] (L-213) 안쪽 위아래 4.
+    pub const PAD_Y: Rems = rems_from_px(4.);
+    /// tooltip["padding_x"] (L-213) 안쪽 좌우 8.
+    pub const PAD_X: Rems = rems_from_px(8.);
+    /// tooltip["font_size"] (L-214) 글자 14.
+    pub const TEXT_SIZE: Rems = rems_from_px(14.);
+    /// tooltip["meta.font_size"] (L-216) 메타 줄 12.
+    pub const META_TEXT_SIZE: Rems = rems_from_px(12.);
+    /// tooltip["title.max_width"] (L-215) 제목 최대 폭 288(추정).
+    pub const TITLE_MAX_WIDTH: Rems = rems_from_px(288.);
+    /// tooltip["title.shortcut_gap"] (L-215) 제목–단축키 gap 16.
+    pub const SHORTCUT_GAP: Rems = rems_from_px(16.);
+    /// tooltip["corner_radius"] (L-211) 모서리 8 (`rounded_lg` 0.5rem).
+    pub const RADIUS: Rems = rems_from_px(8.);
+    // spec: none (app value) — L-232 두 줄 툴팁: 줄 안 gap 8, 줄 사이 gap 4, 구분선 위 padding 4, 구분선 1(toml 에 없음).
+    pub const TWO_LINE_ROW_GAP: Rems = rems_from_px(8.);
+    pub const TWO_LINE_GAP: Rems = rems_from_px(4.);
+    pub const TWO_LINE_SEPARATOR_PAD_TOP: Rems = rems_from_px(4.);
+    pub const TWO_LINE_SEPARATOR_HEIGHT: Pixels = px(1.);
+    // spec: none (app value) — L-212 `elevation_2` 그림자 두 겹의 offset·blur(toml 에 없음). 0 값은 `Pixels::ZERO`.
+    pub const SHADOW_1_OFFSET_Y: Pixels = px(2.);
+    pub const SHADOW_1_BLUR: Pixels = px(3.);
+    pub const SHADOW_2_OFFSET_Y: Pixels = px(1.);
+}
 /// Test helper: look up spec values by ID (`table["key"]`) in `spec/zed-metrics.toml`.
 #[cfg(test)]
 pub mod spec {

@@ -22,26 +22,7 @@ use gpui_kit::*;
 
 use super::keymap;
 use super::layout_probe;
-use super::rem::rems_from_px;
-
-/// L-209 투명 여백.
-const OUTER_PAD_LEFT: Rems = rems_from_px(8.);
-const OUTER_PAD_TOP: Rems = rems_from_px(10.);
-/// L-213 안쪽 여백.
-const PAD_Y: Rems = rems_from_px(4.);
-const PAD_X: Rems = rems_from_px(8.);
-/// L-214 글자 14px, L-216 메타 12px.
-const TEXT_SIZE: Rems = rems_from_px(14.);
-const META_TEXT_SIZE: Rems = rems_from_px(12.);
-/// L-215 제목 최대 폭 288(추정), 제목–단축키 gap 16.
-const TITLE_MAX_WIDTH: Rems = rems_from_px(288.);
-const SHORTCUT_GAP: Rems = rems_from_px(16.);
-/// L-211 모서리 8 (`rounded_lg` 0.5rem).
-const RADIUS: Rems = rems_from_px(8.);
-/// L-232 두 줄 툴팁: 줄 안 gap 8, 줄 사이 gap 4, 구분선 위 padding 4.
-const TWO_LINE_ROW_GAP: Rems = rems_from_px(8.);
-const TWO_LINE_GAP: Rems = rems_from_px(4.);
-const TWO_LINE_SEPARATOR_PAD_TOP: Rems = rems_from_px(4.);
+use super::metrics::tooltip::*;
 
 /// 툴팁 한 줄: 제목과 (있으면) 단축키 액션.
 #[derive(Clone)]
@@ -162,16 +143,16 @@ pub fn elevation_2_shadow(is_dark: bool) -> Vec<BoxShadow> {
     vec![
         BoxShadow {
             color: hsla(0., 0., 0., 0.12),
-            offset: point(px(0.), px(2.)),
-            blur_radius: px(3.),
-            spread_radius: px(0.),
+            offset: point(Pixels::ZERO, SHADOW_1_OFFSET_Y),
+            blur_radius: SHADOW_1_BLUR,
+            spread_radius: Pixels::ZERO,
             inset: false,
         },
         BoxShadow {
             color: hsla(0., 0., 0., if is_dark { 0.06 } else { 0.03 }),
-            offset: point(px(0.), px(1.)),
-            blur_radius: px(0.),
-            spread_radius: px(0.),
+            offset: point(Pixels::ZERO, SHADOW_2_OFFSET_Y),
+            blur_radius: Pixels::ZERO,
+            spread_radius: Pixels::ZERO,
             inset: false,
         },
     ]
@@ -203,7 +184,7 @@ impl Render for TooltipView {
                     body = body.child(
                         div()
                             .pt(TWO_LINE_SEPARATOR_PAD_TOP)
-                            .child(div().w_full().h(px(1.)).bg(border)),
+                            .child(div().w_full().h(TWO_LINE_SEPARATOR_HEIGHT).bg(border)),
                     );
                 }
                 body = body.child(line_row(
