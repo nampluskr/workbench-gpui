@@ -156,6 +156,7 @@ mod tests {
         assert!(e.src.contains("L-21"));
         spec::assert_spec("titlebar[\"height\"]", "default", f32::from(TITLE_BAR_HEIGHT));
         spec::assert_spec("titlebar[\"window_button.width\"]", "default", f32::from(WINDOW_BUTTON_WIDTH));
+        spec::assert_spec("titlebar[\"window_button.height\"]", "default", f32::from(WINDOW_BUTTON_HEIGHT));
         assert_eq!(
             spec::lookup("titlebar[\"heigth\"]").unwrap_err(),
             "spec id not found: titlebar[\"heigth\"] (spec/zed-metrics.toml)"
