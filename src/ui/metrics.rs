@@ -78,3 +78,100 @@ pub const SIDEBAR_ROW_PADDING_RIGHT: Rems = rems_from_px(6.);
 /// L-35 사이드바 푸터: padding 4, gap 4, 위 테두리 1. A-32.13.
 pub const SIDEBAR_FOOTER_PADDING: Rems = rems_from_px(4.);
 pub const SIDEBAR_FOOTER_GAP: Rems = rems_from_px(4.);
+
+/// Test helper: look up spec values by ID (`table["key"]`) in `spec/zed-metrics.toml`.
+#[cfg(test)]
+pub mod spec {
+    const SPEC_TOML: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/spec/zed-metrics.toml"));
+
+    /// One spec entry: `{ value, unit, cond, src }`.
+    #[derive(Debug, Clone, PartialEq)]
+    pub struct Entry {
+        pub value: f64,
+        pub unit: String,
+        pub cond: String,
+        pub src: String,
+    }
+
+    fn not_found(id: &str) -> String {
+        format!("spec id not found: {id} (spec/zed-metrics.toml)")
+    }
+
+    /// Looks up an ID like `titlebar["height"]` (table path joined by dots, key quoted).
+    pub fn lookup(id: &str) -> Result<Entry, String> {
+        let table: toml::Table = SPEC_TOML.parse().map_err(|e| format!("spec parse error: {e}"))?;
+        let (path, key) = id
+            .strip_suffix("\"]")
+            .and_then(|s| s.split_once("[\""))
+            .ok_or_else(|| not_found(id))?;
+        let mut cur = &table;
+        for part in path.split('.') {
+            cur = cur.get(part).and_then(|v| v.as_table()).ok_or_else(|| not_found(id))?;
+        }
+        let e = cur.get(key).and_then(|v| v.as_table()).ok_or_else(|| not_found(id))?;
+        let value = e.get("value").and_then(|v| v.as_float().or_else(|| v.as_integer().map(|i| i as f64)));
+        let text = |k: &str| e.get(k).and_then(|v| v.as_str()).map(str::to_owned);
+        match (value, text("unit"), text("cond"), text("src")) {
+            (Some(value), Some(unit), Some(cond), Some(src)) => Ok(Entry { value, unit, cond, src }),
+            _ => Err(not_found(id)),
+        }
+    }
+
+    /// Tolerance for a spec unit from `verification.tolerance` (dimension ±1.0 px, font_size ±0.5 px);
+    /// other units (ms, count, chars, ratio) must match exactly.
+    fn tolerance(unit: &str, font: bool) -> f64 {
+        if unit != "px" {
+            return 0.0;
+        }
+        let id = if font { "verification.tolerance[\"font_size\"]" } else { "verification.tolerance[\"dimension\"]" };
+        lookup(id).expect("tolerance entry").value
+    }
+
+    /// Asserts `actual` (logical px) equals the spec value within tolerance and the spec cond matches.
+    /// Failure messages: `spec id not found`, `spec cond mismatch`, `spec mismatch` (ID first, one line).
+    #[track_caller]
+    pub fn assert_spec(id: &str, expected_cond: &str, actual: f32) {
+        let e = lookup(id).unwrap_or_else(|m| panic!("{m}"));
+        if e.cond != expected_cond {
+            panic!("spec cond mismatch: {id} expected cond={expected_cond}, spec cond={}", e.cond);
+        }
+        let tol = tolerance(&e.unit, id.starts_with("typography") && id.contains("size"));
+        if (f64::from(actual) - e.value).abs() > tol {
+            panic!(
+                "spec mismatch: {id} expected {} {} (±{tol}, cond={}, src={}), actual {actual} {}",
+                e.value, e.unit, e.cond, e.src, e.unit
+            );
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn spec_lookup_and_titlebar() {
+        let e = spec::lookup("titlebar[\"height\"]").unwrap();
+        assert_eq!((e.value, e.unit.as_str(), e.cond.as_str()), (32.0, "px", "default"));
+        assert!(e.src.contains("L-21"));
+        spec::assert_spec("titlebar[\"height\"]", "default", f32::from(TITLE_BAR_HEIGHT));
+        spec::assert_spec("titlebar[\"window_button.width\"]", "default", f32::from(WINDOW_BUTTON_WIDTH));
+        assert_eq!(
+            spec::lookup("titlebar[\"heigth\"]").unwrap_err(),
+            "spec id not found: titlebar[\"heigth\"] (spec/zed-metrics.toml)"
+        );
+        assert!(spec::lookup("nope.table[\"x\"]").is_err());
+    }
+
+    #[test]
+    #[should_panic(expected = "spec cond mismatch: titlebar[\"height\"]")]
+    fn spec_cond_mismatch_fails() {
+        spec::assert_spec("titlebar[\"height\"]", "other", 32.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "spec mismatch: titlebar[\"height\"]")]
+    fn spec_value_mismatch_fails() {
+        spec::assert_spec("titlebar[\"height\"]", "default", 34.0);
+    }
+}
