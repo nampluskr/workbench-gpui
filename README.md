@@ -61,6 +61,11 @@ Windows 전용입니다.
 - PowerShell 7: 매니페스트 병합 스크립트에 필요합니다.
 
 개발한 환경은 rustc 1.99.1, Build Tools 2022, Windows SDK 10.0.26100.0입니다. 최소 Rust 버전은 아직 정하지 않았습니다.
+- v0.1·v0.2는 노트북에서 만들었습니다.
+- v0.3부터는 데스크톱에서 같은 버전으로 맞춰 작업합니다(`specs/v0.3/HERDR-SETUP.md` 3.7).
+- 보조 스크립트는 PowerShell 7로 씁니다. Python이 필요하면 WinPython을 전체 경로로 부릅니다.
+  - 기본: `C:\winpython\WPy64-31180_cpu\python-3.11.8.amd64\python.exe`
+  - GPU가 필요할 때: `C:\winpython\WPy64-31180_gpu\python-3.11.8.amd64\python.exe`
 
 ```powershell
 cargo build
@@ -99,8 +104,9 @@ src/
   state/     state.json 읽기·쓰기, 경로 정규화
   dev.rs     디버그 빌드 전용 시험 플래그
 tools/       빌드 보조·검증 스크립트
-specs/       버전별 문서(INTENT·DECISIONS·SPEC·PLAN·PROGRESS)와 검증 증거
-docs/        멀티 에이전트 구성과 결정 기록
+specs/       버전별 문서(INTENT·DECISIONS·SPEC·PLAN·PROGRESS), 멀티 에이전트 운영(HERDR-*), 검증 증거
+spec/        Zed 실측 수치 스펙(zed-metrics.toml, v0.3부터)
+docs/        참고 자료(refs/: Zed 명세·리팩토링 기준 초안), v0.1·v0.2 멀티 에이전트 기록(HERDR-*)
 ```
 
 ## 개발 방식
