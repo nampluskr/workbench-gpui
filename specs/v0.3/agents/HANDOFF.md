@@ -13,7 +13,7 @@
 
 ### 다음 할 일 (새 lead)
 1. `herdr workspace list`로 워크스페이스 확인(1.3).
-2. 기존 pane의 에이전트를 끝내고 새 세션으로 다시 띄운다(9장). pane: control 탭 spec `wD:p2`, verify 탭 reviewer `wD:p3`·shell `wD:p4`, wt-ui impl-ui `wE:p1`·shell `wE:p2`. id는 `herdr pane list`로 다시 확인.
+2. 기존 pane의 에이전트를 새 세션으로 시작한다(9장). 다시 띄우지 않고 새 대화 명령(Claude Code `/clear`, Codex `/new`·`/clear`)으로 대신해도 된다. 이름·pane이 그대로 남는다. Codex는 새 대화 뒤 `/model`(Sol·Medium)을 다시 확인하고, agy는 새 대화 명령이 없으면 다시 띄운다. 이 lead 세션도 `/clear`로 시작했다. pane: control 탭 spec `wD:p2`, verify 탭 reviewer `wD:p3`·shell `wD:p4`, wt-ui impl-ui `wE:p1`·shell `wE:p2`. id는 `herdr pane list`로 다시 확인.
    - reviewer: `codex` 옵션 없이 → `/model` GPT-6.1-Sol·Medium·`s`. Phase 1에서는 끝의 최종 확인 때만 쓰니 그때 띄워도 된다.
    - spec: `agy --model gemini-3.8-flash-medium`, 편집 자동 승인(shift+tab). Phase 1에는 spec 카드가 없으니 필요할 때만.
    - impl-ui: `agy --model claude-sonnet-5-5-medium`(`.worktrees/ui`).
