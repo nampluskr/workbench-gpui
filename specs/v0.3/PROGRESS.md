@@ -138,6 +138,13 @@
 - 검증: `git check-ignore -v`로 두 백업 경로가 무시됨을 확인, `git status --short src specs/v0.1 specs/v0.2` 빈 결과.
 - 상태: 완료(커밋·태그는 아래 커밋)
 
+#### Phase 1 준비: 구성 변경 H-20, 카드 승인, 세션 규칙 (2026-11-03, 사용자·lead)
+
+- 요청: "claude 토큰에 여유가 있으나, codex 여유가 부족 합니다", "gemini 도 여유가 많습니다", "argon 은 사용 불가", 구성안·Phase 1 카드 승인, "진행, 규칙도 추가해 주세요".
+- 조치: HERDR-SETUP 1장(review·measure 역할 추가, reviewer 축소)·1.3·4장·9장(Phase마다 새 세션)·변경 이력, AGENTS 7.1a, HERDR-DECISIONS H-20, TASKS Phase 1 카드(P1-1 lead, P1-5 measure, P1-2 toml dev-dep 승인), HANDOFF.
+- 검증: 바꾼 줄을 다시 읽음. src 변경 없음.
+- 상태: 완료(Phase 1은 새 lead 세션에서 시작)
+
 #### 감사 채택·보류, 동작 변경 범위, P0-0c 시점 결정 (2026-11-03, 사용자)
 
 - 요청: lead가 세 가지 안을 내고 사용자가 "제안대로"로 승인했다.

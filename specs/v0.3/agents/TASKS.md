@@ -191,20 +191,20 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: AGENTS 3A.4 절차, `[MEASURED]` 보고. 불일치는 고치지 않고 스펙 불일치 목록으로만.
 - 비고: 선행 F5. 1920x1080 100% 주 모니터.
 
-## Phase 1 — 검증 기반 (초안, 사용자 승인 대기)
+## Phase 1 — 검증 기반 (사용자 승인 2026-11-03, 구성 H-20)
 
-순서: P1-1 → (P1-2 ∥ P1-4 ∥ P1-5) → P1-3. 리뷰는 P1-2·P1-3·P1-4를 묶어 reviewer가 한 번에 한다(Codex 한도). Phase 끝에 R-12 재실행(9개)과 V3(변경 화면 없으면 생략 가능, 3A.3 5번은 lead가 묶음 판단).
+순서: P1-1 → (P1-2 ∥ P1-4 ∥ P1-5) → P1-3. 카드 리뷰는 `review`(agy Flash high)가 카드마다 하고, 병합 직전 `reviewer`(Codex)가 Phase 묶음 최종 확인을 한 번 한다. Phase 끝 R-12 재실행(9개)은 `measure`, 결과 판정은 `reviewer`.
 
 ### P1-1 레이아웃 테스트 요구사항
 - 상태: todo
-- 담당: reviewer
+- 담당: lead
 - 브랜치: master
 - 요구·결정: R-7, D-7
 - 스펙 ID: -
 - 범위: `specs/v0.3/verify/phase1/layout-test-req.md`
 - 검증 수준: -
 - 완료 조건: 스펙 ID 조회 방식(toml 경로 표기 `테이블["키"]`), 허용 오차(`verification.tolerance` 우선, F5 Q-6), 조건(cond) 처리, 실패 메시지 형식, P0-6 "V2 이전 후보" 10줄 중 P1-3 대상 1~2개 추천
-- 비고: 짧게(한 쪽). 구현하지 않는다.
+- 비고: 짧게(한 쪽). 구현하지 않는다. 구성 변경으로 reviewer → lead(H-20)
 
 ### P1-2 스펙 ID 조회 헬퍼
 - 상태: todo
@@ -215,7 +215,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 범위: 테스트 전용 헬퍼(위치는 lead 지정: `src/ui/metrics.rs` 옆 `#[cfg(test)]` 모듈 후보). `Cargo.toml` `[dev-dependencies]` 한 줄
 - 검증 수준: V1
 - 완료 조건: 스펙 ID로 value·unit·cond를 돌려주고, 없는 ID는 ID를 담은 오류로 실패. 테스트 1개 이상
-- 비고: **사용자 결정 필요** — toml 읽기. `Cargo.lock`에 이미 `toml 1.1.8`(gpui-kit 경유)이 있어 `[dev-dependencies] toml = "=1.1.8"`이면 새 다운로드가 없다. 대안은 한 줄 레코드 직접 파싱(`p0-report.ps1`의 shortcut과 같은 한계).
+- 비고: 사용자 승인(2026-11-03): `Cargo.toml` `[dev-dependencies]`에 `toml = "=1.1.8"` 한 줄. 이 카드에 한해 `Cargo.toml`·`src/ui/metrics.rs`를 impl-ui에 지정. 근거: `Cargo.lock`에 이미 `toml 1.1.8`(gpui-kit 경유)이 있어 `[dev-dependencies] toml = "=1.1.8"`이면 새 다운로드가 없다. 대안은 한 줄 레코드 직접 파싱(`p0-report.ps1`의 shortcut과 같은 한계).
 
 ### P1-3 대표 레이아웃 테스트 1~2개
 - 상태: todo
@@ -241,11 +241,11 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 
 ### P1-5 V3 측정 스크립트 정리
 - 상태: todo
-- 담당: reviewer
+- 담당: measure
 - 브랜치: master
 - 요구·결정: R-9, D-12
 - 스펙 ID: -
 - 범위: `tools/measure/`
 - 검증 수준: -
 - 완료 조건: P0-6 스크립트를 재사용 가능한 형태로 정리. 리뷰 지적(lead, 2026-11-03) 2~5 반영: 앱을 숨김 창으로 띄우지 않기(`-WindowStyle Hidden` 제거), `p0-show.ps1` 삭제(`p0-input -Action Maximize`로 대체), 100%·주 모니터 좌표 한계 `shortcut:` 주석, 원래 없던 앱 데이터 폴더는 복원 때 지우기. P1-4 JSON 덤프를 읽도록
-- 비고: 사용법 한 쪽(README) 포함
+- 비고: 사용법 한 쪽(README) 포함. 구성 변경으로 reviewer → measure(H-20). 리뷰는 review

@@ -2,6 +2,31 @@
 
 > 소유: `lead`. 세션이 바뀔 때 다음 `lead`가 이어받을 상태만 적는다. 최신이 위.
 
+## 2026-11-03 lead 세션 1 끝 → Phase 1 새 세션으로
+
+### 현재 상태
+- Phase 0 완료(`v0.3-phase-0`). Phase 1 카드 승인됨(TASKS "Phase 1"). 아직 어떤 Phase 1 지시도 보내지 않았다.
+- 구성 변경 H-20 승인: `review`(agy gemini-3.8-flash-high) 카드 리뷰, `measure`(Claude Code Sonnet 5.5 medium) 측정·R-12 재실행·V3, `reviewer`(Codex)는 Phase당 최종 확인 1회. HERDR-SETUP 1장·1.3·4장, AGENTS 7.1a에 반영.
+- P1-2: `Cargo.toml` `[dev-dependencies] toml = "=1.1.8"` 사용자 승인(이미 `Cargo.lock`에 있음).
+- 새 규칙(HERDR-SETUP 9장): Phase가 바뀔 때 모든 에이전트를 새 세션으로 시작.
+- 구독 여유(사용자 2026-11-03): Claude·Gemini(Flash) 여유, Codex 부족, Argon 사용 불가.
+
+### 다음 할 일 (새 lead)
+1. `herdr workspace list`로 워크스페이스 확인(1.3).
+2. 기존 pane의 에이전트를 끝내고 새 세션으로 다시 띄운다(9장). pane: control 탭 spec `wD:p2`, verify 탭 reviewer `wD:p3`·shell `wD:p4`, wt-ui impl-ui `wE:p1`·shell `wE:p2`. id는 `herdr pane list`로 다시 확인.
+   - reviewer: `codex` 옵션 없이 → `/model` GPT-6.1-Sol·Medium·`s`. Phase 1에서는 끝의 최종 확인 때만 쓰니 그때 띄워도 된다.
+   - spec: `agy --model gemini-3.8-flash-medium`, 편집 자동 승인(shift+tab). Phase 1에는 spec 카드가 없으니 필요할 때만.
+   - impl-ui: `agy --model claude-sonnet-5-5-medium`(`.worktrees/ui`).
+   - 새로: verify 탭에 `review`(`agy --model gemini-3.8-flash-high`), `measure`(`claude --model sonnet --effort medium`) pane을 나눠 만들고 이름을 붙인다.
+3. `.worktrees/ui`에서 `git merge --ff-only master`(work/ui는 `c6b680a`, master는 Phase 0 커밋 이후).
+4. PLAN 진행 현황 Phase 1 → doing. P1-1(lead 문서) → P1-2·P1-4(impl-ui) ∥ P1-5(measure) → P1-3. 카드 리뷰는 review, Phase 끝 최종 확인은 reviewer.
+
+### 주의
+- 사이드바 시작 폭 375(스펙 300)는 기준선(Q-15). R-12 재실행에서 375면 변화 없음.
+- `verify/**/appdata/`는 `.gitignore`(개인 경로 유출 방지).
+- Git Bash에서 슬래시 명령은 `MSYS_NO_PATHCONV=1` + `herdr pane send-text`.
+- agy 기본 모드는 읽기 명령도 승인을 묻는다. 지속 허용·전체 자동 승인은 lead 안전 분류기가 막는다. 1회 승인으로 처리.
+
 ## 2026-11-03 lead 세션 1 — Phase 0 종료
 
 ### 현재 상태

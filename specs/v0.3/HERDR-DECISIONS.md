@@ -28,6 +28,7 @@
 | H-17 | 2026-11-03 | reviewer | P0-6 입력 스크립트 `tools/measure/p0-input.ps1`(측정 창이 맨 앞·최대화일 때만, 좌표가 측정 창 안일 때만 클릭·호버, 키는 Esc·F2·F10·Enter·Right·Down만) 승인. 이후 같은 스크립트·Snapshot·p0-show는 lead 감시 스크립트가 자동 승인 | lead 판단(H-4 위임) |
 | H-18 | 2026-11-03 | 사용자 → reviewer | P0-6 중 전면에 뜬 "Open With"(OpenWith.exe) 대화상자를 닫으라는 사용자 지시. `p0-input.ps1 -Action DismissOpenWith`(전면 창 클래스·소유 프로세스가 OpenWith일 때만 Esc 1회) 승인 | 사용자 지시 |
 | H-19 | 2026-11-03 | reviewer | P0-6 마무리: 측정 프로세스(session.json pid, 경로 확인)만 CloseMainWindow로 닫고 `p0-session.ps1 -Action Stop`(복원·해시 대조·표지 확인 후 시험 폴더 삭제) 승인 | lead 판단(H-4 위임) |
+| H-20 | 2026-11-03 | 사용자 | 구성 변경: review(agy Flash high) 카드 리뷰, measure(Claude Code Sonnet medium) 측정·재실행, reviewer(Codex) Phase당 최종 확인 1회 | 사용자 승인 |
 
 ## 기록
 
@@ -60,3 +61,11 @@
 - 요청: P0-0b `cargo build`가 의존성 다운로드를 위한 네트워크 접근 승인을 요청했다.
 - 판단: 승인(1회, `y`). `Cargo.lock`에 고정된 크레이트를 crates.io에서 받는 것이라 기준선 빌드에 필요하다. Cargo 파일은 바뀌지 않는다.
 - 결과: reviewer working.
+
+### H-20 · 2026-11-03 · 사용자 → lead (구성 변경)
+- 요청: 사용자 말 "claude 토큰에 여유가 있으나, codex 여유가 부족 합니다", "gemini 도 여유가 많습니다", "argon 은 사용 불가". lead 안에 "이 구성으로 변경" 선택.
+- 판단: 구현자(impl-ui agy Claude, impl-editor Claude Code)와 계열이 다른 Gemini가 카드 리뷰를 맡으면 독립 검증이 된다(HERDR-SETUP 1.2). 측정·재실행은 독립 검증이 아니라 실행이라 Claude로 옮긴다.
+  - `review`: agy gemini-3.8-flash-high. 카드 리뷰(diff, 카드 검증 수준만큼 빌드·테스트, 정확성, AGENTS 4장 점검).
+  - `measure`: Claude Code Sonnet 5.5 medium. `tools/measure/`, R-12 재실행, V3 실측. measure가 만든 스크립트·결과도 review가 본다.
+  - `reviewer`(Codex): Phase당 1회 병합 직전 최종 확인(`@ponytail-review`, 전체 테스트 1회)과 R-12 결과 판정.
+- 결과: HERDR-SETUP 1장 표·1.3 토큰 부담·4장 소유권·변경 이력 반영. Phase 1 카드 담당을 바꾼다(P1-1 lead, P1-5 measure).

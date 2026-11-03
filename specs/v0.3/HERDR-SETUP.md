@@ -36,7 +36,9 @@
 |---|---|---|---|---|---|---|
 | `lead` | 지휘, 작업 분해, 병합 판단, 대리 응답 | Claude Code | Opus 5.5 | high | workbench-gpui / control | full |
 | `spec` | Zed 실측값 스펙 관리, 비교 결과 정리 | agy | gemini-3.8-flash | - | workbench-gpui / control | off |
-| `reviewer` | 빌드·테스트, 감사, 리뷰, V3 실측 | Codex | gpt-6.1-sol | medium (에디터 로직은 high) | workbench-gpui / verify | review 전용 |
+| `reviewer` | Phase당 1회 병합 직전 최종 확인(`@ponytail-review`, 전체 테스트 1회), R-12 결과 판정 (H-20) | Codex | gpt-6.1-sol | medium (에디터 로직은 high) | workbench-gpui / verify | review 전용 |
+| `review` | 카드 리뷰: diff, 카드 검증 수준만큼 빌드·테스트, 정확성 리뷰, AGENTS 4장 점검 (H-20) | agy | gemini-3.8-flash-high | - | workbench-gpui / verify | 규칙만(플러그인 없음) |
+| `measure` | `tools/measure/` 스크립트, R-12 재실행, V3 실측 (H-20) | Claude Code | Sonnet 5.5 | medium | workbench-gpui / verify | full |
 | `impl-ui` | UI 셸 구현 (P2·P3 주 구현자) | agy | Claude Sonnet 5.5 (thinking) | - | wt-ui (`work/ui`) | full |
 | `impl-editor` | 에디터 코어 구현 — **필요할 때만** | Claude Code | Opus 5.5 | medium (어려운 작업만 high) | wt-editor (`work/editor`) | full |
 
@@ -65,10 +67,12 @@
 | --- | --- | --- | --- |
 | Claude Max | `lead` Opus high | ◐ | 판단 위주라 출력이 짧다. 코드를 직접 쓰지 않는다. |
 | Claude Max | `impl-editor` Opus medium | ○ | 필요할 때만 띄운다(1.1). |
-| Codex Plus | `reviewer` Sol medium·high | ● 위험 | 셋 가운데 한도가 가장 작다. 아래처럼 아낀다. |
+| Codex Plus | `reviewer` Sol medium·high | ● 위험 | 셋 가운데 한도가 가장 작다. Phase당 최종 확인 1회만 쓴다(H-20). |
+| Claude Max | `measure` Sonnet medium | ◐ | 측정·재실행이 몰리지만 Claude 한도에 여유가 있다(사용자 2026-11-03). |
+| agy (Gemini Pro) | `review` Flash high | ◐ | 카드 리뷰를 맡는다. Gemini 한도에 여유가 있다(사용자 2026-11-03). |
 | agy (Gemini Pro) | `spec` Flash | ◐ | P0-3(F1)의 원문 약 700KB 변환에 몰린다. 문서를 하나씩 순차로 처리하고 문서마다 저장한다. |
 | agy (Gemini Pro) | `impl-ui` Claude Sonnet thinking | ● | P2·P3의 주 구현자다. 한도가 바닥나면 Claude Code Sonnet 5.5 medium으로 바꾼다(1.1). |
-| agy (Gemini Pro) | Argon | 사용 안 함 | 소진 상태다. |
+| agy (Gemini Pro) | Argon | 사용 안 함 | 사용 불가(사용자 2026-11-03). |
 
 `reviewer`(Codex Plus) 부담을 아끼는 방법:
 - 카드를 묶어 리뷰한다. 같은 화면 영역의 카드는 한 번에 리뷰한다.
@@ -243,10 +247,10 @@ switch_ascii_input_source_in_prefix = true
 | `specs/v0.3/agents/TASKS.md` | `lead` | 작업 보드(작업 카드) |
 | `specs/v0.3/agents/HANDOFF.md` | `lead` | 세션 핸드오프 |
 | `spec/zed-metrics.toml`, `spec/INDEX.md`, `spec/ambiguous.md` | `spec` | Zed 실측 스펙, 색인, 모호·충돌 항목 |
-| `specs/v0.3/verify/reviews/` | `reviewer` | 기준선, 감사, 리뷰, 실측 비교 결과 |
+| `specs/v0.3/verify/reviews/` | `review`(카드 리뷰), `reviewer`(최종 확인), `measure`(`measure-*.md`) | 기준선, 감사, 리뷰, 실측 비교 결과. 파일 이름으로 나눈다 |
 | `specs/v0.3/verify/finalize/` | `lead` | 의도·결정 검토, 플랜 대조 (FINALIZE F2) |
-| `specs/v0.3/verify/baseline/` | `reviewer` | v0.2 검증 스크립트 기준선 |
-| `tools/measure/` | `reviewer` | V3 측정 스크립트(PowerShell, `tools/capture.ps1` 재사용) |
+| `specs/v0.3/verify/baseline/` | `reviewer`(P0-0c 기준선), `measure`(Phase별 R-12 재실행 결과 `phase<n>/`) | v0.2 검증 스크립트 기준선 |
+| `tools/measure/` | `measure` (H-20, P0-6 판은 reviewer가 만듦) | V3 측정 스크립트(PowerShell, `tools/capture.ps1` 재사용) |
 | 에디터 코어: `src/ui/editor_poc.rs` | `impl-editor` | P0-5 사용자 확정 (2026-11-03) |
 | UI 셸: `src/ui/` 의 나머지 파일(공통 제외), `src/keymap/`, `src/fsops/`, `src/state/`, `src/main.rs` | `impl-ui` | P0-5 사용자 확정 (2026-11-03) |
 | 공통 모듈(`src/ui/mod.rs`, `src/ui/metrics.rs`, `src/ui/rem.rs`, `src/ui/layout_probe.rs`, 테마, 공통 컴포넌트), `src/dev.rs`, `Cargo.toml` | `lead`가 카드 단위로 지정 | P0-5 사용자 확정 (2026-11-03) |
@@ -527,6 +531,7 @@ Phase별 목표, 작업 카드, 완료 기준, 시작·종료 절차는 `specs/v
 - `wt-editor`와 `impl-editor`는 카드가 끝나면 닫는다(브랜치는 남긴다).
 - 탭 control·verify와 `wt-ui`는 사용자가 닫으라고 할 때까지 유지한다.
 - 버전이 끝나면 다음 버전의 `specs/{새 버전}/HERDR-SETUP.md`를 새로 쓴다. 이 문서는 고치지 않는다.
+- Phase가 바뀔 때 모든 에이전트(lead 포함)를 새 세션으로 시작한다. 이어받을 상태는 `specs/v0.3/agents/HANDOFF.md` 맨 위 절에 두고, 끝내는 쪽 lead가 커밋한 뒤 사용자가 새 lead를 띄운다. 새 lead가 나머지 에이전트를 다시 띄운다(사용자 결정 2026-11-03).
 
 ## 10. 변경 이력
 
@@ -534,5 +539,7 @@ Phase별 목표, 작업 카드, 완료 기준, 시작·종료 절차는 `specs/v
 | --- | --- | --- |
 | 2026-11-03 | refactor-draft HERDR.md·HERDR-SETUP.md를 데스크톱·워크스페이스·토큰 부담에 맞게 합쳐 작성. impl-editor 필요할 때만, reviewer 묶음 리뷰, agy Flash·Claude Sonnet만, 측정 도구 PowerShell, Python WinPython, 운영 문서 `specs/v0.3/` 아래 | 사용자 확정 (2026-11-03) |
 | 2026-11-03 | agy 한도 "둘 다 충분" 반영, P0-0c는 reviewer 전부, Build Tools 2022 최신 설치·2026 삭제 | 사용자 답 |
+| 2026-11-03 | 9장: Phase가 바뀔 때 모든 에이전트를 새 세션으로 시작, 상태는 HANDOFF | 사용자 승인 |
+| 2026-11-03 | 구성 변경(H-20): 카드 리뷰 `review`(agy gemini-3.8-flash-high), 측정 `measure`(Claude Code Sonnet 5.5 medium) 추가, `reviewer`(Codex)는 Phase당 최종 확인 1회. 근거: Codex 한도 부족, Claude·Gemini 여유, Argon 사용 불가 | 사용자 승인 |
 | 2026-11-03 | F5 반영(F4 V-1~V-6): 실행 명령(agy `--model`, codex 옵션 없이 `/model`), 6.4 승인은 lead 판단, 7.1 프롬프트 갱신, 7.2·7.4 셸 최소, worktree는 `git worktree add`, 3.7 설치 현황 | 사용자 승인("제안대로") |
 | 2026-11-03 | P0-5 담당 경로 확정: 에디터 코어 `editor_poc.rs`, 공통에 `ui/mod.rs`·`rem.rs`·`layout_probe.rs` 추가, UI 셸에 `main.rs` 명시 | 사용자 승인 |

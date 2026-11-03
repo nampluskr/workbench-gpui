@@ -236,6 +236,12 @@ cargo run
 - `REWORK`에는 파일, 위치, 사유, 기대 수정을 항목별로 적는다.
 - src는 수정하지 않는다.
 
+### 7.1a review (agy, gemini-3.8-flash-high) · measure (Claude Code, Sonnet 5.5 medium) — 구성 변경 H-20
+
+- `review`: 카드 리뷰를 맡는다. 7.1의 리뷰 절차 1·2·3·5를 따르고, `@ponytail-review` 대신 4장 규칙으로 점검한다. 결과는 `specs/v0.3/verify/reviews/<task-id>.md`, 결론은 `PASS`/`REWORK`. src는 수정하지 않는다.
+- `measure`: `tools/measure/` 스크립트, Phase별 R-12 재실행, V3 실측을 맡는다. V3는 3A.4 절차를 따르고 `[MEASURED]`로 보고한다. src는 수정하지 않는다.
+- `reviewer`(Codex)는 Phase당 1회 병합 직전 최종 확인(`@ponytail-review`, 전체 테스트 1회)과 R-12 결과 판정만 한다.
+
 ### 7.2 impl-ui (agy, Claude Sonnet 5.5 thinking)
 
 - 담당 범위는 UI 셸이다(메뉴, 패널, 타이틀 바, 사이드바, 툴팁 등. 경로는 `specs/v0.3/HERDR-SETUP.md` 4장).
