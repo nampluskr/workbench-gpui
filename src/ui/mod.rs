@@ -370,6 +370,7 @@ impl Workbench {
                 cx.background_executor()
                     .timer(Duration::from_millis(300))
                     .await;
+                let mut doc = None;
                 let Ok(text) = this.update_in(cx, |this, window, cx| {
                     let mut out = format!(
                         "rem={} scale={} viewport={}x{} maximized={} dock_width={} dock_stored={} body_width={}",
@@ -397,6 +398,20 @@ impl Workbench {
                             out.push_str(&format!(" active_text_len={} active_text_fnv={fnv:016x}", text.len()));
                         }
                     }
+                    // --dev-layout-json input (same snapshot as the stdout boxes below).
+                    let viewport = window.viewport_size();
+                    doc = Some((
+                        f32::from(window.rem_size()),
+                        window.scale_factor(),
+                        (f32::from(viewport.width), f32::from(viewport.height)),
+                        layout_probe::snapshot()
+                            .into_iter()
+                            .map(|(n, b)| {
+                                let r = [b.origin.x, b.origin.y, b.size.width, b.size.height].map(f32::from);
+                                (n, r)
+                            })
+                            .collect::<Vec<_>>(),
+                    ));
                     for (name, b) in layout_probe::snapshot() {
                         out.push_str(&format!(
                             "\nname={name} bounds={:.2},{:.2},{:.2},{:.2}",
@@ -412,6 +427,12 @@ impl Workbench {
                 };
                 if text != last {
                     seq += 1;
+                    if let (Some(path), Some((rem, scale, vp, boxes))) = (crate::dev::layout_json_path(), doc) {
+                        let json = layout_probe::layout_json(seq, rem, scale, vp, &boxes);
+                        if let Err(e) = std::fs::write(path, json) {
+                            eprintln!("[dev] layout-json write failed: {path}: {e}");
+                        }
+                    }
                     let mut lines = text.lines();
                     if let Some(head) = lines.next() {
                         println!("[dev] layout-snapshot seq={seq} {head}");

@@ -67,7 +67,40 @@ pub fn snapshot() -> Vec<(&'static str, Bounds<Pixels>)> {
     })
 }
 
+/// Builds the `--dev-layout-json` document (logical px, rounded to 0.01). `boxes` are `(name, [x, y, w, h])`.
+pub fn layout_json(seq: u32, rem: f32, scale: f32, viewport: (f32, f32), boxes: &[(&str, [f32; 4])]) -> String {
+    let r = |v: f32| (f64::from(v) * 100.0).round() / 100.0;
+    let boxes: Vec<_> = boxes
+        .iter()
+        .map(|(name, [x, y, w, h])| serde_json::json!({ "name": name, "x": r(*x), "y": r(*y), "w": r(*w), "h": r(*h) }))
+        .collect();
+    serde_json::json!({
+        "seq": seq,
+        "rem": r(rem),
+        "scale": r(scale),
+        "viewport": { "w": r(viewport.0), "h": r(viewport.1) },
+        "boxes": boxes,
+    })
+    .to_string()
+}
+
 /// 이름이 `prefix` 로 시작하는 경계를 지운다. 닫힌 메뉴·툴팁의 옛 경계가 스냅숏에 남지 않게 한다.
 pub fn forget(prefix: &str) {
     BOXES.with(|boxes| boxes.borrow_mut().retain(|k, _| !k.starts_with(prefix)));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn layout_json_shape() {
+        let json = layout_json(3, 16.0, 1.0, (1920.0, 1080.0), &[("titlebar", [0.0, 0.0, 1920.0, 32.0])]);
+        let v: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(v["seq"], 3);
+        assert_eq!(v["rem"], 16.0);
+        assert_eq!(v["viewport"]["w"], 1920.0);
+        assert_eq!(v["boxes"][0]["name"], "titlebar");
+        assert_eq!(v["boxes"][0]["h"], 32.0);
+    }
 }
