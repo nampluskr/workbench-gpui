@@ -9,6 +9,7 @@ mod folders;
 mod keymap;
 mod layout;
 mod layout_probe;
+mod menu_common;
 mod metrics;
 mod pane;
 mod panel_delete;

@@ -28,6 +28,7 @@ use gpui_kit::*;
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
 use super::metrics::menu::*;
+use super::menu_common;
 use super::metrics::{BUTTON_DEFAULT, ICON_SMALL};
 use super::tooltip::{self, Line, Spec};
 
@@ -657,27 +658,22 @@ impl AppMenu {
         let border = theme.border;
         let muted = theme.muted_foreground;
         let selected_bg = theme.secondary_hover;
-        let bg = theme.popover;
-        let fg = theme.popover_foreground;
-        let shadow = tooltip::elevation_2_shadow(theme.is_dark());
         let max_height = window.viewport_size().height * MAX_HEIGHT_RATIO;
         let prev_focus = self.prev_focus.clone();
 
         let entries = self.entries().to_vec();
         let mut rows_log = Vec::new();
-        let mut list = v_flex()
-            .on_children_prepainted(probe(&ROW_PROBES))
-            .id("app-menu-list")
-            // I-313: 최소 폭 200 은 테두리 안쪽 폭이다(바깥 폭 = 200 + 테두리 1 × 2 = 202).
-            .min_w(MIN_WIDTH)
-            .py(LIST_PAD_Y)
-            .max_h(max_height)
-            .overflow_y_scroll();
+        // I-313: 최소 폭 200 은 테두리 안쪽 폭이다(바깥 폭 = 200 + 테두리 1 × 2 = 202).
+        let mut list = menu_common::list(
+            v_flex().on_children_prepainted(probe(&ROW_PROBES)),
+            "app-menu-list",
+            max_height,
+        );
         for (i, entry) in entries.iter().enumerate() {
             match entry {
                 Entry::Separator => {
                     rows_log.push("---".to_string());
-                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(SEPARATOR_HEIGHT).w_full().bg(border));
+                    list = list.child(menu_common::separator(border));
                 }
                 Entry::Item { label, action } => {
                     let shortcut = keymap::shortcut_for_name(action, prev_focus.as_ref(), window, cx);
@@ -687,14 +683,7 @@ impl AppMenu {
                     ));
                     let selected = self.selected == Some(i);
                     list = list.child(
-                        h_flex()
-                            .id(("app-menu-row", i))
-                            .mx(ROW_MARGIN_X)
-                            .px(ROW_PAD_X)
-                            .rounded(ROW_RADIUS)
-                            .justify_between()
-                            .text_size(ROW_TEXT)
-                            .line_height(relative(ROW_LINE_HEIGHT))
+                        menu_common::row(("app-menu-row", i))
                             .when(selected, |row| row.bg(selected_bg))
                             .on_hover(cx.listener(move |this, hovered: &bool, _, cx| {
                                 if *hovered && this.selected != Some(i) {
@@ -707,11 +696,7 @@ impl AppMenu {
                             .child(div().whitespace_nowrap().child(label.clone()))
                             .when_some(shortcut, |row, s| {
                                 row.child(
-                                    div()
-                                        .flex_shrink_0()
-                                        .ml(SHORTCUT_GAP)
-                                        .text_color(muted)
-                                        .child(s),
+                                    menu_common::shortcut_cell().text_color(muted).child(s),
                                 )
                             }),
                     );
@@ -733,15 +718,8 @@ impl AppMenu {
             .on_action(cx.listener(Self::on_next_menu))
             .on_action(cx.listener(Self::on_previous_menu))
             // I-520 항목 단축키는 `intercept`(키 입력 가로채기)가 맡는다.
-            .on_mouse_down_out(cx.listener(Self::on_mouse_down_out))
-            .occlude()
-            .bg(bg)
-            .text_color(fg)
-            .border_1()
-            .border_color(border)
-            .rounded(RADIUS)
-            .shadow(shadow)
-            .child(list);
+            .on_mouse_down_out(cx.listener(Self::on_mouse_down_out));
+        let popup = menu_common::popup_surface(popup, cx).child(list);
 
         div()
             .absolute()

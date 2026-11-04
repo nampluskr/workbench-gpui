@@ -8,17 +8,14 @@
 //! 닫힘(I-519): 메뉴 밖 누름, Escape, 실행 뒤, 포커스 잃음. Escape·실행이면 원래 포커스를 돌려준다(I-309).
 //! 고른 항목은 `ContextMenuEvent::Chosen(번호)` 로 알린다. 닫히면 `Dismissed`.
 
-use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
+use gpui_kit::component::{ActiveTheme as _, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-use super::metrics::menu::{
-    CHORD_TIMEOUT, LIST_PAD_Y, MAX_HEIGHT_RATIO, MIN_WIDTH, RADIUS, ROW_LINE_HEIGHT, ROW_MARGIN_X, ROW_PAD_X, ROW_RADIUS,
-    ROW_TEXT, SEPARATOR_HEIGHT, SEPARATOR_MARGIN_Y, SHORTCUT_FLASH, SHORTCUT_GAP, WINDOW_MARGIN,
-};
+use super::metrics::menu::{CHORD_TIMEOUT, MAX_HEIGHT_RATIO, SHORTCUT_FLASH, WINDOW_MARGIN};
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
-use super::tooltip;
+use super::menu_common;
 
 #[derive(Clone, Debug)]
 pub enum CmEntry {
@@ -237,34 +234,22 @@ impl Render for ContextMenu {
         let disabled_fg = theme.muted_foreground;
         let muted = theme.muted_foreground;
         let selected_bg = theme.secondary_hover;
-        let bg = theme.popover;
-        let fg = theme.popover_foreground;
-        let shadow = tooltip::elevation_2_shadow(theme.is_dark());
         let max_height = window.viewport_size().height * MAX_HEIGHT_RATIO;
 
-        let mut list = v_flex()
-            .on_children_prepainted(probe(&ROW_PROBES))
-            .id("ctx-menu-list")
-            .min_w(MIN_WIDTH)
-            .py(LIST_PAD_Y)
-            .max_h(max_height)
-            .overflow_y_scroll();
+        let mut list = menu_common::list(
+            v_flex().on_children_prepainted(probe(&ROW_PROBES)),
+            "ctx-menu-list",
+            max_height,
+        );
         for (i, entry) in self.entries.clone().into_iter().enumerate() {
             match entry {
                 CmEntry::Separator => {
-                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(SEPARATOR_HEIGHT).w_full().bg(border));
+                    list = list.child(menu_common::separator(border));
                 }
                 CmEntry::Item { label, enabled, shortcut } => {
                     let selected = enabled && self.selected == Some(i);
                     list = list.child(
-                        h_flex()
-                            .id(("ctx-menu-row", i))
-                            .mx(ROW_MARGIN_X)
-                            .px(ROW_PAD_X)
-                            .rounded(ROW_RADIUS)
-                            .justify_between()
-                            .text_size(ROW_TEXT)
-                            .line_height(relative(ROW_LINE_HEIGHT))
+                        menu_common::row(("ctx-menu-row", i))
                             .when(!enabled, |row| row.text_color(disabled_fg))
                             .when(selected, |row| row.bg(selected_bg))
                             .when(enabled, |row| {
@@ -282,9 +267,7 @@ impl Render for ContextMenu {
                             // I-509 라벨과 단축키는 양끝 정렬, 단축키 앞 여백 16.
                             .when_some(shortcut, |row, s| {
                                 row.child(
-                                    div()
-                                        .flex_shrink_0()
-                                        .ml(SHORTCUT_GAP)
+                                    menu_common::shortcut_cell()
                                         .when(enabled, |d| d.text_color(muted))
                                         .child(s),
                                 )
@@ -305,15 +288,8 @@ impl Render for ContextMenu {
             .on_action(cx.listener(Self::on_confirm))
             .on_mouse_down_out(cx.listener(|this, _: &MouseDownEvent, window, cx| {
                 this.close("click-outside", false, window, cx);
-            }))
-            .occlude()
-            .bg(bg)
-            .text_color(fg)
-            .border_1()
-            .border_color(border)
-            .rounded(RADIUS)
-            .shadow(shadow)
-            .child(list);
+            }));
+        let popup = menu_common::popup_surface(popup, cx).child(list);
 
         deferred(
             anchored()
