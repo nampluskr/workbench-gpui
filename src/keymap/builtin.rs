@@ -78,7 +78,18 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-w", "Workspace", "pane::CloseActiveItem", "I-356, I-570, L-240"),
     b("ctrl-f4", "Workspace", "pane::CloseActiveItem", "I-356, I-570"),
     b("f10", "Workspace", "app_menu::Toggle", "I-310"),
+    // Pin and split (P4-2, P4-3b). Zed binds them in the Pane / Editor contexts; the editor and the tab bar sit inside Workspace here.
     b("ctrl-k shift-enter", "Workspace", "pane::TogglePinTab", "I-065"),
+    b("ctrl-\\", "Workspace", "pane::SplitRight", "I-731"),
+    b("ctrl-k up", "Workspace", "pane::SplitUp", "I-731"),
+    b("ctrl-k down", "Workspace", "pane::SplitDown", "I-731"),
+    b("ctrl-k left", "Workspace", "pane::SplitLeft", "I-731"),
+    b("ctrl-k right", "Workspace", "pane::SplitRight", "I-731"),
+    b("ctrl-k ctrl-up", "Workspace", "workspace::ActivatePaneUp", "I-732"),
+    b("ctrl-k ctrl-down", "Workspace", "workspace::ActivatePaneDown", "I-732"),
+    b("ctrl-k ctrl-left", "Workspace", "workspace::ActivatePaneLeft", "I-732"),
+    b("ctrl-k ctrl-right", "Workspace", "workspace::ActivatePaneRight", "I-732"),
+    b("shift-escape", "Workspace", "workspace::ToggleZoom", "I-737"),
     // 사이드바 (A-17.3~A-17.5). 컨텍스트 이름은 D-027 ④.
     b("up", "Sidebar", "menu::SelectPrevious", "A-17.3"),
     b("down", "Sidebar", "menu::SelectNext", "A-17.3"),

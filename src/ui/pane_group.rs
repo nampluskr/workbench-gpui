@@ -7,8 +7,8 @@
 //! - Files are `Docs` (one per path); tabs are views. Views of one file are kept equal: an edit in one view is
 //!   spliced into the others (`sync_view`), so dirty and save state stay per file (H-20 option A).
 //! - Drawing (dividers, overlays, buttons) and keys are P4-3b / P4-4 (impl-ui); the judging functions are here.
-// Callers of most of the API (split keys, divider drag, drop targets, zoom) are P4-3b / P4-4 (impl-ui).
-#![expect(dead_code, reason = "callers are P4-3b / P4-4 (impl-ui)")]
+// P4-3b wired splits, divider drag, zoom and focus moves; the drop targets and tab moves wait for P4-4 (impl-ui).
+#![cfg_attr(not(test), expect(dead_code, reason = "callers of the drop functions are P4-4 (impl-ui)"))]
 
 use std::collections::BTreeMap;
 use std::path::Path;

@@ -13,6 +13,7 @@ mod menu_common;
 pub(crate) mod metrics;
 mod pane;
 mod pane_group;
+mod pane_view;
 mod tab_input;
 mod panel_delete;
 mod panel_edit;
@@ -31,7 +32,6 @@ mod tooltip;
 mod watch;
 mod watch_io;
 
-use std::rc::Rc;
 use std::time::Duration;
 
 use gpui_kit::component::{
@@ -85,6 +85,8 @@ struct Workbench {
     clip_gen: u64,
     /// 열린 프로젝트 패널 우클릭 메뉴(R-22).
     panel_menu: Option<panel_menu::OpenPanelMenu>,
+    /// 열린 탭 바 분할 팝업(I-706, P4-3b).
+    split_menu: Option<pane_view::OpenSplitMenu>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
     pending_press: Option<std::path::PathBuf>,
     /// 휴지통·삭제 확인창이 떠 있다(겹쳐 띄우지 않는다).
@@ -238,49 +240,13 @@ impl Workbench {
     fn body(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement + use<> {
         let project_panel = self.render_project_panel(window, cx);
         let editing = self.panel_editing(cx);
-        // Phase 4 최소 탭(R-27): 활성 폴더의 탭 목록과 활성 탭 편집기(보기 전용, D-18).
-        let (tabs, active_editor) = match self.active_ws() {
-            Some(ws) => {
-                // P4-3: the active pane only; drawing the pane tree is P4-3b (impl-ui).
-                let group = &ws.read(cx).group;
-                let pane = group.active_pane();
-                let pane_id = group.active;
-                let doc = |t: &pane::Tab| group.docs.get(&t.path);
-                let tabs: Vec<layout::TabView> = pane
-                    .tabs
-                    .iter()
-                    .enumerate()
-                    .map(|(i, t)| layout::TabView {
-                        title: t.title().into(),
-                        preview: t.preview,
-                        active: pane.active == Some(i),
-                        dirty: doc(t).is_some_and(|d| d.modified()),
-                        conflict: doc(t).is_some_and(|d| d.has_conflict()),
-                        deleted: doc(t).is_some_and(|d| d.deleted),
-                        close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(pane_id, i, window, cx))),
-                        pinned: pane.is_pinned(i),
-                        press: Rc::new(cx.listener(move |this, p: &layout::TabPress, window, cx| this.on_tab_press(pane_id, i, *p, window, cx))),
-                        unpin: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.toggle_pin_at(pane_id, i, window, cx))),
-                    })
-                    .collect();
-                (tabs, pane.active_tab().map(|t| (t.editor.clone(), !doc(t).is_some_and(|d| d.loaded))))
-            }
-            None => (Vec::new(), None),
-        };
+        // P4-3b: every pane of the active folder (tab bar and body each), or the zoomed one alone.
+        let tree = self.pane_tree(cx);
         let theme = cx.theme();
         let handle = to_px(DOCK_HANDLE_WIDTH, window);
         // Dock 폭과 핸들 위치 모두 유효 폭 기준이다.
         let dock_width = self.effective_dock_width(window);
 
-        let item: AnyElement = match (&self.editor_poc, active_editor) {
-            (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
-            (None, Some((editor, readonly))) => div()
-                .size_full()
-                .bg(theme.background)
-                .child(pane::editor_view(&editor, readonly))
-                .into_any_element(),
-            (None, None) => div().size_full().bg(theme.background).into_any_element(),
-        };
 
         // 프로젝트 패널 자리의 키 컨텍스트: `ProjectPanel` 과 `menu` 를 함께 가진다(I-002, I-030 "ProjectPanel + menu").
         // 인라인 입력 중이면 `editing`, 아니면 `not_editing`(P-022, I-033).
@@ -360,12 +326,10 @@ impl Workbench {
             .child(
                 v_flex()
                     .track_focus(&self.center_focus)
-                    .on_children_prepainted(probe(&["tab-bar", "active-item"]))
                     .flex_1()
                     .min_w_0()
                     .h_full()
-                    .child(layout::tab_bar(&tabs, &self.glyph_font, cx))
-                    .child(div().flex_1().min_h_0().child(item)),
+                    .child(tree),
             )
             .when(self.dock_open, |body| {
                 body.child(
@@ -604,12 +568,22 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_close_active_item))
             .on_action(cx.listener(Self::on_toggle_pin_tab))
+            .on_action(cx.listener(Self::on_split_right))
+            .on_action(cx.listener(Self::on_split_left))
+            .on_action(cx.listener(Self::on_split_up))
+            .on_action(cx.listener(Self::on_split_down))
+            .on_action(cx.listener(Self::on_toggle_zoom))
+            .on_action(cx.listener(Self::on_activate_pane_left))
+            .on_action(cx.listener(Self::on_activate_pane_right))
+            .on_action(cx.listener(Self::on_activate_pane_up))
+            .on_action(cx.listener(Self::on_activate_pane_down))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()
             .child(content)
             .children(context_menu)
-            .children(self.panel_menu.as_ref().map(|m| m.menu.clone()));
+            .children(self.panel_menu.as_ref().map(|m| m.menu.clone()))
+            .children(self.split_menu.as_ref().map(|m| m.menu.clone()));
 
         client_decorations(window, border, root)
     }
@@ -703,6 +677,7 @@ pub fn run(dev: DevOptions) {
                         file_clipboard: None,
                         clip_gen: 0,
                         panel_menu: None,
+                        split_menu: None,
                         pending_press: None,
                         deleting: false,
                         prompt: tab_close::Prompt::default(),

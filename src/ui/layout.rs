@@ -178,6 +178,16 @@ pub type PressHandler = std::rc::Rc<dyn Fn(&TabPress, &mut Window, &mut App)>;
 // shortcut: glyph font instead of an SVG pin; switch to `IconName::Pin` once the full icon catalog is bundled.
 const GLYPH_PIN: &str = "\u{E718}";
 
+/// The end buttons of the pane that has focus (I-706): `+`, split, zoom.
+pub struct BarEnd {
+    /// I-707: the split button is disabled for an empty pane.
+    pub split_enabled: bool,
+    /// I-730: zoomed → `Minimize` icon, selected look, "Zoom Out".
+    pub zoomed: bool,
+    pub on_split: CloseHandler,
+    pub on_zoom: CloseHandler,
+}
+
 /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
 pub struct TabView {
     pub title: SharedString,
@@ -323,7 +333,7 @@ fn close_slot(i: usize, tab: &TabView, cx: &App) -> impl IntoElement {
         .child(Icon::new(IconName::Close).size(ICON_SMALL))
 }
 
-pub fn tab_bar(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> impl IntoElement {
+pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, glyph_font: &SharedString, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     h_flex()
         .on_children_prepainted(probe(&[
@@ -373,7 +383,17 @@ pub fn tab_bar(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> impl In
                 .border_b_1()
                 .border_color(theme.border),
         )
-        .child(
+        // I-706: the end buttons belong to the pane that has focus only.
+        .children(end.map(|end| {
+            let split = icon_with_probe(
+                "tab-btn-split",
+                &["tab-icon-split"],
+                IconName::PanelRight,
+                Some(Spec::one("tab-btn-split", Line::text("Split Pane"))),
+                cx,
+            );
+            let (on_split, on_zoom) = (end.on_split, end.on_zoom);
+            let (zoom_label, zoom_icon) = if end.zoomed { ("Zoom Out", IconName::Minimize) } else { ("Zoom In", IconName::Maximize) };
             h_flex()
                 .on_children_prepainted(probe(&["tab-btn-new", "tab-btn-split", "tab-btn-zoom"]))
                 .flex_shrink_0()
@@ -391,21 +411,24 @@ pub fn tab_bar(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> impl In
                     Some(Spec::one("tab-btn-new", Line::text("New…"))),
                     cx,
                 ))
-                .child(icon_with_probe(
-                    "tab-btn-split",
-                    &["tab-icon-split"],
-                    IconName::PanelRight,
-                    Some(Spec::one("tab-btn-split", Line::text("Split Pane"))),
-                    cx,
-                ))
-                .child(icon_with_probe(
-                    "tab-btn-zoom",
-                    &["tab-icon-zoom"],
-                    IconName::Maximize,
-                    Some(Spec::one("tab-btn-zoom", Line::action("Zoom In", "workspace::ToggleZoom"))),
-                    cx,
-                )),
-        )
+                .child(if end.split_enabled {
+                    split.on_click(move |e, window, cx| on_split(e, window, cx))
+                } else {
+                    // I-707: nothing to split → disabled look, no click.
+                    split.opacity(0.4)
+                })
+                .child(
+                    icon_with_probe(
+                        "tab-btn-zoom",
+                        &["tab-icon-zoom"],
+                        zoom_icon,
+                        Some(Spec::one("tab-btn-zoom", Line::action(zoom_label, "workspace::ToggleZoom"))),
+                        cx,
+                    )
+                    .when(end.zoomed, |d| d.bg(theme.secondary_active))
+                    .on_click(move |e, window, cx| on_zoom(e, window, cx)),
+                )
+        }))
 }
 
 /// 1 논리 px (rem 16 기준) — 활성 탭 아래 여백(L-63 `pb_px`).
