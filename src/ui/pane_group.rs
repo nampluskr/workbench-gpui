@@ -270,15 +270,21 @@ impl Node {
         }
     }
 
-    /// I-726: the least length this subtree can take along `along` with every pane at its minimum (80 px wide,
-    /// 100 px high): children in a row along that axis add up, children across it take the largest.
+    /// I-726: the least length this subtree can take along `along` keeping its current ratios, with no pane under its
+    /// minimum (80 px wide, 100 px high). Resizing a parent scales its children (I-724 lengths), so a child laid out
+    /// along that axis with share `flex / count` needs `min / share`; the subtree needs the largest of those. Children
+    /// across the axis all get the full length, so the largest minimum counts (P4-3-R2).
     fn min_len(&self, along: Axis) -> f32 {
         match self {
             Node::Pane(_) if along == Axis::Horizontal => MIN_DRAG_WIDTH,
             Node::Pane(_) => MIN_DRAG_HEIGHT,
-            Node::Axis { axis, children, .. } => {
-                let each = children.iter().map(|c| c.min_len(along));
-                if *axis == along { each.sum() } else { each.fold(0., f32::max) }
+            Node::Axis { axis, children, flexes } => {
+                let n = children.len() as f32;
+                children
+                    .iter()
+                    .zip(flexes)
+                    .map(|(c, f)| if *axis == along { c.min_len(along) * n / f } else { c.min_len(along) })
+                    .fold(0., f32::max)
             }
         }
     }
@@ -993,6 +999,46 @@ mod tests {
         let mut f = vec![1.; 3];
         drag_divider(&mut f, 0, 400., 900., &[80., 160., 80.]);
         assert_eq!(f.iter().map(|f| (f * 300.).round()).collect::<Vec<_>>(), [660., 160., 80.]);
+    }
+
+    /// Every leaf of `g` laid out in `w` × `h` is at least 80 px wide and 100 px high (I-726).
+    fn assert_leaf_minimums(g: &G, w: f32, h: f32) {
+        for (id, r) in g.rects(Rect { x: 0., y: 0., w, h }) {
+            assert!(r.w >= MIN_DRAG_WIDTH - 0.01 && r.h >= MIN_DRAG_HEIGHT - 0.01, "pane {id}: {r:?}");
+        }
+    }
+
+    /// P4-3-R2: an inner axis made uneven first keeps its ratio when the outer divider shrinks it, so the outer drag stops
+    /// where the smaller inner pane reaches its minimum. Horizontal[A, Vertical[B, Horizontal[C, D]]] with C:D = 90:360
+    /// (flex 0.4:1.6) needs 80 / 0.2 = 400 px on the right; then the mirrored stacked case.
+    #[test]
+    fn i726_outer_drag_keeps_uneven_inner_minimum() {
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        clone(&mut g, Right).unwrap();
+        clone(&mut g, Down).unwrap();
+        clone(&mut g, Right).unwrap();
+        g.drag_divider(&[1, 1], 0, -135., 450.);
+        let Node::Axis { children, .. } = &g.root else { panic!() };
+        assert_eq!(children[1].min_len(Axis::Horizontal), 400.);
+        g.drag_divider(&[], 0, 370., 900.);
+        let Node::Axis { flexes, .. } = &g.root else { panic!() };
+        assert_eq!(flexes.iter().map(|f| (f * 450.).round()).collect::<Vec<_>>(), [500., 400.]);
+        assert_leaf_minimums(&g, 900., 600.);
+        let c = g.rects(Rect { x: 0., y: 0., w: 900., h: 600. })[2].1;
+        assert_eq!(c.w.round(), 80., "C ends exactly at its minimum");
+
+        // Vertical[A, Horizontal[B, Vertical[C, D]]], 800 high: C:D = 150:250 needs 100 / 0.375 ≈ 266.7 px below.
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        clone(&mut g, Down).unwrap();
+        clone(&mut g, Right).unwrap();
+        clone(&mut g, Down).unwrap();
+        g.drag_divider(&[1, 1], 0, -50., 400.);
+        g.drag_divider(&[], 0, 300., 800.);
+        let Node::Axis { flexes, .. } = &g.root else { panic!() };
+        assert_eq!(flexes.iter().map(|f| (f * 400.).round()).collect::<Vec<_>>(), [533., 267.]);
+        assert_leaf_minimums(&g, 900., 800.);
     }
 
     /// I-727: double-click equalizes only that axis.
