@@ -89,6 +89,12 @@ pub const TEXT_SIZE_DEFAULT: Rems = rems_from_px(14.);
 pub const TEXT_SIZE_SMALL: Rems = rems_from_px(12.);
 /// titlebar["left_group.gap"] (L-87) 타이틀 바 왼쪽 그룹 gap 2 (`gap_0p5`).
 pub const TITLE_BAR_LEFT_GROUP_GAP: Rems = rems_from_px(2.);
+/// scrollbar["width.editor"] (L-308) editor scrollbar track width 15 (gpui-base default 16). Pixels: gpui-base track width type.
+pub const EDITOR_SCROLLBAR_WIDTH: Pixels = px(15.);
+/// typography["buffer_font_size"] (L-08) tab editor font size 15 (gpui-kit Editor default: theme mono size).
+pub const BUFFER_FONT_SIZE: Pixels = px(15.);
+/// editor["line_height.comfortable_multiplier"] (E-010) 1.618 × font size = editor["line_height.comfortable"] 24.27.
+pub const BUFFER_LINE_HEIGHT_MULTIPLIER: f32 = 1.618;
 // spec: none (app value) — 타이틀 바 폴더 이름 버튼 좌우 padding 6.
 pub const TITLE_FOLDER_NAME_PAD_X: Rems = rems_from_px(6.);
 // spec: none (app value) — A-24.2 폴더 목록 저장 디바운스(toml 에 없음).
