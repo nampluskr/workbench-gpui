@@ -470,7 +470,7 @@ impl super::Workbench {
         let Some(ws) = self.active_ws() else { return };
         let Some(path) = ws.read(cx).pane.active_tab().map(|t| t.path.clone()) else { return };
         cx.spawn_in(window, async move |this, cx| {
-            if super::tab_close::save_tab(&ws, &path, cx).await == End::Closed {
+            if super::tab_close::save_tab(&ws, &path, None, cx).await == End::Closed {
                 // E-085 "Close": the user gave the tab up.
                 let _ = this.update_in(cx, |this, window, cx| this.drop_tab(&ws, &path, window, cx));
             }

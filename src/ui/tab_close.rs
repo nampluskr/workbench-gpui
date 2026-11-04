@@ -8,7 +8,9 @@
 //! - The questions are Windows TaskDialogs (`task_dialog::choose_blocking`, E-080) shown on a background thread.
 //!   What each button does is decided by plain functions below (`guard`, `guard_action`, `close_action`).
 
+use std::cell::Cell;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 
 use gpui_kit::*;
 
@@ -196,7 +198,12 @@ fn probe(path: &Path) -> Disk {
 
 /// Saves the tab `path` of `ws` (P3-2 path), asking E-084 / E-085 first when the disk disagrees. A failed or refused
 /// write is shown as E-083 and ends `Cancelled`.
-pub async fn save_tab(ws: &Entity<FolderWorkspace>, path: &Path, cx: &mut AsyncWindowContext) -> End {
+pub async fn save_tab(
+    ws: &Entity<FolderWorkspace>,
+    path: &Path,
+    batch: Option<&Batch>,
+    cx: &mut AsyncWindowContext,
+) -> End {
     enum Start {
         Nothing,
         Cancelled,
@@ -239,7 +246,11 @@ pub async fn save_tab(ws: &Entity<FolderWorkspace>, path: &Path, cx: &mut AsyncW
     let disk = cx.background_executor().spawn(async move { probe(&target) }).await;
     let g = guard(&disk, base);
     if let Some(choice) = guard_choice(g) {
-        match guard_action(g, ask(choice, cx).await) {
+        // The user's answer time is not I/O time: the close flow's wait limit pauses meanwhile (R3).
+        batch.inspect(|b| b.asking.set(true));
+        let answer = ask(choice, cx).await;
+        batch.inspect(|b| b.asking.set(false));
+        match guard_action(g, answer) {
             GuardAction::Write => {}
             GuardAction::Cancel => {
                 release(cx);
@@ -330,25 +341,88 @@ enum Settled {
 }
 
 /// Asks about `items` (E-081 / E-082) and saves them when the answer is Save.
-async fn settle(items: &[&Dirty], this: &WeakEntity<super::Workbench>, cx: &mut AsyncWindowContext) -> Settled {
+async fn settle(
+    items: &[&Dirty],
+    this: &WeakEntity<super::Workbench>,
+    batch: &Rc<Batch>,
+    cx: &mut AsyncWindowContext,
+) -> Settled {
     let names: Vec<String> = items.iter().map(|d| d.name.clone()).collect();
     match close_action(ask(unsaved_choice(&names), cx).await) {
         CloseAction::Cancel => Settled::Cancel,
         CloseAction::Discard => Settled::Discard,
         CloseAction::Save => {
-            for d in items {
-                match save_tab(&d.ws, &d.path, cx).await {
-                    End::Cancelled => return Settled::Cancel,
-                    // E-085 "Close": the user gave this tab up.
-                    End::Closed => {
-                        let _ = this.update_in(cx, |this, window, cx| this.drop_tab(&d.ws, &d.path, window, cx));
+            // The saves run as their own task and this returns at once, so `resolve` keeps looking (and keeps its
+            // wait limit) while they run; the task, the save tokens and the completion handling live on (R3).
+            let jobs: Vec<(Entity<FolderWorkspace>, PathBuf)> = items.iter().map(|d| (d.ws.clone(), d.path.clone())).collect();
+            let batch = batch.clone();
+            batch.running.set(true);
+            let started = this.update_in(cx, |_, window, cx| {
+                cx.spawn_in(window, async move |this, cx| {
+                    for (ws, path) in &jobs {
+                        let end = save_tab(ws, path, Some(&batch), cx).await;
+                        batch.progress.set(batch.progress.get() + 1);
+                        match end {
+                            End::Cancelled => {
+                                batch.cancelled.set(true);
+                                break;
+                            }
+                            // E-085 "Close": the user gave this tab up.
+                            End::Closed => {
+                                let _ = this.update_in(cx, |this, window, cx| this.drop_tab(ws, path, window, cx));
+                            }
+                            End::Saved | End::Discarded => {}
+                        }
                     }
-                    End::Saved | End::Discarded => {}
-                }
+                    batch.running.set(false);
+                })
+                .detach();
+            });
+            if started.is_err() {
+                return Settled::Cancel;
             }
             Settled::Saved
         }
     }
+}
+
+/// Progress of the saves a close question started (R3). Foreground only, hence `Cell`.
+#[derive(Default)]
+pub struct Batch {
+    /// The save task has not finished all its tabs.
+    running: Cell<bool>,
+    /// A save was cancelled, refused or failed: the close request ends.
+    cancelled: Cell<bool>,
+    /// An E-084 / E-085 question is open: the user is answering, not the disk.
+    asking: Cell<bool>,
+    /// Tabs finished so far; any progress restarts the wait.
+    progress: Cell<u32>,
+}
+
+/// How long the close flow has waited on save I/O (R3). Time is passed in so it is testable. Waiting restarts when a
+/// tab finishes, and does not run while the user answers a question.
+#[derive(Default)]
+pub struct WaitClock {
+    since: Option<std::time::Duration>,
+    progress: u32,
+}
+
+impl WaitClock {
+    pub fn waited(&mut self, now: std::time::Duration, waiting: bool, asking: bool, progress: u32) -> std::time::Duration {
+        if !waiting {
+            (self.since, self.progress) = (None, progress);
+            return std::time::Duration::ZERO;
+        }
+        if asking || progress != self.progress || self.since.is_none() {
+            (self.since, self.progress) = (Some(now), progress);
+        }
+        now - self.since.unwrap_or(now)
+    }
+}
+
+/// The window's question state once a closing flow ended with `go`: a cancelled or aborted request is `Idle` again.
+pub fn prompt_after(go: bool, prompt: Prompt) -> Prompt {
+    if go { prompt } else { Prompt::Idle }
 }
 
 /// What a closing flow does next, from the state of every tab it covers and how long it has waited for a save.
@@ -376,25 +450,28 @@ pub fn next(states: &[CloseState], waited: std::time::Duration) -> Next {
 /// user cancelled, a save did not finish, or a running save took longer than the limit (R2; only this close request
 /// is cancelled and the user is told), and everything stays open.
 async fn resolve(then: Then, this: &WeakEntity<super::Workbench>, cx: &mut AsyncWindowContext) -> bool {
-    let mut waiting_since: Option<std::time::Instant> = None;
+    let start = std::time::Instant::now();
+    let batch = Rc::new(Batch::default());
+    let mut clock = WaitClock::default();
     loop {
         let seen = this.update_in(cx, |this, window, cx| {
             let open = this.open_tabs(&then, cx);
-            let states = open_states(&open);
-            let waited = if states.contains(&CloseState::Wait) {
-                waiting_since.get_or_insert_with(std::time::Instant::now).elapsed()
-            } else {
-                waiting_since = None;
-                std::time::Duration::ZERO
-            };
-            let next = next(&states, waited);
+            let mut states = open_states(&open);
+            // Saves started by the close question count as running even between two of their tabs.
+            if batch.running.get() {
+                states.push(CloseState::Wait);
+            }
+            let waited = clock.waited(start.elapsed(), states.contains(&CloseState::Wait), batch.asking.get(), batch.progress.get());
+            let cancelled = batch.cancelled.get();
+            let next = if cancelled { Next::Abort } else { next(&states, waited) };
             match next {
                 Next::Finish => then.run(this, window, cx),
-                Next::Abort => {
+                // A cancelled save already told the user why; only a timeout needs a notice.
+                Next::Abort if !cancelled => {
                     use gpui_kit::component::WindowExt as _;
                     window.push_notification(SharedString::from("Close cancelled: a save is still running."), cx);
                 }
-                Next::Sleep | Next::Ask => {}
+                Next::Abort | Next::Sleep | Next::Ask => {}
             }
             (next, open)
         });
@@ -409,7 +486,7 @@ async fn resolve(then: Then, this: &WeakEntity<super::Workbench>, cx: &mut Async
             Next::Ask => {}
         }
         let items: Vec<&Dirty> = open.iter().map(|o| &o.item).collect();
-        match settle(&items, this, cx).await {
+        match settle(&items, this, &batch, cx).await {
             Settled::Cancel => return false,
             Settled::Discard => {
                 let _ = this.update_in(cx, |this, window, cx| then.run(this, window, cx));
@@ -461,9 +538,7 @@ impl super::Workbench {
                 cx.spawn_in(window, async move |this, cx| {
                     let go = resolve(then, &this, cx).await;
                     let _ = this.update(cx, |this, _| {
-                        if !go && this.prompt == Prompt::Asking {
-                            this.prompt = Prompt::Idle;
-                        }
+                        this.prompt = prompt_after(go, this.prompt);
                     });
                 })
                 .detach();
@@ -525,9 +600,7 @@ impl super::Workbench {
         cx.spawn_in(window, async move |this, cx| {
             let go = resolve(then, &this, cx).await;
             let _ = this.update(cx, |this, _| {
-                if !go {
-                    this.prompt = Prompt::Idle;
-                }
+                this.prompt = prompt_after(go, this.prompt);
             });
         })
         .detach();
@@ -603,6 +676,35 @@ mod tests {
         assert_eq!(next(&[Ask], limit * 2), Next::Ask);
         assert_eq!(next(&[Clean], limit * 2), Next::Finish);
         assert_eq!(next(&[], limit), Next::Finish);
+    }
+
+    /// P3-3-R3: after "Save" a save that never ends is bounded like any running save. The user's answer time does not
+    /// count, progress restarts the wait, and when the limit passes the request ends and the window is `Idle` again.
+    #[test]
+    fn stuck_save_after_save_choice_aborts_and_returns_idle() {
+        use super::{Next, Prompt, WaitClock, next, prompt_after};
+        use crate::ui::pane::CloseState::Wait;
+        use std::time::Duration;
+        let s = Duration::from_secs;
+        let mut clock = WaitClock::default();
+        // t=0: "Save" was chosen, the save task runs.
+        assert_eq!(next(&[Wait], clock.waited(s(0), true, false, 0)), Next::Sleep);
+        // t=5..35: an E-084 question is open; nothing counts however long the user thinks.
+        assert_eq!(next(&[Wait], clock.waited(s(5), true, true, 0)), Next::Sleep);
+        assert_eq!(next(&[Wait], clock.waited(s(35), true, true, 0)), Next::Sleep);
+        // The answer came at t=35; the write then hangs: 9s later still waiting, at 10s the request is aborted.
+        assert_eq!(next(&[Wait], clock.waited(s(44), true, false, 0)), Next::Sleep);
+        assert_eq!(next(&[Wait], clock.waited(s(45), true, false, 0)), Next::Abort);
+        assert_eq!(prompt_after(false, Prompt::Asking), Prompt::Idle);
+        assert_eq!(prompt_after(true, Prompt::Leaving), Prompt::Leaving);
+        // A tab finishing restarts the wait for the next one.
+        let mut clock = WaitClock::default();
+        clock.waited(s(0), true, false, 0);
+        assert_eq!(clock.waited(s(9), true, false, 0), s(9));
+        assert_eq!(clock.waited(s(12), true, false, 1), s(0));
+        assert_eq!(next(&[Wait], clock.waited(s(21), true, false, 1)), Next::Sleep);
+        // No running save: the clock resets.
+        assert_eq!(clock.waited(s(30), false, false, 1), s(0));
     }
     #[test]
     fn guard_buttons_map_to_actions() {
