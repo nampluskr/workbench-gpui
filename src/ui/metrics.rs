@@ -379,4 +379,17 @@ mod tests {
             assert_eq!(f64::from(rems.0 * crate::ui::rem::BASE_REM_PX), e.value, "{id}");
         }
     }
+
+    /// V2 (P2-2): the code's menu row line height and tab content height equal the spec before any pixel snapping.
+    /// The measured 23 (menu row) and 32 (tab outer box) come from gpui snapping to device pixels and from the
+    /// 1px bottom border/blank around the 31px content, not from different code values.
+    #[test]
+    fn menu_line_height_and_tab_content_equal_spec() {
+        let base = crate::ui::rem::BASE_REM_PX;
+        let line = menu::ROW_TEXT.0 * base * menu::ROW_LINE_HEIGHT;
+        let spec_line = spec::lookup("menu[\"item.line_height\"]").unwrap().value;
+        assert!((f64::from(line) - spec_line).abs() < 1e-3, "{line} vs {spec_line}");
+        let tab = spec::lookup("tab[\"content_height\"]").unwrap().value;
+        assert_eq!(f64::from(TAB_CONTENT_HEIGHT.0 * base), tab);
+    }
 }
