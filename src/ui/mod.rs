@@ -254,7 +254,7 @@ impl Workbench {
             (None, Some(editor)) => div()
                 .size_full()
                 .bg(theme.background)
-                .child(gpui_kit::component::input::Editor::new(&editor).readonly(true).h_full())
+                .child(pane::editor_view(&editor))
                 .into_any_element(),
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
         };

@@ -14,7 +14,7 @@ use std::rc::Rc;
 
 use gpui_kit::base::Scrollbar;
 use gpui_kit::base::input::EditorScrollbarContext;
-use gpui_kit::component::input::EditorState;
+use gpui_kit::component::input::{Editor, EditorState};
 use gpui_kit::*;
 
 use super::folders::FolderWorkspace;
@@ -68,6 +68,35 @@ fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App
         .axis(context.axis())
         .styles(|s| s.track(|t| t.width(metrics::EDITOR_SCROLLBAR_WIDTH)))
         .into_any_element()
+}
+
+/// Tab editor element. Ctrl+Shift+drag starts a column selection at the pointer (E-047, P2-6). gpui-base binds
+/// that to Alt+Shift only, inside its private `on_mouse_down` (gpui-base state.rs 2750), so the press is swallowed
+/// in the capture phase and re-sent as Alt+Shift at the same spot; the drag then runs gpui-base's own block
+/// selection (virtual columns, wrapped rows). Deferred: gpui takes the listener list out while dispatching.
+pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
+    div()
+        .size_full()
+        .capture_any_mouse_down(|event, window, cx| {
+            let Some(press) = column_select_press(event) else { return };
+            cx.stop_propagation();
+            window.defer(cx, move |window, cx| {
+                window.dispatch_event(PlatformInput::MouseDown(press), cx);
+            });
+        })
+        .child(Editor::new(editor).readonly(true).h_full())
+}
+
+/// Ctrl+Shift+left press → the same press with Alt+Shift (gpui-base's column selection); anything else → `None`.
+fn column_select_press(event: &MouseDownEvent) -> Option<MouseDownEvent> {
+    let m = event.modifiers;
+    if event.button != MouseButton::Left || !(m.control && m.shift) || m.alt || m.platform {
+        return None;
+    }
+    let mut press = event.clone();
+    press.modifiers.control = false;
+    press.modifiers.alt = true;
+    Some(press)
 }
 
 /// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계).
@@ -200,7 +229,36 @@ impl Pane {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{Pane, Path, metrics, text_hash};
+    use super::{Modifiers, MouseButton, MouseDownEvent, Pane, Path, column_select_press, metrics, point, px, text_hash};
+
+    fn press(button: MouseButton, modifiers: Modifiers) -> MouseDownEvent {
+        MouseDownEvent { button, position: point(px(40.), px(60.)), modifiers, click_count: 1, first_mouse: false }
+    }
+
+    /// V1: Ctrl+Shift+left becomes gpui-base's Alt+Shift column press at the same spot (E-047).
+    #[test]
+    fn ctrl_shift_press_becomes_column_press() {
+        let p = column_select_press(&press(MouseButton::Left, Modifiers { control: true, shift: true, ..Default::default() }))
+            .expect("ctrl+shift left remaps");
+        assert_eq!(p.modifiers, Modifiers { alt: true, shift: true, ..Default::default() });
+        assert_eq!((p.position, p.click_count, p.button), (point(px(40.), px(60.)), 1, MouseButton::Left));
+    }
+
+    /// V1: other presses go to the editor unchanged (plain, Shift, Ctrl, Alt+Shift, right button, Ctrl+Shift+Alt).
+    #[test]
+    fn other_presses_are_not_remapped() {
+        let m = |control, alt, shift| Modifiers { control, alt, shift, ..Default::default() };
+        for (button, mods) in [
+            (MouseButton::Left, m(false, false, false)),
+            (MouseButton::Left, m(false, false, true)),
+            (MouseButton::Left, m(true, false, false)),
+            (MouseButton::Left, m(false, true, true)),
+            (MouseButton::Left, m(true, true, true)),
+            (MouseButton::Right, m(true, false, true)),
+        ] {
+            assert!(column_select_press(&press(button, mods)).is_none(), "{button:?} {mods:?}");
+        }
+    }
 
     /// V2: the tab editor scrollbar track width is the spec value (P2-5 item 6).
     #[test]
