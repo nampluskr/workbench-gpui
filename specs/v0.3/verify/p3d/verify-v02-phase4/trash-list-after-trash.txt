@@ -1,0 +1,1 @@
+[dev] trash-done op=list count=0 total=0

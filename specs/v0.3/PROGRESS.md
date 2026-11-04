@@ -260,6 +260,24 @@
   - 사용자 확인 필요(V4): 없음(새 화면 없음, 렌더 픽셀 동일).
 - 상태: 완료
 
+### Phase 3 뒤 — 데이터 손실 위험 수정 (동작 변경)
+
+#### P3-D1·P3-D2 (2026-11-04, impl-ui·reviewer)
+
+- 무엇을: P3-D1 복사 목적 파일을 `create_new(true)`로 배타 확보해 이미 있는 파일을 덮어쓰지 않음(AUDIT 1). P3-D2 다른 볼륨 이동에서 복사 전과 삭제 직전 원본의 목록·크기·수정 시각을 대조해 다르면 원본·복사본을 남기고 오류(AUDIT 2).
+- 결과
+  - work/ui `7f5e083`(D1)·`157808e`(D2). reviewer `P3-D.md` REWORK 1: 처음 구현(`io::copy` 스트림 복사)이 `fs::copy`(CopyFileEx)가 보존하던 NTFS 추가 스트림·속성·수정 시각을 잃고, 다른 볼륨 이동에서 ADS가 영구 손실됨.
+  - H-31: 이름 배타 확보 → 핸들 닫기 → `fs::copy`로 채움(P3-D1-R1 `683bbfc`). R1 PASS. master 병합 `5298a75`(`src/fsops/ops.rs` +85/−2).
+  - 남은 한계(`shortcut:` 주석, `ops.rs:145`·`:251`): 이름 확보~복사 사이 다른 프로그램이 빈 파일에 쓰면 덮일 수 있음, 마지막 대조~삭제 사이 변경은 못 막음, 같은 크기·같은 시각으로 돌아온 변경은 검출 밖, 복사 실패 뒤 정리(remove_file)는 시도만.
+- 검증: 전체 테스트 60 통과(1회), clippy 신규 0. 새 테스트 `copy_keeps_existing_destination`·`copy_keeps_streams_and_mtime`·d044 확장(복사 뒤 원본 변경 시 원본 보존).
+- 상태: 완료
+
+#### P3-D 뒤 R-12 (2026-11-04, measure)
+
+- 결과: master `5298a75`(exe `1B85FC18…C8E81`)로 9개 재실행, 환경 간섭 0. 기준선·Phase 3과 통과 수·ok 모두 같음. 복사·이동·붙여넣기·Duplicate 관련 결과 변화 없음 — 바뀐 동작은 외부 프로그램과의 경쟁·이미 있는 대상·NTFS 스트림 같은 조건에서만 드러나 v0.2 시나리오에는 나타나지 않는다.
+- 검증: `verify/p3d/README.md`·`comparison.json`·`comparison-vs-phase3.json`.
+- 상태: 완료
+
 ## 사용자 요청 작업
 
 ### docs\temp 이름 바꾸기·이동 (2026-11-03)

@@ -1,0 +1,189 @@
+[
+  {
+    "script": "verify-v02-phase1",
+    "baseline": {
+      "checks": 0,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 0,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "failedInBoth": [],
+    "r1BindingsIdentical": true,
+    "caseNamesIdentical": true
+  },
+  {
+    "script": "verify-v02-phase2",
+    "baseline": {
+      "checks": 137,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 137,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [],
+    "failedInBoth": []
+  },
+  {
+    "script": "verify-v02-phase3",
+    "baseline": {
+      "checks": 122,
+      "failedChecks": 2,
+      "failures": 2,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 122,
+      "failedChecks": 2,
+      "failures": 2,
+      "errors": 0
+    },
+    "itemDiffs": [
+      {
+        "item": "add|A-13.2·A-16.6|대소문자·끝 \\ 다른 같은 경로(D:\\PROJECTS\\WORKBENCH-GPUI\\TARGET\\PHASE3-FOLDERS\\RUN-BD08DBEBD44841AD9FE3614FC85BAF87\\ALPHA\\) → 새 항목 없이 기존 활성",
+        "change": "new",
+        "p3d": "ok=True got=[dev] folder-add result=existing index=0 path=D:\\PROJECTS\\WORKBENCH-GPUI\\TARGET\\PHASE3-FOLDERS\\RUN-BD08DBEBD44841AD9FE3614FC85BAF87\\ALPHA"
+      },
+      {
+        "item": "add|A-13.2·A-16.6|대소문자·끝 \\ 다른 같은 경로(D:\\PROJECTS\\WORKBENCH-GPUI\\TARGET\\PHASE3-FOLDERS\\RUN-DA976DBC60C241FF83F627523649EF56\\ALPHA\\) → 새 항목 없이 기존 활성",
+        "change": "missing in p3d"
+      }
+    ],
+    "failedInBoth": [
+      {
+        "item": "state|R-28|시작 폭 300",
+        "expect": "300",
+        "baselineGot": "375",
+        "phase1Got": "375"
+      },
+      {
+        "item": "state-restart|R-28|다시 시작 → 사이드바 폭 복원",
+        "expect": "494",
+        "baselineGot": "617",
+        "phase1Got": "617"
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase4",
+    "baseline": {
+      "checks": 208,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 208,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [],
+    "failedInBoth": []
+  },
+  {
+    "script": "verify-v02-phase4-d043",
+    "baseline": {
+      "checks": 13,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 13,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [],
+    "failedInBoth": []
+  },
+  {
+    "script": "verify-v02-phase4-d044",
+    "baseline": {
+      "checks": 6,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 6,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [],
+    "failedInBoth": []
+  },
+  {
+    "script": "verify-v02-phase5",
+    "baseline": {
+      "checks": 62,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 62,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [
+      {
+        "item": "flood|R-24(묶기)|이벤트 1824 개를 몇 번에 묶어 반영",
+        "change": "new",
+        "p3d": "ok=True got=반영 1번, 이벤트 1824"
+      },
+      {
+        "item": "flood|R-24(묶기)|이벤트 1818 개를 몇 번에 묶어 반영",
+        "change": "missing in p3d"
+      }
+    ],
+    "failedInBoth": []
+  },
+  {
+    "script": "verify-v02-phase5-d046",
+    "baseline": {
+      "checks": 23,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 23,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [],
+    "failedInBoth": []
+  },
+  {
+    "script": "verify-v02-phase5-d047",
+    "baseline": {
+      "checks": 16,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "p3d": {
+      "checks": 16,
+      "failedChecks": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "itemDiffs": [],
+    "failedInBoth": []
+  }
+]

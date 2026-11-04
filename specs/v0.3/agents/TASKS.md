@@ -370,7 +370,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: P0-6 S5(앱 메뉴)·S6(컨텍스트 메뉴)·프로젝트 패널 안내 화면을 P0-6과 같은 방법으로 재측정해 같은지 표로. R-12 9개 재실행 기준선 대조(phase4 계열은 H-28 클립보드 비우기). reviewer가 AUDIT 8~11 처리 확인(R-11)
 
 ### P3-D1 복사 목적 파일 배타 생성 (Phase 3 뒤, 동작 변경)
-- 상태: rework (`7f5e083`, reviewer `P3-D.md` REWORK: ADS·속성·시각 손실 → H-31 P3-D1-R1)
+- 상태: done (`7f5e083` → REWORK → P3-D1-R1 `683bbfc`(H-31), reviewer `P3-D.md` R1 PASS, master `5298a75`)
 - 담당: impl-ui
 - 브랜치: work/ui (별도 커밋, Phase 3 커밋과 섞지 않음)
 - 요구·결정: AUDIT 1, PLAN "Phase 3 뒤"
@@ -380,7 +380,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 권한·타임스탬프 등 `fs::copy`가 하던 일 중 빠지는 것이 있으면 보고에 적는다(예: 파일 권한 복사)
 
 ### P3-D2 다른 볼륨 이동 원본 변경 대조 (Phase 3 뒤, 동작 변경)
-- 상태: review (`157808e`, P3-D1-R1 뒤 재리뷰)
+- 상태: done (`157808e`, reviewer PASS, master `5298a75`. 뒤 R-12 `verify/p3d/` 변화 0)
 - 담당: impl-ui
 - 브랜치: work/ui (별도 커밋)
 - 요구·결정: AUDIT 2, PLAN "Phase 3 뒤"

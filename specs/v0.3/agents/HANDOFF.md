@@ -2,6 +2,13 @@
 
 > 소유: `lead`. 세션이 바뀔 때 다음 `lead`가 이어받을 상태만 적는다. 최신이 위.
 
+## 2026-11-04 lead 세션 2 끝 — v0.3 PLAN 전 단계 완료
+
+### 현재 상태
+- Phase 0~3 완료(태그 `v0.3-phase-0`~`3`), Phase 3 뒤 P3-D1·D2 완료(master `5298a75`, 뒤 R-12 변화 0). push 안 함.
+- 남은 것: 사용자 확인 목록(위임 중 lead 판단 H-26~H-31 등, PROGRESS·최종 보고), "버전 종료" 절은 사람이 판단한다(WORKFLOW 4절).
+- work/ui는 master보다 뒤(병합 커밋 없음). 다음 작업 전 `git merge --ff-only master`.
+
 ## 2026-11-04 lead 세션 2 — Phase 3 종료 (계속 P3-D)
 
 ### 현재 상태
