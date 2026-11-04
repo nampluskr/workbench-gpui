@@ -86,6 +86,18 @@ fn divider_delta(flexes: &[f32], ix: usize, offset: f32, len: f32) -> f32 {
     offset - len * before / flexes.len() as f32
 }
 
+/// Where the divider line starts: the middle of its mouse area (`start` + `hit` / 2, I-725) on a whole logical px.
+/// A fractional boundary (the flex shares after a drag) would put the 1px line across two pixels.
+fn line_start(start: f32, hit: f32) -> f32 {
+    (start + hit / 2.).round()
+}
+
+/// While a pane is zoomed its frame is the 1px border (`pane["zoomed_border"]`, L-17), so the editor leaves out its own
+/// 1px border, which sat right next to it and made the left, right and bottom edges 2px. Otherwise the editor keeps it.
+fn editor_bordered(zoomed: bool) -> bool {
+    !zoomed
+}
+
 /// The split popup's entries in the I-707 order: label and the action whose key it shows.
 fn split_item(dir: SplitDirection) -> (&'static str, &'static str) {
     match dir {
@@ -192,11 +204,25 @@ impl Workbench {
         };
         base.on_drag(drag, |drag, _, _, cx| cx.new(|_| drag.clone()))
             .on_double_click(cx.listener(move |this, _, _, cx| this.equalize_axis(&equalize, cx)))
-            .child(if horizontal {
-                div().absolute().top_0().bottom_0().left(hit / 2.).w(line).bg(color)
-            } else {
-                div().absolute().left_0().right_0().top(hit / 2.).h(line).bg(color)
-            })
+            // The flex layout puts the boundary at a fractional px after a drag, which would smear the 1px line over two
+            // pixels; the line is painted on a whole logical px (P4-E-F2).
+            .child(
+                canvas(
+                    |bounds, _, _| bounds,
+                    move |hit_bounds, _, window, _| {
+                        let start = if horizontal { hit_bounds.left() } else { hit_bounds.top() };
+                        let at = px(line_start(f32::from(start), f32::from(hit)));
+                        let rect = if horizontal {
+                            Bounds::new(point(at, hit_bounds.top()), size(line, hit_bounds.size.height))
+                        } else {
+                            Bounds::new(point(hit_bounds.left(), at), size(hit_bounds.size.width, line))
+                        };
+                        window.paint_quad(fill(rect, color));
+                    },
+                )
+                .absolute()
+                .size_full(),
+            )
     }
 
     /// One pane: its tab bar and the active tab's editor (I-706 end buttons only on the active pane).
@@ -253,7 +279,7 @@ impl Workbench {
                     .bg(theme.background)
                     // The editor handled the press itself (selection, IME); the pane handler above is for the rest.
                     .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
-                    .child(editor_view(&t.editor, readonly))
+                    .child(editor_view(&t.editor, readonly, editor_bordered(group.zoomed == Some(id))))
                     .into_any_element()
             }
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
@@ -451,7 +477,27 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{divider_delta, end_buttons_shown, first_screen_end, flexes_at};
+    use super::{divider_delta, editor_bordered, end_buttons_shown, first_screen_end, flexes_at, line_start};
+
+    /// P4-E-F2 (1): after a drag the boundary is a fractional px, the line still starts on a whole one (and a whole
+    /// boundary stays where it is); the 4px mouse area puts the line 2px in.
+    #[test]
+    fn divider_line_snaps_to_a_whole_px() {
+        for start in [100.0_f32, 100.4, 100.5, 321.73, 999.99] {
+            let at = line_start(start, 4.);
+            assert_eq!(at, at.round(), "{start}");
+            assert!((at - (start + 2.)).abs() <= 0.5, "{start}");
+        }
+        assert_eq!(line_start(98., 4.), 100.);
+        assert_eq!(line_start(97.6, 4.), 100.);
+    }
+
+    /// P4-E-F2 (2): a zoomed pane has the zoom frame as its only border; the editor keeps its own otherwise.
+    #[test]
+    fn zoomed_pane_draws_one_border() {
+        assert!(!editor_bordered(true));
+        assert!(editor_bordered(false));
+    }
 
     /// P4-E-F1 (U1, I-706): the first screen's only pane shows its end buttons although no pane is "active" there;
     /// in a split, only the active pane does. The first-screen buttons are `+` and zoom with split off.
