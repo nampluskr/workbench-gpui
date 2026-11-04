@@ -19,6 +19,7 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("workspace::CopyPath", false),
     ("workspace::CopyRelativePath", false),
     ("workspace::CloseWindow", false),
+    ("workspace::Save", false),
     ("zed::Quit", false),
     ("zed::Minimize", false),
     ("zed::Zoom", false),

@@ -240,7 +240,7 @@ impl Workbench {
                     .enumerate()
                     .map(|(i, t)| layout::TabView { title: t.title().into(), preview: t.preview, active: pane.active == Some(i) })
                     .collect();
-                (tabs, pane.active_tab().map(|t| t.editor.clone()))
+                (tabs, pane.active_tab().map(|t| (t.editor.clone(), !t.loaded)))
             }
             None => (Vec::new(), None),
         };
@@ -251,10 +251,10 @@ impl Workbench {
 
         let item: AnyElement = match (&self.editor_poc, active_editor) {
             (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
-            (None, Some(editor)) => div()
+            (None, Some((editor, readonly))) => div()
                 .size_full()
                 .bg(theme.background)
-                .child(pane::editor_view(&editor))
+                .child(pane::editor_view(&editor, readonly))
                 .into_any_element(),
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
         };
@@ -578,6 +578,7 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_toggle_app_menu))
             .on_action(cx.listener(Self::on_quit))
             .on_action(cx.listener(Self::on_close_window))
+            .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()

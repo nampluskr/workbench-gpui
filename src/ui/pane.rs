@@ -4,7 +4,11 @@
 //! - 임시 탭은 하나다. 다른 파일을 임시로 열면 그 자리(인덱스)에서 바꾼다(I-062).
 //! - 이미 임시로 열린 파일을 일반으로 열면 일반 탭이 된다(I-063).
 //! - 새 탭은 활성 탭 바로 뒤에 넣는다(판단: Zed 의 새 항목 자리).
-//! - 내용은 gpui-kit Editor 로 보이고 편집을 막는다(D-18). 저장·탭 닫기·이동 기록은 없다(PoC 6단계).
+//! - Tabs are editable (v0.4 D-6, P3-1; D-18 lifted). A tab is dirty when its buffer differs from the content last
+//!   read from disk (`hash`). An edit promotes a preview tab to a normal tab (I-063). The editor stays read-only
+//!   until the first read lands, so typing cannot race the load. Dirty buffers are not reloaded (P3-4 marks them).
+//! - Reads detect the encoding (`text_io`, P3-2) and saves write it back unchanged (BOM, UTF-16, CP949; line endings
+//!   stay in the text). An undecodable file is shown lossily and stays read-only, so a save cannot corrupt it.
 //! - First open reads the file on the background executor; the tab exists at once and gets its text when
 //!   the read finishes (v0.4 P1-3, AUDIT 4). First read and watch reload share one request token per tab:
 //!   only the latest started read applies, and a closed pane (folder removed) applies nothing.
@@ -14,22 +18,66 @@ use std::rc::Rc;
 
 use gpui_kit::base::Scrollbar;
 use gpui_kit::base::input::EditorScrollbarContext;
-use gpui_kit::component::input::{Editor, EditorState};
+use gpui_kit::component::input::{Editor, EditorState, InputEvent};
 use gpui_kit::*;
 
 use super::folders::FolderWorkspace;
 use super::metrics;
+use crate::text_io::{self, Format};
 
 /// `E` is the editor handle; generic only so tab bookkeeping is testable without a window.
 pub struct Tab<E = Entity<EditorState>> {
     pub path: PathBuf,
     pub preview: bool,
     pub editor: E,
-    /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046). 보기 전용이라
-    /// 편집기 내용은 늘 넣은 내용과 같다(D-18). While the first read is pending the editor is empty, so this is `text_hash("")`.
+    /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046).
+    /// Hash of the content last read from disk; the buffer may differ once edited (`dirty`). While the first read is
+    /// pending the editor is empty, so this is `text_hash("")`.
     pub hash: u64,
     /// Token of the latest started read (first read or reload) not yet applied.
     pub pending: Option<u64>,
+    /// The buffer differs from `hash` (P3-1).
+    pub dirty: bool,
+    /// A read has landed with a known encoding, so the buffer holds the file; editing and saving only then.
+    pub loaded: bool,
+    /// Encoding and line ending of the last accepted read; saves write them back (P3-2, P3-12-R1).
+    /// `None`: not read yet or undecodable.
+    pub format: Option<Format>,
+    /// Token of the save in flight; a second save waits until it finishes. Reads do not apply while it runs.
+    pub saving: Option<u64>,
+}
+
+/// How a finished read ended (first read or watch reload), with the detected format (`None`: undecodable).
+/// Hashes are of the editor representation (`\n` line endings, `text_io::decode_text`).
+pub enum ReadOutcome {
+    /// Disk content equals the hash the read started with.
+    Same(Option<Format>),
+    /// New disk content with this hash.
+    Changed(u64, Option<Format>),
+    Unreadable,
+}
+
+/// What `finish_read` decided.
+#[derive(Debug, PartialEq)]
+pub enum ReadApply<'a, E> {
+    /// Not the tab's latest read, the tab is dirty or saving, or the pane is closed: ignore the result.
+    Dropped,
+    /// Accepted, the buffer already matches (same hash or unreadable): leave the editor alone (`set_value` would
+    /// reset selection, scroll and undo).
+    Kept,
+    /// Accepted with new content: fill this editor.
+    Fill(&'a E),
+}
+
+/// What a save request turned into.
+#[derive(Debug, PartialEq)]
+pub enum SaveStart {
+    /// Not loaded, undecodable (read-only), not edited, or a save already in flight: nothing to do.
+    Skip,
+    /// The text cannot be written in the file's encoding (CP949 loss); the reason is shown, nothing is written.
+    Refused(String),
+    /// Write these bytes, then `finish_save` with the token.
+    Write(u64, Vec<u8>),
 }
 
 impl<E> Tab<E> {
@@ -61,6 +109,12 @@ pub fn text_hash(text: &str) -> u64 {
     text.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3))
 }
 
+/// Hash of the editor buffer in the representation reads produce (LF, `text_io::to_lf`), so a pasted `\r\n`
+/// compares equal to the file it will be saved as.
+fn buffer_hash(text: &str) -> u64 {
+    if text.contains("\r\n") { text_hash(&text.replace("\r\n", "\n")) } else { text_hash(text) }
+}
+
 /// Tab editor scrollbar: gpui-base's own scrollbar on the editor's scroll handle, track width from the spec
 /// (P2-5, D-10 item 6). Axis follows the editor (vertical with soft wrap, both without), like gpui-base's default.
 fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App) -> AnyElement {
@@ -74,7 +128,8 @@ fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App
 /// that to Alt+Shift only, inside its private `on_mouse_down` (gpui-base state.rs 2750), so the press is swallowed
 /// in the capture phase and re-sent as Alt+Shift at the same spot; the drag then runs gpui-base's own block
 /// selection (virtual columns, wrapped rows). Deferred: gpui takes the listener list out while dispatching.
-pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
+/// `readonly` while the first read is pending (`!Tab::loaded`).
+pub fn editor_view(editor: &Entity<EditorState>, readonly: bool) -> impl IntoElement {
     div()
         .size_full()
         .capture_any_mouse_down(|event, window, cx| {
@@ -90,7 +145,7 @@ pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
         .child(
             // P2-7: font size and comfortable line height from the spec; refine over gpui-kit's mono size × 1.5.
             Editor::new(editor)
-                .readonly(true)
+                .readonly(readonly)
                 .text_size(metrics::BUFFER_FONT_SIZE)
                 .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
                 .h_full(),
@@ -121,12 +176,14 @@ fn column_select_events(press: MouseDownEvent, real: Modifiers, capslock: Capslo
     ]
 }
 
-/// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계).
-pub fn read_text(path: &Path) -> String {
-    match std::fs::read(path) {
-        Ok(bytes) => String::from_utf8_lossy(&bytes).into_owned(),
-        Err(_) => String::new(),
-    }
+/// File text in the editor representation (`\n` line endings) and its format (`text_io::decode_text`). An
+/// undecodable file comes back as lossy UTF-8 with no format, so it stays read-only. `None` when unreadable.
+pub fn read_text(path: &Path) -> Option<(String, Option<Format>)> {
+    let bytes = std::fs::read(path).ok()?;
+    Some(match text_io::decode_text(&bytes) {
+        Ok((text, format)) => (text, Some(format)),
+        Err(_) => (text_io::to_lf(String::from_utf8_lossy(&bytes).into_owned()), None),
+    })
 }
 
 impl<E> Pane<E> {
@@ -146,7 +203,18 @@ impl<E> Pane<E> {
     /// A new pending tab for `path` with a fresh read token.
     fn pending_tab(&mut self, path: &Path, preview: bool, editor: E) -> (Tab<E>, u64) {
         let token = self.next_token();
-        (Tab { path: path.to_path_buf(), preview, editor, hash: text_hash(""), pending: Some(token) }, token)
+        let tab = Tab {
+            path: path.to_path_buf(),
+            preview,
+            editor,
+            hash: text_hash(""),
+            pending: Some(token),
+            dirty: false,
+            loaded: false,
+            format: None,
+            saving: None,
+        };
+        (tab, token)
     }
 
     /// Starts a read for tab `ix`; any earlier read of that tab stops applying.
@@ -176,19 +244,82 @@ impl<E> Pane<E> {
         at
     }
 
-    /// Accepts a finished read if it is still the latest for its tab; a replaced, removed or closed tab drops it.
-    /// `hash` is the new content hash, or `None` when the content stays (unchanged or unreadable). Returns the editor
-    /// to fill. Content cannot change between start and accept: only the latest token applies.
-    pub fn finish_read(&mut self, token: u64, hash: Option<u64>) -> Option<&E> {
+    /// Decides a finished read. It applies only if it is still the tab's latest read; a replaced, removed or closed
+    /// tab drops it, a dirty tab keeps its buffer (no reload over edits, P3-1; P3-4 adds the conflict mark), and so
+    /// does a tab being saved. A save also invalidates reads started before it finished (`finish_save`), so a read
+    /// from before or during a save never lands after it. Content cannot change between start and accept: only the
+    /// latest token applies, and edits make the tab dirty.
+    pub fn finish_read(&mut self, token: u64, outcome: ReadOutcome) -> ReadApply<'_, E> {
         if self.closed {
-            return None;
+            return ReadApply::Dropped;
         }
-        let tab = self.tabs.iter_mut().find(|t| t.pending == Some(token))?;
+        let Some(tab) = self.tabs.iter_mut().find(|t| t.pending == Some(token)) else {
+            return ReadApply::Dropped;
+        };
         tab.pending = None;
-        if let Some(h) = hash {
-            tab.hash = h;
+        if tab.dirty || tab.saving.is_some() {
+            return ReadApply::Dropped;
         }
-        Some(&tab.editor)
+        match outcome {
+            ReadOutcome::Changed(h, format) => {
+                tab.format = format;
+                tab.loaded = format.is_some();
+                if h == tab.hash {
+                    // The buffer already holds it (e.g. the app's own write read back, D-046).
+                    return ReadApply::Kept;
+                }
+                tab.hash = h;
+                ReadApply::Fill(&tab.editor)
+            }
+            ReadOutcome::Same(format) => {
+                tab.format = format;
+                tab.loaded = format.is_some();
+                ReadApply::Kept
+            }
+            ReadOutcome::Unreadable => ReadApply::Kept,
+        }
+    }
+
+    /// Starts saving tab `ix` whose buffer is `text`: encodes it with the tab's encoding and line ending (P3-2, D-6).
+    /// A tab that is not dirty is not written (H-15), so an unedited file keeps its exact bytes.
+    pub fn begin_save(&mut self, ix: usize, text: &str) -> SaveStart {
+        let tab = &self.tabs[ix];
+        let (true, true, Some(format), None) = (tab.loaded, tab.dirty, tab.format, tab.saving) else {
+            return SaveStart::Skip;
+        };
+        match text_io::encode_text(text, format) {
+            Ok(bytes) => {
+                let token = self.next_token();
+                self.tabs[ix].saving = Some(token);
+                SaveStart::Write(token, bytes)
+            }
+            Err(e) => SaveStart::Refused(e),
+        }
+    }
+
+    /// The save with `token` finished. On success the disk now holds `saved_hash` (the hash the watch reload
+    /// compares with, so the app's own write reads back as `Same`, D-046) and the tab is dirty only if the buffer
+    /// (`buffer_hash`) changed since. Reads started before now are invalidated either way: they may hold content
+    /// from before the write. Returns `false` when the tab is gone.
+    pub fn finish_save(&mut self, token: u64, ok: bool, saved_hash: u64, buffer_hash: u64) -> bool {
+        let Some(tab) = self.tabs.iter_mut().find(|t| t.saving == Some(token)) else {
+            return false;
+        };
+        tab.saving = None;
+        tab.pending = None;
+        if ok {
+            tab.hash = saved_hash;
+            tab.dirty = buffer_hash != saved_hash;
+        }
+        true
+    }
+
+    /// A user edit on tab `ix` whose buffer now hashes to `buffer_hash`: dirty when it differs from the disk
+    /// content, and the edit promotes a preview tab (I-063).
+    pub fn on_edit(&mut self, ix: usize, buffer_hash: u64) {
+        let tab = &mut self.tabs[ix];
+        tab.dirty = buffer_hash != tab.hash;
+        tab.preview = false;
     }
 
     /// 트리에서 이름을 바꾸거나 옮긴 파일·폴더를 탭 경로에 반영한다(판단).
@@ -208,6 +339,62 @@ impl<E> Pane<E> {
             .collect::<Vec<_>>()
             .join("\t")
     }
+}
+
+impl super::Workbench {
+    /// `workspace::Save` (Ctrl-S, E-088): writes the active tab with its own encoding and line ending in the
+    /// background (AUDIT 4). A CP949 loss or a write error is shown as E-083's "Unable to save file: {error}";
+    /// `text_io::write_file` swaps a complete temp file in and keeps it (named in the error) if the swap lost the
+    /// original.
+    pub(super) fn on_save(&mut self, action: &super::keymap::workspace::Save, window: &mut Window, cx: &mut Context<Self>) {
+        super::keymap::log_handled(action, self.focus_name(window, cx), cx);
+        let Some(ws) = self.active_ws() else { return };
+        let Some((ix, editor, path)) =
+            ws.read(cx).pane.active.and_then(|i| ws.read(cx).pane.tabs.get(i).map(|t| (i, t.editor.clone(), t.path.clone())))
+        else {
+            return;
+        };
+        let text = editor.read(cx).value();
+        let saved_hash = buffer_hash(&text);
+        let dev = super::keymap::dev_enabled(cx);
+        let (token, bytes) = match ws.update(cx, |ws, _| ws.pane.begin_save(ix, &text)) {
+            SaveStart::Skip => return,
+            SaveStart::Refused(e) => return save_failed(&path, &e, window, cx),
+            SaveStart::Write(token, bytes) => (token, bytes),
+        };
+        cx.spawn_in(window, async move |_, cx| {
+            let target = path.clone();
+            let len = bytes.len();
+            let result = cx
+                .background_executor()
+                .spawn(async move { text_io::write_file(&target, &bytes).map_err(|e| e.to_string()) })
+                .await;
+            let _ = cx.update(|window, cx| {
+                let buffer_now = buffer_hash(&editor.read(cx).value());
+                ws.update(cx, |ws, cx| {
+                    ws.pane.finish_save(token, result.is_ok(), saved_hash, buffer_now);
+                    cx.notify();
+                });
+                if dev {
+                    println!("[dev] tab-save path={} bytes={len} ok={} fnv={saved_hash:016x}", path.display(), result.is_ok());
+                }
+                if let Err(e) = &result {
+                    save_failed(&path, e, window, cx);
+                }
+            });
+        })
+        .detach();
+    }
+}
+
+/// E-083 "Unable to save file: {error}" as a notification (D-14), plus the dev line other notifications use.
+fn save_failed(path: &Path, error: &str, window: &mut Window, cx: &mut App) {
+    use gpui_kit::component::WindowExt as _;
+    let text = format!("Unable to save file: {error}");
+    if super::keymap::dev_enabled(cx) {
+        println!("[dev] notification text={text} path={}", path.display());
+    }
+    window.push_notification(SharedString::from(text), cx);
 }
 
 impl Pane {
@@ -232,15 +419,37 @@ impl Pane {
             state.set_scrollbar_renderer(Some(Rc::new(editor_scrollbar)));
             state
         });
+        // Only user edits emit Change (`set_value` does not), so this tracks edits, not reads.
+        cx.subscribe(&editor, |ws, editor, event: &InputEvent, cx| {
+            if !matches!(event, InputEvent::Change) {
+                return;
+            }
+            // shortcut: hashes the whole buffer per edit, fine for typical files; keep a running state if large files lag.
+            let h = buffer_hash(&editor.read(cx).value());
+            if let Some(ix) = ws.pane.tabs.iter().position(|t| t.editor == editor) {
+                ws.pane.on_edit(ix, h);
+                cx.notify();
+            }
+        })
+        .detach();
         let (tab, token) = self.pending_tab(path, preview, editor);
         let ix = self.place(tab);
         let path = path.to_path_buf();
         cx.spawn_in(window, async move |ws, cx| {
             let text = cx.background_executor().spawn(async move { read_text(&path) }).await;
             let _ = ws.update_in(cx, |ws, window, cx| {
-                if let Some(editor) = ws.pane.finish_read(token, Some(text_hash(&text))).cloned() {
+                let outcome = match &text {
+                    Some((t, format)) => ReadOutcome::Changed(text_hash(t), *format),
+                    None => ReadOutcome::Unreadable,
+                };
+                if let ReadApply::Fill(editor) = ws.pane.finish_read(token, outcome)
+                    && let Some((text, _)) = &text
+                {
+                    let editor = editor.clone();
                     editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
                 }
+                // The window reads `loaded` to lift read-only; redraw it.
+                cx.notify();
             });
         })
         .detach();
@@ -252,7 +461,7 @@ impl Pane {
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
     use super::{
-        Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, column_select_events,
+        buffer_hash, Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadApply, ReadOutcome, SaveStart, column_select_events,
         column_select_press, metrics, point, px, text_hash,
     };
 
@@ -270,6 +479,20 @@ mod tests {
         let PlatformInput::ModifiersChanged(restore) = second else { panic!("second must restore modifiers") };
         assert_eq!((restore.modifiers, restore.capslock), (real, caps));
         assert!(restore.modifiers.number_of_modifiers() >= 2);
+    }
+
+    use crate::text_io::{Format, LineEnding, TextEncoding};
+
+    const UTF8: Option<Format> = Some(Format { encoding: TextEncoding::Utf8, line_ending: LineEnding::Lf });
+
+    impl<E> ReadApply<'_, E> {
+        fn accepted(&self) -> bool {
+            !matches!(self, Self::Dropped)
+        }
+    }
+
+    fn fmt(encoding: TextEncoding, line_ending: LineEnding) -> Option<Format> {
+        Some(Format { encoding, line_ending })
     }
 
     fn press(button: MouseButton, modifiers: Modifiers) -> MouseDownEvent {
@@ -336,11 +559,11 @@ mod tests {
         let a = open(&mut pane, "a.txt", true);
         let b = open(&mut pane, "b.txt", true);
         assert_eq!(pane.tabs.len(), 1);
-        assert!(pane.finish_read(a, Some(1)).is_none());
-        assert!(pane.finish_read(b, Some(2)).is_some());
+        assert!(!pane.finish_read(a, ReadOutcome::Changed(1, UTF8)).accepted());
+        assert!(pane.finish_read(b, ReadOutcome::Changed(2, UTF8)).accepted());
         assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (2, None));
         // A finished token is not accepted twice.
-        assert!(pane.finish_read(b, Some(3)).is_none());
+        assert!(!pane.finish_read(b, ReadOutcome::Changed(3, UTF8)).accepted());
     }
 
     #[test]
@@ -349,8 +572,8 @@ mod tests {
         let a = open(&mut pane, "a.txt", false);
         let b = open(&mut pane, "b.txt", false);
         pane.tabs.retain(|t| t.pending != Some(a));
-        assert!(pane.finish_read(a, Some(1)).is_none());
-        assert!(pane.finish_read(b, Some(2)).is_some());
+        assert!(!pane.finish_read(a, ReadOutcome::Changed(1, UTF8)).accepted());
+        assert!(pane.finish_read(b, ReadOutcome::Changed(2, UTF8)).accepted());
         assert_eq!(pane.tabs[0].hash, 2);
     }
 
@@ -360,8 +583,8 @@ mod tests {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
-        assert!(pane.finish_read(reload, Some(text_hash("B"))).is_some());
-        assert!(pane.finish_read(first, Some(text_hash("A"))).is_none());
+        assert!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8)).accepted());
+        assert!(!pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8)).accepted());
         assert_eq!(pane.tabs[0].hash, text_hash("B"));
     }
 
@@ -372,8 +595,8 @@ mod tests {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
-        assert!(pane.finish_read(first, Some(text_hash("A"))).is_none());
-        assert!(pane.finish_read(reload, None).is_some());
+        assert!(!pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8)).accepted());
+        assert!(pane.finish_read(reload, ReadOutcome::Same(UTF8)).accepted());
         assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (text_hash(""), None));
     }
 
@@ -384,8 +607,194 @@ mod tests {
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
         pane.close();
-        assert!(pane.finish_read(first, Some(1)).is_none());
-        assert!(pane.finish_read(reload, Some(2)).is_none());
+        assert!(!pane.finish_read(first, ReadOutcome::Changed(1, UTF8)).accepted());
+        assert!(!pane.finish_read(reload, ReadOutcome::Changed(2, UTF8)).accepted());
         assert_eq!(pane.tabs[0].hash, text_hash(""));
+    }
+
+    /// P3-1: the first read loads the tab (editing allowed); an edit that changes the text makes it dirty and
+    /// promotes the preview tab (I-063); undoing back to the disk text clears dirty.
+    #[test]
+    fn edit_marks_dirty_and_promotes_preview() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", true);
+        assert!(!pane.tabs[0].loaded);
+        assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8)).accepted());
+        assert!(pane.tabs[0].loaded && !pane.tabs[0].dirty);
+        pane.on_edit(0, text_hash("AB"));
+        assert!(pane.tabs[0].dirty);
+        assert!(!pane.tabs[0].preview);
+        pane.on_edit(0, text_hash("A"));
+        assert!(!pane.tabs[0].dirty);
+    }
+
+    /// P3-1: a reload of a dirty tab keeps the buffer and the disk hash (no apply), and is not accepted again.
+    #[test]
+    fn dirty_tab_is_not_reloaded() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8));
+        pane.on_edit(0, text_hash("A edited"));
+        let reload = pane.start_read(0);
+        assert!(!pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8)).accepted());
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty, t.pending), (text_hash("A"), true, None));
+    }
+
+    /// P3-1: an unreadable first read leaves the tab not loaded (read-only), so nothing typed can replace the file.
+    #[test]
+    fn unreadable_first_read_stays_read_only() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        assert!(pane.finish_read(first, ReadOutcome::Unreadable).accepted());
+        assert!(!pane.tabs[0].loaded);
+        // A later reload that reads the (empty) file loads it.
+        let reload = pane.start_read(0);
+        pane.finish_read(reload, ReadOutcome::Same(UTF8));
+        assert!(pane.tabs[0].loaded);
+    }
+    /// P3-2: save writes the tab's encoding; a second save waits; success records the saved hash and keeps the
+    /// tab dirty only if the buffer changed while writing.
+    #[test]
+    fn save_encodes_with_tab_encoding_and_records_hash() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        assert_eq!(pane.begin_save(0, "x"), SaveStart::Skip, "not loaded yet");
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), fmt(TextEncoding::Utf8Bom, LineEnding::Lf)));
+        pane.on_edit(0, text_hash("AB"));
+        let SaveStart::Write(token, bytes) = pane.begin_save(0, "AB") else { panic!("expected a write") };
+        assert_eq!(bytes, [&[0xEF, 0xBB, 0xBF][..], b"AB"].concat());
+        assert_eq!(pane.begin_save(0, "AB"), SaveStart::Skip, "save in flight");
+        // Typed "C" while writing: saved, but still dirty against the new disk content.
+        assert!(pane.finish_save(token, true, text_hash("AB"), text_hash("ABC")));
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty, t.saving), (text_hash("AB"), true, None));
+        let SaveStart::Write(token, _) = pane.begin_save(0, "ABC") else { panic!("expected a write") };
+        assert!(pane.finish_save(token, true, text_hash("ABC"), text_hash("ABC")));
+        assert!(!pane.tabs[0].dirty);
+    }
+
+    /// P3-2: a failed write keeps the old disk hash and the dirty mark.
+    #[test]
+    fn failed_save_keeps_dirty() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8));
+        pane.on_edit(0, text_hash("AB"));
+        let SaveStart::Write(token, _) = pane.begin_save(0, "AB") else { panic!("expected a write") };
+        pane.finish_save(token, false, text_hash("AB"), text_hash("AB"));
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty, t.saving), (text_hash("A"), true, None));
+    }
+
+    /// P3-2: an undecodable file is shown but never editable or saved.
+    #[test]
+    fn undecodable_file_is_read_only_and_not_saved() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "bin.dat", false);
+        assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("\u{FFFD}"), None)).accepted());
+        assert!(!pane.tabs[0].loaded);
+        assert_eq!(pane.begin_save(0, "\u{FFFD}"), SaveStart::Skip);
+    }
+
+    /// P3-2: CP949 text with a character CP949 cannot hold is refused (no best-fit) and nothing is in flight.
+    #[cfg(windows)]
+    #[test]
+    fn cp949_loss_refuses_save() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "k.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("가격"), fmt(TextEncoding::Cp949, LineEnding::Lf)));
+        pane.on_edit(0, text_hash("가격 \u{20A9}1000"));
+        let SaveStart::Refused(e) = pane.begin_save(0, "가격 \u{20A9}1000") else { panic!("expected refusal") };
+        assert!(e.contains("U+20A9"), "{e}");
+        assert_eq!(pane.tabs[0].saving, None);
+    }
+
+    /// Loaded "A", edited to `buffer`, save started. Returns the save token.
+    fn loaded_and_saving(pane: &mut Pane<()>, buffer: &str) -> u64 {
+        let first = open(pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8));
+        pane.on_edit(0, text_hash(buffer));
+        let SaveStart::Write(token, _) = pane.begin_save(0, buffer) else { panic!("expected a write") };
+        token
+    }
+
+    /// P3-12-R1 (review 2-A): the app's own write is read back by a reload that started during the save and lands
+    /// after it. It must not fill the editor again (set_value would reset undo and the cursor).
+    #[test]
+    fn own_write_read_back_after_save_is_dropped() {
+        let mut pane = Pane::<()>::default();
+        let save = loaded_and_saving(&mut pane, "B");
+        let reload = pane.start_read(0);
+        assert!(pane.finish_save(save, true, text_hash("B"), text_hash("B")));
+        assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8)), ReadApply::Dropped);
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty), (text_hash("B"), false));
+        // A reload started after the save reads the same text: accepted but nothing to fill.
+        let after = pane.start_read(0);
+        assert_eq!(pane.finish_read(after, ReadOutcome::Changed(text_hash("B"), UTF8)), ReadApply::Kept);
+    }
+
+    /// P3-12-R1 (review 2-B): a reload started before the save (it read an older external "B") lands after "C" was
+    /// saved. It must not replace the saved buffer.
+    #[test]
+    fn stale_read_from_before_save_is_dropped() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8));
+        let reload = pane.start_read(0);
+        pane.on_edit(0, text_hash("C"));
+        let SaveStart::Write(save, _) = pane.begin_save(0, "C") else { panic!("expected a write") };
+        assert!(pane.finish_save(save, true, text_hash("C"), text_hash("C")));
+        assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8)), ReadApply::Dropped);
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty), (text_hash("C"), false));
+    }
+
+    /// P3-12-R1: a read that lands while a save is running is dropped even when the buffer is clean again (undo
+    /// back to the disk text during the save), and the save's end invalidates it.
+    #[test]
+    fn read_landing_during_save_is_dropped() {
+        let mut pane = Pane::<()>::default();
+        let save = loaded_and_saving(&mut pane, "B");
+        pane.on_edit(0, text_hash("A"));
+        assert!(!pane.tabs[0].dirty);
+        let reload = pane.start_read(0);
+        assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("X"), UTF8)), ReadApply::Dropped);
+        pane.finish_save(save, true, text_hash("B"), text_hash("A"));
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty), (text_hash("B"), true));
+    }
+
+    /// H-15: an unedited tab is not written (a mixed-ending file keeps its bytes); after an edit the save uses the
+    /// detected majority ending.
+    #[test]
+    fn clean_tab_is_not_written_and_edit_saves_majority_ending() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "mixed.txt", false);
+        // "a\nb\r\nc\r\nd" read as LF text, CRLF by majority.
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("a\nb\nc\nd"), fmt(TextEncoding::Utf8, LineEnding::Crlf)));
+        assert_eq!(pane.begin_save(0, "a\nb\nc\nd"), SaveStart::Skip, "no write without an edit");
+        pane.on_edit(0, text_hash("a\nb\nc\nd\ne"));
+        let SaveStart::Write(_, bytes) = pane.begin_save(0, "a\nb\nc\nd\ne") else { panic!("expected a write") };
+        assert_eq!(bytes, b"a\r\nb\r\nc\r\nd\r\ne");
+    }
+
+    /// P3-12-R1: the tab's line ending is used for the save, typed lines included.
+    #[test]
+    fn save_writes_tab_line_ending() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("a\nb"), fmt(TextEncoding::Utf8, LineEnding::Crlf)));
+        pane.on_edit(0, text_hash("a\nb\nc"));
+        let SaveStart::Write(_, bytes) = pane.begin_save(0, "a\nb\nc") else { panic!("expected a write") };
+        assert_eq!(bytes, b"a\r\nb\r\nc");
+    }
+
+    /// P3-12-R1: a pasted "\r\n" hashes like the LF text reads produce, so it is not a phantom edit.
+    #[test]
+    fn pasted_crlf_hashes_as_lf() {
+        assert_eq!(buffer_hash("a\r\nb"), text_hash("a\nb"));
+        assert_eq!(buffer_hash("a\nb"), text_hash("a\nb"));
     }
 }
