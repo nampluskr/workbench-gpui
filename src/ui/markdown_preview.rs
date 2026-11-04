@@ -25,6 +25,9 @@ const BODY_FONT_SIZE: Pixels = px(16.);
 const BODY_LINE_HEIGHT: f32 = 1.5;
 /// `paragraph_gap` (L-103).
 const PARAGRAPH_GAP: f32 = 16.;
+/// Not set, a component limit (P4-E-F1-R1, H-25): the h1/h2 bottom line and padding of L-105. gpui-component 0.8.1's
+/// `TextViewStyle` turns a heading style into a text size only (`compat.rs` `resolve_component_style`); the border and
+/// padding hook (`gpui_base::TextViewStyle::with_heading`) is not reachable through the component `TextView`.
 /// `h1.font_size` … `h6.font_size` (L-104).
 const HEADING_SIZES: [f32; 6] = [28., 22.4, 19.2, 16., 14., 13.6];
 /// `blockquote.padding_left` / `border_left` (L-106).

@@ -53,6 +53,17 @@ impl Render for DividerDrag {
     }
 }
 
+/// I-706: the end buttons belong to the pane that has focus; a workspace with a single pane (the first screen has
+/// one) has only the active one.
+fn end_buttons_shown(active: bool, only_pane: bool) -> bool {
+    active || only_pane
+}
+
+/// The end buttons of the first screen (no folder): split is off (I-707, nothing to split), zoom does nothing.
+fn first_screen_end() -> BarEnd {
+    BarEnd { split_enabled: false, zoomed: false, on_split: Rc::new(|_, _, _| {}), on_zoom: Rc::new(|_, _, _| {}) }
+}
+
 /// The title a tab shows: the file name, or "Preview {name}" for a Markdown preview (L-69).
 fn tab_title<E>(t: &Tab<E>) -> String {
     if t.markdown { preview_title(&file_name(&t.path)) } else { t.title() }
@@ -95,7 +106,9 @@ impl Workbench {
             return v_flex()
                 .on_children_prepainted(probe(&["tab-bar", "active-item"]))
                 .size_full()
-                .child(layout::tab_bar(&[], None, Rc::new(|_, _, _| {}), &self.glyph_font, cx))
+                // The first screen has no folder and one pane, which counts as the active one: its end buttons show as
+                // before P4-3b (`+`, split off, zoom), with nothing to act on yet.
+                .child(layout::tab_bar(&[], end_buttons_shown(false, true).then(first_screen_end), Rc::new(|_, _, _| {}), &self.glyph_font, cx))
                 .child(div().flex_1().min_h_0().child(div().size_full().bg(theme.background)))
                 .into_any_element();
         };
@@ -216,7 +229,7 @@ impl Workbench {
                 }
             })
             .collect();
-        let end = focused.then(|| BarEnd {
+        let end = end_buttons_shown(focused, group.panes.len() == 1).then(|| BarEnd {
             split_enabled: group.split_button().is_some(),
             zoomed: group.zoomed == Some(id),
             on_split: Rc::new(cx.listener(|this, e: &ClickEvent, window, cx| this.open_split_menu(e, window, cx))),
@@ -438,7 +451,18 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{divider_delta, flexes_at};
+    use super::{divider_delta, end_buttons_shown, first_screen_end, flexes_at};
+
+    /// P4-E-F1 (U1, I-706): the first screen's only pane shows its end buttons although no pane is "active" there;
+    /// in a split, only the active pane does. The first-screen buttons are `+` and zoom with split off.
+    #[test]
+    fn first_screen_keeps_its_end_buttons() {
+        assert!(end_buttons_shown(false, true));
+        assert!(end_buttons_shown(true, false));
+        assert!(!end_buttons_shown(false, false));
+        let end = first_screen_end();
+        assert!(!end.split_enabled && !end.zoomed);
+    }
     use crate::ui::pane_group::{Axis, Node, PaneGroup, SplitDirection, SplitMode};
     use std::path::Path;
 
