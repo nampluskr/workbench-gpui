@@ -638,4 +638,39 @@ mod tests {
         assert!(!dir.join("sub").join("sub copy").exists());
         let _ = std::fs::remove_dir_all(&dir);
     }
+
+    #[test]
+    fn stalled_cross_volume_precheck_does_not_block_other_jobs() {
+        // Cross-volume step 2 after the claim: the link check has not started (hook). Another copy and a move
+        // into the same folder must reserve and finish meanwhile, and neither may take the claimed name.
+        let dir = std::env::temp_dir().join(format!("wb-p1-12r3-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let (a, b, c, out) = (dir.join("A"), dir.join("B"), dir.join("C"), dir.join("out"));
+        for d in [&a, &b, &c, &out] {
+            std::fs::create_dir_all(d).unwrap();
+        }
+        for (d, t) in [(&a, "from-a"), (&b, "from-b"), (&c, "from-c")] {
+            std::fs::write(d.join("x.txt"), t).unwrap();
+        }
+        // Step 1, as run_job does it under the lock: pick the name and claim it.
+        let dst = {
+            let _g = super::MOVE_LOCK.lock().unwrap();
+            let dst = ops::paste_path(&out, "x.txt", false);
+            ops::reserve_copy_target(&a.join("x.txt"), &dst).unwrap();
+            dst
+        };
+        ops::finish_reserved_move_hooked(&a.join("x.txt"), &dst, || {
+            let copy = run_job(b.join("x.txt"), out.clone(), false, || {});
+            let moved = run_job(c.join("x.txt"), out.clone(), true, || {});
+            assert!(copy.result.is_ok() && moved.result.is_ok());
+            assert!(copy.dst != dst && moved.dst != dst && copy.dst != moved.dst);
+        })
+        .unwrap();
+        let mut texts: Vec<String> =
+            std::fs::read_dir(&out).unwrap().map(|e| std::fs::read_to_string(e.unwrap().path()).unwrap()).collect();
+        texts.sort();
+        assert_eq!(texts, vec!["from-a", "from-b", "from-c"]);
+        assert!(!a.join("x.txt").exists() && !c.join("x.txt").exists() && b.join("x.txt").exists());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 }

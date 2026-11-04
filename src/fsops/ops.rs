@@ -240,16 +240,15 @@ pub enum Moved {
     Reserved,
 }
 
-/// Moves an entry (replaces the old one-step move_entry): checks, then rename. If the target is on another volume, refuses trees with
-/// links and claims `dst` instead of copying, so the caller can hold a lock only for this short step.
+/// Moves an entry (replaces the old one-step move_entry): checks, then rename. If the target is on another volume,
+/// claims `dst` instead of copying, so the caller can hold a lock only for this short step.
 pub fn move_or_reserve(src: &Path, dst: &Path) -> io::Result<Moved> {
     move_checks(src, dst)?;
     match fs::rename(src, dst) {
         Ok(()) => Ok(Moved::Done),
         Err(e) if e.raw_os_error() == Some(17) => {
-            if tree_summary(src)?.3 > 0 {
-                return Err(io::Error::new(io::ErrorKind::Unsupported, MOVE_REFUSED_LINKS));
-            }
+            // Only the cheap claim happens here (the caller may hold a lock); the recursive link check runs in
+            // `finish_reserved_move`, which releases the claim again if the tree contains links.
             reserve_copy_target(src, dst)?;
             Ok(Moved::Reserved)
         }
@@ -257,9 +256,15 @@ pub fn move_or_reserve(src: &Path, dst: &Path) -> io::Result<Moved> {
     }
 }
 
-/// Slow second half after `Moved::Reserved`: copy into the claimed `dst`, verify, delete the source.
+/// Slow second half after `Moved::Reserved`: refuse trees with links (releasing the claim), copy into the claimed
+/// `dst`, verify, delete the source. Needs no lock.
 pub fn finish_reserved_move(src: &Path, dst: &Path) -> io::Result<()> {
-    move_verified_with(src, dst, true, || {})
+    finish_reserved_move_hooked(src, dst, || {})
+}
+
+/// `finish_reserved_move` with `before_check` run first (test hook: the link check has not started yet).
+pub fn finish_reserved_move_hooked(src: &Path, dst: &Path, before_check: impl FnOnce()) -> io::Result<()> {
+    move_verified_with(src, dst, true, before_check, || {})
 }
 
 fn move_checks(src: &Path, dst: &Path) -> io::Result<()> {
@@ -303,7 +308,8 @@ fn snapshot(root: &Path) -> io::Result<Snapshot> {
 /// - 원본 트리에 재분석 지점이 있으면 시작 전에 거부한다(원본·대상 모두 바꾸지 않는다).
 /// - 복사한 뒤 원본·대상의 파일 수·폴더 수·바이트가 같을 때만 원본을 지운다. 다르면 원본을 두고 오류.
 /// - 삭제 직전 원본의 목록·크기·수정 시각이 복사 전과 다르면 원본을 지우지 않고 오류(복사본은 남긴다).
-fn move_verified_with(src: &Path, dst: &Path, reserved: bool, after_copy: impl FnOnce()) -> io::Result<()> {
+fn move_verified_with(src: &Path, dst: &Path, reserved: bool, before_check: impl FnOnce(), after_copy: impl FnOnce()) -> io::Result<()> {
+    before_check();
     let pre = tree_summary(src).and_then(|before| snapshot(src).map(|snap| (before, snap)));
     let (before, snap) = match pre {
         Ok(v) if v.0.3 == 0 => v,
@@ -419,12 +425,12 @@ mod d044_tests {
         let r = copy_entry(&dir.join("src"), &dir.join("copy")).unwrap();
         assert_eq!((r.files, r.dirs, r.bytes, r.skipped_links.len()), (2, 2, 8, 0));
         // 같은 볼륨에서도 move_verified_with 는 복사 → 확인 → 원본 삭제 순서다.
-        move_verified_with(&dir.join("copy"), &dir.join("moved"), false, || {}).unwrap();
+        move_verified_with(&dir.join("copy"), &dir.join("moved"), false, || {}, || {}).unwrap();
         assert!(!dir.join("copy").exists());
         assert_eq!(tree_summary(&dir.join("moved")).unwrap(), (2, 2, 8, 0));
         // source changed after the copy: source stays, copy stays, error returned
         let changed = || fs::write(dir.join("moved").join("a.txt"), b"abcd").unwrap();
-        assert!(move_verified_with(&dir.join("moved"), &dir.join("moved2"), false, changed).is_err());
+        assert!(move_verified_with(&dir.join("moved"), &dir.join("moved2"), false, || {}, changed).is_err());
         assert!(dir.join("moved").join("a.txt").exists() && dir.join("moved2").exists());
         fs::remove_dir_all(&dir).unwrap();
     }
