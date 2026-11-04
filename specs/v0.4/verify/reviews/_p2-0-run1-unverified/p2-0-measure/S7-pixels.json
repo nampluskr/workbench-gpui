@@ -1,0 +1,25 @@
+{
+  "top": {
+    "length": 1,
+    "x": 520,
+    "y": 163
+  },
+  "source": "S7.png",
+  "note": "manual pixel scan: border color (163,163,163)",
+  "right": {
+    "length": 2,
+    "x0": 612,
+    "x1": 613,
+    "y": 176
+  },
+  "bottom": {
+    "length": 1,
+    "x": 520,
+    "y": 188
+  },
+  "interior": {
+    "height": 24,
+    "y0": 164,
+    "y1": 187
+  }
+}

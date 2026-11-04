@@ -1,0 +1,121 @@
+[
+  {
+    "script": "verify-v02-phase1",
+    "items": 70,
+    "baseFail": 0,
+    "p1Items": 70,
+    "p1Fail": 0,
+    "timeMasked": 0,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase2",
+    "items": 137,
+    "baseFail": 0,
+    "p1Items": 137,
+    "p1Fail": 0,
+    "timeMasked": 24,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase3",
+    "items": 122,
+    "baseFail": 2,
+    "p1Items": 122,
+    "p1Fail": 2,
+    "timeMasked": 19,
+    "diff": [
+      {
+        "item": "scroll#2",
+        "id": "A-16.7",
+        "what": "목록 휠 → 세로 스크롤(스크롤 위치 음수)",
+        "base": "[dev] sidebar-scroll offset_y=-23",
+        "p1": "[dev] sidebar-scroll offset_y=-234",
+        "baseOk": true,
+        "p1Ok": true,
+        "classification": "이력상 실행마다 흔들림",
+        "history": "v0.2 재실행 8개 전부 -234; v0.3 기준선·p3d·phase2·phase3 -23, v0.3 phase1 -234; v0.4 R-1 -23, Phase 1 -234 (history-values.txt, H-10)",
+        "unexplained": false
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase4",
+    "items": 208,
+    "baseFail": 0,
+    "p1Items": 208,
+    "p1Fail": 0,
+    "timeMasked": 16,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase4-d043",
+    "items": 13,
+    "baseFail": 0,
+    "p1Items": 13,
+    "p1Fail": 0,
+    "timeMasked": 2,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase4-d044",
+    "items": 6,
+    "baseFail": 0,
+    "p1Items": 6,
+    "p1Fail": 0,
+    "timeMasked": 3,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase5",
+    "items": 62,
+    "baseFail": 0,
+    "p1Items": 62,
+    "p1Fail": 0,
+    "timeMasked": 43,
+    "diff": [
+      {
+        "item": "flood#2",
+        "id": "R-24",
+        "what": "바깥에서 만든 600 개가 모두 트리에",
+        "base": "ok=True, app_ms=587, seen_ms=618, [dev] watch-applied events=1815 own=0 external=1815 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=509 t_ms=1793771609000",
+        "p1": "ok=True, app_ms=516, seen_ms=576, [dev] watch-applied events=1811 own=0 external=1811 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=427 t_ms=1793780447622",
+        "baseOk": true,
+        "p1Ok": true,
+        "classification": "이력상 실행마다 흔들림",
+        "history": "events 수: v0.3 기준선 1818, p3d 1824, phase1 1811, phase2 1825, phase3 1831; v0.4 R-1 1815, Phase 1 1811",
+        "unexplained": false
+      },
+      {
+        "item": "flood#3",
+        "id": "R-24(묶기)",
+        "what": "이벤트 1815 개를 몇 번에 묶어 반영",
+        "base": "반영 1번, 이벤트 1815",
+        "p1": "반영 1번, 이벤트 1811",
+        "baseOk": true,
+        "p1Ok": true,
+        "classification": "이력상 실행마다 흔들림",
+        "history": "flood#2와 같은 값의 요약 줄(반영 1번)",
+        "unexplained": false
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase5-d046",
+    "items": 23,
+    "baseFail": 0,
+    "p1Items": 23,
+    "p1Fail": 0,
+    "timeMasked": 17,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase5-d047",
+    "items": 16,
+    "baseFail": 0,
+    "p1Items": 16,
+    "p1Fail": 0,
+    "timeMasked": 11,
+    "diff": []
+  }
+]

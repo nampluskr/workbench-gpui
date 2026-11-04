@@ -1,0 +1,4 @@
+cases: tree, tab, root, switch, own, flood, junction
+checks: 62, failed: 0
+failures: 0
+user files restored: True

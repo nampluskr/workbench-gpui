@@ -149,8 +149,8 @@ R-12 · R-13 · R-14 · R-15 · D-7
 |---|---|---|---|---|---|
 | Phase 0 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-0` | 기준선 v0.3과 같음(585/2), 스펙 14줄·모호 4, 최종 판정 REWORK 1 → R1 PASS |
 | Phase 1 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-1` | AUDIT 3·4·Duration·clippy 0, R-15 변화 0(흔들림 3, H-10), 테스트 78, 최종 확인 REWORK 2 → R2 PASS |
-| Phase 2 | doing | 2026-11-04 | | `v0.4-phase-2` | |
-| Phase 3 | todo | | | `v0.4-phase-3` | |
+| Phase 2 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-2` | 사이드바 폭 300(phase3 587/0), 에디터 글꼴·줄 높이·스크롤바·열 선택, R-8 2/8(6건 사용자 결정 H-14), check-layout 자동 검사, 최종 확인 R2 PASS |
+| Phase 3 | doing | 2026-11-04 | | `v0.4-phase-3` | P3-1·P3-2 선행(H-12) |
 | Phase 4 | todo | | | `v0.4-phase-4` | |
 
 - 상태: todo | doing | review | done

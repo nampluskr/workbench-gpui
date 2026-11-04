@@ -1,0 +1,53 @@
+{
+  "processName": "workbench-gpui",
+  "pid": 6528,
+  "hwnd": "0xEF07F0",
+  "title": "workbench-gpui",
+  "unit": "physical px",
+  "rect": {
+    "x": 0,
+    "y": 0,
+    "width": 1920,
+    "height": 1032
+  },
+  "windowRect": {
+    "x": -8,
+    "y": -8,
+    "width": 1936,
+    "height": 1048
+  },
+  "clientRect": {
+    "x": 0,
+    "y": 0,
+    "width": 1920,
+    "height": 1032
+  },
+  "dpi": 96,
+  "scale": 1.0,
+  "maximized": true,
+  "monitor": {
+    "device": "\\\\.\\DISPLAY1",
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1080
+    },
+    "workRect": {
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1032
+    }
+  },
+  "capture": {
+    "method": "PrintWindow",
+    "ok": true,
+    "error": null,
+    "foreground": null,
+    "out": "D:\\projects\\workbench-gpui\\specs\\v0.4\\verify\\reviews\\p2-e-measure\\S3b.png",
+    "width": 1920,
+    "height": 1032
+  },
+  "timestamp": "2026-11-04T17:26:10.0642328+09:00"
+}

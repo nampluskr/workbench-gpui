@@ -100,7 +100,69 @@
 
 ### Phase 2 — Zed 일치: P4 UI 셸 ∥ P5 에디터 코어
 
-없음(시작 전).
+**P2-0 시작 V3 실측 (D-3)** (2026-11-04)
+- 무엇을 했나: measure가 master `cf3a82d` 빌드의 사본 exe(H-11)로 UI 셸·에디터 영역을 1회 실행해 실측했다(`verify/reviews/measure-p2-0.md`, 증거 `p2-0-measure/`).
+- 결과: 불일치 FAIL 2(`sidebar["default_width"]` 300→375, `editor["line_height.comfortable"]` 24.27→20), 오차 안 4(`sidebar["footer.height"]` 30→31, `menu["item.line_height"]` 22.652→23, `editor["cursor_width"]` 2→1, `editor["line_height.standard"]` 19.5→20). 편집기 글꼴은 진행 폭으로 약 12px(스펙 15) 관찰. 그 밖의 UI 셸 항목 PASS.
+- 검증: V3. 첫 시도는 공유 exe가 master 빌드인지 증명할 수 없어 폐기했다(H-11).
+- 특이사항: 없음.
+
+**P2-1 사이드바 폭·푸터 (R-7, Q-15)** (2026-11-04)
+- 무엇을 했나: impl-ui가 원인을 찾았다 — `resizable_panel`의 기본 `flex_grow`로 사이드바가 basis보다 커졌다. `.flex_none()`으로 고치고 `sidebar["footer.height"]` 30을 적용했다(`2be8a9a`). 레이아웃 테스트 `sidebar_metrics_equal_spec_exactly`.
+- 결과: review PASS(`verify/reviews/P2-1.md`).
+- 검증: V2.
+- 특이사항: v0.3부터 이어진 phase3 R-28 폭 실패 2건(375·617)의 원인이다. P2-E R-15에서 통과로 바뀌는지 본다.
+
+**P2-2 메뉴 행·탭 내용 높이 (R-7)** (2026-11-04)
+- 무엇을 했나: impl-ui가 코드 값이 스펙과 같음을 확인하고(메뉴 행 22.652는 렌더 반올림으로 23, 탭 바깥 박스 32는 기록만 항목) 값을 고정하는 테스트만 더했다(`309c9f3`).
+- 결과: review PASS(`verify/reviews/P2-2.md`).
+- 검증: V2.
+- 특이사항: 메뉴 행 높이 23은 렌더 반올림이라 코드로 맞출 대상이 아니다.
+
+**P2-5 에디터 표시 + 스크롤바, P2-6 에디터 입력, P2-7 글꼴·줄 높이 (R-8, D-10)** (2026-11-04)
+- 무엇을 했나: impl-editor가 gpui-kit Editor 위에 스크롤바 트랙 폭 15(`3d14c03`, `set_scrollbar_renderer`), Ctrl+Shift 드래그 열 선택(`72043ac`, Alt+Shift로 바꿔 다시 보냄), 재전송 뒤 실제 수정키 복원(`cc7c902`), 탭 편집기 글꼴 15·줄 높이 1.618배(`f0c7c62`)를 넣었다.
+- 결과: P2-5·P2-6 reviewer REWORK 1(재전송한 Alt+Shift가 창 수정키 상태에 남음) → R1 PASS(`verify/reviews/P2-5-6.md`). P2-7 review PASS(`verify/reviews/P2-7.md`).
+- 검증: V1·V2. 순수 함수 테스트(H-9).
+- 특이사항 — D-10 8건 가운데 2건 완료, 6건 보류(사용자 결정 필요, R-8 일부 미충족):
+
+  | 항목 | 상태 | 막힌 곳 | 가능한 길 |
+  |---|---|---|---|
+  | 줄 번호 최소 4자리 | 보류 | gpui-kit 비공개 상수 `MIN_LINE_NUMBER_DIGITS = 3` | gpui-kit 설정 요청·버전 변경, 또는 거터 직접 그리기 |
+  | 커서 2px | 보류 | gpui-kit 커서 폭 고정, 훅 없음 | 같음 |
+  | 선택 모서리 0.15×줄 높이 | 보류 | `element.rs` 3349~3360 직선 PathBuilder, 모양 훅 없음 | 같음, 또는 선택 직접 그리기 |
+  | 한글 혼합 줄 기준선 | 보류 | 허용치 모호(`spec/ambiguous.md` E-012), 기준선 API 없음 | 허용치 결정 뒤 기능 요청, Zed 글꼴 도입 때 재측정 |
+  | 스크롤바 15 | 완료 | — | — |
+  | 스크롤바 마커 | 보류 | 치수 모호(`spec/ambiguous.md` E-034). 그릴 자리(렌더러 훅)는 있음 | spec이 치수를 정하면 추가 |
+  | Ctrl+Shift 열 선택 | 완료 | — | — |
+  | 선택 끌어 옮기기 | 보류 | E-049 300ms가 toml에 없음, 위치→오프셋 공개 API 없음 | 스펙 값 추가 + gpui-kit API 요청 |
+
+  위임(H-4) 안에서는 gpui-kit 교체·`Cargo` 변경·직접 렌더 재구현을 하지 않는다.
+
+병합: work/editor → master `b7ae2f7`, work/ui → master `df280c5`. `Cargo.*` 변경 없음.
+
+**P2-1-R1 사이드바 폭 실제 원인 (R-7)** (2026-11-04)
+- 무엇을 했나: P2-E 실측에서 병합 뒤에도 시작 폭이 375였다(P2-1의 `flex_none`은 원인이 아니었다). impl-ui가 원인을 찾았다 — 창이 처음 작게 열린 뒤 최대화될 때 resizable 패널이 컨테이너 크기 변화에 비례해 다시 커졌다(1920/1536 = 1.25). 사이드바 패널을 고정(fixed)으로 바꿨다(`e02a6f8`).
+- 결과: measure 좁은 V3(`verify/reviews/measure-p2-1-r1.md`): S1·S2 폭 300, phase3 122/0(R-28 시작 300, 복원 419/419). review R1 PASS(`verify/reviews/P2-1.md`).
+- 검증: V3(실행 확인). 레이아웃 경로 단위 테스트는 gpui 컨텍스트가 필요해 만들지 못했다(H-9).
+- 특이사항: 단위 테스트가 상수만 보고 실제 경로를 못 잡은 사례다. 실측(V3)으로 잡았다.
+
+**P2-E Phase 2 끝 R-15 회귀 대조와 V3** (2026-11-04)
+- 무엇을 했나: measure가 master `df280c5`에서 R-15와 불일치 항목 V3 재측정(`verify/reviews/measure-phase2.md`)을 하고, 사이드바 rework 병합 뒤 master `63710c0`에서 R-15를 다시 돌렸다(`verify/baseline/phase2b/`). 사본 exe(H-11).
+- 결과
+
+  | R-n | 스크립트·항목 | 기준선(R-1) | Phase 2(`63710c0`) | 의도한 변경 여부 | 증거 |
+  |---|---|---|---|---|---|
+  | R-15 | 9개 합계(checks 8개) | 585 / 2 | **587 / 0** | phase3 R-28 2건이 통과로 — 의도한 변경 | `phase2b/README.md`, `comparison.json` |
+  | R-15 | phase3 state R-28 시작 폭 | 375(실패) | 300(통과) | 의도한 변경 | README #1 |
+  | R-15 | phase3 state-restart R-28 복원 폭 | 617(실패, 기대 494) | 419(통과, 기대 419) | 의도한 변경(기대값이 시작 폭+119라 함께 바뀜) | README #2·#3 |
+  | R-15 | phase2 툴팁 x 6건, 메뉴 I-314, phase3 A-11.3, phase4 2건 | — | 모두 정확히 −75 | 의도한 변경의 결과(사이드바 폭을 따라 이동) | README #4~ |
+  | R-15 | phase3 A-16.7, phase5 flood 2건 | — | — | 이력상 흔들림(H-10) | README |
+
+  - 값이 다른 항목 16건 = 의도한 변경 13, 이력상 흔들림 3, **미설명 0**.
+  - V3 재측정(`measure-phase2.md`, `df280c5` 기준): `sidebar["footer.height"]` 30 PASS. `editor["line_height.comfortable"]` 24(24.27의 렌더 반올림, 39줄 모두 24), `menu["item.line_height"]` 23(22.652의 렌더 반올림) — 코드 값은 스펙과 같아 맞출 수 없다. `editor["cursor_width"]` 1(D-10 보류). 편집기 글꼴은 글자 진행 폭이 8.2px로 늘어 15px 적용과 맞다(기록만). 스크롤바 썸 중심이 폭 15 트랙 중심과 ±1(트랙은 배경색이라 기록만). 사이드바 300은 `measure-p2-1-r1.md`로 PASS.
+- R-16(1차, reviewer REWORK): 스펙 ID 상수 테스트(`sidebar_metrics_equal_spec_exactly`, P2-2 테스트, `editor_font_and_line_height_are_spec`, `editor_scrollbar_width_is_spec`)는 상수만 비교해 렌더 경로 회귀를 잡지 못한다(P2-1이 그 예). 그래서 실제 렌더 경로 자동 검사로 옮겼다.
+- R-16(P2-R16): `tools/measure/check-layout.ps1` — 앱을 `--dev-layout`으로 1회 띄워 작은 창(1536x1080) → 최대화 경로의 덤프를 `spec/zed-metrics.toml`과 비교, 28항목(titlebar·window border·sidebar·dock·project_panel·statusbar·buttons·icons), FAIL이면 exit 1. master `63710c0` 28/28 PASS, P2-1-R1 이전 `df280c5`에서 `sidebar["default_width"]` 375 FAIL로 회귀 검출(`verify/reviews/check-layout.md`). D-3 정확 비교 항목은 허용 오차 없이 판정(P2-R16-R1). 적용 범위 밖: 폴더 등록 뒤 화면, 탭·툴팁·메뉴·입력칸, 에디터 줄 높이·글자 폭·커서·스크롤바(덤프 probe 없음) — 상수 테스트와 V3로 남는다.
+- 검증: V3(스크립트 실행·실측).
+- 특이사항: R-8은 2/8만 충족, 6건 사용자 결정 대기(H-14, 위 표).
 
 ### Phase 3 — 탭 편집과 저장
 

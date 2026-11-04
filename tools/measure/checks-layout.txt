@@ -1,0 +1,31 @@
+# check-layout.ps1: first screen (no project open), created small then maximized (1920x1032 client).
+# Every row is `exact` (tolerance 0): all items are D-3-matched or already integer-equal in the 63710c0 dump, so a +-1 px drift must fail too.
+# Same S1 items P2-0/P2-E measured by hand. `diff` rows: `A.f ~ B.f`, f = x|y|w|h|r(ight)|b(ottom).
+titlebar["height"] | title-bar | h | exact
+titlebar["padding_left"] | app-menu.x ~ title-bar.x | diff | exact
+titlebar["left_group.gap"] | title-folder-name.x ~ app-menu.r | diff | exact
+titlebar["window_button.width"] | window-btn-min | w | exact
+titlebar["window_button.width"] | window-btn-max | w | exact
+titlebar["window_button.width"] | window-btn-close | w | exact
+titlebar["window_button.height"] | window-btn-min | h | exact
+titlebar["window_button.height"] | window-btn-max | h | exact
+titlebar["window_button.height"] | window-btn-close | h | exact
+window["border_workspace_top"] | body.y ~ work-area.y | diff | exact
+window["border_workspace_bottom"] | status-bar.y ~ body.b | diff | exact
+window["border_sidebar_right"] | sidebar.w ~ sidebar-header.w | diff | exact
+sidebar["default_width"] | sidebar | w | exact
+sidebar["header_height"] | sidebar-header | h | exact
+sidebar["footer.height"] | sidebar-footer | h | exact
+sidebar["footer.padding"] | sidebar-btn-toggle.x ~ sidebar-footer.x | diff | exact
+sidebar["footer.gap"] | sidebar-footer-left-placeholder.x ~ sidebar-btn-toggle.r | diff | exact
+sidebar["footer.icon_size"] | sidebar-icon-toggle | w | exact
+dock["resize_handle_width"] | dock-handle | w | exact
+project_panel["default_width"] | dock | w | exact
+statusbar["height"] | status-bar | h | exact
+statusbar["padding_y"] | status-btn-project-panel.y ~ status-bar.y | diff | exact
+statusbar["button_height"] | status-btn-project-panel | h | exact
+statusbar["group_gap"] | status-right.x ~ status-left.r | diff | exact
+statusbar["item_gap"] | status-left-placeholder.x ~ status-btn-project-panel.r | diff | exact
+statusbar["icon_size"] | status-icon-project-panel | w | exact
+buttons["height.default"] | app-menu-button | h | exact
+icons["size.small"] | sidebar-icon-toggle | w | exact

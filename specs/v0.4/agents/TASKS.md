@@ -110,3 +110,33 @@
 - Ctrl+Shift 드래그 열 선택(gpui-kit은 Alt+Shift), 선택 끌어 옮기기.
 
 ### P2-E Phase 2 끝: R-15, V3(바뀐 화면), 반복 측정 항목 V2 이전(R-16), 최종 확인
+
+### P2-7 에디터 글꼴 크기·줄 높이(P2-0에서 추가)
+- 담당: impl-editor · 리뷰: review(값 맞춤) · V2
+- P2-0: 본문 글자 진행 폭으로 보아 글꼴 약 12px(스펙 `typography["buffer_font_size"]` 15), 줄 간격 20(스펙 `editor["line_height.comfortable"]` 24.27, Zed 기본 1.618). gpui-kit Editor 공개 설정(텍스트 스타일·줄 높이)으로 맞춘다. 공개 API가 없으면 그 항목만 보류.
+
+## Phase 3 — 탭 편집과 저장 (todo, Phase 2 끝난 뒤)
+
+규칙: 모든 카드 리뷰는 reviewer(동작 변경). 수치는 스펙 ID. 원문은 `spec/INDEX.md` 13.4절(E-080~E-089a), A-13.4, I-069, G-115.
+재사용: 인코딩은 `src/dev.rs`의 `decode`·`encode`·`TextEncoding`(UTF-8/BOM, UTF-16 LE/BE, CP949 Win32 FFI, 손실 검사)이 이미 있다. 새 의존성 없이 이것을 탭 편집에서 쓸 수 있는 곳으로 옮긴다(lead 지정: 새 모듈 `src/text_io.rs`, impl-editor 소유, dev.rs는 그 모듈을 쓰게 바꾼다).
+
+### P3-1 편집 허용·수정 상태 (R-9)
+- 담당: impl-editor · V1(+첫 구현 V3는 P3-E)
+- 범위: `src/ui/pane.rs`, 탭 편집 새 모듈
+- 할 일: 탭 Editor의 읽기 전용을 푼다. 탭마다 수정 상태(dirty)를 둔다: 디스크에서 읽은 내용의 해시와 현재 버퍼가 다르면 dirty. 깨끗한 버퍼 자동 다시 읽기(E-086 앞부분, D-046)는 그대로 두고, dirty 버퍼에는 다시 읽기를 적용하지 않는다(P3-4가 충돌 표시를 붙인다). 입력 시뮬레이션은 #[gpui::test]가 안 되므로 상태 결정을 순수 함수로 테스트한다(H-9).
+
+### P3-2 저장과 인코딩 왕복 (R-10 일부)
+- 담당: impl-editor · V1
+- 범위: `src/text_io.rs`(신규, dev.rs의 decode/encode 이동), `src/dev.rs`(호출부만), `src/ui/pane.rs`, `src/ui/mod.rs`(Save 액션 연결만)
+- 할 일: 탭을 열 때 `decode`로 인코딩·BOM·줄 끝을 기억하고, 저장(`workspace::Save`, Ctrl+S — 기존 키맵 확인) 때 같은 인코딩으로 `encode`해 쓴다. CP949로 옮길 수 없는 글자가 있으면 저장하지 않고 기존 notify로 알린다(best-fit 금지). 쓰기는 데이터 손실 없게(임시 파일 + 교체 등 기존 `state::replace_file` 패턴 재사용 검토). 저장 뒤 dirty 해제, 해시 갱신(감시 자기 쓰기 무시 D-046 유지).
+- 테스트: UTF-8 LF/CRLF, UTF-8 BOM, UTF-16 LE, CP949 왕복 바이트 비교, CP949 손실 거부.
+
+### P3-3 탭 닫기·저장 질문·저장 확인창 (R-10)
+- 담당: impl-ui(대화창·탭 닫기 UI) + impl-editor(저장 호출) — lead가 순서 지정: P3-2 병합 뒤 impl-ui
+- 할 일: 탭 닫기(`pane::CloseActiveItem`, 탭 닫기 버튼)를 만들고, dirty 탭이면 A-13.4·I-069 저장 질문(저장·버리기·취소)을 띄운다. 창 닫기·종료 때도 dirty 탭이 있으면 같은 질문. 저장 때 확인창(E-084·E-085 조건). 대화창은 기존 `task_dialog.rs`·`delete_prompt` 패턴 재사용.
+
+### P3-4 디스크 충돌·지워진 파일 표시 (R-11)
+- 담당: impl-editor(감시 반영 로직, watch_io.rs 해당 부분 지정) + impl-ui(탭 표시: 점 Warning 색, 취소선 등 E-086·E-087)
+- 할 일: dirty 버퍼의 파일이 디스크에서 바뀌면 버퍼는 두고 충돌 표시, 열린 파일이 지워지면 지워진 표시.
+
+### P3-E Phase 3 끝: R-15, V3(새 화면: 수정 표시·저장 질문·충돌·지워짐·편집기 글꼴), 최종 확인

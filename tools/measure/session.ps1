@@ -1,6 +1,6 @@
 #Requires -Version 7
 # shortcut: assumes primary monitor at 100% DPI (AGENTS 3A.4); box coordinates are used as screen pixels, add DPI/monitor offset handling if that changes.
-param([ValidateSet('Start','Snapshot','Stop')][string]$Action, [string]$State, [switch]$Capture, [switch]$Json, [string]$Out = 'D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure', [string]$Backup)
+param([ValidateSet('Start','Snapshot','Stop')][string]$Action, [string]$State, [switch]$Capture, [switch]$Json, [string]$Out = 'D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure', [string]$Backup, [string]$Exe = 'D:projectsworkbench-gpui	argetdebugworkbench-gpui.exe')
 $ErrorActionPreference = 'Stop'
 # Backup defaults to a sibling of -Out (_<leaf>-backup) so Start and Stop agree; pass -Backup to reuse an older location.
 if (-not $Backup) { $Backup = Join-Path (Split-Path $Out -Parent) ('_' + (Split-Path $Out -Leaf) + '-backup') }
@@ -34,9 +34,9 @@ if ($Action -eq 'Start') {
     'Nested fixture' | Set-Content (Join-Path $fixture 'branch\nested\nested.txt')
     $pick = Join-Path $Out 'pick.txt'
     $fixture | Set-Content $pick -Encoding utf8
-    $exe = 'D:\projects\workbench-gpui\target\debug\workbench-gpui.exe'
+    $exe = $Exe
     $process = Start-Process -FilePath $exe -ArgumentList (@('--dev-layout','--dev-keymap','--dev-pick-folder',$pick) + $(if ($Json) { @('--dev-layout-json', (Join-Path $Out 'layout.json')) } else { @() })) -PassThru -RedirectStandardOutput (Join-Path $Out 'app-stdout.txt') -RedirectStandardError (Join-Path $Out 'app-stderr.txt')
-    @{pid=$process.Id; fixture=$fixture; exeHash=(Get-FileHash $exe).Hash; started=(Get-Date).ToString('o')} | ConvertTo-Json | Set-Content (Join-Path $Out 'session.json') -Encoding utf8
+    @{pid=$process.Id; exe=$exe; fixture=$fixture; exeHash=(Get-FileHash $exe).Hash; started=(Get-Date).ToString('o')} | ConvertTo-Json | Set-Content (Join-Path $Out 'session.json') -Encoding utf8
     Get-Content (Join-Path $Out 'session.json')
 } elseif ($Action -eq 'Snapshot') {
     if ($State -notmatch '^S[1-7][a-z]?$') { throw 'Unknown state' }
@@ -80,7 +80,7 @@ if ($Action -eq 'Start') {
     $fixture=[IO.Path]::GetFullPath($session.fixture)
     if (-not $fixture.StartsWith('D:\projects\workbench-gpui\target\measure-') -or (Get-Content (Join-Path $fixture '.measure-marker')) -ne 'measure') { throw 'Fixture cleanup guard failed' }
     Remove-Item -LiteralPath $fixture -Recurse -Force
-    $result=@{files=$after; restored=(($before.files | ConvertTo-Json -Compress) -eq ($after | ConvertTo-Json -Compress)); fixtureRemoved=(-not (Test-Path $fixture)); exeUnchanged=((Get-FileHash 'D:\projects\workbench-gpui\target\debug\workbench-gpui.exe').Hash -eq $session.exeHash)}
+    $result=@{files=$after; restored=(($before.files | ConvertTo-Json -Compress) -eq ($after | ConvertTo-Json -Compress)); fixtureRemoved=(-not (Test-Path $fixture)); exeUnchanged=((Get-FileHash $(if ($session.exe) { $session.exe } else { 'D:\projects\workbench-gpui\target\debug\workbench-gpui.exe' })).Hash -eq $session.exeHash)}
     $result | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $Backup 'after.json') -Encoding utf8
     if (-not $result.restored) { throw 'User data hash mismatch' }
     $result | ConvertTo-Json

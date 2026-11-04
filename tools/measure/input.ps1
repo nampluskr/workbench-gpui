@@ -1,6 +1,6 @@
 #Requires -Version 7
 # shortcut: assumes primary monitor at 100% DPI (AGENTS 3A.4); box coordinates are used as screen pixels, add DPI/monitor offset handling if that changes.
-param([ValidateSet('Check','DismissOpenWith','Maximize','Click','DoubleClick','RightClick','Hover','Key')][string]$Action,[string]$Box,[double]$X=-1,[double]$Y=-1,[string]$Key,[string]$Out='D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure')
+param([ValidateSet('Check','DismissOpenWith','Maximize','Click','DoubleClick','RightClick','Hover','Key','Wheel')][string]$Action,[string]$Box,[double]$X=-1,[double]$Y=-1,[string]$Key,[string]$Out='D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure')
 $ErrorActionPreference='Stop'
 Set-Location 'D:\projects\workbench-gpui'
 # Reuse only the existing native input declaration, never execute the test harness.
@@ -56,6 +56,7 @@ if ($Action -eq 'Key') {
   DoubleClick {[WgP4.Native]::DoubleClick([int]$X,[int]$Y)}
   RightClick {[WgP4.Native]::RightClick([int]$X,[int]$Y)}
   Hover {[WgP4.Native]::MoveTo([int]$X,[int]$Y)}
+  Wheel {[WgP4.Native]::MoveTo([int]$X,[int]$Y); Start-Sleep -Milliseconds 100; foreach ($k in 1..3) { [WgP4.Native]::Wheel([int]$X,[int]$Y,-120); Start-Sleep -Milliseconds 100 }}
  }
 }
 Start-Sleep -Milliseconds 700

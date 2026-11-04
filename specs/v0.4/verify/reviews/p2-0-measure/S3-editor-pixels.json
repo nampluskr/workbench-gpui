@@ -1,0 +1,25 @@
+{
+  "editorLeftEdge": 616,
+  "source": "S3.png/S3c.png",
+  "lineNumberDigits": {
+    "pitch": 20,
+    "rows2": "100-107",
+    "rows1": "80-87"
+  },
+  "lineNumberRight": 642,
+  "text": {
+    "x1": 802,
+    "chars": 19,
+    "x0": 668
+  },
+  "cursor": {
+    "width": 1,
+    "color": "(10,10,10)",
+    "x": 667,
+    "y0": 75,
+    "height": 17,
+    "note": "visible only in blink-on frame (S3c.png try 2)",
+    "y1": 91
+  },
+  "lineNumberLeft": 637
+}

@@ -1,0 +1,4 @@
+cases: empty, add, items, scroll, switch, title, remove, order, order-restart, keys, menus, state, state-restart, broken, tmp, dialog, quitsave, quitnochange, closesave, xclosesave, savefail, sigma, version
+checks: 122, failed: 0
+failures: 0
+user files restored: True

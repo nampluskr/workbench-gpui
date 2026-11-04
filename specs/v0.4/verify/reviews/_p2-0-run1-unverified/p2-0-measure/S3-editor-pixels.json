@@ -1,0 +1,24 @@
+{
+  "source": "S3.png",
+  "lineNumberDigits": {
+    "rows1": "80-87",
+    "rows2": "100-107",
+    "pitch": 20
+  },
+  "editorLeftEdge": 616,
+  "lineNumberRight": 642,
+  "lineNumberLeft": 637,
+  "text": {
+    "chars": 19,
+    "x0": 668,
+    "x1": 802
+  },
+  "cursor": {
+    "height": 17,
+    "color": "(10,10,10)",
+    "y0": 75,
+    "x": 667,
+    "y1": 91,
+    "width": 1
+  }
+}

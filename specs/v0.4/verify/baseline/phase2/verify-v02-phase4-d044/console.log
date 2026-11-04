@@ -1,0 +1,4 @@
+cases: d044-alias, d044-xmove-link, d044-xmove-plain
+checks: 6, failed: 0
+failures: 0
+user files restored: True

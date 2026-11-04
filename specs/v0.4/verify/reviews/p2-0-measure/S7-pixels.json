@@ -1,0 +1,26 @@
+{
+  "right": {
+    "length": 2,
+    "x1": 613,
+    "y": 176,
+    "x0": 612
+  },
+  "source": "S7.png",
+  "note": "manual pixel scan, border color (163,163,163)",
+  "bottom": {
+    "x": 520,
+    "length": 1,
+    "y": 188
+  },
+  "interior": {
+    "y0": 164,
+    "y1": 187,
+    "height": 24
+  },
+  "top": {
+    "x": 520,
+    "length": 1,
+    "y": 163
+  },
+  "left": "not separable: x=374-375 is the 229-gray dock/sidebar border, input fill starts x=376"
+}
