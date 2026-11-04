@@ -55,3 +55,43 @@ Verdict: fix 1 first.
 - Not checked: 실제 서로 다른 볼륨·NTFS ADS/EFS/ACL의 실행 재현, 실패 I/O 주입, 앱 실행은 생략했다. ADS 손실은 복사/삭제 코드와 플랫폼 문서로 확인했으며 현재 테스트로는 보호되지 않는다.
 
 결론 REWORK
+
+## R1
+
+What this change does: `683bbfc`는 목적 이름을 create_new로 먼저 확보하고 핸들을 닫은 뒤 fs::copy로 채운다. 기본 스트림만 복사하던 경로를 Windows 플랫폼 복사로 되돌려 ADS·속성·수정 시각을 보존한다.
+
+- 대상: work/ui `683bbfc`, 부모 `282cfae`, worktree `D:\projects\workbench-gpui\.worktrees\ui`. 검증 전후 작업 트리는 깨끗했다. H-31은 master의 `specs/v0.3/HERDR-DECISIONS.md:109–111`을 읽어 확인했다(worktree에는 아직 없음).
+- diff 범위: src/fsops/ops.rs의 copy_file 및 새 테스트만 변경. 모든 copy_entry/copy_dir 호출부와 move_verified, panel_ops 연결을 다시 확인했다. src 수정·커밋·앱 실행 없음.
+
+### 기존 REWORK 1 판정
+
+해소됐다. copy_file이 더 이상 io::copy로 기본 스트림만 옮기지 않는다. Windows fs::copy의 ADS 보존 경로가 일반 파일과 모든 하위 파일에서 공통으로 사용된다. 신규 테스트에서 실제 이름 있는 `:notes` 스트림 내용을 읽어 확인했고 성공했다. 플랫폼 정책은 앞 절에 인용한 [Rust fs::copy 문서](https://doc.rust-lang.org/std/fs/fn.copy.html)의 Windows 동작에 근거한다. D2가 이 복사를 완료한 뒤 원본을 삭제하므로 이전의 '고정된 원본에서도 ADS를 버리고 삭제' 경로는 제거됐다.
+
+### 정확성 및 잔여 한계
+
+- 배타 확보: create_new(true)의 실패는 ?로 즉시 반환하며 fs::copy와 정리 콜백을 실행하지 않는다. 따라서 확보 시점에 이미 존재한 파일은 AlreadyExists로 보존된다. 성공한 File 임시값은 해당 문장 끝에서 drop되므로 다음 fs::copy 전에 핸들이 닫힌다. 플랫폼 복사가 확보한 빈 파일을 덮어쓰는 것은 H-31에 부합한다.
+- 하위 파일: copy_entry의 단일 파일과 copy_dir의 하위 파일 모두 같은 copy_file을 사용한다. 폴더 생성·링크 건너뛰기·자기 아래 복사 방지 및 CopyReport 집계는 변경하지 않았다.
+- 읽기 전용 원본: 대상은 최초 확보 시 기본 쓰기 가능 파일이다. 원본 readonly 속성의 복제는 fs::copy에 맡기므로 앞 구현의 속성 누락을 복구한다. 성공 뒤 대상이 readonly가 되는 것은 정상 플랫폼 복사 결과다. readonly 원본을 교차 볼륨 이동할 때 원본 삭제가 권한 오류로 실패할 수 있지만, delete의 Err가 그대로 전파되고 원본은 남는다. 이를 성공으로 처리하는 새 분기는 없다.
+- 암호화 원본: EFS 관련 처리와 실패 정책도 fs::copy/CopyFileEx에 맡긴다. 평문 io::copy로 우회하거나 플랫폼 복사 실패 후 다른 복사 방식으로 재시도하지 않는다. 모든 ACL·소유권을 완전히 복제한다고 확대 해석하지 않는다. 실제 EFS 대상 볼륨 조합의 보존·거부 여부는 이번 실행으로 확인하지 않았다.
+- 오류 시 정리: fs::copy가 Err일 때만 확보 대상 경로의 remove_file을 시도하고 원래 복사 오류를 유지한다. create_new 실패 뒤 남의 기존 파일을 지우는 경로는 없다. 다만 remove_file의 오류는 무시되므로 권한·readonly 속성·외부 핸들 등에 따라 빈 파일 또는 부분 복사본이 남을 수 있다. 주석의 'removed'는 정리 시도를 뜻하는 범위로만 수용하며 정리 성공 보장은 아니다. 이 best-effort 한계는 직전 구현에도 있었다.
+- 확보 이후 경쟁: 핸들을 닫았으므로 다른 프로세스가 파일을 쓰거나 삭제·교체하면 fs::copy가 그 내용을 덮거나, 복사 실패 뒤 정리가 교체된 경로를 지울 수 있다. '확보 파일만'이라는 보장은 다른 프로세스가 그 경로를 바꾸지 않는 조건에서만 성립한다. H-31이 승인한 확보~복사 경쟁 범위로 명시하며 원자적 no-overwrite 보장으로 보고하지 않는다. shortcut 주석은 쓰기 경쟁을 명시한다. 주석의 향후 CopyFile2 제안 자체가 열린 핸들 API/정체 보존을 보장하는 것은 아니며, 후속 설계 때 실제 플랫폼 API 계약을 확인해야 한다.
+- D2: 복사 이전 snapshot과 삭제 직전 snapshot 대조 순서는 그대로다. fs::copy가 대상 수정 시각을 복제해도 비교 대상은 원본 전후이므로 대조를 무력화하지 않는다. 반환 바이트 수는 기본 스트림 크기라 기존 tree_summary 집계와 맞는다. 복사 실패·원본 변경·대상 요약 불일치 때는 delete까지 가지 않는다. 기존 D2 테스트도 통과했다.
+- panel_ops: 일반 오류를 dev 로그로만 알리는 AUDIT 3, 실패한 cut 클립보드 정리 정책은 기존 보류 사항 그대로다. 이번 수정으로 오류를 성공으로 바꾸거나 apply_move 호출을 늘리지 않았다.
+
+### 테스트의 의미
+
+`copy_keeps_streams_and_mtime`는 기본 본문 body와 명명된 ADS note를 만들고, 원본 수정 시각을 과거의 고정값으로 설정한 뒤 운영 copy_entry를 호출한다. 대상 본문·ADS의 실제 바이트와 원본/대상 수정 시각을 단언한다. 이전 io::copy 구현이면 ADS가 없거나 시각이 달라 실패하므로 의미 있는 회귀 테스트다. 테스트를 건너뛰는 분기가 없으며 이번 Windows 환경에서 실제 통과했다.
+
+한계: 테스트는 일반 파일 복사 한 건이며 실제 교차 볼륨 삭제, readonly/EFS/ACL, 하위 파일 ADS 및 복사 오류 정리를 직접 실행하지 않는다. 이 경로들은 공통 함수 재사용과 호출 흐름으로 확인했다. 기존 대상 보존 테스트와 D2 변경 감지 테스트도 함께 실행됐다.
+
+### 실행 검증 및 ponytail-review
+
+- 실행 위치: 지정 worktree. CARGO_TARGET_DIR=`D:\projects\workbench-gpui\target`, cargo bin을 PATH에 추가하고 RTK proxy로 실행.
+- `cargo test` 전체 정확히 1회: exit 0, **60 passed / 0 failed / 0 ignored**. 신규 copy_keeps_streams_and_mtime 포함.
+- `cargo clippy --all-targets` 정확히 1회: exit 0, **기준선 고유 경고 10개 / 신규 0개**. dev 2, fsops ident/names/tree 각 1, state 문서 1, ui keymap 1·layout 문서 2·watch 1. bin/test의 중복 진단은 별개 경고로 세지 않았다.
+- ponytail-review: 기존 플랫폼 기능 재사용으로 이전보다 코드가 단순해졌고 의존성·설정 추가가 없다. H-31에서 승인한 경쟁 한계 안에서 새 차단 결함은 발견하지 못했다. 이전 REWORK 1은 종료한다.
+- Verdict: Ship, within H-31's stated race limit.
+- 실측 필요/사용자 확인 필요: 신규 없음. PROGRESS·TASKS·HANDOFF는 lead가 이 결과로 갱신한다.
+- Not checked: 앱·실제 교차 볼륨·EFS/ACL·I/O 실패 주입은 생략했다. 확보 이후 경로 경쟁 및 정리 실패로 부분 대상이 남을 가능성은 계속 존재한다.
+
+결론 PASS
