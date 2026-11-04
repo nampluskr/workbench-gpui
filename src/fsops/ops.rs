@@ -216,12 +216,46 @@ pub fn move_entry(src: &Path, dst: &Path) -> io::Result<()> {
 /// ERROR_NOT_SAME_DEVICE: 다른 볼륨으로 옮기기(D-044 ②).
 /// - 원본 트리에 재분석 지점이 있으면 시작 전에 거부한다(원본·대상 모두 바꾸지 않는다).
 /// - 복사한 뒤 원본·대상의 파일 수·폴더 수·바이트가 같을 때만 원본을 지운다. 다르면 원본을 두고 오류.
+/// - 삭제 직전 원본의 목록·크기·수정 시각이 복사 전과 다르면 원본을 지우지 않고 오류(복사본은 남긴다).
 pub fn move_across_volumes(src: &Path, dst: &Path) -> io::Result<()> {
+    move_verified(src, dst, || {})
+}
+
+/// Sorted (relative path, is_dir, len, modified) list of a tree, not following links.
+type Snapshot = Vec<(PathBuf, bool, u64, Option<std::time::SystemTime>)>;
+
+fn snapshot(root: &Path) -> io::Result<Snapshot> {
+    fn walk(root: &Path, dir: &Path, out: &mut Snapshot) -> io::Result<()> {
+        for entry in fs::read_dir(dir)? {
+            let path = entry?.path();
+            let meta = fs::symlink_metadata(&path)?;
+            let rel = path.strip_prefix(root).unwrap_or(&path).to_path_buf();
+            out.push((rel, meta.is_dir(), if meta.is_dir() { 0 } else { meta.len() }, meta.modified().ok()));
+            if meta.is_dir() {
+                walk(root, &path, out)?;
+            }
+        }
+        Ok(())
+    }
+    let meta = fs::symlink_metadata(root)?;
+    let mut out = vec![(PathBuf::new(), meta.is_dir(), if meta.is_dir() { 0 } else { meta.len() }, meta.modified().ok())];
+    if meta.is_dir() {
+        walk(root, root, &mut out)?;
+    }
+    out.sort();
+    Ok(out)
+}
+
+// shortcut: the source is compared once right before delete(); a change between that check and the
+// delete still loses data. Close it with a lock/handle-based delete if that race matters.
+fn move_verified(src: &Path, dst: &Path, after_copy: impl FnOnce()) -> io::Result<()> {
     let before = tree_summary(src)?;
     if before.3 > 0 {
         return Err(io::Error::new(io::ErrorKind::Unsupported, MOVE_REFUSED_LINKS));
     }
+    let snap = snapshot(src)?;
     let report = copy_entry(src, dst)?;
+    after_copy();
     let after = tree_summary(dst)?;
     let copied_ok = report.skipped_links.is_empty() && (after.0, after.1, after.2) == (before.0, before.1, before.2);
     if !copied_ok {
@@ -229,6 +263,9 @@ pub fn move_across_volumes(src: &Path, dst: &Path) -> io::Result<()> {
             "copy incomplete (source {}/{}/{} vs copy {}/{}/{}); source kept",
             before.0, before.1, before.2, after.0, after.1, after.2
         )));
+    }
+    if snapshot(src)? != snap {
+        return Err(io::Error::other("source changed during move; source and copy kept"));
     }
     delete(src)
 }
@@ -308,6 +345,10 @@ mod d044_tests {
         move_across_volumes(&dir.join("copy"), &dir.join("moved")).unwrap();
         assert!(!dir.join("copy").exists());
         assert_eq!(tree_summary(&dir.join("moved")).unwrap(), (2, 2, 8, 0));
+        // source changed after the copy: source stays, copy stays, error returned
+        let changed = || fs::write(dir.join("moved").join("a.txt"), b"abcd").unwrap();
+        assert!(move_verified(&dir.join("moved"), &dir.join("moved2"), changed).is_err());
+        assert!(dir.join("moved").join("a.txt").exists() && dir.join("moved2").exists());
         fs::remove_dir_all(&dir).unwrap();
     }
 }
