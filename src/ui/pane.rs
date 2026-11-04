@@ -52,6 +52,9 @@ pub struct Tab<E = Entity<EditorState>> {
     pub disk_hash: u64,
     /// Raw-byte hash of the save in flight; becomes `disk_hash` when it succeeds.
     saving_hash: u64,
+    /// The path the save in flight writes to (the tab's path when it started). A rename or move of the file while it
+    /// runs leaves the tab at another path, and that write does not count for the tab (phase3-final Must fix 1).
+    saving_path: PathBuf,
     /// The disk no longer holds `disk_hash` while the buffer was not reloaded from it (E-086): set by a reload of a
     /// dirty tab, kept when undo then makes the buffer clean, cleared by a save or by the disk going back.
     pub disk_changed: bool,
@@ -148,6 +151,12 @@ impl<E> Default for Pane<E> {
         Self { tabs: Vec::new(), active: None, next_load: 0, closed: false }
     }
 }
+
+/// Save reference that matches no buffer and no file: set when a save finished after the tab's path changed, so what
+/// the file at the tab's path now holds is unknown (phase3-final R1). The tab stays modified through any undo, closing
+/// asks, a reload never refills it, and the pre-save check asks before overwriting.
+// shortcut: a reserved FNV value; a real text or file hashing to 0 is a 1-in-2^64 chance.
+pub const UNSURE_HASH: u64 = 0;
 
 /// 내용 해시: UTF-8 바이트의 FNV-1a 64(dev 출력 `fnv=` 와 같은 값).
 pub fn text_hash(text: &str) -> u64 {
@@ -272,6 +281,7 @@ impl<E> Pane<E> {
             saving: None,
             disk_hash: bytes_hash(b""),
             saving_hash: 0,
+            saving_path: PathBuf::new(),
             disk_changed: false,
             deleted: false,
         };
@@ -291,13 +301,18 @@ impl<E> Pane<E> {
     }
 
     /// Puts a new tab in place: replaces the preview tab (I-062) or inserts after the active tab. Returns its index.
+    /// A preview tab that holds something to keep (a deleted file's non-empty buffer, E-087; anything `modified` or
+    /// saving) is not replaced: it becomes a normal tab and the new one is inserted (phase3-final Must fix 2).
     fn place(&mut self, tab: Tab<E>) -> usize {
         if tab.preview
             && let Some(pi) = self.tabs.iter().position(|t| t.preview)
         {
-            self.tabs[pi] = tab;
-            self.active = Some(pi);
-            return pi;
+            if !self.tabs[pi].modified() && self.tabs[pi].saving.is_none() {
+                self.tabs[pi] = tab;
+                self.active = Some(pi);
+                return pi;
+            }
+            self.tabs[pi].preview = false;
         }
         let at = self.active.map(|a| a + 1).unwrap_or(self.tabs.len()).min(self.tabs.len());
         self.tabs.insert(at, tab);
@@ -367,7 +382,8 @@ impl<E> Pane<E> {
         match text_io::encode_text(text, format) {
             Ok(bytes) => {
                 let token = self.next_token();
-                (self.tabs[ix].saving, self.tabs[ix].saving_hash) = (Some(token), bytes_hash(&bytes));
+                let tab = &mut self.tabs[ix];
+                (tab.saving, tab.saving_hash, tab.saving_path) = (Some(token), bytes_hash(&bytes), tab.path.clone());
                 SaveStart::Write(token, bytes)
             }
             Err(e) => SaveStart::Refused(e),
@@ -378,13 +394,19 @@ impl<E> Pane<E> {
     /// bytes (`disk_hash`, which the watch reload compares with, so the own write reads back as `Same`, D-046, H-18); the tab is dirty only if the buffer
     /// (`buffer_hash`) changed since. Reads started before now are invalidated either way: they may hold content
     /// from before the write. Returns `false` when the tab is gone.
+    /// A successful write to a path the tab no longer has (renamed or moved meanwhile, phase3-final R1): the write may
+    /// have landed before or after the move, so the file at the tab's path holds either text. The reference becomes
+    /// unknown (`UNSURE_HASH`) and the tab dirty, whatever the buffer is now (an undo during the save included);
+    /// saving again writes the tab's path and settles it.
     pub fn finish_save(&mut self, token: u64, ok: bool, saved_hash: u64, buffer_hash: u64) -> bool {
         let Some(tab) = self.tabs.iter_mut().find(|t| t.saving == Some(token)) else {
             return false;
         };
         tab.saving = None;
         tab.pending = None;
-        if ok {
+        if ok && tab.path != tab.saving_path {
+            (tab.hash, tab.disk_hash, tab.dirty) = (UNSURE_HASH, UNSURE_HASH, true);
+        } else if ok {
             tab.hash = saved_hash;
             tab.dirty = buffer_hash != saved_hash;
             // The disk now holds the written bytes: the new reference (H-18), no conflict, a deleted file exists again.
@@ -554,7 +576,7 @@ mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
     use super::{
         buffer_hash, Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadApply, ReadOutcome, SaveStart, column_select_events,
-        CloseState, bytes_hash, disk_differs, column_select_press, metrics, point, px, text_hash,
+        CloseState, UNSURE_HASH, bytes_hash, disk_differs, column_select_press, metrics, point, px, text_hash,
     };
 
     /// V1 (P2-6-R1): the re-sent press comes first, then the real Ctrl+Shift (and capslock) are restored, so
@@ -1158,6 +1180,83 @@ mod tests {
         assert!(disk_differs(bytes_hash(b"\xFF\xFEA\0"), bytes_hash(b"A")));
         assert!(disk_differs(bytes_hash(b"a\r\nb"), bytes_hash(b"a\nb")));
         assert!(!disk_differs(bytes_hash(b"a\nb"), bytes_hash(b"a\nb")));
+    }
+
+    /// phase3-final Must fix 1: Save started, the file renamed in the app, then the write to the old path finished. The
+    /// tab (now at the new path, whose bytes are still the old read) stays modified with the old reference, the buffer is
+    /// kept, and the next save writes the new path.
+    #[test]
+    fn rename_during_save_keeps_tab_unsaved() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("old"), UTF8, bytes_hash(b"old")));
+        pane.on_edit(0, text_hash("new"));
+        let SaveStart::Write(token, _) = pane.begin_save(0, "new") else { panic!("expected a write") };
+        pane.rename_path(Path::new("a.txt"), Path::new("b.txt"));
+        assert!(pane.finish_save(token, true, text_hash("new"), text_hash("new")));
+        let t = &pane.tabs[0];
+        assert_eq!((t.path.as_path(), t.hash, t.disk_hash, t.saving), (Path::new("b.txt"), UNSURE_HASH, UNSURE_HASH, None));
+        assert!(t.dirty && t.modified());
+        assert_eq!(pane.close_state(Path::new("b.txt")), CloseState::Ask, "closing still asks");
+        let SaveStart::Write(token, bytes) = pane.begin_save(0, "new") else { panic!("saves again, to b.txt") };
+        assert!(pane.finish_save(token, true, text_hash("new"), text_hash("new")));
+        assert!(!pane.tabs[0].modified() && pane.tabs[0].disk_hash == bytes_hash(&bytes));
+    }
+
+    /// phase3-final R1: undo back to the read text while the save runs, then the path changes before the completion.
+    /// Whether the write landed before the move (b holds "new") or after it (b holds "old"), the tab stays modified:
+    /// closing asks, later undos and edits keep it dirty, and the reload keeps the buffer (only marks the conflict).
+    #[test]
+    fn undo_during_save_then_rename_stays_unsure() {
+        for disk_now in ["new", "old"] {
+            let mut pane = Pane::<()>::default();
+            let first = open(&mut pane, "a.txt", false);
+            pane.finish_read(first, ReadOutcome::Changed(text_hash("old"), UTF8, bytes_hash(b"old")));
+            pane.on_edit(0, text_hash("new"));
+            let SaveStart::Write(token, _) = pane.begin_save(0, "new") else { panic!("expected a write") };
+            pane.on_edit(0, text_hash("old")); // undo while writing
+            assert!(!pane.tabs[0].dirty);
+            pane.rename_path(Path::new("a.txt"), Path::new("b.txt"));
+            pane.finish_save(token, true, text_hash("new"), text_hash("old"));
+            let b = Path::new("b.txt");
+            assert!(pane.tabs[0].dirty && pane.tabs[0].modified(), "{disk_now}: not clean");
+            assert_eq!(pane.close_state(b), CloseState::Ask, "{disk_now}: closing asks");
+            pane.on_edit(0, text_hash("old"));
+            pane.on_edit(0, text_hash("new"));
+            assert!(pane.tabs[0].dirty, "{disk_now}: no buffer matches the unknown reference");
+            let reload = pane.start_read(0);
+            let raw = bytes_hash(disk_now.as_bytes());
+            assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash(disk_now), UTF8, raw)), ReadApply::Dropped, "{disk_now}: buffer kept");
+            assert!(pane.tabs[0].has_conflict(), "{disk_now}: shown as changed on disk");
+            let SaveStart::Write(token, bytes) = pane.begin_save(0, "new") else { panic!("{disk_now}: saves again") };
+            pane.finish_save(token, true, text_hash("new"), text_hash("new"));
+            assert!(!pane.tabs[0].modified() && pane.tabs[0].disk_hash == bytes_hash(&bytes), "{disk_now}: settled by the save");
+        }
+    }
+
+    /// phase3-final Must fix 2: a preview tab whose non-empty file was deleted is kept as a normal tab when the next
+    /// preview opens; an empty deleted preview and a clean preview are replaced as before.
+    #[test]
+    fn deleted_nonempty_preview_is_kept() {
+        let mut pane = Pane::<()>::default();
+        let a = open(&mut pane, "a.txt", true);
+        pane.finish_read(a, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
+        let token = pane.start_read(0);
+        pane.finish_read(token, ReadOutcome::Missing);
+        open(&mut pane, "b.txt", true);
+        let tabs: Vec<_> = pane.tabs.iter().map(|t| (t.title(), t.preview)).collect();
+        assert_eq!(tabs, [("a.txt".to_string(), false), ("b.txt".to_string(), true)]);
+        assert!(pane.tabs[0].deleted && pane.tabs[0].modified());
+
+        let mut pane = Pane::<()>::default();
+        let e = open(&mut pane, "e.txt", true);
+        pane.finish_read(e, ReadOutcome::Changed(text_hash(""), UTF8, bytes_hash(b"")));
+        let token = pane.start_read(0);
+        pane.finish_read(token, ReadOutcome::Missing);
+        open(&mut pane, "c.txt", true);
+        assert_eq!(pane.tabs.iter().map(|t| t.title()).collect::<Vec<_>>(), ["c.txt"], "empty deleted preview is replaced");
+        open(&mut pane, "d.txt", true);
+        assert_eq!(pane.tabs.iter().map(|t| t.title()).collect::<Vec<_>>(), ["d.txt"], "clean preview is replaced");
     }
 
     /// P3-12-R1: a pasted "\r\n" hashes like the LF text reads produce, so it is not a phantom edit.
