@@ -52,6 +52,10 @@ pub fn sidebar(list: AnyElement, cx: &App) -> impl IntoElement {
                 .on_children_prepainted(probe(&["sidebar-footer-left", "sidebar-footer-right"]))
                 .flex_shrink_0()
                 .w_full()
+                // Border-box: 30 includes the 1px top border, so the 22px buttons overflow the inner box by
+                // 1px, centred inside the padding (padding stays the spec 4).
+                .h(SIDEBAR_FOOTER_HEIGHT)
+                .items_center()
                 .p(SIDEBAR_FOOTER_PADDING)
                 .gap(SIDEBAR_FOOTER_GAP)
                 .border_t_1()

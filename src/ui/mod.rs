@@ -540,6 +540,9 @@ impl Render for Workbench {
                 })
                 .child(
                     resizable_panel()
+                        // Both panels default to flex_grow 1, so the sidebar grew past its basis (300 -> 375,
+                        // restored 494 -> 617, 1.25x). A sized panel must not grow (gpui-base ResizablePanel docs).
+                        .flex_none()
                         .size(width)
                         .size_range(to_px(SIDEBAR_MIN_WIDTH, window)..to_px(SIDEBAR_MAX_WIDTH, window))
                         .child(

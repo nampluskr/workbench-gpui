@@ -77,6 +77,8 @@ pub const SIDEBAR_ROW_HEIGHT: Rems = rems_from_px(31.);
 pub const SIDEBAR_ROW_PADDING_LEFT: Rems = rems_from_px(8.);
 pub const SIDEBAR_ROW_PADDING_RIGHT: Rems = rems_from_px(6.);
 /// L-35 사이드바 푸터: padding 4, gap 4, 위 테두리 1. A-32.13.
+/// sidebar["footer.height"] (A-11.4): 30 in total, the top border included (same as the status bar).
+pub const SIDEBAR_FOOTER_HEIGHT: Rems = rems_from_px(30.);
 pub const SIDEBAR_FOOTER_PADDING: Rems = rems_from_px(4.);
 pub const SIDEBAR_FOOTER_GAP: Rems = rems_from_px(4.);
 
@@ -362,5 +364,19 @@ mod tests {
     fn spec_font_size_tolerance_applies_to_font_size_ids() {
         // 12.75 differs from 12 by more than the font_size tolerance (0.5).
         spec::assert_spec("statusbar[\"cursor_position.font_size\"]", "default", 12.75);
+    }
+
+    /// V2: sidebar constants equal the spec exactly (D-3: values inside the tolerance are matched too).
+    #[test]
+    fn sidebar_metrics_equal_spec_exactly() {
+        for (id, rems) in [
+            ("sidebar[\"default_width\"]", SIDEBAR_DEFAULT_WIDTH),
+            ("sidebar[\"footer.height\"]", SIDEBAR_FOOTER_HEIGHT),
+            ("sidebar[\"footer.padding\"]", SIDEBAR_FOOTER_PADDING),
+            ("sidebar[\"footer.gap\"]", SIDEBAR_FOOTER_GAP),
+        ] {
+            let e = spec::lookup(id).unwrap();
+            assert_eq!(f64::from(rems.0 * crate::ui::rem::BASE_REM_PX), e.value, "{id}");
+        }
     }
 }
