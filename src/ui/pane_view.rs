@@ -18,7 +18,8 @@ use super::keymap::{self, pane as pane_actions, workspace as ws_actions};
 use super::layout::{self, BarEnd, TabDrag, TabPress, TabView};
 use super::layout_probe::probe;
 use super::pane::editor_view;
-use super::pane_group::{Axis, Node, PaneGroup, PaneId, SPLIT_LINE_HITBOX, SPLIT_LINE_THICKNESS, SplitDirection, SplitMode, drop_overlay};
+use super::pane::DividerSides;
+use super::pane_group::{Axis, Node, PaneGroup, PaneId, Rect, SPLIT_LINE_HITBOX, SPLIT_LINE_THICKNESS, SplitDirection, SplitMode, drop_overlay};
 use super::markdown_preview::{self, file_name, preview_title};
 use super::pane::Tab;
 use super::panel_menu::is_markdown;
@@ -84,6 +85,26 @@ fn flexes_at<'a>(root: &'a Node, path: &[usize]) -> Option<&'a [f32]> {
 fn divider_delta(flexes: &[f32], ix: usize, offset: f32, len: f32) -> f32 {
     let before: f32 = flexes.iter().take(ix + 1).sum();
     offset - len * before / flexes.len() as f32
+}
+
+/// Where the divider line starts: the middle of its mouse area (`start` + `hit` / 2, I-725) on a whole logical px.
+/// A fractional boundary (the flex shares after a drag) would put the 1px line across two pixels.
+fn line_start(start: f32, hit: f32) -> f32 {
+    (start + hit / 2.).round()
+}
+
+/// Which edges of a pane at `r` (its share of the unit square) lie on a divider: every inner boundary has one, drawn
+/// on the leading edge of the later child. Left, right and bottom only; the top edge is under the tab bar. The editor
+/// leaves its own border out there (P4-E-F3): it sat right beside the divider line and made the boundary 2px.
+fn divider_sides(r: Rect) -> DividerSides {
+    const EDGE: f32 = 1e-3;
+    DividerSides { left: r.x > EDGE, right: r.x + r.w < 1. - EDGE, bottom: r.y + r.h < 1. - EDGE }
+}
+
+/// While a pane is zoomed its frame is the 1px border (`pane["zoomed_border"]`, L-17), so the editor leaves out its own
+/// 1px border, which sat right next to it and made the left, right and bottom edges 2px. Otherwise the editor keeps it.
+fn editor_bordered(zoomed: bool) -> bool {
+    !zoomed
 }
 
 /// The split popup's entries in the I-707 order: label and the action whose key it shows.
@@ -192,11 +213,25 @@ impl Workbench {
         };
         base.on_drag(drag, |drag, _, _, cx| cx.new(|_| drag.clone()))
             .on_double_click(cx.listener(move |this, _, _, cx| this.equalize_axis(&equalize, cx)))
-            .child(if horizontal {
-                div().absolute().top_0().bottom_0().left(hit / 2.).w(line).bg(color)
-            } else {
-                div().absolute().left_0().right_0().top(hit / 2.).h(line).bg(color)
-            })
+            // The flex layout puts the boundary at a fractional px after a drag, which would smear the 1px line over two
+            // pixels; the line is painted on a whole logical px (P4-E-F2).
+            .child(
+                canvas(
+                    |bounds, _, _| bounds,
+                    move |hit_bounds, _, window, _| {
+                        let start = if horizontal { hit_bounds.left() } else { hit_bounds.top() };
+                        let at = px(line_start(f32::from(start), f32::from(hit)));
+                        let rect = if horizontal {
+                            Bounds::new(point(at, hit_bounds.top()), size(line, hit_bounds.size.height))
+                        } else {
+                            Bounds::new(point(hit_bounds.left(), at), size(hit_bounds.size.width, line))
+                        };
+                        window.paint_quad(fill(rect, color));
+                    },
+                )
+                .absolute()
+                .size_full(),
+            )
     }
 
     /// One pane: its tab bar and the active tab's editor (I-706 end buttons only on the active pane).
@@ -243,6 +278,12 @@ impl Workbench {
             let r = drop_overlay(h.w, h.h, h.dir);
             div().absolute().left(px(r.x)).top(px(r.y)).w(px(r.w)).h(px(r.h)).bg(theme.drop_target)
         });
+        // Edges on a divider: the divider is the only line there, the editor's own border stays on the outer edges.
+        let sides = group
+            .rects(Rect { x: 0., y: 0., w: 1., h: 1. })
+            .into_iter()
+            .find(|(p, _)| *p == id)
+            .map_or_else(DividerSides::default, |(_, r)| divider_sides(r));
         let item: AnyElement = match (focused.then_some(&self.editor_poc).and_then(Option::as_ref), pane.active_tab()) {
             (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
             (None, Some(t)) if t.markdown => markdown_preview::body(id, t.editor.read(cx).value(), cx).into_any_element(),
@@ -253,7 +294,7 @@ impl Workbench {
                     .bg(theme.background)
                     // The editor handled the press itself (selection, IME); the pane handler above is for the rest.
                     .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
-                    .child(editor_view(&t.editor, readonly))
+                    .child(editor_view(&t.editor, readonly, editor_bordered(group.zoomed == Some(id)), sides))
                     .into_any_element()
             }
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
@@ -451,7 +492,54 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{divider_delta, end_buttons_shown, first_screen_end, flexes_at};
+    use super::{divider_delta, divider_sides, editor_bordered, end_buttons_shown, first_screen_end, flexes_at, line_start};
+    use crate::ui::pane::DividerSides;
+
+    fn sides_of(g: &PaneGroup<u32>) -> Vec<(u32, DividerSides)> {
+        use crate::ui::pane_group::Rect;
+        g.rects(Rect { x: 0., y: 0., w: 1., h: 1. }).into_iter().map(|(id, r)| (id, divider_sides(r))).collect()
+    }
+
+    /// P4-E-F3: each boundary gets one line, the divider. A lone pane keeps its whole editor border; in two columns the
+    /// shared sides lose it and the outer ones keep it; stacked panes drop the bottom of the upper one; nested splits
+    /// follow the tree.
+    #[test]
+    fn editor_border_leaves_the_divider_sides() {
+        let none = DividerSides::default();
+        let mut g = PaneGroup::<u32>::default();
+        assert_eq!(sides_of(&g), [(0, none)]);
+        g.open_in(0, Path::new("a"), false, || 1);
+        g.split(SplitDirection::Right, SplitMode::Clone, |_| 2);
+        assert_eq!(
+            sides_of(&g),
+            [(0, DividerSides { left: false, right: true, bottom: false }), (1, DividerSides { left: true, right: false, bottom: false })]
+        );
+        g.split(SplitDirection::Down, SplitMode::Clone, |_| 3);
+        let s = sides_of(&g);
+        assert_eq!(s[0].1, DividerSides { left: false, right: true, bottom: false });
+        assert_eq!(s[1], (1, DividerSides { left: true, right: false, bottom: true }), "upper right: divider left and below");
+        assert_eq!(s[2], (2, DividerSides { left: true, right: false, bottom: false }), "lower right: divider only on the left");
+    }
+
+    /// P4-E-F2 (1): after a drag the boundary is a fractional px, the line still starts on a whole one (and a whole
+    /// boundary stays where it is); the 4px mouse area puts the line 2px in.
+    #[test]
+    fn divider_line_snaps_to_a_whole_px() {
+        for start in [100.0_f32, 100.4, 100.5, 321.73, 999.99] {
+            let at = line_start(start, 4.);
+            assert_eq!(at, at.round(), "{start}");
+            assert!((at - (start + 2.)).abs() <= 0.5, "{start}");
+        }
+        assert_eq!(line_start(98., 4.), 100.);
+        assert_eq!(line_start(97.6, 4.), 100.);
+    }
+
+    /// P4-E-F2 (2): a zoomed pane has the zoom frame as its only border; the editor keeps its own otherwise.
+    #[test]
+    fn zoomed_pane_draws_one_border() {
+        assert!(!editor_bordered(true));
+        assert!(editor_bordered(false));
+    }
 
     /// P4-E-F1 (U1, I-706): the first screen's only pane shows its end buttons although no pane is "active" there;
     /// in a split, only the active pane does. The first-screen buttons are `+` and zoom with split off.

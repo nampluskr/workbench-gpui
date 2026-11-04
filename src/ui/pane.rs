@@ -24,6 +24,7 @@
 use std::path::{Path, PathBuf};
 
 use gpui_kit::base::Scrollbar;
+use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::base::input::EditorScrollbarContext;
 use gpui_kit::component::input::{Editor, EditorState};
 use gpui_kit::*;
@@ -213,12 +214,22 @@ pub(super) fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, 
         .into_any_element()
 }
 
+/// The edges of a pane next to a divider (left, right, bottom; the top is under the tab bar).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct DividerSides {
+    pub left: bool,
+    pub right: bool,
+    pub bottom: bool,
+}
+
 /// Tab editor element. Ctrl+Shift+drag starts a column selection at the pointer (E-047, P2-6). gpui-base binds
 /// that to Alt+Shift only, inside its private `on_mouse_down` (gpui-base state.rs 2750), so the press is swallowed
 /// in the capture phase and re-sent as Alt+Shift at the same spot; the drag then runs gpui-base's own block
 /// selection (virtual columns, wrapped rows). Deferred: gpui takes the listener list out while dispatching.
-/// `readonly` while the first read is pending (`!Tab::loaded`).
-pub fn editor_view(editor: &Entity<EditorState>, readonly: bool) -> impl IntoElement {
+/// `readonly` while the first read is pending (`!Tab::loaded`). `bordered`: the editor draws its own 1px border (gpui-kit default),
+/// off while the pane is zoomed, whose frame is the border (P4-E-F2). `sides`: edges that touch a pane divider, where the
+/// divider is the only line (P4-E-F3).
+pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool, sides: DividerSides) -> impl IntoElement {
     div()
         .size_full()
         .capture_any_mouse_down(|event, window, cx| {
@@ -235,6 +246,10 @@ pub fn editor_view(editor: &Entity<EditorState>, readonly: bool) -> impl IntoEle
             // P2-7: font size and comfortable line height from the spec; refine over gpui-kit's mono size × 1.5.
             Editor::new(editor)
                 .readonly(readonly)
+                .bordered(bordered)
+                .when(sides.left, |e| e.border_l(px(0.)))
+                .when(sides.right, |e| e.border_r(px(0.)))
+                .when(sides.bottom, |e| e.border_b(px(0.)))
                 .text_size(metrics::BUFFER_FONT_SIZE)
                 .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
                 .h_full(),
