@@ -15,6 +15,31 @@ pub struct FileClipboard {
     pub cut: bool,
 }
 
+/// One finished copy/move job: error text instead of `io::Error` so it can cross threads cheaply.
+struct FsJob {
+    src: PathBuf,
+    dst: PathBuf,
+    result: Result<ops::CopyReport, String>,
+    /// The destination exists afterwards (a skipped top-level link creates nothing).
+    made: bool,
+}
+
+/// Blocking half: runs `(src, target dir)` jobs in order. Destination names are picked here, right before each copy.
+fn run_jobs(jobs: Vec<(PathBuf, PathBuf)>, cut: bool) -> Vec<FsJob> {
+    jobs.into_iter()
+        .map(|(src, dir)| {
+            let name = src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+            let dst = ops::paste_path(&dir, &name, src.is_dir());
+            let result = if cut {
+                ops::move_entry(&src, &dst).map(|_| ops::CopyReport::default())
+            } else {
+                ops::copy_entry(&src, &dst)
+            };
+            let made = dst.symlink_metadata().is_ok();
+            FsJob { src, dst, result: result.map_err(|e| e.to_string()), made }
+        })
+        .collect()
+}
 /// Aggregate failure line, same shape as `panel_delete::failure_text`.
 fn failure_text(verb: &str, failed: usize, total: usize) -> String {
     format!("Failed to {verb} {failed} of {total} file(s).")
@@ -145,87 +170,121 @@ impl Workbench {
 
 impl Workbench {
     /// 붙여넣기(I-037·I-544). 같은 이름이 있으면 ` copy` 를 붙인다(`ops::paste_path`).
-    /// 잘라낸 항목은 옮기고 클립보드를 비운다. 같은 폴더에 잘라 붙이면 아무것도 하지 않는다(판단).
+    /// 잘라낸 항목은 옮기고 클립보드를 비운다(실패한 항목만 남긴다, AUDIT 3). 같은 폴더에 잘라 붙이면 아무것도 하지 않는다(판단).
+    /// 복사·이동은 백그라운드에서 돈다(AUDIT 4). 겹친 요청은 서로 독립이다.
     pub(super) fn paste(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if self.panel_editing(cx) {
             return;
         }
         let Some(clip) = self.file_clipboard.clone() else { return };
         let Some(dir) = self.target_dir(cx) else { return };
-        let mut created = Vec::new();
-        let mut failed: Vec<PathBuf> = Vec::new();
-        let mut general_failed = 0;
+        let mut jobs = Vec::new();
         for src in &clip.paths {
-            let Some(name) = src.file_name().map(|n| n.to_string_lossy().into_owned()) else { continue };
+            if src.file_name().is_none() {
+                continue;
+            }
             if clip.cut && src.parent() == Some(dir.as_path()) {
                 self.log_fs("paste-skip-same-folder", &[src], None, cx);
                 continue;
             }
-            let dst = ops::paste_path(&dir, &name, src.is_dir());
-            let result = if clip.cut {
-                ops::move_entry(src, &dst).map(|_| ops::CopyReport::default())
-            } else {
-                ops::copy_entry(src, &dst)
-            };
-            let op = if clip.cut { "paste-move" } else { "paste-copy" };
-            self.log_fs(op, &[src, &dst], result.as_ref().err().map(|e| e.to_string()), cx);
-            if let Ok(report) = &result {
-                self.log_skipped(op, report, cx);
-            }
-            if let Err(e) = &result {
-                failed.push(src.clone());
-                if e.to_string() != ops::MOVE_REFUSED_LINKS {
-                    general_failed += 1;
-                } else {
-                // D-044 ②: 다른 볼륨 이동을 시작 전에 거부했다(원본·대상 변화 없음). 문구는 원문에 없어 판단으로 정했다.
-                self.notify(format!("Cannot move `{name}` to another drive because it contains links (junctions or symbolic links)."), window, cx);
-                }
-            }
-            // 맨 위 항목이 링크라 건너뛰었으면 만든 것이 없다.
-            if result.is_ok() && dst.symlink_metadata().is_ok() {
-                if clip.cut {
-                    self.apply_move(src, &dst, cx);
-                }
-                created.push(dst);
-            }
+            jobs.push((src.clone(), dir.clone()));
         }
-        // AUDIT 3: a cut keeps only the entries that failed so they can be retried.
         if clip.cut {
-            self.file_clipboard = cut_leftover(failed);
+            // Taken now so a second paste cannot move the same entries; failed ones are put back on completion.
+            self.file_clipboard = None;
         }
-        if general_failed > 0 {
-            self.notify(failure_text(if clip.cut { "move" } else { "copy" }, general_failed, clip.paths.len()), window, cx);
-        }
-        self.after_create(created, "paste", window, cx);
+        self.run_fs_jobs(jobs, clip.cut, if clip.cut { "paste-move" } else { "paste-copy" }, window, cx);
     }
 
     /// Duplicate(I-543): 같은 폴더에 ` copy` 이름으로 복사한다.
     pub(super) fn duplicate(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let mut created = Vec::new();
-        let (mut failed, mut total) = (0, 0);
+        let mut jobs = Vec::new();
         for src in self.panel_targets(cx) {
-            let (Some(parent), Some(name)) = (src.parent(), src.file_name()) else { continue };
-            if self.active_ws().is_some_and(|ws| ws.read(cx).tree.is_root(&src)) {
+            let Some(parent) = src.parent() else { continue };
+            if src.file_name().is_none() || self.active_ws().is_some_and(|ws| ws.read(cx).tree.is_root(&src)) {
                 continue;
             }
-            let dst = ops::paste_path(parent, &name.to_string_lossy(), src.is_dir());
-            let result = ops::copy_entry(&src, &dst);
-            total += 1;
-            failed += usize::from(result.is_err());
-            self.log_fs("duplicate", &[&src, &dst], result.as_ref().err().map(|e| e.to_string()), cx);
-            if let Ok(report) = &result {
-                self.log_skipped("duplicate", report, cx);
-            }
-            if result.is_ok() && dst.symlink_metadata().is_ok() {
-                created.push(dst);
-            }
+            jobs.push((src.clone(), parent.to_path_buf()));
         }
-        if failed > 0 {
-            self.notify(failure_text("duplicate", failed, total), window, cx);
-        }
-        self.after_create(created, "duplicate", window, cx);
+        self.run_fs_jobs(jobs, false, "duplicate", window, cx);
     }
 
+    /// Runs `(src, target dir)` copy/move jobs on the background executor, then applies the results on the UI thread.
+    fn run_fs_jobs(
+        &mut self,
+        jobs: Vec<(PathBuf, PathBuf)>,
+        cut: bool,
+        op: &'static str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let ws_id = self.active_ws().map(|w| w.entity_id());
+        cx.spawn_in(window, async move |this, cx| {
+            let done = cx.background_spawn(async move { run_jobs(jobs, cut) }).await;
+            let _ = this.update_in(cx, |this, window, cx| this.finish_fs_jobs(done, cut, op, ws_id, window, cx));
+        })
+        .detach();
+    }
+
+    /// UI-thread half of a paste/duplicate: log, notify failures, apply moves, restore failed cut entries, select results.
+    /// Disk changes already happened, so those are always applied; selection/opening only if the workspace is still active.
+    fn finish_fs_jobs(
+        &mut self,
+        done: Vec<FsJob>,
+        cut: bool,
+        op: &str,
+        ws_id: Option<EntityId>,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let mut created = Vec::new();
+        let mut failed: Vec<PathBuf> = Vec::new();
+        let mut general_failed = 0;
+        for job in &done {
+            self.log_fs(op, &[&job.src, &job.dst], job.result.as_ref().err().cloned(), cx);
+            match &job.result {
+                Ok(report) => self.log_skipped(op, report, cx),
+                Err(e) => {
+                    failed.push(job.src.clone());
+                    if e == ops::MOVE_REFUSED_LINKS {
+                        // D-044 ②: 다른 볼륨 이동을 시작 전에 거부했다(원본·대상 변화 없음). 문구는 원문에 없어 판단으로 정했다.
+                        let name = job.src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+                        self.notify(format!("Cannot move `{name}` to another drive because it contains links (junctions or symbolic links)."), window, cx);
+                    } else {
+                        general_failed += 1;
+                    }
+                }
+            }
+            // 맨 위 항목이 링크라 건너뛰었으면 만든 것이 없다.
+            if job.result.is_ok() && job.made {
+                if cut {
+                    self.apply_move(&job.src, &job.dst, cx);
+                }
+                created.push(job.dst.clone());
+            }
+        }
+        // AUDIT 3: a cut keeps only the entries that failed so they can be retried (unless the user copied something new meanwhile).
+        if cut && self.file_clipboard.is_none() {
+            self.file_clipboard = cut_leftover(failed);
+        }
+        if general_failed > 0 {
+            let verb = match op {
+                "paste-move" => "move",
+                "paste-copy" => "copy",
+                _ => "duplicate",
+            };
+            self.notify(failure_text(verb, general_failed, done.len()), window, cx);
+        }
+        if self.active_ws().map(|w| w.entity_id()) == ws_id {
+            self.after_create(created, if op == "duplicate" { "duplicate" } else { "paste" }, window, cx);
+        } else {
+            // The workspace changed or closed while copying: skip selecting/opening, just reload the one that started it.
+            if let Some(ws) = self.folders.workspaces.values().find(|w| Some(w.entity_id()) == ws_id).cloned() {
+                ws.update(cx, |ws, cx| ws.tree.refresh(cx));
+            }
+            cx.notify();
+        }
+    }
     /// 붙여넣기·복제 뒤: 디스크를 다시 읽고, 만든 것을 고르고, 파일은 연다(I-097 `on_paste`, 일반 탭, 포커스는 패널에 둔다. 판단).
     fn after_create(&mut self, created: Vec<PathBuf>, via: &str, window: &mut Window, cx: &mut Context<Self>) {
         if let Some(ws) = self.active_ws() {
@@ -274,7 +333,7 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: gpui_kit::* via super::* shadows the 	est macro.
-    use super::{PathBuf, cut_leftover, failure_text};
+    use super::{PathBuf, cut_leftover, failure_text, run_jobs};
 
     #[test]
     fn partial_cut_failure_keeps_only_failed_entries() {
@@ -283,5 +342,20 @@ mod tests {
         assert_eq!(left.paths, vec![PathBuf::from("b")]);
         assert!(left.cut);
         assert_eq!(failure_text("move", 1, 3), "Failed to move 1 of 3 file(s).");
+    }
+
+    #[test]
+    fn run_jobs_keeps_going_after_a_failed_entry() {
+        let dir = std::env::temp_dir().join(format!("wb-p1-2-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let ok = dir.join("a.txt");
+        std::fs::write(&ok, "x").unwrap();
+        let missing = dir.join("missing.txt");
+        let out = run_jobs(vec![(missing.clone(), dir.clone()), (ok.clone(), dir.clone())], false);
+        assert!(out[0].result.is_err() && !out[0].made);
+        assert!(out[1].result.is_ok() && out[1].made);
+        assert!(out[1].dst != ok && out[1].dst.exists());
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }
