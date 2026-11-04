@@ -1,0 +1,6 @@
+cases: empty, add, items, scroll, switch, title, remove, order, order-restart, keys, menus, state, state-restart, broken, tmp, dialog, quitsave, quitnochange, closesave, xclosesave, savefail, sigma, version
+checks: 122, failed: 2
+failures: 2
+user files restored: True
+  - menus: R-8 9.2 File 메뉴: 기대 Open Folder...|Ctrl-K Ctrl-O, ---, Close Window|Ctrl-Shift-W, 실제 [dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+  - menus: R-8 9.2 View 메뉴: 기대 Toggle Left Dock|Ctrl-B, Toggle Folder Sidebar|Ctrl-Alt-J, Focus Folder Sidebar|Ctrl-Alt-;, ---, Project Panel|Ctrl-Shift-E, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|Ctrl-K Up	Split Down|Ctrl-K Down	Split Left|Ctrl-K Left	Split Right|Ctrl-K Right	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-Shift-E

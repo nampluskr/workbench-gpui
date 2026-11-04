@@ -1,0 +1,21 @@
+cases: base, override, null, unknown, jsonc, broken, order, startup, reload
+failures: 16
+foreign key lines (warning): 0
+cleanup errors: 0
+user keymap: before=<absent> after=<absent> restored=True
+  - base: R-1 표 밖의 내장 바인딩: ctrl-s [Workspace] workspace::Save
+  - base: R-1 표 밖의 내장 바인딩: ctrl-w [Workspace] pane::CloseActiveItem
+  - base: R-1 표 밖의 내장 바인딩: ctrl-f4 [Workspace] pane::CloseActiveItem
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k shift-enter [Pane] pane::TogglePinTab
+  - base: R-1 표 밖의 내장 바인딩: ctrl-shift-v [Pane] markdown::OpenPreview
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k v [Pane] markdown::OpenPreviewToTheSide
+  - base: R-1 표 밖의 내장 바인딩: ctrl-\ [Pane] pane::SplitRight
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k up [Pane] pane::SplitUp
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k down [Pane] pane::SplitDown
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k left [Pane] pane::SplitLeft
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k right [Pane] pane::SplitRight
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k ctrl-up [Workspace] workspace::ActivatePaneUp
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k ctrl-down [Workspace] workspace::ActivatePaneDown
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k ctrl-left [Workspace] workspace::ActivatePaneLeft
+  - base: R-1 표 밖의 내장 바인딩: ctrl-k ctrl-right [Workspace] workspace::ActivatePaneRight
+  - base: R-1 표 밖의 내장 바인딩: shift-escape [Workspace] workspace::ToggleZoom

@@ -1,0 +1,505 @@
+{
+  "script": "verify-v02-phase2",
+  "items": 137,
+  "baseFail": 0,
+  "p1Items": 109,
+  "p1Fail": 16,
+  "timeMasked": 19,
+  "diff": [
+    {
+      "item": "tooltip#4",
+      "id": "L-208·L-209",
+      "what": "app-menu-button 상자 x (마우스 394)",
+      "base": "403.00",
+      "p1": "328.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#9",
+      "id": "L-208·L-209",
+      "what": "title-folder-name 상자 x (마우스 479)",
+      "base": "488.00",
+      "p1": "413.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#14",
+      "id": "L-208·L-209",
+      "what": "sidebar-btn-folder-add 상자 x (마우스 359)",
+      "base": "368.00",
+      "p1": "293.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#25",
+      "id": "L-208·L-209",
+      "what": "tab-btn-back 상자 x (마우스 632)",
+      "base": "641.00",
+      "p1": "566.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#30",
+      "id": "L-208·L-209",
+      "what": "tab-btn-forward 상자 x (마우스 658)",
+      "base": "667.00",
+      "p1": "592.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#32",
+      "id": "L-243",
+      "what": "tab-btn-new 줄 수",
+      "base": "1",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#33",
+      "id": "L-243",
+      "what": "tab-btn-new 문구",
+      "base": "New…",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#34",
+      "id": "L-206",
+      "what": "tab-btn-new 지연 ms",
+      "base": "512",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#35",
+      "id": "L-208·L-209",
+      "what": "tab-btn-new 상자 x (마우스 1851)",
+      "base": "1,860.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#36",
+      "id": "L-208·L-209",
+      "what": "tab-btn-new 상자 y (마우스 48)",
+      "base": "59.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#37",
+      "id": "L-244",
+      "what": "tab-btn-split 줄 수",
+      "base": "1",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#38",
+      "id": "L-244",
+      "what": "tab-btn-split 문구",
+      "base": "Split Pane",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#39",
+      "id": "L-206",
+      "what": "tab-btn-split 지연 ms",
+      "base": "501",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#40",
+      "id": "L-210",
+      "what": "tab-btn-split 상자 x (마우스 1877)",
+      "base": "1,794.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#41",
+      "id": "L-208·L-209",
+      "what": "tab-btn-split 상자 y (마우스 48)",
+      "base": "59.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#42",
+      "id": "L-245",
+      "what": "tab-btn-zoom 줄 수",
+      "base": "1",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#43",
+      "id": "L-245",
+      "what": "tab-btn-zoom 문구",
+      "base": "Zoom In",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#44",
+      "id": "L-206",
+      "what": "tab-btn-zoom 지연 ms",
+      "base": "511",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#45",
+      "id": "L-210",
+      "what": "tab-btn-zoom 상자 x (마우스 1903)",
+      "base": "1,829.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#46",
+      "id": "L-208·L-209",
+      "what": "tab-btn-zoom 상자 y (마우스 48)",
+      "base": "59.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#47",
+      "id": "L-254·L-266",
+      "what": "status-btn-project-panel 줄 수",
+      "base": "1",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#48",
+      "id": "L-254·L-266",
+      "what": "status-btn-project-panel 문구",
+      "base": "Close Left Dock",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#49",
+      "id": "L-206",
+      "what": "status-btn-project-panel 지연 ms",
+      "base": "510",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#50",
+      "id": "L-208·L-209",
+      "what": "status-btn-project-panel 상자 x (마우스 390)",
+      "base": "399.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#51",
+      "id": "L-210",
+      "what": "status-btn-project-panel 상자 y (마우스 1017)",
+      "base": "983.00",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#52",
+      "id": "L-210",
+      "what": "오른쪽 끝에서 왼쪽으로 뒤집은 툴팁",
+      "base": "tab-btn-split,tab-btn-zoom",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#53",
+      "id": "L-210",
+      "what": "아래 끝에서 위로 뒤집은 툴팁",
+      "base": "sidebar-btn-folder-add,sidebar-btn-toggle,status-btn-project-panel",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#54",
+      "id": "L-207",
+      "what": "leave 하면 사라짐 (앞서 상자 있음: True)",
+      "base": "사라짐",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#55",
+      "id": "L-207",
+      "what": "press 하면 사라짐 (앞서 상자 있음: True)",
+      "base": "사라짐",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#56",
+      "id": "L-207",
+      "what": "scroll 하면 사라짐 (앞서 상자 있음: True)",
+      "base": "사라짐",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#57",
+      "id": "L-228",
+      "what": "window-btn-min 툴팁 없음",
+      "base": "0",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#58",
+      "id": "L-228",
+      "what": "window-btn-close 툴팁 없음",
+      "base": "0",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "tooltip#59",
+      "id": "L-253·L-266",
+      "what": "Dock 닫힘 문구",
+      "base": "Project Panel",
+      "p1": "(missing)",
+      "baseOk": true,
+      "p1Ok": null
+    },
+    {
+      "item": "menu#4",
+      "id": "R-8 D-13 I-306",
+      "what": "File 항목·구분선",
+      "base": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+      "p1": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "menu#6",
+      "id": "R-8 D-13 I-306",
+      "what": "View 항목·구분선",
+      "base": "Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "p1": "",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#7",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 3",
+      "base": "index=3",
+      "p1": "<없음>",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#11",
+      "id": "I-314",
+      "what": "팝업 x = 이름 버튼 왼쪽 − 5",
+      "base": "518.00",
+      "p1": "443.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "menu#14",
+      "id": "I-315",
+      "what": "목록 아래 여백 4 (테두리 1 안)",
+      "base": "5.00",
+      "p1": "110.00",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#17",
+      "id": "I-318",
+      "what": "구분선 높이 1",
+      "base": "1.00",
+      "p1": "23.00",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#18",
+      "id": "I-318",
+      "what": "구분선 위 margin 6",
+      "base": "6.00",
+      "p1": "0.00",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#19",
+      "id": "I-318",
+      "what": "구분선 아래 margin 6",
+      "base": "6.00",
+      "p1": "0.00",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#27",
+      "id": "I-517·I-518",
+      "what": "down → 항목 4",
+      "base": "index=4",
+      "p1": "index=3",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#28",
+      "id": "I-517·I-518",
+      "what": "down → 항목 0",
+      "base": "index=0",
+      "p1": "index=4",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#29",
+      "id": "I-517·I-518",
+      "what": "up → 항목 4",
+      "base": "index=4",
+      "p1": "index=3",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#31",
+      "id": "I-517·I-518",
+      "what": "end → 항목 4",
+      "base": "index=4",
+      "p1": "index=9",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#37",
+      "id": "I-517·I-518",
+      "what": "pagedown → 항목 4",
+      "base": "index=4",
+      "p1": "index=9",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#39",
+      "id": "I-517·I-518",
+      "what": "shift-pagedown → 항목 4",
+      "base": "index=4",
+      "p1": "index=9",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#42",
+      "id": "I-309",
+      "what": "닫은 뒤 포커스 복원(컨텍스트)",
+      "base": "[dev] key keystroke=ctrl-c action=none context=Root > Workspace",
+      "p1": "[dev] key keystroke=ctrl-c action=none context=Root > Workspace > Pane",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "menu#50",
+      "id": "I-519",
+      "what": "메뉴 밖 누름 닫기",
+      "base": "[dev] menu-close reason=click-outside t_ms=1793770744188",
+      "p1": "",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "reload#1",
+      "id": "R-4",
+      "what": "바꾸기 전 메뉴 View 단축키",
+      "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|Ctrl-K Up\tSplit Down|Ctrl-K Down\tSplit Left|Ctrl-K Left\tSplit Right|Ctrl-K Right\tMaximize Pane|Shift-Escape\t---\tProject Panel|Ctrl-Shift-E",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "reload#4",
+      "id": "R-4",
+      "what": "바꾼 뒤 메뉴 View 단축키",
+      "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Alt-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Alt-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|Ctrl-K Up\tSplit Down|Ctrl-K Down\tSplit Left|Ctrl-K Left\tSplit Right|Ctrl-K Right\tMaximize Pane|Shift-Escape\t---\tProject Panel|Ctrl-Shift-E",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "shadow#1",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "View 의 Toggle Left Dock 단축키",
+      "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|Ctrl-K Up\tSplit Down|Ctrl-K Down\tSplit Left|Ctrl-K Left\tSplit Right|Ctrl-K Right\tMaximize Pane|Shift-Escape\t---\tProject Panel|Ctrl-Shift-E",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "prevctx#1",
+      "id": "I-307 D-032 ③",
+      "what": "View 단축키(패널 컨텍스트 기준)",
+      "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Down",
+      "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|<none>\tSplit Down|<none>\tSplit Left|<none>\tSplit Right|<none>\tMaximize Pane|Shift-Escape\t---\tProject Panel|Down",
+      "baseOk": true,
+      "p1Ok": false
+    },
+    {
+      "item": "shadowpp#1",
+      "id": "I-704 L-223 D-033 ②",
+      "what": "View 의 Toggle Left Dock 단축키(패널에서 가려짐)",
+      "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|<none>\tSplit Down|<none>\tSplit Left|<none>\tSplit Right|<none>\tMaximize Pane|Shift-Escape\t---\tProject Panel|Ctrl-Shift-E",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "chord#1",
+      "id": "I-307 D-033 ⓑ",
+      "what": "View 단축키(패널 컨텍스트)",
+      "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-K Ctrl-Y",
+      "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|<none>\tSplit Down|<none>\tSplit Left|<none>\tSplit Right|<none>\tMaximize Pane|Shift-Escape\t---\tProject Panel|Ctrl-K Ctrl-Y",
+      "baseOk": true,
+      "p1Ok": false
+    }
+  ]
+}

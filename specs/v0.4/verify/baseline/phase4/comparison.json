@@ -1,0 +1,519 @@
+[
+  {
+    "script": "verify-v02-phase1",
+    "items": 70,
+    "baseFail": 0,
+    "p1Items": 70,
+    "p1Fail": 0,
+    "timeMasked": 0,
+    "diff": [
+      {
+        "item": "base#1",
+        "id": "delete",
+        "what": "center: Workspace 에는 Delete 바인딩이 없다",
+        "base": "none|Root > Workspace",
+        "p1": "none|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "base#2",
+        "id": "ctrl-b",
+        "what": "I-022 Dock 닫기",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "base#3",
+        "id": "ctrl-b",
+        "what": "I-022 Dock 다시 열기",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "base#4",
+        "id": "ctrl-k ctrl-o",
+        "what": "A-13.1 chord",
+        "base": "workspace::Open|Root > Workspace",
+        "p1": "workspace::Open|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "base#5",
+        "id": "f10",
+        "what": "I-310",
+        "base": "app_menu::Toggle|Root > Workspace",
+        "p1": "app_menu::Toggle|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "base#7",
+        "id": "ctrl-alt-;",
+        "what": "I-024: 사이드바로 포커스",
+        "base": "multi_workspace::FocusWorkspaceSidebar|Root > Workspace",
+        "p1": "multi_workspace::FocusWorkspaceSidebar|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "base#13",
+        "id": "ctrl-shift-e",
+        "what": "I-023: 프로젝트 패널로 포커스",
+        "base": "project_panel::ToggleFocus|Root > Workspace",
+        "p1": "project_panel::ToggleFocus|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "override#1",
+        "id": "ctrl-b",
+        "what": "사용자 액션이 실행된다",
+        "base": "project_panel::ToggleFocus|Root > Workspace",
+        "p1": "project_panel::ToggleFocus|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "null#1",
+        "id": "ctrl-b",
+        "what": "null: 내장 ToggleLeftDock 가 실행되지 않는다",
+        "base": "none|Root > Workspace",
+        "p1": "none|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "null#2",
+        "id": "ctrl-shift-e",
+        "what": "패널로 포커스",
+        "base": "project_panel::ToggleFocus|Root > Workspace",
+        "p1": "project_panel::ToggleFocus|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "null#6",
+        "id": "ctrl-alt-;",
+        "what": "사이드바로",
+        "base": "multi_workspace::FocusWorkspaceSidebar|Root > Workspace",
+        "p1": "multi_workspace::FocusWorkspaceSidebar|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "unknown#1",
+        "id": "f10",
+        "what": "오류 항목만 빼고 나머지는 적용",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "unknown#2",
+        "id": "ctrl-b",
+        "what": "잘못된 항목은 무시되어 내장 키 그대로",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "unknown#3",
+        "id": "ctrl-alt-j",
+        "what": "잘못된 항목은 무시",
+        "base": "multi_workspace::ToggleWorkspaceSidebar|Root > Workspace",
+        "p1": "multi_workspace::ToggleWorkspaceSidebar|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "jsonc#1",
+        "id": "f10",
+        "what": "주석·끝 쉼표가 있어도 읽힌다",
+        "base": "project_panel::ToggleFocus|Root > Workspace",
+        "p1": "project_panel::ToggleFocus|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "broken#1",
+        "id": "ctrl-b",
+        "what": "내장 키맵은 그대로",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "order#1",
+        "id": "f10",
+        "what": "같은 깊이 두 번: 나중 것이 이긴다",
+        "base": "project_panel::ToggleFocus|Root > Workspace",
+        "p1": "project_panel::ToggleFocus|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "order#3",
+        "id": "delete",
+        "what": "center: Workspace 의 사용자 Delete",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "order#4",
+        "id": "delete",
+        "what": "Dock 다시 열기",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "order#5",
+        "id": "ctrl-alt-;",
+        "what": "사이드바로",
+        "base": "multi_workspace::FocusWorkspaceSidebar|Root > Workspace",
+        "p1": "multi_workspace::FocusWorkspaceSidebar|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "startup#1",
+        "id": "alt-b",
+        "what": "시작 구간에 저장한 키가 동작",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#1",
+        "id": "ctrl-b",
+        "what": "바꾸기 전",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#2",
+        "id": "ctrl-b",
+        "what": "Dock 다시 열기",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#3",
+        "id": "alt-b",
+        "what": "새 키가 다시 띄우지 않고 동작",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#4",
+        "id": "ctrl-b",
+        "what": "옛 키는 해제",
+        "base": "none|Root > Workspace",
+        "p1": "none|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#5",
+        "id": "ctrl-alt-b",
+        "what": "바꿔치기 뒤 새 키",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#6",
+        "id": "ctrl-b",
+        "what": "null 을 뺐으므로 내장 Ctrl-B 가 돌아온다",
+        "base": "workspace::ToggleLeftDock|Root > Workspace",
+        "p1": "workspace::ToggleLeftDock|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "reload#7",
+        "id": "alt-b",
+        "what": "지운 키는 더 듣지 않는다",
+        "base": "none|Root > Workspace",
+        "p1": "none|Root > Workspace > Pane",
+        "baseOk": true,
+        "p1Ok": true
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase3",
+    "items": 122,
+    "baseFail": 2,
+    "p1Items": 122,
+    "p1Fail": 2,
+    "timeMasked": 19,
+    "diff": [
+      {
+        "item": "add#4",
+        "id": "R-8",
+        "what": "File 메뉴 첫 항목",
+        "base": "[dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+        "p1": "[dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "items#5",
+        "id": "A-11.3",
+        "what": "항목 줄 폭 = 사이드바 폭 − 오른쪽 테두리 1",
+        "base": "374",
+        "p1": "299",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "scroll#2",
+        "id": "A-16.7",
+        "what": "목록 휠 → 세로 스크롤(스크롤 위치 음수)",
+        "base": "[dev] sidebar-scroll offset_y=-23",
+        "p1": "[dev] sidebar-scroll offset_y=-234",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "menus#1",
+        "id": "R-8 9.2",
+        "what": "File 메뉴",
+        "base": "[dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+        "p1": "[dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "menus#2",
+        "id": "R-8 9.2",
+        "what": "View 메뉴",
+        "base": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+        "p1": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\tSplit Up|Ctrl-K Up\tSplit Down|Ctrl-K Down\tSplit Left|Ctrl-K Left\tSplit Right|Ctrl-K Right\tMaximize Pane|Shift-Escape\t---\tProject Panel|Ctrl-Shift-E",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "state#2",
+        "id": "R-28",
+        "what": "시작 폭 300",
+        "base": "375",
+        "p1": "300",
+        "baseOk": false,
+        "p1Ok": true
+      },
+      {
+        "item": "state#4",
+        "id": "R-28 A-22",
+        "what": "state.json sidebar.width = 화면 폭",
+        "base": "494",
+        "p1": "419",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "state-restart#1",
+        "id": "R-28",
+        "what": "다시 시작 → 사이드바 폭 복원",
+        "base": "617",
+        "p1": "419",
+        "baseOk": false,
+        "p1Ok": true
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase4",
+    "items": 208,
+    "baseFail": 0,
+    "p1Items": 208,
+    "p1Fail": 1,
+    "timeMasked": 15,
+    "diff": [
+      {
+        "item": "menu#12",
+        "id": "I-042·I-502",
+        "what": "shift-f10 → 메뉴, 선택 항목 왼쪽 아래 + (2, 2)(판단: 기준 모서리)",
+        "base": "377.0,217.0",
+        "p1": "302.0,217.0",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "menu#13",
+        "id": "I-042·I-502",
+        "what": "menu → 메뉴, 선택 항목 왼쪽 아래 + (2, 2)(판단: 기준 모서리)",
+        "base": "377.0,217.0",
+        "p1": "302.0,217.0",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "readonly#1",
+        "id": "R-27",
+        "what": "탭 내용 = 파일 내용(gpui-kit Editor, 줄 끝 CRLF 는 LF 로 보일 수 있다)",
+        "base": "len=33",
+        "p1": "len=31",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "readonly#3",
+        "id": "D-18·R-27",
+        "what": "글자를 쳐도 탭 내용·디스크 파일이 바뀌지 않는다",
+        "base": "len=33 fnv=c45e16dbc6dd544f, 디스크 같음=True",
+        "p1": "len=40 fnv=1cd7c3303d70c90d, 디스크 같음=True",
+        "baseOk": true,
+        "p1Ok": false
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase4-d043",
+    "items": 13,
+    "baseFail": 0,
+    "p1Items": 13,
+    "p1Fail": 0,
+    "timeMasked": 2,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase4-d044",
+    "items": 6,
+    "baseFail": 0,
+    "p1Items": 6,
+    "p1Fail": 0,
+    "timeMasked": 3,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase5",
+    "items": 62,
+    "baseFail": 0,
+    "p1Items": 62,
+    "p1Fail": 5,
+    "timeMasked": 37,
+    "diff": [
+      {
+        "item": "tree#10",
+        "id": "R-24",
+        "what": "접힌 폴더 안 변경도 받아 다시 읽음",
+        "base": "ok=True, app_ms=225, seen_ms=242, [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=215 t_ms=1793771541229",
+        "p1": "ok=True, app_ms=177, seen_ms=197, [dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=162 t_ms=1793795338687",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tree#12",
+        "id": "R-24",
+        "what": "바깥 변경은 바깥으로 셈(앱 자신 작업 0)",
+        "base": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=253 t_ms=1793771539434 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=170 t_ms=1793771539672 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=253 t_ms=1793771540021 | [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=1 own_renames=0 reloaded=1 wait_ms=256 t_ms=1793771540351 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=151 t_ms=1793771540573 | [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=1 own_renames=0 reloaded=1 wait_ms=251 t_ms=1793771540901 | [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=215 t_ms=1793771541229",
+        "p1": "[dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=159 t_ms=1793795336793 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=236 t_ms=1793795337127 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=260 t_ms=1793795337448 | [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=1 own_renames=0 reloaded=1 wait_ms=165 t_ms=1793795337677 | [dev] watch-applied events=2 own=0 external=2 lost=false tree=refreshed renames=0 own_renames=0 reloaded=1 wait_ms=230 t_ms=1793795338004 | [dev] watch-applied events=3 own=0 external=3 lost=false tree=refreshed renames=1 own_renames=0 reloaded=1 wait_ms=253 t_ms=1793795338346 | [dev] watch-applied events=4 own=0 external=4 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=162 t_ms=1793795338687",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tab#2",
+        "id": "R-24·E-086·G-115",
+        "what": "활성 탭 내용을 자동으로 다시 읽음",
+        "base": "ok=True, app_ms=218, seen_ms=394, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793771551413",
+        "p1": "ok=False, app_ms=253, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-4af55941e821421587c1357c2f09f64c\\proj\\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793795349081",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#3",
+        "id": "R-24",
+        "what": "tab-reload 줄의 길이·FNV",
+        "base": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793771551413",
+        "p1": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-4af55941e821421587c1357c2f09f64c\\proj\\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793795349081",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#6",
+        "id": "R-24·G-115",
+        "what": "바꿔 넣은 파일도 다시 읽음",
+        "base": "ok=True, app_ms=271, seen_ms=312, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=56 fnv=f44fa1bf2ed7155c t_ms=1793771554014",
+        "p1": "ok=False, app_ms=271, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-4af55941e821421587c1357c2f09f64c\\proj\\README.md result=reloaded len=54 fnv=97899cbe95ed7094 t_ms=1793795357431",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#9",
+        "id": "D-18·E-087",
+        "what": "지운 파일의 탭은 그대로, 내용도 그대로(표시는 이후 버전)",
+        "base": "active=1 notes.txt|normal / README.md|preview, fnv=f44fa1bf2ed7155c",
+        "p1": "active=1 notes.txt|normal / README.md|preview, fnv=97899cbe95ed7094",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#10",
+        "id": "R-24·G-115",
+        "what": "다시 만든 파일 내용을 탭이 읽음",
+        "base": "ok=True, app_ms=162, seen_ms=244, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=34 fnv=eeb42a408f255ae4 t_ms=1793771555542",
+        "p1": "ok=False, app_ms=245, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-4af55941e821421587c1357c2f09f64c\\proj\\README.md result=reloaded len=32 fnv=79dfa0fcb8242014 t_ms=1793795364796",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "flood#2",
+        "id": "R-24",
+        "what": "바깥에서 만든 600 개가 모두 트리에",
+        "base": "ok=True, app_ms=587, seen_ms=618, [dev] watch-applied events=1815 own=0 external=1815 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=509 t_ms=1793771609000",
+        "p1": "ok=True, app_ms=567, seen_ms=599, [dev] watch-applied events=1823 own=0 external=1823 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=487 t_ms=1793795426098",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "flood#3",
+        "id": "R-24(묶기)",
+        "what": "이벤트 1815 개를 몇 번에 묶어 반영",
+        "base": "반영 1번, 이벤트 1815",
+        "p1": "반영 1번, 이벤트 1823",
+        "baseOk": true,
+        "p1Ok": true
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase5-d046",
+    "items": 23,
+    "baseFail": 0,
+    "p1Items": 23,
+    "p1Fail": 0,
+    "timeMasked": 17,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase5-d047",
+    "items": 16,
+    "baseFail": 0,
+    "p1Items": 16,
+    "p1Fail": 0,
+    "timeMasked": 11,
+    "diff": []
+  }
+]

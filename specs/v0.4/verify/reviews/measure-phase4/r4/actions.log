@@ -1,0 +1,11 @@
+Click sidebar-btn-folder-add  at 284,1017
+DoubleClick tree-row-03  at 419.5,124
+DoubleClick tree-row-04  at 419.5,150
+Combo  ctrl K
+Combo   39
+hold Down 1230,500
+hold Move 900,500
+hold Up 900,500
+Combo  ctrl K
+Combo   40
+Combo  shift 27

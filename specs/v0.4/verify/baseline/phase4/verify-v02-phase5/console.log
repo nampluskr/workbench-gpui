@@ -1,0 +1,9 @@
+cases: tree, tab, root, switch, own, flood, junction
+checks: 62, failed: 5
+failures: 5
+user files restored: True
+  - tab: R-24·E-086·G-115 활성 탭 내용을 자동으로 다시 읽음: 기대 active_text_fnv=f3333c130cb7fa10, 실제 ok=False, app_ms=253, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-4af55941e821421587c1357c2f09f64c\proj\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793795349081
+  - tab: R-24 tab-reload 줄의 길이·FNV: 기대 len=40 fnv=f3333c130cb7fa10, 실제 [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-4af55941e821421587c1357c2f09f64c\proj\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793795349081
+  - tab: R-24·G-115 바꿔 넣은 파일도 다시 읽음: 기대 active_text_fnv=f44fa1bf2ed7155c, 실제 ok=False, app_ms=271, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-4af55941e821421587c1357c2f09f64c\proj\README.md result=reloaded len=54 fnv=97899cbe95ed7094 t_ms=1793795357431
+  - tab: D-18·E-087 지운 파일의 탭은 그대로, 내용도 그대로(표시는 이후 버전): 기대 탭 2개, README.md 활성, fnv f44fa1bf2ed7155c, 실제 active=1 notes.txt|normal / README.md|preview, fnv=97899cbe95ed7094
+  - tab: R-24·G-115 다시 만든 파일 내용을 탭이 읽음: 기대 active_text_fnv=eeb42a408f255ae4, 실제 ok=False, app_ms=245, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-4af55941e821421587c1357c2f09f64c\proj\README.md result=reloaded len=32 fnv=79dfa0fcb8242014 t_ms=1793795364796

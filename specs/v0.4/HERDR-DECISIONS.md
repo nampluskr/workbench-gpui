@@ -113,3 +113,11 @@
 ### H-23 · 2026-11-04 · lead (Phase 3 최종 확인 REWORK 수정 브랜치, 위임 H-4)
 - 요청: reviewer Phase 3 최종 확인 REWORK 2건(데이터 보존) — 저장 중 rename/move 뒤 다른 경로에 쓴 결과로 탭을 clean 처리, 삭제된 비어 있지 않은 미리보기 탭을 다음 미리보기 열기가 질문 없이 버림.
 - 판단: work/editor·work/ui에는 Phase 4 커밋이 이미 있다(H-19·H-22). Phase 3를 master 기준으로 닫기 위해 editor worktree에서 master `37be418`로 `work/p3fix` 브랜치를 만들어 impl-editor가 두 건을 고친다. 이 카드에 한해 `src/ui/panel_ops.rs`·`folders.rs`의 rename/move 경로도 impl-editor 범위(H-7과 같다). 수정 → reviewer → master 병합·태그 `v0.4-phase-3` → work/editor·work/ui에 master를 병합(충돌은 담당자가 푼다).
+
+### H-24 · 2026-11-04 · lead (P4-4·P4-5 REWORK 처리, 위임 H-4)
+- 요청: reviewer P4-4-5 REWORK 5건 — 1 Ctrl 복제 드롭, 2 프로젝트 패널 드래그로 열기(I-721·I-722) 미연결, 3 옆 pane 미리보기의 원문 복귀, 4 frontmatter 판정·렌더(L-110·L-111)가 원문과 다름, 5 dirty 이동·미리보기 갱신·Markdown 치수 테스트 부족.
+- 판단: 1·3·5는 고친다. 2는 버전 INTENT "제외 범위: 프로젝트 패널 드래그 앤 드롭"에 해당하므로 넣지 않는다(INTENT가 상위 문서, 분할 결정 "Zed 원문 전부"와의 충돌은 INTENT를 따름) — 스펙 불일치·사용자 확인 목록. 4는 gpui-component 0.8.1에 공개 parser/renderer hook이 있으면 맞추고, 없으면 컴포넌트 한계로 V3 불일치·사용자 결정 목록에 남긴다(D-7 "렌더가 맞추지 못하는 값은 V3 불일치 목록").
+
+### H-25 · 2026-11-04 · lead (L-105 마크다운 제목 선, 위임 H-4)
+- 요청: reviewer P4-E-F1 REWORK — h1·h2 아래 선·여백을 위해 제목을 별도 TextView로 떼어 그려 상태 ID 충돌과 참조형 링크 손실이 생겼다.
+- 판단: 제목 분리 방식을 되돌린다. gpui-component 0.8.1 TextView 스타일 API에 제목 테두리·여백 설정이 있으면 그것으로 맞추고, 없으면 L-105는 컴포넌트 한계로 V3 불일치·사용자 결정 목록에 남긴다(D-7, H-24의 frontmatter와 같은 기준). U1(첫 화면 끝 단추) 수정은 유지한다.

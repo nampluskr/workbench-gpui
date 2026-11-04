@@ -1,0 +1,23 @@
+Click sidebar-btn-folder-add  at 284,1017
+DoubleClick tree-row-03  at 419.5,124
+DoubleClick tree-row-04  at 419.5,150
+hold Down 766,48
+hold Move 615,48
+hold Move 640,50
+hold Up 640,50
+Click tab-btn-split  at 1877,48
+Click ctx-menu-row-0  at 1811,64.5
+hold Down 1230,500
+hold Move 900,500
+hold Up 900,500
+hold Down 900,500
+hold Move 545,500
+hold Up 545,500
+hold Down 1500,300
+hold Up 1500,300
+Click tab-btn-split  at 1877,48
+Click ctx-menu-row-3  at 1811,133.5
+hold Down 1500,517
+hold Move 1500,40
+hold Up 1500,40
+Combo  shift 27

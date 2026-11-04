@@ -1,7 +1,13 @@
 # HANDOFF — workbench-gpui v0.4
 
 - 소유: `lead`. 맨 위 절이 지금 상태다. 지난 절은 지우지 않는다.
-## 지금 (2026-11-04 16:36, Phase 1 끝 → Phase 2 시작)
+## 지금 (2026-11-04 22:45, v0.4 Phase 0~4 완료 — 사용자 버전 종료 판단 대기)
+
+- PLAN Phase 0~4 모두 done(태그 `v0.4-phase-0`~`v0.4-phase-4`, master). 버전 종료는 사용자가 판단한다.
+- 사용자 결정·확인 목록은 PROGRESS 각 Phase "특이사항"과 HERDR-DECISIONS H-8·H-10·H-14·H-15·H-17·H-18·H-24·H-25.
+- herdr 에이전트는 모두 대기. 감시기 `watch4.sh`는 계속 돈다(멈추려면 `restart-watch.sh`의 kill 부분).
+
+## 이전 (2026-11-04 16:36, Phase 1 끝 → Phase 2 시작)
 
 - Phase 1 done(태그 `v0.4-phase-1`, master). AUDIT 3·4, Duration, clippy 0. 테스트 78.
 - herdr: impl-ui는 Claude Code Sonnet(H-8, agy Claude 주간 한도 소진). impl-editor Claude Code Opus(auto 모드). spec·review agy(편집 자동 승인).

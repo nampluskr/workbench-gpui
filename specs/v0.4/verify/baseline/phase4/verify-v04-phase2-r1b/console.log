@@ -1,0 +1,28 @@
+cases: tooltip, menu, reload, pending, shadow, prevctx, shadowpp, rapid, chord, quit, closewin
+checks: 137, failed: 13
+shortcut rows: 47, mismatched: 10
+failures: 23
+user keymap: before=<absent> after=<absent> restored=True
+  - menu: I-315 목록 아래 여백 4 (테두리 1 안): 기대 5, 실제 110.00
+  - menu: I-318 구분선 높이 1: 기대 1, 실제 23.00
+  - menu: I-318 구분선 위 margin 6: 기대 6, 실제 0.00
+  - menu: I-318 구분선 아래 margin 6: 기대 6, 실제 0.00
+  - menu: I-517·I-518 down → 항목 4: 기대 index=4, 실제 index=3
+  - menu: I-517·I-518 down → 항목 0: 기대 index=0, 실제 index=4
+  - menu: I-517·I-518 up → 항목 4: 기대 index=4, 실제 index=3
+  - menu: I-517·I-518 end → 항목 4: 기대 index=4, 실제 index=9
+  - menu: I-517·I-518 pagedown → 항목 4: 기대 index=4, 실제 index=9
+  - menu: I-517·I-518 shift-pagedown → 항목 4: 기대 index=4, 실제 index=9
+  - menu: I-309 닫은 뒤 포커스 복원(컨텍스트): 기대 Root > Workspace, 실제 [dev] key keystroke=ctrl-c action=none context=Root > Workspace > Pane
+  - reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Split Up': 화면 Ctrl-K Up, 키맵 적용 결과 <none>
+  - reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Split Down': 화면 Ctrl-K Down, 키맵 적용 결과 <none>
+  - reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Split Left': 화면 Ctrl-K Left, 키맵 적용 결과 <none>
+  - reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Split Right': 화면 Ctrl-K Right, 키맵 적용 결과 <none>
+  - reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Maximize Pane': 화면 Shift-Escape, 키맵 적용 결과 <none>
+  - shadow: R-5 메뉴 View (ctrl-b 를 Minimize 로 덮음) 'Split Up': 화면 Ctrl-K Up, 키맵 적용 결과 <none>
+  - shadow: R-5 메뉴 View (ctrl-b 를 Minimize 로 덮음) 'Split Down': 화면 Ctrl-K Down, 키맵 적용 결과 <none>
+  - shadow: R-5 메뉴 View (ctrl-b 를 Minimize 로 덮음) 'Split Left': 화면 Ctrl-K Left, 키맵 적용 결과 <none>
+  - shadow: R-5 메뉴 View (ctrl-b 를 Minimize 로 덮음) 'Split Right': 화면 Ctrl-K Right, 키맵 적용 결과 <none>
+  - shadow: R-5 메뉴 View (ctrl-b 를 Minimize 로 덮음) 'Maximize Pane': 화면 Shift-Escape, 키맵 적용 결과 <none>
+  - prevctx: I-307 D-032 ③ View 단축키(패널 컨텍스트 기준): 기대 Toggle Left Dock|Ctrl-Y / Project Panel|Down, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|<none>	Split Down|<none>	Split Left|<none>	Split Right|<none>	Maximize Pane|Shift-Escape	---	Project Panel|Down
+  - chord: I-307 D-033 ⓑ View 단축키(패널 컨텍스트): 기대 Toggle Left Dock|Ctrl-K / Project Panel|Ctrl-K Ctrl-Y, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|<none>	Split Down|<none>	Split Left|<none>	Split Right|<none>	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-K Ctrl-Y

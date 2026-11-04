@@ -1,0 +1,55 @@
+verify-v02-phase2 | tooltip#4 | L-208·L-209 | 403.00 -> 328.00
+verify-v02-phase2 | tooltip#9 | L-208·L-209 | 488.00 -> 413.00
+verify-v02-phase2 | tooltip#14 | L-208·L-209 | 368.00 -> 293.00
+verify-v02-phase2 | tooltip#25 | L-208·L-209 | 641.00 -> 566.00
+verify-v02-phase2 | tooltip#30 | L-208·L-209 | 667.00 -> 592.00
+verify-v02-phase2 | tooltip#32 | L-243 | 1 -> (missing)
+verify-v02-phase2 | tooltip#33 | L-243 | New… -> (missing)
+verify-v02-phase2 | tooltip#34 | L-206 | 512 -> (missing)
+verify-v02-phase2 | tooltip#35 | L-208·L-209 | 1,860.00 -> (missing)
+verify-v02-phase2 | tooltip#36 | L-208·L-209 | 59.00 -> (missing)
+verify-v02-phase2 | tooltip#37 | L-244 | 1 -> (missing)
+verify-v02-phase2 | tooltip#38 | L-244 | Split Pane -> (missing)
+verify-v02-phase2 | tooltip#39 | L-206 | 501 -> (missing)
+verify-v02-phase2 | tooltip#40 | L-210 | 1,794.00 -> (missing)
+verify-v02-phase2 | tooltip#41 | L-208·L-209 | 59.00 -> (missing)
+verify-v02-phase2 | tooltip#42 | L-245 | 1 -> (missing)
+verify-v02-phase2 | tooltip#43 | L-245 | Zoom In -> (missing)
+verify-v02-phase2 | tooltip#44 | L-206 | 511 -> (missing)
+verify-v02-phase2 | tooltip#45 | L-210 | 1,829.00 -> (missing)
+verify-v02-phase2 | tooltip#46 | L-208·L-209 | 59.00 -> (missing)
+verify-v02-phase2 | tooltip#47 | L-254·L-266 | 1 -> (missing)
+verify-v02-phase2 | tooltip#48 | L-254·L-266 | Close Left Dock -> (missing)
+verify-v02-phase2 | tooltip#49 | L-206 | 510 -> (missing)
+verify-v02-phase2 | tooltip#50 | L-208·L-209 | 399.00 -> (missing)
+verify-v02-phase2 | tooltip#51 | L-210 | 983.00 -> (missing)
+verify-v02-phase2 | tooltip#52 | L-210 | tab-btn-split,tab-btn-zoom -> (missing)
+verify-v02-phase2 | tooltip#53 | L-210 | sidebar-btn-folder-add,sidebar-btn-toggle,status-btn-project-panel -> (missing)
+verify-v02-phase2 | tooltip#54 | L-207 | 사라짐 -> (missing)
+verify-v02-phase2 | tooltip#55 | L-207 | 사라짐 -> (missing)
+verify-v02-phase2 | tooltip#56 | L-207 | 사라짐 -> (missing)
+verify-v02-phase2 | tooltip#57 | L-228 | 0 -> (missing)
+verify-v02-phase2 | tooltip#58 | L-228 | 0 -> (missing)
+verify-v02-phase2 | tooltip#59 | L-253·L-266 | Project Panel -> (missing)
+verify-v02-phase2 | menu#4 | R-8 D-13 I-306 | Open Folder...|Ctrl-K Ctrl-O	---	Close Window|Ctrl-Shift-W -> Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+verify-v02-phase2 | menu#6 | R-8 D-13 I-306 | Toggle Left Dock|Ctrl-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E -> 
+verify-v02-phase2 | menu#7 | I-303 | index=3 -> <없음>
+verify-v02-phase2 | menu#11 | I-314 | 518.00 -> 443.00
+verify-v02-phase2 | menu#14 | I-315 | 5.00 -> 110.00
+verify-v02-phase2 | menu#17 | I-318 | 1.00 -> 23.00
+verify-v02-phase2 | menu#18 | I-318 | 6.00 -> 0.00
+verify-v02-phase2 | menu#19 | I-318 | 6.00 -> 0.00
+verify-v02-phase2 | menu#27 | I-517·I-518 | index=4 -> index=3
+verify-v02-phase2 | menu#28 | I-517·I-518 | index=0 -> index=4
+verify-v02-phase2 | menu#29 | I-517·I-518 | index=4 -> index=3
+verify-v02-phase2 | menu#31 | I-517·I-518 | index=4 -> index=9
+verify-v02-phase2 | menu#37 | I-517·I-518 | index=4 -> index=9
+verify-v02-phase2 | menu#39 | I-517·I-518 | index=4 -> index=9
+verify-v02-phase2 | menu#42 | I-309 | [dev] key keystroke=ctrl-c action=none context=Root > Workspace -> [dev] key keystroke=ctrl-c action=none context=Root > Workspace > Pane
+verify-v02-phase2 | menu#50 | I-519 | [dev] menu-close reason=click-outside t_ms=1793770744188 -> 
+verify-v02-phase2 | reload#1 | R-4 | [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E -> [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|Ctrl-K Up	Split Down|Ctrl-K Down	Split Left|Ctrl-K Left	Split Right|Ctrl-K Right	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-Shift-E
+verify-v02-phase2 | reload#4 | R-4 | [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Alt-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E -> [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Alt-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|Ctrl-K Up	Split Down|Ctrl-K Down	Split Left|Ctrl-K Left	Split Right|Ctrl-K Right	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-Shift-E
+verify-v02-phase2 | shadow#1 | I-704 L-223 D-032 ② | [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E -> [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|Ctrl-K Up	Split Down|Ctrl-K Down	Split Left|Ctrl-K Left	Split Right|Ctrl-K Right	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-Shift-E
+verify-v02-phase2 | prevctx#1 | I-307 D-032 ③ | [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Down -> [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|<none>	Split Down|<none>	Split Left|<none>	Split Right|<none>	Maximize Pane|Shift-Escape	---	Project Panel|Down
+verify-v02-phase2 | shadowpp#1 | I-704 L-223 D-033 ② | [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E -> [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|<none>	Split Down|<none>	Split Left|<none>	Split Right|<none>	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-Shift-E
+verify-v02-phase2 | chord#1 | I-307 D-033 ⓑ | [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-K Ctrl-Y -> [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	Split Up|<none>	Split Down|<none>	Split Left|<none>	Split Right|<none>	Maximize Pane|Shift-Escape	---	Project Panel|Ctrl-K Ctrl-Y

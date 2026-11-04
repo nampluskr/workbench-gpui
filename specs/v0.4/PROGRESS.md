@@ -240,7 +240,67 @@ Phase 2 종료 전에 편집기 카드 P3-1·P3-2를 work/editor에서 먼저 �
 
 ### Phase 4 — PoC 6단계 탭 기능
 
-없음(시작 전).
+Phase 3 종료 전에 P4-1·P4-3(work/editor, H-19)과 P4-2·P4-3b·P4-4·P4-5(work/ui, H-22)를 먼저 진행했다. master 병합은 Phase 3 태그 뒤에 했다.
+
+**P4-1 미리보기 탭·핀 모델 (R-12)** (2026-11-04)
+- 무엇을 했나: impl-editor가 `pane.rs` 탭 모델을 원문 I-060~I-066 전부로 넓혔다(`fb6e149`). 탭 한 번 누르기로는 승격하지 않는다(원문 I-063, 카드 문구와 다름).
+- 결과: reviewer PASS(`verify/reviews/P4-1.md`).
+- 검증: V1(항목 ID별 테스트).
+- 특이사항: 없음.
+
+**P4-3 분할 모델 (R-13)** (2026-11-04)
+- 무엇을 했나: impl-editor가 workspace의 단일 Pane을 Pane 트리(`src/ui/pane_group.rs`)로 바꾸고 분할 방식 ClonePane·EmptyPane·MovePane, 크기 조절·확대 상태, 같은 파일 여러 뷰 동기화를 넣었다(`ba2c2f6`). 6개 파일의 `.pane` 호출부 교체는 H-20으로 impl-editor 범위.
+- 결과: reviewer REWORK 2회 → R2 PASS(`verify/reviews/P4-3.md`). R0: 세 번째 뷰가 비어 있음, 읽기 중 rename, 중첩 축 최소 크기, 동기화 판단 테스트 부족. R1(`a00a23d`): 셋 해소. R2(`f07801f`): 불균등 하위 비율의 최소 크기.
+- 검증: V1.
+- 특이사항: pane이 닫히면 트리에서 인접 pane으로 포커스(Zed는 마지막 포커스 pane) — `shortcut:`.
+
+**P4-2 탭 바 미리보기·핀 + P4-3b 분할 그리기 (R-12·R-13)** (2026-11-04)
+- 무엇을 했나: impl-ui가 미리보기·핀 탭 표시와 입력 연결(`ecbddb0`), Pane 트리 그리기·분할선 드래그·확대·분할 키와 버튼(`6ec2df9`)을 넣었다.
+- 결과: reviewer REWORK 1 → R1 PASS(`verify/reviews/P4-2-3b.md`). R0: 빈 영역 클릭의 포커스 불일치, Pin/Unpin 컨텍스트 메뉴 없음, 새 키가 Workspace 전체에 등록됨, 분할·확대 메뉴 숨김. R1(`7a2d3ce`).
+- 검증: V1.
+- 특이사항: 없음.
+
+**P4-4 탭 드래그 + P4-5 마크다운 미리보기 (R-13·R-14)** (2026-11-04)
+- 무엇을 했나: impl-ui가 탭 끌어 순서 바꾸기·pane 옮기기·가장자리 분할(`6310856`), 마크다운 미리보기 탭과 툴바 버튼(`8532d71`, gpui-component `TextView::markdown`, 새 의존성 없음)을 넣었다.
+- 결과: reviewer REWORK 2회 → R2 PASS(`verify/reviews/P4-4-5.md`). R0 5건 처리는 H-24 — Ctrl 복제 드롭·옆 pane 원문 복귀·테스트 보강은 고침(`692cdde`), 프로젝트 패널 드래그로 열기(I-721·I-722)는 INTENT 제외 범위라 넣지 않음, frontmatter(L-110·L-111)는 공개 hook으로 맞춤. R1: frontmatter 빈 줄·이동 뒤 상태 테스트 → R2(`85e7c86`).
+- 검증: V1.
+- 특이사항: 사용자 확인 목록 — I-721·I-722(INTENT 제외 범위와 분할 결정의 충돌), 마크다운 근사 처리 2건(키 셀 배경색, frontmatter 코드 상자 배경·글꼴).
+
+**병합과 충돌 해결** (2026-11-04)
+- master(Phase 3 종료 `ff836f2`)를 work/editor에 병합할 때 `pane.rs` 충돌(P3-F1과 P4-1·P4-3)을 impl-editor가 풀었다(P4-M1 `829dbcc`). work/editor를 work/ui에 병합할 때 `pane_group.rs` 충돌을 impl-ui가 풀었다(P4-M2 `aa4ad9d`). reviewer가 충돌 해결이 두 쪽 의도를 지키는지 확인했다(P4-4-5.md R1).
+- master 병합 `4732464`. `Cargo.*` 변경 없음.
+
+**P4-E Phase 4 끝 R-15·check-layout·V3** (2026-11-04)
+- 무엇을 했나: measure가 master `4732464` 사본 exe로 R-15(phase2는 v0.4 사본), check-layout, 새 화면 V3를 했다(`verify/reviews/measure-phase4.md`, `verify/baseline/phase4/`). 미설명 3원인(30항목)이 나왔다 — U1 첫 화면 탭 바 끝 단추가 사라짐(P4-3b 회귀, 문서 결정 없음), U2 메뉴 hover, U3 메뉴 밖 누름. U1은 P4-E-F1(`2e3dc51`)로 고쳤다(reviewer REWORK 1 → R1 PASS `verify/reviews/P4-E-F1.md`, 제목 분리 방식 되돌림 H-25). master `56f1d93`에서 다시 쟀다(P4-E-R1).
+- 결과
+
+  | R-n | 항목 | 기준선(R-1) | Phase 4(`56f1d93`) | 의도한 변경 여부 | 증거 |
+  |---|---|---|---|---|---|
+  | R-15 | phase2 tooltip#32~#59(U1) | 통과 | 평가됨, R-1과 같은 값 | 회귀 → 해소 | measure-phase4 R1.2 |
+  | R-15 | phase2 menu#7 I-303(U2), menu#50 I-519(U3) | 통과 | 통과(4732464 한 번만 실패) | 이력상 흔들림(재현 실패 2/2, 원인 확정 아님) | R1.2 |
+  | R-15 | View 메뉴 행 5 → 10, 뒤따르는 메뉴 행 번호·구분선 위치 | — | — | 의도한 변경(Phase 4 분할·확대 메뉴) | R1.3 #4·#6·#7 |
+  | R-15 | 포커스 컨텍스트 `Root > Workspace` | — | `Root > Workspace > Pane` | 의도한 변경(Pane key_context, P4-23b-R1) | R1.3 #8, phase1 28항목 |
+  | R-15 | tab-btn-zoom 툴팁 단축키 | `<none>` | `Shift-Escape` | 의도한 변경(확대 동작) | R1.3 #2 |
+  | R-15 | phase1 내장 바인딩 R-1 표 밖 | Phase 3의 3건 | + 핀·분할 키 | 의도한 변경 | measure-phase4 1.1 |
+  | R-15 | 그 밖 | — | Phase 2 폭 −75 결과, Phase 3 변경 | 의도한 변경 | 1.2 |
+
+  - 미설명 0, 실제 회귀 0(U1 해소 뒤). phase2 사본은 View 메뉴 새 행 때문에 다시 중단돼 `verify-v04-phase2-r1.ps1`(View 기대 행 1곳 + `$orig` 5항목, H-21과 같은 취지)로 한 번 더 돌렸다.
+- check-layout: 28/28 PASS(4732464, 56f1d93 모두).
+- V3 새 화면(`4732464`): 핀 탭 아이콘 14×14 PASS 등. 불일치 3 — L-105 h1·h2 아래 선·여백(컴포넌트 한계, H-25), L-108 링크 밑줄 불투명도 0.40 — gpui-base 0.8.1 `text/node.rs:3208`의 고정값 `opacity(0.4)`라 스펙 0.5와 다르다(컴포넌트 고정값, 사용자 결정 목록. 처음의 "안티에일리어싱 경계" 기록은 틀렸다 — phase4-final 지적). 측정 불가 4(`split_line_mouse_hitbox`·`drop_target_size_ratio`·`tab_drop_line_width`·핀 묶음), 판정 불가 3(표 줄 높이·오버레이 색·핀 묶음 스펙).
+- 검증: V3(스크립트 실행·실측).
+- 특이사항: 사용자 확인 목록 — U2·U3 흔들림 분류, L-105 컴포넌트 한계, L-108 컴포넌트 고정값 0.4, 측정 불가 항목. phase3 A-16.7 스크롤 offset_y −23 → −234는 이력상 흔들림(H-10)이다.
+
+**P4-E-F2·F3 분할선·확대 테두리 두께 (R-13)** (2026-11-04)
+- 무엇을 했나: reviewer Phase 4 최종 확인 REWORK — 기록 정정 3건(scroll −23→−234, phase2 실패 13 내역, L-108 컴포넌트 고정 0.4)과 누락 V3(크기 조절 뒤 배치·중첩 비율·확대 padding/border·탭 삽입선)을 measure가 처리했다(measure-phase4 R2: PASS 7). 남은 선 두께 차이를 impl-ui가 고쳤다 — `62f7dfa`(분할선 정수 좌표, 확대 테두리 겹침 → 1px), `c594bed`(분할선 옆 pane 가장자리선 겹침 → 경계마다 1px).
+- 결과: reviewer PASS(`verify/reviews/P4-E-F2.md`, `P4-E-F3.md`). measure R3에서 분할선이 오히려 모든 상태 2px가 된 것을 잡았고, R4에서 분할선 3상태·확대 padding·border 모두 PASS, 불일치 0(`measure-phase4.md` R3·R4). master `13ed821`.
+- 검증: V3(픽셀 측정).
+- 특이사항: 분할하지 않은 화면의 사이드바 경계 x539~540 2px는 R2·R3·R4 모두 같고 스펙 값이 없다(참고, 사용자 확인 목록). `split_line_mouse_hitbox` 4px 폭은 도구로 재지 못했다(동작만 확인).
+
+**Phase 4 종료** (2026-11-04, lead, 위임 H-4)
+- 무엇을 했나: PLAN "Phase 종료 때". R-15·check-layout·V3(P4-E, R1~R4), `/ponytail-debt`(새 `shortcut:`: pane 닫힘 뒤 포커스, 외부 프로그램 경합 등), reviewer 최종 확인.
+- 결과: 최종 확인 REWORK 2회(기록 오류 3건·분할 화면 V3 누락 → R1, 분할선 2px → P4-E-F2·F3 → R2) → R2 PASS(`verify/reviews/phase4-final.md`). 전체 테스트 201 통과(56f1d93 기준), clippy `-D warnings` 통과. 태그 `v0.4-phase-4`.
+- 검증: reviewer 판정.
+- 특이사항: v0.4 PLAN Phase 0~4를 모두 마쳤다. 버전 종료 판단은 사용자가 한다(WORKFLOW 4절) — 아래 "버전 종료"는 사용자 판단 전까지 "진행 중"으로 둔다.
 
 ## 사용자 요청 작업
 
