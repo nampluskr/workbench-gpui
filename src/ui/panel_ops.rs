@@ -9,7 +9,7 @@ use super::keymap::{self, project_panel as pp, workspace as ws_actions};
 use crate::fsops::{ops, paths};
 
 /// 패널의 파일 클립보드(I-037: 텍스트가 아니라 파일·폴더 작업). 창 하나에 하나다(판단: 폴더 사이 복사도 된다).
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct FileClipboard {
     pub paths: Vec<PathBuf>,
     pub cut: bool,
@@ -67,36 +67,103 @@ fn summarize(done: &[FsJob], cut: bool) -> Outcome {
     o
 }
 
-/// A finished cut paste may put its failed entries back only if no copy/cut/paste started after it.
-fn may_restore(current_gen: u64, job_gen: u64) -> bool {
-    current_gen == job_gen
+/// What `finish_fs_jobs` must do, decided without touching the app so every branch is unit-testable.
+/// `W` is a workspace id (`EntityId` in the app).
+#[derive(Debug, PartialEq)]
+struct Plan<W> {
+    /// Notices to show, in order (one per link-refused move, then the aggregate failure line).
+    notices: Vec<String>,
+    /// Disk moves to apply to tabs/trees (cut only), as (from, to). Always applied: the disk already changed.
+    moves: Vec<(PathBuf, PathBuf)>,
+    /// `Some(x)`: set the file clipboard to `x` (failed cut entries, or nothing if all moved). `None`: leave it.
+    clipboard: Option<Option<FileClipboard>>,
+    /// Paths to refresh/select/open in the active workspace (only if it is still the one that started the job).
+    select: Option<Vec<PathBuf>>,
+    /// Otherwise: the starting workspace to reload, if it is still registered.
+    refresh: Option<W>,
 }
 
-/// Selecting/opening results is allowed only while the workspace that started the job is still the active one.
-fn same_workspace<T: PartialEq>(active: Option<T>, started: Option<T>) -> bool {
-    active == started
+struct PlanInput<'a, W> {
+    done: &'a [FsJob],
+    cut: bool,
+    op: &'a str,
+    started_ws: Option<W>,
+    active_ws: Option<W>,
+    registered: &'a [W],
+    started_gen: u64,
+    current_gen: u64,
 }
 
-/// Blocking half: runs `(src, target dir)` jobs in order. Destination names are picked here, right before each copy.
-fn run_jobs(jobs: Vec<(PathBuf, PathBuf)>, cut: bool) -> Vec<FsJob> {
-    jobs.into_iter()
-        .map(|(src, dir)| {
-            // A same-volume rename replaces an existing file, so picking a name and moving must be one step
-            // across concurrent moves. Copies use create_new and need no lock.
-            // shortcut: guards only this app's own moves; an external program creating the name in between is not covered.
-            let _guard = cut.then(|| MOVE_LOCK.lock().unwrap_or_else(|e| e.into_inner()));
+fn plan<W: PartialEq + Copy>(i: PlanInput<W>) -> Plan<W> {
+    let o = summarize(i.done, i.cut);
+    let mut notices: Vec<String> = o
+        .refused
+        .iter()
+        .map(|src| {
+            // D-044 ②: 다른 볼륨 이동을 시작 전에 거부했다(원본·대상 변화 없음). 문구는 원문에 없어 판단으로 정했다.
             let name = src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
-            let dst = ops::paste_path(&dir, &name, src.is_dir());
-            let result = if cut {
-                ops::move_entry(&src, &dst).map(|_| ops::CopyReport::default())
-            } else {
-                ops::copy_entry(&src, &dst)
-            };
-            let made = dst.symlink_metadata().is_ok();
-            FsJob { src, dst, result: result.map_err(|e| e.to_string()), made }
+            format!("Cannot move `{name}` to another drive because it contains links (junctions or symbolic links).")
         })
-        .collect()
+        .collect();
+    if o.general_failed > 0 {
+        let verb = match i.op {
+            "paste-move" => "move",
+            "paste-copy" => "copy",
+            _ => "duplicate",
+        };
+        notices.push(failure_text(verb, o.general_failed, i.done.len()));
+    }
+    // AUDIT 3: a cut keeps only the entries that failed so they can be retried, unless a newer copy/cut/paste started since.
+    let clipboard = (i.cut && i.started_gen == i.current_gen).then(|| cut_leftover(o.failed));
+    let (select, refresh) = if i.active_ws == i.started_ws {
+        (Some(o.created), None)
+    } else {
+        // The workspace changed or closed meanwhile: skip selecting/opening, just reload the one that started it.
+        (None, i.started_ws.filter(|w| i.registered.contains(w)))
+    };
+    Plan { notices, moves: o.moved, clipboard, select, refresh }
 }
+
+/// A claimed (reserved) copy target or finished same-volume move, produced under `MOVE_LOCK`.
+enum Step {
+    Done,
+    /// `dst` is claimed; the slow work (copy contents, verify, delete source) is still to do.
+    Claimed,
+}
+
+/// Blocking half: runs `(src, target dir)` jobs in order.
+/// Under `MOVE_LOCK` a job only picks its destination name and claims it (copy: `create_new` file or new folder;
+/// same-volume move: the rename itself; other-volume move: claim the name). Contents are copied after the lock is
+/// released, so a big job never holds up the others, yet no two of our jobs can pick the same name or replace each other.
+// shortcut: this guards only this app's own jobs; an external program creating the name in between is not covered.
+fn run_jobs(jobs: Vec<(PathBuf, PathBuf)>, cut: bool) -> Vec<FsJob> {
+    jobs.into_iter().map(|(src, dir)| run_job(src, dir, cut, || {})).collect()
+}
+
+/// One job. `between` runs right after the lock is released and before the slow part (test hook).
+fn run_job(src: PathBuf, dir: PathBuf, cut: bool, between: impl FnOnce()) -> FsJob {
+    let name = src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+    let (dst, claimed) = {
+        let _guard = MOVE_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+        let dst = ops::paste_path(&dir, &name, src.is_dir());
+        let step = if cut {
+            ops::move_or_reserve(&src, &dst).map(|m| if m == ops::Moved::Done { Step::Done } else { Step::Claimed })
+        } else {
+            ops::reserve_copy_target(&src, &dst).map(|_| Step::Claimed)
+        };
+        (dst, step)
+    };
+    between();
+    let result = match claimed {
+        Err(e) => Err(e),
+        Ok(Step::Done) => Ok(ops::CopyReport::default()),
+        Ok(Step::Claimed) if cut => ops::finish_reserved_move(&src, &dst).map(|_| ops::CopyReport::default()),
+        Ok(Step::Claimed) => ops::copy_reserved(&src, &dst),
+    };
+    let made = dst.symlink_metadata().is_ok();
+    FsJob { src, dst, result: result.map_err(|e| e.to_string()), made }
+}
+
 /// Aggregate failure line, same shape as `panel_delete::failure_text`.
 fn failure_text(verb: &str, failed: usize, total: usize) -> String {
     format!("Failed to {verb} {failed} of {total} file(s).")
@@ -304,32 +371,31 @@ impl Workbench {
                 self.log_skipped(op, report, cx);
             }
         }
-        let Outcome { moved, created, failed, refused, general_failed } = summarize(&done, cut);
-        for src in &refused {
-            // D-044 ②: 다른 볼륨 이동을 시작 전에 거부했다(원본·대상 변화 없음). 문구는 원문에 없어 판단으로 정했다.
-            let name = src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
-            self.notify(format!("Cannot move `{name}` to another drive because it contains links (junctions or symbolic links)."), window, cx);
+        let registered: Vec<EntityId> = self.folders.workspaces.values().map(|w| w.entity_id()).collect();
+        let p = plan(PlanInput {
+            done: &done,
+            cut,
+            op,
+            started_ws: ws_id,
+            active_ws: self.active_ws().map(|w| w.entity_id()),
+            registered: &registered,
+            started_gen: job_gen,
+            current_gen: self.clip_gen,
+        });
+        // Executes the plan as is; every decision is in `plan`.
+        for text in p.notices {
+            self.notify(text, window, cx);
         }
-        for (from, to) in &moved {
+        for (from, to) in &p.moves {
             self.apply_move(from, to, cx);
         }
-        // AUDIT 3: a cut keeps only the entries that failed so they can be retried, unless a newer copy/cut/paste started since.
-        if cut && may_restore(self.clip_gen, job_gen) {
-            self.file_clipboard = cut_leftover(failed);
+        if let Some(clip) = p.clipboard {
+            self.file_clipboard = clip;
         }
-        if general_failed > 0 {
-            let verb = match op {
-                "paste-move" => "move",
-                "paste-copy" => "copy",
-                _ => "duplicate",
-            };
-            self.notify(failure_text(verb, general_failed, done.len()), window, cx);
-        }
-        if same_workspace(self.active_ws().map(|w| w.entity_id()), ws_id) {
+        if let Some(created) = p.select {
             self.after_create(created, if op == "duplicate" { "duplicate" } else { "paste" }, window, cx);
         } else {
-            // The workspace changed or closed while copying: skip selecting/opening, just reload the one that started it.
-            if let Some(ws) = self.folders.workspaces.values().find(|w| Some(w.entity_id()) == ws_id).cloned() {
+            if let Some(ws) = p.refresh.and_then(|id| self.folders.workspaces.values().find(|w| w.entity_id() == id).cloned()) {
                 ws.update(cx, |ws, cx| ws.tree.refresh(cx));
             }
             cx.notify();
@@ -383,7 +449,7 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: gpui_kit::* via super::* shadows the 	est macro.
-    use super::{FsJob, PathBuf, cut_leftover, failure_text, may_restore, ops, run_jobs, same_workspace, summarize};
+    use super::{FsJob, PathBuf, PlanInput, cut_leftover, failure_text, ops, plan, run_job, run_jobs, summarize};
 
     #[test]
     fn partial_cut_failure_keeps_only_failed_entries() {
@@ -436,20 +502,77 @@ mod tests {
         assert!(summarize(&done, false).moved.is_empty());
     }
 
-    #[test]
-    fn only_the_latest_generation_restores_the_clipboard() {
-        // A starts (gen 1), B starts (gen 2); A finishes last or first, only B may restore.
-        assert!(!may_restore(2, 1));
-        assert!(may_restore(2, 2));
-        // A copy/cut after the paste started (gen 3) also blocks restoring.
-        assert!(!may_restore(3, 2));
+    fn input<'a>(
+        done: &'a [FsJob],
+        cut: bool,
+        (started, active): (Option<u32>, Option<u32>),
+        registered: &'a [u32],
+        (started_gen, current_gen): (u64, u64),
+    ) -> PlanInput<'a, u32> {
+        PlanInput { done, cut, op: if cut { "paste-move" } else { "paste-copy" }, started_ws: started, active_ws: active, registered, started_gen, current_gen }
+    }
+
+    fn partial() -> Vec<FsJob> {
+        vec![
+            job("a", "out/a", Ok(()), true),
+            job("b", "out/b", Err("denied"), false),
+            job("c", "out/c", Err(ops::MOVE_REFUSED_LINKS), false),
+        ]
     }
 
     #[test]
-    fn results_skip_selection_when_workspace_changed() {
-        assert!(same_workspace(Some(1), Some(1)));
-        assert!(!same_workspace(Some(2), Some(1)));
-        assert!(!same_workspace(None, Some(1)));
+    fn plan_partial_cut_notifies_restores_failed_and_selects_successes() {
+        let done = partial();
+        let p = plan(input(&done, true, (Some(1), Some(1)), &[1], (5, 5)));
+        assert_eq!(p.notices.len(), 2);
+        assert!(p.notices[0].starts_with("Cannot move `c`"));
+        assert_eq!(p.notices[1], "Failed to move 1 of 3 file(s).");
+        assert_eq!(p.moves, vec![(PathBuf::from("a"), PathBuf::from("out/a"))]);
+        let clip = p.clipboard.unwrap().unwrap();
+        assert_eq!((clip.paths, clip.cut), (vec![PathBuf::from("b"), PathBuf::from("c")], true));
+        assert_eq!(p.select, Some(vec![PathBuf::from("out/a")]));
+        assert_eq!(p.refresh, None);
+    }
+
+    #[test]
+    fn plan_all_moved_clears_clipboard_and_copy_never_touches_it() {
+        let ok = vec![job("a", "out/a", Ok(()), true)];
+        assert_eq!(plan(input(&ok, true, (Some(1), Some(1)), &[1], (5, 5))).clipboard, Some(None));
+        let p = plan(input(&partial(), false, (Some(1), Some(1)), &[1], (5, 5)));
+        assert_eq!(p.clipboard, None);
+        assert!(p.moves.is_empty());
+    }
+
+    #[test]
+    fn plan_older_cut_does_not_touch_clipboard_newer_one_restores() {
+        // A started at gen 1, B at gen 2. A finishing with gen now 2 must leave the clipboard to B.
+        let done = partial();
+        assert_eq!(plan(input(&done, true, (Some(1), Some(1)), &[1], (1, 2))).clipboard, None);
+        assert!(plan(input(&done, true, (Some(1), Some(1)), &[1], (2, 2))).clipboard.unwrap().is_some());
+        // A copy/cut after the paste started also blocks restoring.
+        assert_eq!(plan(input(&done, true, (Some(1), Some(1)), &[1], (2, 3))).clipboard, None);
+    }
+
+    #[test]
+    fn plan_workspace_switched_skips_select_and_reloads_starting_one() {
+        let done = partial();
+        let p = plan(input(&done, true, (Some(1), Some(2)), &[1, 2], (5, 5)));
+        assert_eq!(p.select, None);
+        assert_eq!(p.refresh, Some(1));
+        // Disk moves and the notices still happen.
+        assert_eq!(p.moves.len(), 1);
+        assert_eq!(p.notices.len(), 2);
+    }
+
+    #[test]
+    fn plan_workspace_closed_skips_select_and_reload() {
+        let done = partial();
+        let p = plan(input(&done, true, (Some(1), Some(2)), &[2], (5, 5)));
+        assert_eq!((p.select, p.refresh), (None, None));
+        assert_eq!(p.moves.len(), 1);
+        // No workspace is active any more.
+        let p = plan(input(&done, true, (Some(1), None), &[], (5, 5)));
+        assert_eq!((p.select, p.refresh), (None, None));
     }
 
     #[test]
@@ -476,6 +599,43 @@ mod tests {
             std::fs::read_dir(&out).unwrap().map(|e| std::fs::read_to_string(e.unwrap().path()).unwrap()).collect();
         texts.sort();
         assert_eq!(texts, vec!["from-a", "from-b"]);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn copy_claimed_name_is_not_replaced_by_a_move_in_between() {
+        // Fixed order: the copy has claimed out/x.txt (lock already released) but not filled it yet;
+        // a move of another x.txt into the same folder runs right then. Neither original may be lost.
+        let dir = std::env::temp_dir().join(format!("wb-p1-12r2-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let (a, b, out) = (dir.join("A"), dir.join("B"), dir.join("out"));
+        for d in [&a, &b, &out] {
+            std::fs::create_dir_all(d).unwrap();
+        }
+        std::fs::write(a.join("x.txt"), "from-a").unwrap();
+        std::fs::write(b.join("x.txt"), "from-b").unwrap();
+        // The move runs in the hook: it also proves the lock is not held during the slow part (else this deadlocks).
+        let copy = run_job(b.join("x.txt"), out.clone(), false, || {
+            assert!(out.join("x.txt").exists(), "name is claimed before the lock is released");
+            let moved = run_job(a.join("x.txt"), out.clone(), true, || {});
+            assert!(moved.result.is_ok());
+            assert_ne!(moved.dst, out.join("x.txt"));
+        });
+        assert!(copy.result.is_ok());
+        assert_eq!(std::fs::read_to_string(out.join("x.txt")).unwrap(), "from-b");
+        assert_eq!(std::fs::read_to_string(out.join("x copy.txt")).unwrap(), "from-a");
+        assert_eq!(std::fs::read_to_string(b.join("x.txt")).unwrap(), "from-b");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn copy_into_itself_claims_nothing() {
+        let dir = std::env::temp_dir().join(format!("wb-p1-12r2c-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(dir.join("sub")).unwrap();
+        let j = run_job(dir.join("sub"), dir.join("sub"), false, || {});
+        assert!(j.result.is_err());
+        assert!(!dir.join("sub").join("sub copy").exists());
         let _ = std::fs::remove_dir_all(&dir);
     }
 }
