@@ -77,6 +77,8 @@ struct Workbench {
     split: Entity<gpui_kit::component::ResizableState>,
     /// 프로젝트 패널 파일 클립보드(I-037, Phase 4).
     file_clipboard: Option<panel_ops::FileClipboard>,
+    /// Bumped on every copy/cut and every cut-paste start; a finished cut paste restores failed entries only if it is still the latest.
+    clip_gen: u64,
     /// 열린 프로젝트 패널 우클릭 메뉴(R-22).
     panel_menu: Option<panel_menu::OpenPanelMenu>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
@@ -669,6 +671,7 @@ pub fn run(dev: DevOptions) {
                         sidebar_prev_focus: None,
                         split: cx.new(|_| gpui_kit::component::ResizableState::default()),
                         file_clipboard: None,
+                        clip_gen: 0,
                         panel_menu: None,
                         pending_press: None,
                         deleting: false,
