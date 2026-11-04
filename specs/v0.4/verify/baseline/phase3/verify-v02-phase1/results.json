@@ -1,0 +1,1125 @@
+{
+  "startedAt": "2026-11-04T19:32:23.0857300+09:00",
+  "keymapPath": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+  "hadKeymap": false,
+  "cases": {
+    "base": {
+      "keymap": "",
+      "keys": [
+        {
+          "keys": "delete",
+          "note": "center: Workspace 에는 Delete 바인딩이 없다",
+          "expect": "none",
+          "expectContext": "",
+          "got": "none",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=none context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "I-022 Dock 닫기",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "I-022 Dock 다시 열기",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-k ctrl-o",
+          "note": "A-13.1 chord",
+          "expect": "workspace::Open",
+          "expectContext": "Workspace",
+          "got": "workspace::Open",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-o action=workspace::Open context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "f10",
+          "note": "I-310",
+          "expect": "app_menu::Toggle",
+          "expectContext": "Workspace",
+          "got": "app_menu::Toggle",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=f10 action=app_menu::Toggle context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-j",
+          "note": "I-024",
+          "expect": "multi_workspace::ToggleWorkspaceSidebar",
+          "expectContext": "Workspace",
+          "got": "multi_workspace::ToggleWorkspaceSidebar",
+          "context": "Root > Workspace > menu",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-j action=multi_workspace::ToggleWorkspaceSidebar context=Root > Workspace > menu"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-;",
+          "note": "I-024: 사이드바로 포커스",
+          "expect": "multi_workspace::FocusWorkspaceSidebar",
+          "expectContext": "Workspace",
+          "got": "multi_workspace::FocusWorkspaceSidebar",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-; action=multi_workspace::FocusWorkspaceSidebar context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "down",
+          "note": "A-17.3",
+          "expect": "menu::SelectNext",
+          "expectContext": "Sidebar",
+          "got": "menu::SelectNext",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=down action=menu::SelectNext context=Root > Workspace > Sidebar"
+          ]
+        },
+        {
+          "keys": "up",
+          "note": "A-17.3",
+          "expect": "menu::SelectPrevious",
+          "expectContext": "Sidebar",
+          "got": "menu::SelectPrevious",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=up action=menu::SelectPrevious context=Root > Workspace > Sidebar"
+          ]
+        },
+        {
+          "keys": "enter",
+          "note": "A-17.4",
+          "expect": "menu::Confirm",
+          "expectContext": "Sidebar",
+          "got": "menu::Confirm",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=enter action=menu::Confirm context=Root > Workspace > Sidebar"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "R-3 Delete: 사이드바 = 등록 해제",
+          "expect": "project_panel::RemoveFromProject",
+          "expectContext": "Sidebar",
+          "got": "project_panel::RemoveFromProject",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=project_panel::RemoveFromProject context=Root > Workspace > Sidebar"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-;",
+          "note": "가운데로 돌아가기",
+          "expect": "multi_workspace::FocusWorkspaceSidebar",
+          "expectContext": "Sidebar",
+          "got": "multi_workspace::FocusWorkspaceSidebar",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-; action=multi_workspace::FocusWorkspaceSidebar context=Root > Workspace > Sidebar"
+          ]
+        },
+        {
+          "keys": "ctrl-shift-e",
+          "note": "I-023: 프로젝트 패널로 포커스",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "Workspace",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-shift-e action=project_panel::ToggleFocus context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "R-3 Delete: 프로젝트 패널 = 휴지통",
+          "expect": "project_panel::Trash",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Trash",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=project_panel::Trash context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "backspace",
+          "note": "I-039",
+          "expect": "project_panel::Trash",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Trash",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=backspace action=project_panel::Trash context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "shift-delete",
+          "note": "I-040",
+          "expect": "project_panel::Delete",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Delete",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=shift-delete action=project_panel::Delete context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-delete",
+          "note": "I-040",
+          "expect": "project_panel::Delete",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Delete",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-delete action=project_panel::Delete context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-n",
+          "note": "R-3 Ctrl-N: 패널 = 새 파일(menu::SelectNext 보다 나중 등록)",
+          "expect": "project_panel::NewFile",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::NewFile",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-n action=project_panel::NewFile context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "alt-n",
+          "note": "I-036",
+          "expect": "project_panel::NewDirectory",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::NewDirectory",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=alt-n action=project_panel::NewDirectory context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-c",
+          "note": "I-037 (menu::Cancel 보다 나중 등록)",
+          "expect": "project_panel::Copy",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Copy",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-c action=project_panel::Copy context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-x",
+          "note": "I-037",
+          "expect": "project_panel::Cut",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Cut",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-x action=project_panel::Cut context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-v",
+          "note": "I-037",
+          "expect": "project_panel::Paste",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Paste",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-v action=project_panel::Paste context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "shift-insert",
+          "note": "I-037",
+          "expect": "project_panel::Paste",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Paste",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=shift-insert action=project_panel::Paste context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "enter",
+          "note": "I-034 (menu::Confirm 보다 나중 등록)",
+          "expect": "project_panel::Rename",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Rename",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=enter action=project_panel::Rename context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "f2",
+          "note": "I-034",
+          "expect": "project_panel::Rename",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Rename",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=f2 action=project_panel::Rename context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "space",
+          "note": "I-033 not_editing",
+          "expect": "project_panel::Open",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Open",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=space action=project_panel::Open context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "down",
+          "note": "I-030 ProjectPanel + menu",
+          "expect": "menu::SelectNext",
+          "expectContext": "ProjectPanel",
+          "got": "menu::SelectNext",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=down action=menu::SelectNext context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "home",
+          "note": "I-030",
+          "expect": "menu::SelectFirst",
+          "expectContext": "ProjectPanel",
+          "got": "menu::SelectFirst",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=home action=menu::SelectFirst context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "end",
+          "note": "I-030",
+          "expect": "menu::SelectLast",
+          "expectContext": "ProjectPanel",
+          "got": "menu::SelectLast",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=end action=menu::SelectLast context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "tab",
+          "note": "I-030 Tab",
+          "expect": "menu::SelectNext",
+          "expectContext": "ProjectPanel",
+          "got": "menu::SelectNext",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=tab action=menu::SelectNext context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "escape",
+          "note": "I-035",
+          "expect": "menu::Cancel",
+          "expectContext": "ProjectPanel",
+          "got": "menu::Cancel",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=escape action=menu::Cancel context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "left",
+          "note": "I-031",
+          "expect": "project_panel::CollapseSelectedEntry",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::CollapseSelectedEntry",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=left action=project_panel::CollapseSelectedEntry context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "right",
+          "note": "I-031",
+          "expect": "project_panel::ExpandSelectedEntry",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::ExpandSelectedEntry",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=right action=project_panel::ExpandSelectedEntry context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-left",
+          "note": "I-032",
+          "expect": "project_panel::CollapseAllEntries",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::CollapseAllEntries",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-left action=project_panel::CollapseAllEntries context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-right",
+          "note": "I-032",
+          "expect": "project_panel::ExpandAllEntries",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::ExpandAllEntries",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-right action=project_panel::ExpandAllEntries context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "shift-up",
+          "note": "I-043",
+          "expect": "project_panel::SelectPreviousExtend",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::SelectPreviousExtend",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=shift-up action=project_panel::SelectPreviousExtend context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "shift-down",
+          "note": "I-043",
+          "expect": "project_panel::SelectNextExtend",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::SelectNextExtend",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=shift-down action=project_panel::SelectNextExtend context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "alt-shift-c",
+          "note": "I-041",
+          "expect": "workspace::CopyPath",
+          "expectContext": "ProjectPanel",
+          "got": "workspace::CopyPath",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=alt-shift-c action=workspace::CopyPath context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-k ctrl-shift-c",
+          "note": "I-041 chord",
+          "expect": "workspace::CopyRelativePath",
+          "expectContext": "ProjectPanel",
+          "got": "workspace::CopyRelativePath",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-shift-c action=workspace::CopyRelativePath context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "shift-f10",
+          "note": "I-042",
+          "expect": "project_panel::DeployContextMenu",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::DeployContextMenu",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=shift-f10 action=project_panel::DeployContextMenu context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "menu",
+          "note": "I-042 Menu 키",
+          "expect": "project_panel::DeployContextMenu",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::DeployContextMenu",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=menu action=project_panel::DeployContextMenu context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-shift-e",
+          "note": "가운데로 돌아가기",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-shift-e action=project_panel::ToggleFocus context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "Ctrl-B",
+          "got": "Ctrl-B",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "project_panel",
+          "action": "menu::Cancel",
+          "expect": "Escape",
+          "got": "Escape",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "project_panel",
+          "action": "menu::Confirm",
+          "expect": "<none>",
+          "got": "<none>",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "sidebar",
+          "action": "menu::Confirm",
+          "expect": "Enter",
+          "got": "Enter",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "project_panel::Trash",
+          "expect": "<none>",
+          "got": "<none>",
+          "ok": true
+        }
+      ],
+      "pid": 9956,
+      "hwnd": "0xF504C6",
+      "bindingCount": 201,
+      "sourceCount": {
+        "builtin": 59,
+        "gpui-kit": 142
+      },
+      "r1MenuKeys": [
+        "ctrl-alt-r [ProjectPanel] project_panel::RevealInFileManager",
+        "ctrl-shift-enter [ProjectPanel] project_panel::OpenWithSystem"
+      ],
+      "r1": {
+        "expected": 62,
+        "matched": 62,
+        "builtin": 59,
+        "extra": 3
+      },
+      "notificationsSeq1": []
+    },
+    "override": {
+      "keymap": "[\r\n  { \"context\": \"Workspace\", \"bindings\": { \"ctrl-b\": \"project_panel::ToggleFocus\" } }\r\n]",
+      "keys": [
+        {
+          "keys": "ctrl-b",
+          "note": "사용자 액션이 실행된다",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "Workspace",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=project_panel::ToggleFocus context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "패널에서도 Workspace 의 사용자 바인딩",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=project_panel::ToggleFocus context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "project_panel::ToggleFocus",
+          "expect": "Ctrl-B",
+          "got": "Ctrl-B",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "<none>",
+          "got": "<none>",
+          "ok": true
+        }
+      ],
+      "pid": 39988,
+      "hwnd": "0xD40890",
+      "userBindings": [
+        "ctrl-b [Workspace] project_panel::ToggleFocus"
+      ],
+      "notificationsSeq1": []
+    },
+    "null": {
+      "keymap": "[\r\n  { \"context\": \"Workspace\", \"bindings\": { \"ctrl-b\": null } },\r\n  { \"context\": \"ProjectPanel\", \"bindings\": { \"delete\": null } }\r\n]",
+      "keys": [
+        {
+          "keys": "ctrl-b",
+          "note": "null: 내장 ToggleLeftDock 가 실행되지 않는다",
+          "expect": "none",
+          "expectContext": "Workspace",
+          "got": "none",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=none context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-shift-e",
+          "note": "패널로 포커스",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "Workspace",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-shift-e action=project_panel::ToggleFocus context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "null: 패널의 Trash 가 실행되지 않는다",
+          "expect": "none",
+          "expectContext": "ProjectPanel",
+          "got": "none",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=none context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "backspace",
+          "note": "해제하지 않은 다른 키는 그대로",
+          "expect": "project_panel::Trash",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::Trash",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=backspace action=project_panel::Trash context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-shift-e",
+          "note": "가운데로",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-shift-e action=project_panel::ToggleFocus context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-;",
+          "note": "사이드바로",
+          "expect": "multi_workspace::FocusWorkspaceSidebar",
+          "expectContext": "Workspace",
+          "got": "multi_workspace::FocusWorkspaceSidebar",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-; action=multi_workspace::FocusWorkspaceSidebar context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "null 은 그 컨텍스트에서만: 사이드바 Delete 는 그대로",
+          "expect": "project_panel::RemoveFromProject",
+          "expectContext": "Sidebar",
+          "got": "project_panel::RemoveFromProject",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=project_panel::RemoveFromProject context=Root > Workspace > Sidebar"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "<none>",
+          "got": "<none>",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "project_panel",
+          "action": "project_panel::Trash",
+          "expect": "Backspace",
+          "got": "Backspace",
+          "ok": true
+        },
+        {
+          "seq": 1,
+          "where": "sidebar",
+          "action": "project_panel::RemoveFromProject",
+          "expect": "Delete",
+          "got": "Delete",
+          "ok": true
+        }
+      ],
+      "pid": 22924,
+      "hwnd": "0x33B0A80",
+      "userBindings": [
+        "ctrl-b [Workspace] zed::NoAction",
+        "delete [ProjectPanel] zed::NoAction"
+      ],
+      "notificationsSeq1": []
+    },
+    "unknown": {
+      "keymap": "[\r\n  { \"context\": \"Workspace\", \"bindings\": { \"ctrl-b\": \"workspace::NoSuchAction\", \"f10\": \"workspace::ToggleLeftDock\" } },\r\n  { \"bindings\": { \"ctrl-alt-j\": \"zed::Unknown\" } }\r\n]",
+      "keys": [
+        {
+          "keys": "f10",
+          "note": "오류 항목만 빼고 나머지는 적용",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=f10 action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "잘못된 항목은 무시되어 내장 키 그대로",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-j",
+          "note": "잘못된 항목은 무시",
+          "expect": "multi_workspace::ToggleWorkspaceSidebar",
+          "expectContext": "Workspace",
+          "got": "multi_workspace::ToggleWorkspaceSidebar",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-j action=multi_workspace::ToggleWorkspaceSidebar context=Root > Workspace"
+          ]
+        }
+      ],
+      "display": [],
+      "pid": 33784,
+      "hwnd": "0x10505D0",
+      "notificationsSeq1": [
+        "Action 'workspace::NoSuchAction' not found",
+        "Action 'zed::Unknown' not found"
+      ]
+    },
+    "jsonc": {
+      "keymap": "// 사용자 키맵 (주석 허용)\r\n[\r\n  /* F10 을 프로젝트 패널 포커스로 */\r\n  {\r\n    \"context\": \"Workspace\",\r\n    \"bindings\": {\r\n      \"f10\": \"project_panel::ToggleFocus\", // 줄 끝 주석\r\n    },\r\n  },\r\n]",
+      "keys": [
+        {
+          "keys": "f10",
+          "note": "주석·끝 쉼표가 있어도 읽힌다",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "Workspace",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=f10 action=project_panel::ToggleFocus context=Root > Workspace"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "app_menu::Toggle",
+          "expect": "<none>",
+          "got": "<none>",
+          "ok": true
+        }
+      ],
+      "pid": 25008,
+      "hwnd": "0xFB04C6",
+      "notificationsSeq1": []
+    },
+    "broken": {
+      "keymap": "[ { \"context\": \"Workspace\", \"bindings\": { \"ctrl-b\": \"workspace::ToggleLeftDock\" }",
+      "keys": [
+        {
+          "keys": "ctrl-b",
+          "note": "내장 키맵은 그대로",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        }
+      ],
+      "display": [],
+      "pid": 15572,
+      "hwnd": "0xF8059A",
+      "notificationsSeq1": [
+        "Failed to load keymap file"
+      ]
+    },
+    "order": {
+      "keymap": "[\r\n  { \"context\": \"Workspace\", \"bindings\": { \"f10\": \"workspace::ToggleLeftDock\" } },\r\n  { \"context\": \"Workspace\", \"bindings\": { \"f10\": \"project_panel::ToggleFocus\" } },\r\n  { \"context\": \"Workspace\", \"bindings\": { \"delete\": \"workspace::ToggleLeftDock\" } }\r\n]",
+      "keys": [
+        {
+          "keys": "f10",
+          "note": "같은 깊이 두 번: 나중 것이 이긴다",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "Workspace",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=f10 action=project_panel::ToggleFocus context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "f10",
+          "note": "패널에서 다시: 가운데로",
+          "expect": "project_panel::ToggleFocus",
+          "expectContext": "ProjectPanel",
+          "got": "project_panel::ToggleFocus",
+          "context": "Root > Workspace > ProjectPanel menu not_editing",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=f10 action=project_panel::ToggleFocus context=Root > Workspace > ProjectPanel menu not_editing"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "center: Workspace 의 사용자 Delete",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "Dock 다시 열기",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-;",
+          "note": "사이드바로",
+          "expect": "multi_workspace::FocusWorkspaceSidebar",
+          "expectContext": "Workspace",
+          "got": "multi_workspace::FocusWorkspaceSidebar",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-; action=multi_workspace::FocusWorkspaceSidebar context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "delete",
+          "note": "깊이가 다르면 깊은 쪽(내장 Sidebar)이 나중 등록(사용자 Workspace)보다 이긴다",
+          "expect": "project_panel::RemoveFromProject",
+          "expectContext": "Sidebar",
+          "got": "project_panel::RemoveFromProject",
+          "context": "Root > Workspace > Sidebar",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=delete action=project_panel::RemoveFromProject context=Root > Workspace > Sidebar"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "project_panel::ToggleFocus",
+          "expect": "F10",
+          "got": "F10",
+          "ok": true
+        }
+      ],
+      "pid": 40300,
+      "hwnd": "0x17806D2",
+      "notificationsSeq1": []
+    },
+    "startup": {
+      "keymap": "[]",
+      "keys": [
+        {
+          "keys": "alt-b",
+          "note": "시작 구간에 저장한 키가 동작",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=alt-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 2,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "Alt-B",
+          "got": "Alt-B",
+          "ok": true
+        }
+      ],
+      "pid": 43504,
+      "hwnd": "0xDA0890",
+      "startupWrite": "written during startup pause",
+      "notificationsSeq2": []
+    },
+    "reload": {
+      "keymap": "[]",
+      "keys": [
+        {
+          "keys": "ctrl-b",
+          "note": "바꾸기 전",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "Dock 다시 열기",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "alt-b",
+          "note": "새 키가 다시 띄우지 않고 동작",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=alt-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "옛 키는 해제",
+          "expect": "none",
+          "expectContext": "Workspace",
+          "got": "none",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=none context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-alt-b",
+          "note": "바꿔치기 뒤 새 키",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-alt-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "ctrl-b",
+          "note": "null 을 뺐으므로 내장 Ctrl-B 가 돌아온다",
+          "expect": "workspace::ToggleLeftDock",
+          "expectContext": "Workspace",
+          "got": "workspace::ToggleLeftDock",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=ctrl-b action=workspace::ToggleLeftDock context=Root > Workspace"
+          ]
+        },
+        {
+          "keys": "alt-b",
+          "note": "지운 키는 더 듣지 않는다",
+          "expect": "none",
+          "expectContext": "Workspace",
+          "got": "none",
+          "context": "Root > Workspace",
+          "ok": true,
+          "lines": [
+            "[dev] key keystroke=alt-b action=none context=Root > Workspace"
+          ]
+        }
+      ],
+      "display": [
+        {
+          "seq": 1,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "Ctrl-B",
+          "got": "Ctrl-B",
+          "ok": true
+        },
+        {
+          "seq": 2,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "Alt-B",
+          "got": "Alt-B",
+          "ok": true
+        },
+        {
+          "seq": 3,
+          "where": "center",
+          "action": "workspace::ToggleLeftDock",
+          "expect": "Ctrl-Alt-B",
+          "got": "Ctrl-Alt-B",
+          "ok": true
+        }
+      ],
+      "pid": 26840,
+      "hwnd": "0x3410A80",
+      "reloadMs2": 469,
+      "reloadMs3": 567,
+      "notificationsSeq2": [],
+      "notificationsSeq3": []
+    }
+  },
+  "failures": [
+    "base: R-1 표 밖의 내장 바인딩: ctrl-s [Workspace] workspace::Save",
+    "base: R-1 표 밖의 내장 바인딩: ctrl-w [Workspace] pane::CloseActiveItem",
+    "base: R-1 표 밖의 내장 바인딩: ctrl-f4 [Workspace] pane::CloseActiveItem"
+  ],
+  "foreignKeys": [],
+  "errors": [],
+  "userKeymap": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+    "existedBefore": false,
+    "hashBefore": "<absent>",
+    "existsAfter": false,
+    "hashAfter": "<absent>",
+    "restored": true,
+    "backupPath": null
+  },
+  "foreignTmp": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json.tmp",
+    "existedBefore": false,
+    "hashBefore": "72074EE8DE7B9579DAF56E2B0A9CB7F930016F235A8763131D1B97EDB1BE6C7A",
+    "hashAfter": "72074EE8DE7B9579DAF56E2B0A9CB7F930016F235A8763131D1B97EDB1BE6C7A",
+    "unchanged": true
+  },
+  "userState": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json",
+    "hashBefore": "<absent>",
+    "hashAfter": "<absent>",
+    "unchanged": true
+  },
+  "finishedAt": "2026-11-04T19:33:28.8035346+09:00",
+  "passed": false
+}

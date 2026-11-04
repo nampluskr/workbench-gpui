@@ -164,9 +164,79 @@
 - 검증: V3(스크립트 실행·실측).
 - 특이사항: R-8은 2/8만 충족, 6건 사용자 결정 대기(H-14, 위 표).
 
+**Phase 2 종료** (2026-11-04, lead, 위임 H-4)
+- 무엇을 했나: PLAN "Phase 종료 때". R-15(P2-E·P2-E-R1), V3(measure-p2-0·measure-phase2·measure-p2-1-r1), R-16 자동 검사(check-layout), `/ponytail-debt`(새 `shortcut:` 없음, Phase 1과 같음), reviewer 최종 확인.
+- 결과: 최종 확인 REWORK 2회(R-16 상수 테스트만으로 렌더 경로 회귀를 못 잡음 → check-layout 실제 렌더 검사, 허용 오차 1px이 푸터 31을 놓침 → exact 비교) → R2 PASS(`verify/reviews/phase2-final.md`). 전체 테스트 85, clippy `-D warnings` 통과. 커밋 `20cc514`, 태그 `v0.4-phase-2`.
+- 검증: reviewer 판정.
+- 특이사항: 사용자 확인 목록 — R-8 보류 6건(H-14), 렌더 반올림 2건(에디터 줄 높이 24.27→24, 메뉴 행 22.652→23), 저장 때 줄 끝 공백 제거·마지막 줄바꿈(04-APP-SPEC 4.2)을 D-6에 따라 넣지 않음.
+
 ### Phase 3 — 탭 편집과 저장
 
-없음(시작 전).
+Phase 2 종료 전에 편집기 카드 P3-1·P3-2를 work/editor에서 먼저 시작했다(H-12). 병합은 Phase 2 태그 뒤에 했다.
+
+**P3-1 편집 허용·수정 상태 + P3-2 저장과 인코딩 왕복 (R-9·R-10)** (2026-11-04)
+- 무엇을 했나: impl-editor가 탭 Editor의 읽기 전용을 풀고 dirty 상태를 두었다(`209ff95`). `src/dev.rs`의 `decode`·`encode`(UTF-8/BOM, UTF-16 LE/BE, CP949 Win32 FFI)를 `src/text_io.rs`로 옮겨 저장(`workspace::Save`, Ctrl-S)에 썼다(`56da5a0`). Save 액션·바인딩 세 줄은 impl-ui 소유 키맵 파일에 넣었다(H-13).
+- 결과: reviewer REWORK 2회 → R2 PASS(`verify/reviews/P3-1-2.md`).
+  - R0: 교체 실패(ReplaceFileW 1176) 때 원본과 임시본을 모두 잃을 수 있음, 저장과 읽기 토큰이 따로라 저장 뒤 오래된 읽기 적용, CRLF 파일에 LF가 섞임.
+  - R1(`fe10562`): 대상이 사라지면 임시본을 남기고 경로를 알림, 저장·읽기 토큰 공유, 열 때 줄 끝 기억. 혼합 줄 끝 파일은 무편집 저장도 통일되는 문제가 남음.
+  - R2(`8441ace`, H-15): 깨끗한 탭은 저장 때 쓰지 않음, 편집한 혼합 파일은 주된 줄 끝으로 통일(`shortcut:`).
+- 검증: V1. 왕복 바이트(UTF-8 LF·CRLF, BOM, UTF-16 LE, CP949), CP949 손실 거부, 교체 실패 주입, 저장·읽기 순서 테스트.
+- 특이사항: 앱 내부 문자열이 LF 기준이 되어 v0.2 phase5 스크립트의 CRLF fnv 비교가 달라진다(의도한 변경). 저장 때 줄 끝 공백 제거·마지막 줄바꿈은 D-6에 따라 넣지 않았다(사용자 결정).
+
+**P3-4a 디스크 충돌·지워진 파일 상태 (R-11)** (2026-11-04)
+- 무엇을 했나: impl-editor가 dirty 버퍼의 디스크 변경을 충돌 상태로, 열린 파일 삭제를 지워짐 상태로 두었다(`f973dcf`).
+- 결과: reviewer REWORK 1 → R1 PASS(`verify/reviews/P3-4a.md`). R0: 충돌 중 undo로 거짓 깨끗함, 정규화 텍스트 해시로는 인코딩·BOM·줄 끝 외부 변경을 못 잡음, 상태만 바뀐 경로의 갱신 누락. R1(`d76c516`, H-18): 디스크 원본 바이트 해시로 변경 판정, undo 뒤 충돌 유지, notify.
+- 검증: V1.
+- 특이사항: mtime이 아니라 바이트 해시라, 같은 내용으로 덮어쓰면 변경으로 보지 않는다(Zed와 다를 수 있음, 사용자 확인 목록).
+
+**P3-3 탭 닫기·저장 질문·저장 확인창 (R-10)** (2026-11-04)
+- 무엇을 했나: impl-ui가 탭 닫기(`pane::CloseActiveItem`, 닫기 버튼), dirty 탭을 닫거나 창을 닫거나 종료할 때 저장 질문(저장·버리기·취소), 저장 때 확인창(E-084·E-085)을 넣었다(`ca5afb4`, `src/ui/tab_close.rs`). 판단 항목은 H-17(종료 때 질문 유지, 기본 Cancel).
+- 결과: reviewer REWORK 3회 → R3 PASS(`verify/reviews/P3-3.md`).
+  - R0: 저장 성공 뒤 새 편집이 있어도 닫힘, 저장 중 dirty가 풀리면 기다리지 않고 닫힘, 저장 전 충돌 검사 기준 불일치.
+  - R1(`fd75432`): 닫기 직전 재판정, 진행 중 저장 대기, 원본 바이트 기준. 끝나지 않는 저장을 기다리는 닫기에서 빠져나올 수 없음.
+  - R2(`920f05d`): 대기 상한 10초(앱 값) 뒤 닫기 요청만 취소. 닫기 질문에서 시작한 저장에는 상한이 안 걸림.
+  - R3(`c3dc9cb`): 그 저장도 독립 작업으로 돌리고 같은 대기 경로에 상한 적용.
+- 검증: V1. 순수 판단 함수 테스트(여러 탭 종료 재조사 시나리오 포함).
+- 특이사항: 종료 때 미저장 내용 복원(A-25.8·I-118)은 PoC 8단계라 넣지 않고 질문으로 둔다(H-17, 스펙 불일치·사용자 확인 목록).
+
+**P3-4b 탭 표시: 수정 점·충돌·지워짐 (R-9·R-11)** (2026-11-04)
+- 무엇을 했나: impl-ui가 dirty 탭 수정 점(L-65, `b6526ee`)과 충돌 점 Warning 색·지워진 파일 취소선(E-086·E-087, `c08dd44`)을 그렸다.
+- 결과: P3-4b-1 review PASS(`verify/reviews/P3-4b-1.md`), P3-4b-2 reviewer PASS(`verify/reviews/P3-4b-2.md`).
+- 검증: V2. 첫 구현 V3는 P3-E.
+- 특이사항: 없음.
+
+병합: work/editor → master `646c513`(P3-1·P3-2), `d16f0cb`(P3-4a), work/ui → master `37be418`(P3-3·P3-4b). `Cargo.*` 변경 없음.
+
+**P3-E Phase 3 끝 R-15·check-layout·V3** (2026-11-04)
+- 무엇을 했나: measure가 master `37be418` 사본 exe로 v0.2 검증 스크립트 9개(원본), check-layout, 새 화면 V3를 했다(`verify/reviews/measure-phase3.md`, `verify/baseline/phase3/`). phase2 원본 스크립트가 새 File 메뉴 행에서 중단해 생긴 공백은 v0.4 사본(`verify/scripts/verify-v04-phase2.ps1`, 원본 대비 3곳·6줄, H-21)으로 다시 돌려 메웠다(P3-E-R1).
+- 결과
+
+  | R-n | 스크립트·항목 | 기준선(R-1) | Phase 3 | 의도한 변경 여부 | 증거 |
+  |---|---|---|---|---|---|
+  | R-15 | phase1 내장 바인딩 R-1 표 밖 3건 | 없음 | `ctrl-s` Save, `ctrl-w`·`ctrl-f4` CloseActiveItem | 의도한 변경(P3-2·P3-3 키) | measure-phase3 F1 |
+  | R-15 | phase2·phase3 File 메뉴 | `Open Folder… ─ Close Window` | `… ─ Close Editor\|Ctrl-F4  Close Window` | 의도한 변경(P3-3) | F2·F4 |
+  | R-15 | phase2 메뉴 48항목·뒤 사례 11개 | 137/0 | v0.4 사본 137/137, 값 R-1과 같음(사이드바 −75 결과 제외) | — | R1 절 |
+  | R-15 | phase4 readonly(D-18 탭 보기 전용) | 글자 안 들어감 | 글자 들어감, 디스크 그대로 | 의도한 변경(D-6 탭 편집 허용) | F5 |
+  | R-15 | phase5 tab CRLF 파일 len·fnv 5건 | CRLF 기준 | LF 기준(len −2 등) | 의도한 변경(내부 LF 정규화, D-6·H-15). reload 자체는 일어남 | F6~F10 |
+  | R-15 | 그 밖의 값 차이 | — | 사이드바 −75 결과·이력상 흔들림(H-10) | 의도한 변경의 결과 / 흔들림 | 1.2절 |
+
+  - 미설명 0, 실제 회귀 0.
+- check-layout: 28/28 PASS(허용 오차 0).
+- V3 새 화면(첫 구현): `tab["indicator_size"]` 수정 점 10×10 PASS, 슬롯 위치 PASS, 저장 질문 대화창 문구·버튼 순서(Save / Don't Save / Cancel) PASS, 충돌 점 Warning 색(수정 점과 구별) PASS, 지워진 파일 취소선 PASS. 불일치 0, 측정 불가 1(수정 점 Accent 색 값 — 스펙 toml에 색 값 없음, `theme.primary` 근사).
+- 검증: V3(스크립트 실행·실측).
+- 특이사항: 사용자 확인 목록 — 수정 점 색(23,23,23 근사)과 Warning 색(234,179,8)이 Zed와 같은지. v0.2 phase2 원본 스크립트는 계속 실패한다(새 메뉴 행). 이후 R-15는 v0.4 사본을 쓴다(H-21).
+
+**P3-F1 Phase 3 최종 확인 REWORK 수정 (R-10)** (2026-11-04)
+- 무엇을 했나: reviewer 최종 확인(`37be418`)이 통합 코드에서 데이터 보존 경계 2건을 찾았다 — 저장 중 앱 내부 rename/move 뒤 다른 경로에 쓴 결과로 탭을 clean 처리, 삭제된 비어 있지 않은 미리보기 탭을 다음 미리보기 열기가 질문 없이 버림. work/editor·work/ui에 Phase 4 커밋이 이미 있어 master 기준 `work/p3fix` 브랜치에서 impl-editor가 고쳤다(H-23): `9321613`(저장 경로가 같을 때만 기준 갱신, 보존할 미리보기는 일반 탭으로 승격), `72c3ac7`(저장 중 경로가 바뀌면 완료 때 dirty=true·기준 해시 확정 불가).
+- 결과: 최종 확인 R1 REWORK(저장 중 undo + rename 순서의 거짓 clean) → R2 PASS(`verify/reviews/phase3-final.md`). master `63b7cd2`.
+- 검증: V1(순서 회귀 테스트). R-15·V3는 `37be418` 결과를 그대로 쓴다 — 수정이 저장·rename 경로의 상태 판정에 한정되고 화면·키·메뉴를 바꾸지 않으며 회귀 테스트와 reviewer 재확인으로 덮였다(lead 판단, 위임 H-4).
+- 특이사항: 없음.
+
+**Phase 3 종료** (2026-11-04, lead, 위임 H-4)
+- 무엇을 했나: PLAN "Phase 종료 때". R-15·check-layout·V3(P3-E, P3-E-R1), `/ponytail-debt`(새 `shortcut:`: 혼합 줄 끝 통일 H-15, 미리보기 종료 시 포커스 등), reviewer 최종 확인.
+- 결과: 최종 확인 REWORK(데이터 보존 2건) → P3-F1 → R1 REWORK → R2 PASS. 전체 테스트 134 통과(37be418 기준), clippy `-D warnings` 통과. 태그 `v0.4-phase-3`.
+- 검증: reviewer 판정.
+- 특이사항: 사용자 확인 목록 — 종료 때 저장 질문(복원 대신, H-17), 바이트 해시 기준 충돌(H-18), 혼합 줄 끝 통일(H-15), 저장 때 공백 제거·마지막 줄바꿈 미적용, 수정 점·Warning 색.
 
 ### Phase 4 — PoC 6단계 탭 기능
 

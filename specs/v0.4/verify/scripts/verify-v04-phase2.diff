@@ -1,0 +1,26 @@
+diff --git a/tools/verify-v02-phase2.ps1 "b/specs\\v0.4\\verify\\scripts\\verify-v04-phase2.ps1"
+index 7fe832f..87251c5 100644
+--- a/tools/verify-v02-phase2.ps1
++++ "b/specs\\v0.4\\verify\\scripts\\verify-v04-phase2.ps1"
+@@ -42,7 +42,7 @@ param(
+ $ErrorActionPreference = 'Stop'
+ $ProcessName = 'workbench-gpui'
+ $AppTitle = 'workbench-gpui'
+-$CaptureScript = Join-Path $PSScriptRoot 'capture.ps1'
++$CaptureScript = 'D:\projects\workbench-gpui\tools\capture.ps1'
+ 
+ if (-not ('WgP2.Native' -as [type])) {
+     Add-Type -ReferencedAssemblies @('System.Runtime', 'System.Collections', 'System.Threading', 'System.Threading.Thread', 'System.Runtime.InteropServices') -TypeDefinition @'
+@@ -579,10 +579,10 @@ try {
+     # ================================================================ menu: R-8·R-9·R-5
+     Run-Case 'menu' $null {
+         param($res, $p)
+-        $orig = @{ 'Open Folder...' = @('workspace::Open', 'Ctrl+K Ctrl+O'); 'Toggle Folder Sidebar' = @('multi_workspace::ToggleWorkspaceSidebar', 'Ctrl+Alt+J'); 'Focus Folder Sidebar' = @('multi_workspace::FocusWorkspaceSidebar', 'Ctrl+Alt+;'); 'Quit workbench-gpui' = @('zed::Quit', 'Ctrl+Q'); 'Close Window' = @('workspace::CloseWindow', 'Ctrl+Shift+W'); 'Toggle Left Dock' = @('workspace::ToggleLeftDock', 'Ctrl+B'); 'Project Panel' = @('project_panel::ToggleFocus', 'Ctrl+Shift+E'); 'Minimize' = @('zed::Minimize', '없음'); 'Zoom' = @('zed::Zoom', '없음 (F11 은 다른 액션)') }
++        $orig = @{ 'Open Folder...' = @('workspace::Open', 'Ctrl+K Ctrl+O'); 'Toggle Folder Sidebar' = @('multi_workspace::ToggleWorkspaceSidebar', 'Ctrl+Alt+J'); 'Focus Folder Sidebar' = @('multi_workspace::FocusWorkspaceSidebar', 'Ctrl+Alt+;'); 'Quit workbench-gpui' = @('zed::Quit', 'Ctrl+Q'); 'Close Editor' = @('pane::CloseActiveItem', 'Ctrl+F4'); 'Close Window' = @('workspace::CloseWindow', 'Ctrl+Shift+W'); 'Toggle Left Dock' = @('workspace::ToggleLeftDock', 'Ctrl+B'); 'Project Panel' = @('project_panel::ToggleFocus', 'Ctrl+Shift+E'); 'Minimize' = @('zed::Minimize', '없음'); 'Zoom' = @('zed::Zoom', '없음 (F11 은 다른 액션)') }
+         $expectRows = @{
+             0 = 'Quit workbench-gpui|Ctrl-Q'
+-            1 = "Open Folder...|Ctrl-K Ctrl-O`t---`tClose Window|Ctrl-Shift-W"
++            1 = "Open Folder...|Ctrl-K Ctrl-O`t---`tClose Editor|Ctrl-F4`tClose Window|Ctrl-Shift-W"
+             2 = "Toggle Left Dock|Ctrl-B`tToggle Folder Sidebar|Ctrl-Alt-J`tFocus Folder Sidebar|Ctrl-Alt-;`t---`tProject Panel|Ctrl-Shift-E"
+             3 = "Minimize|<none>`tZoom|<none>"
+         }

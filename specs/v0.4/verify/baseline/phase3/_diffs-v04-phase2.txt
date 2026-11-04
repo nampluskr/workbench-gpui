@@ -1,0 +1,8 @@
+verify-v02-phase2 | tooltip#4 | L-208·L-209 | 403.00 -> 328.00
+verify-v02-phase2 | tooltip#9 | L-208·L-209 | 488.00 -> 413.00
+verify-v02-phase2 | tooltip#14 | L-208·L-209 | 368.00 -> 293.00
+verify-v02-phase2 | tooltip#25 | L-208·L-209 | 641.00 -> 566.00
+verify-v02-phase2 | tooltip#30 | L-208·L-209 | 667.00 -> 592.00
+verify-v02-phase2 | tooltip#50 | L-208·L-209 | 399.00 -> 324.00
+verify-v02-phase2 | menu#4 | R-8 D-13 I-306 | Open Folder...|Ctrl-K Ctrl-O	---	Close Window|Ctrl-Shift-W -> Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+verify-v02-phase2 | menu#11 | I-314 | 518.00 -> 443.00

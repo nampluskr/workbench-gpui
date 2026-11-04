@@ -1,0 +1,82 @@
+{
+  "script": "verify-v02-phase2",
+  "items": 137,
+  "baseFail": 0,
+  "p1Items": 137,
+  "p1Fail": 0,
+  "timeMasked": 23,
+  "diff": [
+    {
+      "item": "tooltip#4",
+      "id": "L-208·L-209",
+      "what": "app-menu-button 상자 x (마우스 394)",
+      "base": "403.00",
+      "p1": "328.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#9",
+      "id": "L-208·L-209",
+      "what": "title-folder-name 상자 x (마우스 479)",
+      "base": "488.00",
+      "p1": "413.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#14",
+      "id": "L-208·L-209",
+      "what": "sidebar-btn-folder-add 상자 x (마우스 359)",
+      "base": "368.00",
+      "p1": "293.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#25",
+      "id": "L-208·L-209",
+      "what": "tab-btn-back 상자 x (마우스 632)",
+      "base": "641.00",
+      "p1": "566.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#30",
+      "id": "L-208·L-209",
+      "what": "tab-btn-forward 상자 x (마우스 658)",
+      "base": "667.00",
+      "p1": "592.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "tooltip#50",
+      "id": "L-208·L-209",
+      "what": "status-btn-project-panel 상자 x (마우스 390)",
+      "base": "399.00",
+      "p1": "324.00",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "menu#4",
+      "id": "R-8 D-13 I-306",
+      "what": "File 항목·구분선",
+      "base": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+      "p1": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+      "baseOk": true,
+      "p1Ok": true
+    },
+    {
+      "item": "menu#11",
+      "id": "I-314",
+      "what": "팝업 x = 이름 버튼 왼쪽 − 5",
+      "base": "518.00",
+      "p1": "443.00",
+      "baseOk": true,
+      "p1Ok": true
+    }
+  ]
+}

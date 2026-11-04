@@ -1,0 +1,744 @@
+[
+  {
+    "script": "verify-v02-phase1",
+    "items": 70,
+    "baseFail": 0,
+    "p1Items": 70,
+    "p1Fail": 0,
+    "timeMasked": 0,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase2",
+    "items": 137,
+    "baseFail": 0,
+    "p1Items": 89,
+    "p1Fail": 1,
+    "timeMasked": 17,
+    "diff": [
+      {
+        "item": "tooltip#4",
+        "id": "L-208·L-209",
+        "what": "app-menu-button 상자 x (마우스 394)",
+        "base": "403.00",
+        "p1": "328.00",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tooltip#9",
+        "id": "L-208·L-209",
+        "what": "title-folder-name 상자 x (마우스 479)",
+        "base": "488.00",
+        "p1": "413.00",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tooltip#14",
+        "id": "L-208·L-209",
+        "what": "sidebar-btn-folder-add 상자 x (마우스 359)",
+        "base": "368.00",
+        "p1": "293.00",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tooltip#25",
+        "id": "L-208·L-209",
+        "what": "tab-btn-back 상자 x (마우스 632)",
+        "base": "641.00",
+        "p1": "566.00",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tooltip#30",
+        "id": "L-208·L-209",
+        "what": "tab-btn-forward 상자 x (마우스 658)",
+        "base": "667.00",
+        "p1": "592.00",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "tooltip#50",
+        "id": "L-208·L-209",
+        "what": "status-btn-project-panel 상자 x (마우스 390)",
+        "base": "399.00",
+        "p1": "324.00",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "menu#4",
+        "id": "R-8 D-13 I-306",
+        "what": "File 항목·구분선",
+        "base": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+        "p1": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "menu#5",
+        "id": "I-303",
+        "what": "이름 hover → 메뉴 2",
+        "base": "index=2",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#6",
+        "id": "R-8 D-13 I-306",
+        "what": "View 항목·구분선",
+        "base": "Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#7",
+        "id": "I-303",
+        "what": "이름 hover → 메뉴 3",
+        "base": "index=3",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#8",
+        "id": "R-8 D-13 I-306",
+        "what": "Window 항목·구분선",
+        "base": "Minimize|<none>\tZoom|<none>",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#9",
+        "id": "I-321",
+        "what": "메뉴 이름 버튼 사이 gap",
+        "base": "4.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#10",
+        "id": "I-313",
+        "what": "최소 바깥 폭(200 + 테두리 2)",
+        "base": "236.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#11",
+        "id": "I-314",
+        "what": "팝업 x = 이름 버튼 왼쪽 − 5",
+        "base": "518.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#12",
+        "id": "I-314",
+        "what": "팝업 y = 이름 버튼 아래",
+        "base": "27.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#13",
+        "id": "I-315",
+        "what": "목록 위 여백 4 (테두리 1 안)",
+        "base": "5.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#14",
+        "id": "I-315",
+        "what": "목록 아래 여백 4 (테두리 1 안)",
+        "base": "5.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#15",
+        "id": "I-316",
+        "what": "항목 바깥 좌우 4 (테두리 1 안)",
+        "base": "5.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#16",
+        "id": "I-317",
+        "what": "항목 줄 높이 14 × 1.618",
+        "base": "23.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#17",
+        "id": "I-318",
+        "what": "구분선 높이 1",
+        "base": "1.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#18",
+        "id": "I-318",
+        "what": "구분선 위 margin 6",
+        "base": "6.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#19",
+        "id": "I-318",
+        "what": "구분선 아래 margin 6",
+        "base": "6.00",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#20",
+        "id": "I-303",
+        "what": "right → 메뉴 3",
+        "base": "index=3",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#21",
+        "id": "I-303",
+        "what": "right → 메뉴 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#22",
+        "id": "I-303",
+        "what": "left → 메뉴 3",
+        "base": "index=3",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#23",
+        "id": "I-303",
+        "what": "left → 메뉴 2",
+        "base": "index=2",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#24",
+        "id": "I-517·I-518",
+        "what": "down → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#25",
+        "id": "I-517·I-518",
+        "what": "down → 항목 1",
+        "base": "index=1",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#26",
+        "id": "I-517·I-518",
+        "what": "down → 항목 2",
+        "base": "index=2",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#27",
+        "id": "I-517·I-518",
+        "what": "down → 항목 4",
+        "base": "index=4",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#28",
+        "id": "I-517·I-518",
+        "what": "down → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#29",
+        "id": "I-517·I-518",
+        "what": "up → 항목 4",
+        "base": "index=4",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#30",
+        "id": "I-517·I-518",
+        "what": "up → 항목 2",
+        "base": "index=2",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#31",
+        "id": "I-517·I-518",
+        "what": "end → 항목 4",
+        "base": "index=4",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#32",
+        "id": "I-517·I-518",
+        "what": "home → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#33",
+        "id": "I-517·I-518",
+        "what": "tab → 항목 1",
+        "base": "index=1",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#34",
+        "id": "I-517·I-518",
+        "what": "shift-tab → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#35",
+        "id": "I-517·I-518",
+        "what": "ctrl-n → 항목 1",
+        "base": "index=1",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#36",
+        "id": "I-517·I-518",
+        "what": "ctrl-p → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#37",
+        "id": "I-517·I-518",
+        "what": "pagedown → 항목 4",
+        "base": "index=4",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#38",
+        "id": "I-517·I-518",
+        "what": "pageup → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#39",
+        "id": "I-517·I-518",
+        "what": "shift-pagedown → 항목 4",
+        "base": "index=4",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#40",
+        "id": "I-517·I-518",
+        "what": "shift-pageup → 항목 0",
+        "base": "index=0",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#41",
+        "id": "I-519",
+        "what": "Escape 닫기",
+        "base": "[dev] menu-close reason=cancel t_ms=1793770736505",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#42",
+        "id": "I-309",
+        "what": "닫은 뒤 포커스 복원(컨텍스트)",
+        "base": "[dev] key keystroke=ctrl-c action=none context=Root > Workspace",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#43",
+        "id": "I-517",
+        "what": "Ctrl-C 닫기",
+        "base": "[dev] menu-close reason=cancel t_ms=1793770737834",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#44",
+        "id": "I-310",
+        "what": "F10 열기",
+        "base": "[dev] menu-open index=0 name=workbench-gpui t_ms=1793770738154",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#45",
+        "id": "I-310",
+        "what": "열린 채 F10 닫기",
+        "base": "[dev] menu-close reason=toggle t_ms=1793770738445",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#46",
+        "id": "R-8",
+        "what": "Enter 실행",
+        "base": "[dev] menu-exec action=workspace::ToggleLeftDock via=enter t_ms=1793770740033",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#47",
+        "id": "I-309",
+        "what": "실행 때 원래 포커스(center)",
+        "base": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=center",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#48",
+        "id": "I-520",
+        "what": "단축키 → 선택 표시 뒤 실행까지 ms",
+        "base": "56",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#49",
+        "id": "I-520",
+        "what": "단축키 실행 경로",
+        "base": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793770742501",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#50",
+        "id": "I-519",
+        "what": "메뉴 밖 누름 닫기",
+        "base": "[dev] menu-close reason=click-outside t_ms=1793770744188",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#51",
+        "id": "I-446",
+        "what": "Window > Zoom 클릭 → 최대화 (전: False)",
+        "base": "True",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      },
+      {
+        "item": "menu#52",
+        "id": "I-445",
+        "what": "Window > Minimize → 최소화",
+        "base": "True",
+        "p1": "(missing)",
+        "baseOk": true,
+        "p1Ok": null
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase3",
+    "items": 122,
+    "baseFail": 2,
+    "p1Items": 122,
+    "p1Fail": 1,
+    "timeMasked": 18,
+    "diff": [
+      {
+        "item": "add#4",
+        "id": "R-8",
+        "what": "File 메뉴 첫 항목",
+        "base": "[dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+        "p1": "[dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "items#5",
+        "id": "A-11.3",
+        "what": "항목 줄 폭 = 사이드바 폭 − 오른쪽 테두리 1",
+        "base": "374",
+        "p1": "299",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "scroll#2",
+        "id": "A-16.7",
+        "what": "목록 휠 → 세로 스크롤(스크롤 위치 음수)",
+        "base": "[dev] sidebar-scroll offset_y=-23",
+        "p1": "[dev] sidebar-scroll offset_y=-234",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "menus#1",
+        "id": "R-8 9.2",
+        "what": "File 메뉴",
+        "base": "[dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+        "p1": "[dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O\t---\tClose Editor|Ctrl-F4\tClose Window|Ctrl-Shift-W",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "state#2",
+        "id": "R-28",
+        "what": "시작 폭 300",
+        "base": "375",
+        "p1": "300",
+        "baseOk": false,
+        "p1Ok": true
+      },
+      {
+        "item": "state#4",
+        "id": "R-28 A-22",
+        "what": "state.json sidebar.width = 화면 폭",
+        "base": "494",
+        "p1": "419",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "state-restart#1",
+        "id": "R-28",
+        "what": "다시 시작 → 사이드바 폭 복원",
+        "base": "617",
+        "p1": "419",
+        "baseOk": false,
+        "p1Ok": true
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase4",
+    "items": 208,
+    "baseFail": 0,
+    "p1Items": 208,
+    "p1Fail": 1,
+    "timeMasked": 16,
+    "diff": [
+      {
+        "item": "menu#12",
+        "id": "I-042·I-502",
+        "what": "shift-f10 → 메뉴, 선택 항목 왼쪽 아래 + (2, 2)(판단: 기준 모서리)",
+        "base": "377.0,217.0",
+        "p1": "302.0,217.0",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "menu#13",
+        "id": "I-042·I-502",
+        "what": "menu → 메뉴, 선택 항목 왼쪽 아래 + (2, 2)(판단: 기준 모서리)",
+        "base": "377.0,217.0",
+        "p1": "302.0,217.0",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "readonly#1",
+        "id": "R-27",
+        "what": "탭 내용 = 파일 내용(gpui-kit Editor, 줄 끝 CRLF 는 LF 로 보일 수 있다)",
+        "base": "len=33",
+        "p1": "len=31",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "readonly#3",
+        "id": "D-18·R-27",
+        "what": "글자를 쳐도 탭 내용·디스크 파일이 바뀌지 않는다",
+        "base": "len=33 fnv=c45e16dbc6dd544f, 디스크 같음=True",
+        "p1": "len=40 fnv=1cd7c3303d70c90d, 디스크 같음=True",
+        "baseOk": true,
+        "p1Ok": false
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase4-d043",
+    "items": 13,
+    "baseFail": 0,
+    "p1Items": 13,
+    "p1Fail": 0,
+    "timeMasked": 2,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase4-d044",
+    "items": 6,
+    "baseFail": 0,
+    "p1Items": 6,
+    "p1Fail": 0,
+    "timeMasked": 3,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase5",
+    "items": 62,
+    "baseFail": 0,
+    "p1Items": 62,
+    "p1Fail": 5,
+    "timeMasked": 39,
+    "diff": [
+      {
+        "item": "tab#2",
+        "id": "R-24·E-086·G-115",
+        "what": "활성 탭 내용을 자동으로 다시 읽음",
+        "base": "ok=True, app_ms=218, seen_ms=394, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793771551413",
+        "p1": "ok=False, app_ms=190, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-03cb0f99e68d489abe35ae54d7fe67cb\\proj\\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793788052227",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#3",
+        "id": "R-24",
+        "what": "tab-reload 줄의 길이·FNV",
+        "base": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793771551413",
+        "p1": "[dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-03cb0f99e68d489abe35ae54d7fe67cb\\proj\\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793788052227",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#6",
+        "id": "R-24·G-115",
+        "what": "바꿔 넣은 파일도 다시 읽음",
+        "base": "ok=True, app_ms=271, seen_ms=312, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=56 fnv=f44fa1bf2ed7155c t_ms=1793771554014",
+        "p1": "ok=False, app_ms=191, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-03cb0f99e68d489abe35ae54d7fe67cb\\proj\\README.md result=reloaded len=54 fnv=97899cbe95ed7094 t_ms=1793788060366",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#9",
+        "id": "D-18·E-087",
+        "what": "지운 파일의 탭은 그대로, 내용도 그대로(표시는 이후 버전)",
+        "base": "active=1 notes.txt|normal / README.md|preview, fnv=f44fa1bf2ed7155c",
+        "p1": "active=1 notes.txt|normal / README.md|preview, fnv=97899cbe95ed7094",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "tab#10",
+        "id": "R-24·G-115",
+        "what": "다시 만든 파일 내용을 탭이 읽음",
+        "base": "ok=True, app_ms=162, seen_ms=244, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-35ab25e5d1df43f2b2194b5ff1afa5ca\\proj\\README.md result=reloaded len=34 fnv=eeb42a408f255ae4 t_ms=1793771555542",
+        "p1": "ok=False, app_ms=254, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\\projects\\workbench-gpui\\target\\phase5-folders\\run-03cb0f99e68d489abe35ae54d7fe67cb\\proj\\README.md result=reloaded len=32 fnv=79dfa0fcb8242014 t_ms=1793788067845",
+        "baseOk": true,
+        "p1Ok": false
+      },
+      {
+        "item": "flood#2",
+        "id": "R-24",
+        "what": "바깥에서 만든 600 개가 모두 트리에",
+        "base": "ok=True, app_ms=587, seen_ms=618, [dev] watch-applied events=1815 own=0 external=1815 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=509 t_ms=1793771609000",
+        "p1": "ok=True, app_ms=549, seen_ms=638, [dev] watch-applied events=1806 own=0 external=1806 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=471 t_ms=1793788128398",
+        "baseOk": true,
+        "p1Ok": true
+      },
+      {
+        "item": "flood#3",
+        "id": "R-24(묶기)",
+        "what": "이벤트 1815 개를 몇 번에 묶어 반영",
+        "base": "반영 1번, 이벤트 1815",
+        "p1": "반영 1번, 이벤트 1806",
+        "baseOk": true,
+        "p1Ok": true
+      }
+    ]
+  },
+  {
+    "script": "verify-v02-phase5-d046",
+    "items": 23,
+    "baseFail": 0,
+    "p1Items": 23,
+    "p1Fail": 0,
+    "timeMasked": 17,
+    "diff": []
+  },
+  {
+    "script": "verify-v02-phase5-d047",
+    "items": 16,
+    "baseFail": 0,
+    "p1Items": 16,
+    "p1Fail": 0,
+    "timeMasked": 11,
+    "diff": []
+  }
+]
