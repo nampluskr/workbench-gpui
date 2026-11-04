@@ -80,16 +80,18 @@ pub struct Format {
     pub line_ending: LineEnding,
 }
 
-/// File bytes → editor text (line endings as `\n`) and the file's format. The line ending is the first one in
-/// the file; a file with none is LF.
-// spec: none (app value) — detection by the first line ending and LF for a file without one are judgements
-// (01-zed has no line-ending rule). A mixed file is written back with the detected ending.
+/// File bytes → editor text (line endings as `\n`) and the file's format. The line ending is the one used more
+/// often; on a tie the first one in the file; a file with none is LF.
+// spec: none (app value) — majority detection, first-ending tie-break and LF for a file without one are
+// judgements (01-zed has no line-ending rule, H-15).
+// shortcut: an edited mixed-ending file is saved with the one detected ending (minority lines change); keep
+// per-line endings if mixed files must survive edits. An unedited tab is never written (`Pane::begin_save`).
 pub fn decode_text(bytes: &[u8]) -> Result<(String, Format), String> {
     let (raw, encoding) = decode(bytes)?;
-    let line_ending = match raw.find('\n') {
-        Some(i) if raw[..i].ends_with('\r') => LineEnding::Crlf,
-        _ => LineEnding::Lf,
-    };
+    let crlf = raw.matches("\r\n").count();
+    let lf = raw.matches('\n').count() - crlf;
+    let first_is_crlf = raw.find('\n').is_some_and(|i| raw[..i].ends_with('\r'));
+    let line_ending = if crlf > lf || (crlf == lf && first_is_crlf) { LineEnding::Crlf } else { LineEnding::Lf };
     Ok((to_lf(raw), Format { encoding, line_ending }))
 }
 
@@ -381,6 +383,21 @@ mod tests {
         assert_eq!(encode_text("a\r\nb\nc", format).unwrap(), b"a\r\nb\r\nc");
         let lf = Format { line_ending: LineEnding::Lf, ..format };
         assert_eq!(encode_text("a\r\nb\nc", lf).unwrap(), b"a\nb\nc");
+    }
+
+    /// H-15: a mixed file is detected by the majority ending, ties go to the first one, and an edit saves every
+    /// line with it.
+    #[test]
+    fn mixed_file_uses_majority_line_ending() {
+        let (text, format) = decode_text(b"a\nb\r\nc\r\nd").unwrap();
+        assert_eq!(format.line_ending, LineEnding::Crlf);
+        assert_eq!(encode_text(&format!("{text}\ne"), format).unwrap(), b"a\r\nb\r\nc\r\nd\r\ne");
+        let (_, format) = decode_text(b"a\r\nb\nc\nd").unwrap();
+        assert_eq!(format.line_ending, LineEnding::Lf);
+        let (_, format) = decode_text(b"a\r\nb\nc").unwrap();
+        assert_eq!(format.line_ending, LineEnding::Crlf, "tie: first ending");
+        let (_, format) = decode_text(b"a\nb\r\nc").unwrap();
+        assert_eq!(format.line_ending, LineEnding::Lf, "tie: first ending");
     }
 
     #[test]

@@ -72,7 +72,7 @@ pub enum ReadApply<'a, E> {
 /// What a save request turned into.
 #[derive(Debug, PartialEq)]
 pub enum SaveStart {
-    /// Not loaded, undecodable (read-only) or a save already in flight: nothing to do.
+    /// Not loaded, undecodable (read-only), not edited, or a save already in flight: nothing to do.
     Skip,
     /// The text cannot be written in the file's encoding (CP949 loss); the reason is shown, nothing is written.
     Refused(String),
@@ -281,9 +281,10 @@ impl<E> Pane<E> {
     }
 
     /// Starts saving tab `ix` whose buffer is `text`: encodes it with the tab's encoding and line ending (P3-2, D-6).
+    /// A tab that is not dirty is not written (H-15), so an unedited file keeps its exact bytes.
     pub fn begin_save(&mut self, ix: usize, text: &str) -> SaveStart {
         let tab = &self.tabs[ix];
-        let (true, Some(format), None) = (tab.loaded, tab.format, tab.saving) else {
+        let (true, true, Some(format), None) = (tab.loaded, tab.dirty, tab.format, tab.saving) else {
             return SaveStart::Skip;
         };
         match text_io::encode_text(text, format) {
@@ -703,6 +704,7 @@ mod tests {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "k.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("가격"), fmt(TextEncoding::Cp949, LineEnding::Lf)));
+        pane.on_edit(0, text_hash("가격 \u{20A9}1000"));
         let SaveStart::Refused(e) = pane.begin_save(0, "가격 \u{20A9}1000") else { panic!("expected refusal") };
         assert!(e.contains("U+20A9"), "{e}");
         assert_eq!(pane.tabs[0].saving, None);
@@ -749,16 +751,33 @@ mod tests {
         assert_eq!((t.hash, t.dirty), (text_hash("C"), false));
     }
 
-    /// P3-12-R1: a read that lands while a (clean) save is running is dropped, and the save's end invalidates it.
+    /// P3-12-R1: a read that lands while a save is running is dropped even when the buffer is clean again (undo
+    /// back to the disk text during the save), and the save's end invalidates it.
     #[test]
     fn read_landing_during_save_is_dropped() {
         let mut pane = Pane::<()>::default();
-        let save = loaded_and_saving(&mut pane, "A");
+        let save = loaded_and_saving(&mut pane, "B");
+        pane.on_edit(0, text_hash("A"));
         assert!(!pane.tabs[0].dirty);
         let reload = pane.start_read(0);
         assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("X"), UTF8)), ReadApply::Dropped);
-        pane.finish_save(save, true, text_hash("A"), text_hash("A"));
-        assert_eq!(pane.tabs[0].hash, text_hash("A"));
+        pane.finish_save(save, true, text_hash("B"), text_hash("A"));
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty), (text_hash("B"), true));
+    }
+
+    /// H-15: an unedited tab is not written (a mixed-ending file keeps its bytes); after an edit the save uses the
+    /// detected majority ending.
+    #[test]
+    fn clean_tab_is_not_written_and_edit_saves_majority_ending() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "mixed.txt", false);
+        // "a\nb\r\nc\r\nd" read as LF text, CRLF by majority.
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("a\nb\nc\nd"), fmt(TextEncoding::Utf8, LineEnding::Crlf)));
+        assert_eq!(pane.begin_save(0, "a\nb\nc\nd"), SaveStart::Skip, "no write without an edit");
+        pane.on_edit(0, text_hash("a\nb\nc\nd\ne"));
+        let SaveStart::Write(_, bytes) = pane.begin_save(0, "a\nb\nc\nd\ne") else { panic!("expected a write") };
+        assert_eq!(bytes, b"a\r\nb\r\nc\r\nd\r\ne");
     }
 
     /// P3-12-R1: the tab's line ending is used for the save, typed lines included.
