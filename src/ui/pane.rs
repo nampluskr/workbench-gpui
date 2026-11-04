@@ -4,7 +4,9 @@
 //! - 임시 탭은 하나다. 다른 파일을 임시로 열면 그 자리(인덱스)에서 바꾼다(I-062).
 //! - 이미 임시로 열린 파일을 일반으로 열면 일반 탭이 된다(I-063).
 //! - 새 탭은 활성 탭 바로 뒤에 넣는다(판단: Zed 의 새 항목 자리).
-//! - 내용은 gpui-kit Editor 로 보이고 편집을 막는다(D-18). 저장·탭 닫기·이동 기록은 없다(PoC 6단계).
+//! - Tabs are editable (v0.4 D-6, P3-1; D-18 lifted). A tab is dirty when its buffer differs from the content last
+//!   read from disk (`hash`). An edit promotes a preview tab to a normal tab (I-063). The editor stays read-only
+//!   until the first read lands, so typing cannot race the load. Dirty buffers are not reloaded (P3-4 marks them).
 //! - First open reads the file on the background executor; the tab exists at once and gets its text when
 //!   the read finishes (v0.4 P1-3, AUDIT 4). First read and watch reload share one request token per tab:
 //!   only the latest started read applies, and a closed pane (folder removed) applies nothing.
@@ -14,7 +16,7 @@ use std::rc::Rc;
 
 use gpui_kit::base::Scrollbar;
 use gpui_kit::base::input::EditorScrollbarContext;
-use gpui_kit::component::input::{Editor, EditorState};
+use gpui_kit::component::input::{Editor, EditorState, InputEvent};
 use gpui_kit::*;
 
 use super::folders::FolderWorkspace;
@@ -25,11 +27,25 @@ pub struct Tab<E = Entity<EditorState>> {
     pub path: PathBuf,
     pub preview: bool,
     pub editor: E,
-    /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046). 보기 전용이라
-    /// 편집기 내용은 늘 넣은 내용과 같다(D-18). While the first read is pending the editor is empty, so this is `text_hash("")`.
+    /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046).
+    /// Hash of the content last read from disk; the buffer may differ once edited (`dirty`). While the first read is
+    /// pending the editor is empty, so this is `text_hash("")`.
     pub hash: u64,
     /// Token of the latest started read (first read or reload) not yet applied.
     pub pending: Option<u64>,
+    /// The buffer differs from `hash` (P3-1).
+    pub dirty: bool,
+    /// A read has landed, so the buffer holds the file; editing is allowed only then.
+    pub loaded: bool,
+}
+
+/// How a finished read ended (first read or watch reload).
+pub enum ReadOutcome {
+    /// Disk content equals the hash the read started with.
+    Same,
+    /// New disk content with this hash.
+    Changed(u64),
+    Unreadable,
 }
 
 impl<E> Tab<E> {
@@ -74,7 +90,8 @@ fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App
 /// that to Alt+Shift only, inside its private `on_mouse_down` (gpui-base state.rs 2750), so the press is swallowed
 /// in the capture phase and re-sent as Alt+Shift at the same spot; the drag then runs gpui-base's own block
 /// selection (virtual columns, wrapped rows). Deferred: gpui takes the listener list out while dispatching.
-pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
+/// `readonly` while the first read is pending (`!Tab::loaded`).
+pub fn editor_view(editor: &Entity<EditorState>, readonly: bool) -> impl IntoElement {
     div()
         .size_full()
         .capture_any_mouse_down(|event, window, cx| {
@@ -90,7 +107,7 @@ pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
         .child(
             // P2-7: font size and comfortable line height from the spec; refine over gpui-kit's mono size × 1.5.
             Editor::new(editor)
-                .readonly(true)
+                .readonly(readonly)
                 .text_size(metrics::BUFFER_FONT_SIZE)
                 .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
                 .h_full(),
@@ -121,12 +138,9 @@ fn column_select_events(press: MouseDownEvent, real: Modifiers, capslock: Capslo
     ]
 }
 
-/// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계).
-pub fn read_text(path: &Path) -> String {
-    match std::fs::read(path) {
-        Ok(bytes) => String::from_utf8_lossy(&bytes).into_owned(),
-        Err(_) => String::new(),
-    }
+/// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계). `None` when unreadable.
+pub fn read_text(path: &Path) -> Option<String> {
+    std::fs::read(path).ok().map(|bytes| String::from_utf8_lossy(&bytes).into_owned())
 }
 
 impl<E> Pane<E> {
@@ -146,7 +160,16 @@ impl<E> Pane<E> {
     /// A new pending tab for `path` with a fresh read token.
     fn pending_tab(&mut self, path: &Path, preview: bool, editor: E) -> (Tab<E>, u64) {
         let token = self.next_token();
-        (Tab { path: path.to_path_buf(), preview, editor, hash: text_hash(""), pending: Some(token) }, token)
+        let tab = Tab {
+            path: path.to_path_buf(),
+            preview,
+            editor,
+            hash: text_hash(""),
+            pending: Some(token),
+            dirty: false,
+            loaded: false,
+        };
+        (tab, token)
     }
 
     /// Starts a read for tab `ix`; any earlier read of that tab stops applying.
@@ -176,19 +199,36 @@ impl<E> Pane<E> {
         at
     }
 
-    /// Accepts a finished read if it is still the latest for its tab; a replaced, removed or closed tab drops it.
-    /// `hash` is the new content hash, or `None` when the content stays (unchanged or unreadable). Returns the editor
-    /// to fill. Content cannot change between start and accept: only the latest token applies.
-    pub fn finish_read(&mut self, token: u64, hash: Option<u64>) -> Option<&E> {
+    /// Accepts a finished read if it is still the latest for its tab; a replaced, removed or closed tab drops it,
+    /// and a dirty tab keeps its buffer (no reload over edits, P3-1; P3-4 adds the conflict mark). Returns the editor
+    /// when accepted; on `Changed` the caller fills it. Content cannot change between start and accept: only the
+    /// latest token applies, and edits make the tab dirty.
+    pub fn finish_read(&mut self, token: u64, outcome: ReadOutcome) -> Option<&E> {
         if self.closed {
             return None;
         }
         let tab = self.tabs.iter_mut().find(|t| t.pending == Some(token))?;
         tab.pending = None;
-        if let Some(h) = hash {
-            tab.hash = h;
+        if tab.dirty {
+            return None;
+        }
+        match outcome {
+            ReadOutcome::Changed(h) => {
+                tab.hash = h;
+                tab.loaded = true;
+            }
+            ReadOutcome::Same => tab.loaded = true,
+            ReadOutcome::Unreadable => {}
         }
         Some(&tab.editor)
+    }
+
+    /// A user edit on tab `ix` whose buffer now hashes to `buffer_hash`: dirty when it differs from the disk
+    /// content, and the edit promotes a preview tab (I-063).
+    pub fn on_edit(&mut self, ix: usize, buffer_hash: u64) {
+        let tab = &mut self.tabs[ix];
+        tab.dirty = buffer_hash != tab.hash;
+        tab.preview = false;
     }
 
     /// 트리에서 이름을 바꾸거나 옮긴 파일·폴더를 탭 경로에 반영한다(판단).
@@ -232,15 +272,33 @@ impl Pane {
             state.set_scrollbar_renderer(Some(Rc::new(editor_scrollbar)));
             state
         });
+        // Only user edits emit Change (`set_value` does not), so this tracks edits, not reads.
+        cx.subscribe(&editor, |ws, editor, event: &InputEvent, cx| {
+            if !matches!(event, InputEvent::Change) {
+                return;
+            }
+            // shortcut: hashes the whole buffer per edit, fine for typical files; keep a running state if large files lag.
+            let h = text_hash(&editor.read(cx).value());
+            if let Some(ix) = ws.pane.tabs.iter().position(|t| t.editor == editor) {
+                ws.pane.on_edit(ix, h);
+                cx.notify();
+            }
+        })
+        .detach();
         let (tab, token) = self.pending_tab(path, preview, editor);
         let ix = self.place(tab);
         let path = path.to_path_buf();
         cx.spawn_in(window, async move |ws, cx| {
             let text = cx.background_executor().spawn(async move { read_text(&path) }).await;
             let _ = ws.update_in(cx, |ws, window, cx| {
-                if let Some(editor) = ws.pane.finish_read(token, Some(text_hash(&text))).cloned() {
+                let outcome = text.as_deref().map_or(ReadOutcome::Unreadable, |t| ReadOutcome::Changed(text_hash(t)));
+                if let Some(editor) = ws.pane.finish_read(token, outcome).cloned()
+                    && let Some(text) = &text
+                {
                     editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
                 }
+                // The window reads `loaded` to lift read-only; redraw it.
+                cx.notify();
             });
         })
         .detach();
@@ -252,7 +310,7 @@ impl Pane {
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
     use super::{
-        Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, column_select_events,
+        Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadOutcome, column_select_events,
         column_select_press, metrics, point, px, text_hash,
     };
 
@@ -336,11 +394,11 @@ mod tests {
         let a = open(&mut pane, "a.txt", true);
         let b = open(&mut pane, "b.txt", true);
         assert_eq!(pane.tabs.len(), 1);
-        assert!(pane.finish_read(a, Some(1)).is_none());
-        assert!(pane.finish_read(b, Some(2)).is_some());
+        assert!(pane.finish_read(a, ReadOutcome::Changed(1)).is_none());
+        assert!(pane.finish_read(b, ReadOutcome::Changed(2)).is_some());
         assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (2, None));
         // A finished token is not accepted twice.
-        assert!(pane.finish_read(b, Some(3)).is_none());
+        assert!(pane.finish_read(b, ReadOutcome::Changed(3)).is_none());
     }
 
     #[test]
@@ -349,8 +407,8 @@ mod tests {
         let a = open(&mut pane, "a.txt", false);
         let b = open(&mut pane, "b.txt", false);
         pane.tabs.retain(|t| t.pending != Some(a));
-        assert!(pane.finish_read(a, Some(1)).is_none());
-        assert!(pane.finish_read(b, Some(2)).is_some());
+        assert!(pane.finish_read(a, ReadOutcome::Changed(1)).is_none());
+        assert!(pane.finish_read(b, ReadOutcome::Changed(2)).is_some());
         assert_eq!(pane.tabs[0].hash, 2);
     }
 
@@ -360,8 +418,8 @@ mod tests {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
-        assert!(pane.finish_read(reload, Some(text_hash("B"))).is_some());
-        assert!(pane.finish_read(first, Some(text_hash("A"))).is_none());
+        assert!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"))).is_some());
+        assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("A"))).is_none());
         assert_eq!(pane.tabs[0].hash, text_hash("B"));
     }
 
@@ -372,8 +430,8 @@ mod tests {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
-        assert!(pane.finish_read(first, Some(text_hash("A"))).is_none());
-        assert!(pane.finish_read(reload, None).is_some());
+        assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("A"))).is_none());
+        assert!(pane.finish_read(reload, ReadOutcome::Same).is_some());
         assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (text_hash(""), None));
     }
 
@@ -384,8 +442,50 @@ mod tests {
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
         pane.close();
-        assert!(pane.finish_read(first, Some(1)).is_none());
-        assert!(pane.finish_read(reload, Some(2)).is_none());
+        assert!(pane.finish_read(first, ReadOutcome::Changed(1)).is_none());
+        assert!(pane.finish_read(reload, ReadOutcome::Changed(2)).is_none());
         assert_eq!(pane.tabs[0].hash, text_hash(""));
+    }
+
+    /// P3-1: the first read loads the tab (editing allowed); an edit that changes the text makes it dirty and
+    /// promotes the preview tab (I-063); undoing back to the disk text clears dirty.
+    #[test]
+    fn edit_marks_dirty_and_promotes_preview() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", true);
+        assert!(!pane.tabs[0].loaded);
+        assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("A"))).is_some());
+        assert!(pane.tabs[0].loaded && !pane.tabs[0].dirty);
+        pane.on_edit(0, text_hash("AB"));
+        assert!(pane.tabs[0].dirty);
+        assert!(!pane.tabs[0].preview);
+        pane.on_edit(0, text_hash("A"));
+        assert!(!pane.tabs[0].dirty);
+    }
+
+    /// P3-1: a reload of a dirty tab keeps the buffer and the disk hash (no apply), and is not accepted again.
+    #[test]
+    fn dirty_tab_is_not_reloaded() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A")));
+        pane.on_edit(0, text_hash("A edited"));
+        let reload = pane.start_read(0);
+        assert!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"))).is_none());
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty, t.pending), (text_hash("A"), true, None));
+    }
+
+    /// P3-1: an unreadable first read leaves the tab not loaded (read-only), so nothing typed can replace the file.
+    #[test]
+    fn unreadable_first_read_stays_read_only() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        assert!(pane.finish_read(first, ReadOutcome::Unreadable).is_some());
+        assert!(!pane.tabs[0].loaded);
+        // A later reload that reads the (empty) file loads it.
+        let reload = pane.start_read(0);
+        pane.finish_read(reload, ReadOutcome::Same);
+        assert!(pane.tabs[0].loaded);
     }
 }

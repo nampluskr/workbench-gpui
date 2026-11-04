@@ -17,7 +17,7 @@ use notify::Watcher as _;
 use super::Workbench;
 use super::folders::FolderWorkspace;
 use super::keymap;
-use super::pane::text_hash;
+use super::pane::{ReadOutcome, text_hash};
 use super::watch::{ExtraWatch, Msg, epoch_ms, kind_of, same_path};
 use crate::fsops::ident::{self, DirId};
 use crate::fsops::ops;
@@ -239,11 +239,13 @@ impl Workbench {
         for (item, result) in items.into_iter().zip(results) {
             let folder_id = item.ws.read(cx).folder_id.clone();
             // Apply only if this is still the tab's latest read and the folder is not removed.
-            let new_hash = match &result {
-                ReadResult::Changed(_, h) => Some(*h),
-                _ => None,
+            // Dirty tabs keep their buffer (P3-1).
+            let outcome = match &result {
+                ReadResult::Same => ReadOutcome::Same,
+                ReadResult::Changed(_, h) => ReadOutcome::Changed(*h),
+                ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
-            let editor = item.ws.update(cx, |ws, _| ws.pane.finish_read(item.token, new_hash).cloned());
+            let editor = item.ws.update(cx, |ws, _| ws.pane.finish_read(item.token, outcome).cloned());
             let Some(editor) = editor else { continue };
             match result {
                 ReadResult::Same => {}
