@@ -132,10 +132,23 @@ pub fn copy_entry(src: &Path, dst: &Path) -> io::Result<CopyReport> {
         let mut ancestors = Vec::new();
         copy_dir(src, dst, &mut ancestors, &mut report)?;
     } else {
-        report.bytes += fs::copy(src, dst)?;
+        report.bytes += copy_file(src, dst)?;
         report.files += 1;
     }
     Ok(report)
+}
+
+/// Single point for copying file contents. The destination name is first claimed exclusively
+/// (`create_new`, so an existing file is never overwritten: AlreadyExists), then `fs::copy` fills that
+/// empty file, keeping what the platform copy keeps (NTFS streams, attributes, modified time).
+/// If the copy fails, the file we claimed is removed.
+// shortcut: between claiming the name and fs::copy another program could write into the empty file and
+// get overwritten; close it with a handle-based copy (CopyFile2 on the open handle) if that race matters.
+fn copy_file(src: &Path, dst: &Path) -> io::Result<u64> {
+    fs::OpenOptions::new().write(true).create_new(true).open(dst)?;
+    fs::copy(src, dst).inspect_err(|_| {
+        let _ = fs::remove_file(dst);
+    })
 }
 
 fn copy_dir(src: &Path, dst: &Path, ancestors: &mut Vec<PathBuf>, report: &mut CopyReport) -> io::Result<()> {
@@ -159,7 +172,7 @@ fn copy_dir(src: &Path, dst: &Path, ancestors: &mut Vec<PathBuf>, report: &mut C
         if fs::metadata(&path)?.is_dir() {
             copy_dir(&path, &to, ancestors, report)?;
         } else {
-            report.bytes += fs::copy(&path, &to)?;
+            report.bytes += copy_file(&path, &to)?;
             report.files += 1;
         }
     }
@@ -205,12 +218,46 @@ pub fn move_entry(src: &Path, dst: &Path) -> io::Result<()> {
 /// ERROR_NOT_SAME_DEVICE: 다른 볼륨으로 옮기기(D-044 ②).
 /// - 원본 트리에 재분석 지점이 있으면 시작 전에 거부한다(원본·대상 모두 바꾸지 않는다).
 /// - 복사한 뒤 원본·대상의 파일 수·폴더 수·바이트가 같을 때만 원본을 지운다. 다르면 원본을 두고 오류.
+/// - 삭제 직전 원본의 목록·크기·수정 시각이 복사 전과 다르면 원본을 지우지 않고 오류(복사본은 남긴다).
 pub fn move_across_volumes(src: &Path, dst: &Path) -> io::Result<()> {
+    move_verified(src, dst, || {})
+}
+
+/// Sorted (relative path, is_dir, len, modified) list of a tree, not following links.
+type Snapshot = Vec<(PathBuf, bool, u64, Option<std::time::SystemTime>)>;
+
+fn snapshot(root: &Path) -> io::Result<Snapshot> {
+    fn walk(root: &Path, dir: &Path, out: &mut Snapshot) -> io::Result<()> {
+        for entry in fs::read_dir(dir)? {
+            let path = entry?.path();
+            let meta = fs::symlink_metadata(&path)?;
+            let rel = path.strip_prefix(root).unwrap_or(&path).to_path_buf();
+            out.push((rel, meta.is_dir(), if meta.is_dir() { 0 } else { meta.len() }, meta.modified().ok()));
+            if meta.is_dir() {
+                walk(root, &path, out)?;
+            }
+        }
+        Ok(())
+    }
+    let meta = fs::symlink_metadata(root)?;
+    let mut out = vec![(PathBuf::new(), meta.is_dir(), if meta.is_dir() { 0 } else { meta.len() }, meta.modified().ok())];
+    if meta.is_dir() {
+        walk(root, root, &mut out)?;
+    }
+    out.sort();
+    Ok(out)
+}
+
+// shortcut: the source is compared once right before delete(); a change between that check and the
+// delete still loses data. Close it with a lock/handle-based delete if that race matters.
+fn move_verified(src: &Path, dst: &Path, after_copy: impl FnOnce()) -> io::Result<()> {
     let before = tree_summary(src)?;
     if before.3 > 0 {
         return Err(io::Error::new(io::ErrorKind::Unsupported, MOVE_REFUSED_LINKS));
     }
+    let snap = snapshot(src)?;
     let report = copy_entry(src, dst)?;
+    after_copy();
     let after = tree_summary(dst)?;
     let copied_ok = report.skipped_links.is_empty() && (after.0, after.1, after.2) == (before.0, before.1, before.2);
     if !copied_ok {
@@ -218,6 +265,9 @@ pub fn move_across_volumes(src: &Path, dst: &Path) -> io::Result<()> {
             "copy incomplete (source {}/{}/{} vs copy {}/{}/{}); source kept",
             before.0, before.1, before.2, after.0, after.1, after.2
         )));
+    }
+    if snapshot(src)? != snap {
+        return Err(io::Error::other("source changed during move; source and copy kept"));
     }
     delete(src)
 }
@@ -264,6 +314,35 @@ mod tests {
         assert!(!dir.join("n1").exists());
         fs::remove_dir_all(&dir).unwrap();
     }
+
+    #[test]
+    fn copy_keeps_existing_destination() {
+        let dir = std::env::temp_dir().join(format!("wg-d1-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(dir.join("a.txt"), b"new").unwrap();
+        fs::write(dir.join("b.txt"), b"old").unwrap();
+        let e = copy_entry(&dir.join("a.txt"), &dir.join("b.txt")).unwrap_err();
+        assert_eq!(e.kind(), io::ErrorKind::AlreadyExists);
+        assert_eq!(fs::read(dir.join("b.txt")).unwrap(), b"old");
+        fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn copy_keeps_streams_and_mtime() {
+        let dir = std::env::temp_dir().join(format!("wg-ads-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let a = dir.join("a.txt");
+        fs::write(&a, b"body").unwrap();
+        fs::write(dir.join("a.txt:notes"), b"note").unwrap();
+        fs::File::options().write(true).open(&a).unwrap().set_modified(std::time::UNIX_EPOCH + std::time::Duration::from_secs(1_000_000_000)).unwrap();
+        copy_entry(&a, &dir.join("b.txt")).unwrap();
+        assert_eq!(fs::read(dir.join("b.txt")).unwrap(), b"body");
+        assert_eq!(fs::read(dir.join("b.txt:notes")).unwrap(), b"note");
+        assert_eq!(fs::metadata(&a).unwrap().modified().unwrap(), fs::metadata(dir.join("b.txt")).unwrap().modified().unwrap());
+        fs::remove_dir_all(&dir).unwrap();
+    }
 }
 
 #[cfg(test)]
@@ -284,6 +363,10 @@ mod d044_tests {
         move_across_volumes(&dir.join("copy"), &dir.join("moved")).unwrap();
         assert!(!dir.join("copy").exists());
         assert_eq!(tree_summary(&dir.join("moved")).unwrap(), (2, 2, 8, 0));
+        // source changed after the copy: source stays, copy stays, error returned
+        let changed = || fs::write(dir.join("moved").join("a.txt"), b"abcd").unwrap();
+        assert!(move_verified(&dir.join("moved"), &dir.join("moved2"), changed).is_err());
+        assert!(dir.join("moved").join("a.txt").exists() && dir.join("moved2").exists());
         fs::remove_dir_all(&dir).unwrap();
     }
 }
