@@ -66,3 +66,18 @@ Verdict: fix 1 first.
 Not checked: 앱 실행·재실측·원본 픽셀 재계산·범위 밖 기능은 생략했다. 비활성 항목 규칙은 코드 확인만 되어 회귀 테스트 보장이 남아 있다.
 
 결론 REWORK
+
+## R1
+
+- 대상: work/ui `282cfae`, worktree `D:\projects\workbench-gpui\.worktrees\ui`. 커밋 `282cfae`를 부모 `157808e`와 대조했다. 사용자 지정 H-30에 따라 Cargo 변경 없이 순수 decide 함수와 일반 테스트로 검증한다.
+- 정확성: closed → is_list_key → Chord::feed 순서를 유지한다. decide는 Wait/Action/Replay/Pass를 같은 순서와 의미로 옮긴다. 활성 Action은 예약 후 true, 미예약 Action은 기존 chord 불리언을 반환한다. Wait는 타이머 후 true, Pass는 false다.
+- Replay는 prefix_action 결과에 enabled item_index를 적용하고, 있으면 schedule_item한 뒤 같은 이벤트로 intercept를 다시 호출한다. 예약이 발생할 때의 clear/generation 증가도 기존 schedule_item 그대로다. Replay 결과를 현재 키의 소비 결과로 잘못 반환하지 않았다.
+- replay_prefix의 중첩 if-let → and_then은 첫 Option이 Some일 때만 item_index를 호출하며 결과가 Some일 때만 예약하므로 동작 불변이다. 타임아웃 경로도 이 함수를 계속 사용한다.
+- `disabled_item_is_never_reserved`는 비활성 단일 키의 None/false, 비활성 chord의 None/true, 비활성 접두 확정의 None, 활성 Action의 Some(1)/true, 활성 접두 확정의 Some(1)을 단언한다. 기존 늦은 타이머 테스트도 유지한다.
+- 테스트 한계: Feed를 직접 만들고 enabled 조회와 prefix_action도 테스트 함수로 공급한다. 실제 Chord::feed의 키맵 해석, 실제 ContextMenu::item_index 및 타임아웃 replay_prefix 호출, 재귀 재처리와 실행 이벤트까지 통합 검증하지 않는다. 이 부분은 운영 호출부 코드와 이전 diff를 대조했다. H-30으로 승인된 순수 판정 테스트 범위에서는 이전 REWORK의 필수 소비/예약 규칙을 검증하므로 수용한다. 전체 chord 상호작용 검증으로 확대 해석하지 않는다.
+- 검증: worktree에서 공유 CARGO_TARGET_DIR로 전체 cargo test 1회, 59 passed / 0 failed. cargo clippy --all-targets 1회 exit 0, 기준선 경고 10개만 존재하고 신규 0. P3-D 검증과 같은 실행을 공유했으며 반복하지 않았다.
+- ponytail-review: 추출된 판정은 운영 intercept가 직접 사용한다. 새로운 의존성·설정·범위 밖 동작 변경 없음. 추가 수정 요구 없음.
+- 실측 필요/사용자 확인 필요: 신규 없음. src 수정·커밋·앱 실행 없음. 공유 PROGRESS는 lead가 이 절을 근거로 갱신한다.
+- 생략·위험: 실제 키 입력/타이머 통합 테스트는 수행하지 않았다. Feed 및 조회 stub을 통한 판정 단위 테스트라는 한계가 남는다.
+
+결론 PASS
