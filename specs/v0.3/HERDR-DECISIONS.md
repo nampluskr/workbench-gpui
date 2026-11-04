@@ -106,6 +106,10 @@
 - 판단: 가장 되돌리기 쉬운 쪽으로 정한다. 스펙에 없는 수치도 `src/ui/metrics.rs` 상수로 옮기고 주석을 `// spec: none (app value)`로 단다. `spec/zed-metrics.toml`에는 넣지 않는다(spec 소유, 추정 입력 금지). R-10 집계에서는 metrics.rs 안이므로 0건 판정에 들어간다. `px(0.)`은 gpui 상수(`Pixels::ZERO` 등)로 바꿔도 값이 같다.
 - 결과: TASKS Phase 2 카드에 반영. DECISIONS.md(사용자 소유)는 고치지 않는다. 사용자 확인 필요 목록에 올린다. 다르게 정하면 주석만 바꾸면 된다.
 
+### H-29 · 2026-11-04 · lead (impl-ui 대체 모델, 위임 H-26)
+- 요청: Phase 3 착수 시점(08:59)에 impl-ui agy Claude 5시간 한도 100%(초기화 12:20). 사용자 지시 "멈추지 말고, 단계별로 모든 phase 를 진행해 주세요."
+- 판단: HERDR-SETUP 1.1에 미리 정한 대체(`impl-ui` → Claude Code, Sonnet 5.5, effort medium)로 바꾼다. 같은 pane `wE:p1`, 같은 worktree `.worktrees/ui`, 이름 `impl-ui`. Claude 구독은 여유(사용자 2026-11-03), measure와 같은 구독이라 동시에 무거운 작업을 돌리지 않는다. 역할·소유권·지침은 그대로. 사용자 확인 목록에 올린다.
+
 ### H-28 · 2026-11-04 · lead (measure 클립보드, 위임 H-26)
 - 요청: P1-E R-12 phase4·d043·d044가 클립보드 보호 동작으로 두 번 멈췄다. 사용자가 비운 뒤에도 형식 49161(DataObject)·49171(Ole Private Data)과 텍스트 형식(13·16·1·7)이 남았다(OLE 텍스트 복사 래퍼).
 - 판단: 사용자가 클립보드를 비웠고 진행을 지시했으므로 내용은 보존 대상이 아니다. measure가 각 스크립트 직전에 `[System.Windows.Forms.Clipboard]::Clear()`로 비우고 형식 0개를 확인한 뒤 실행한다. 스크립트 보호 동작은 고치지 않는다. 실행 중에는 measure에 프롬프트를 보내지 않는다.
