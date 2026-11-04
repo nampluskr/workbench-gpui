@@ -36,6 +36,9 @@ use crate::text_io::{self, Format};
 pub struct Tab<E = Entity<EditorState>> {
     pub path: PathBuf,
     pub preview: bool,
+    /// A rendered Markdown preview of `path` (L-69), not a second editor of it: its `editor` is a hidden view kept
+    /// equal to the file like any other view, and the tab draws that text rendered. Never a preview tab (I-064).
+    pub markdown: bool,
     pub editor: E,
 }
 
@@ -266,8 +269,14 @@ pub fn read_text(path: &Path) -> Option<(String, Option<Format>, u64)> {
 }
 
 impl<E> Pane<E> {
+    /// The editor tab of `path` (a Markdown preview of it is `find_preview`).
     pub fn find(&self, path: &Path) -> Option<usize> {
-        self.tabs.iter().position(|t| t.path == path)
+        self.tabs.iter().position(|t| !t.markdown && t.path == path)
+    }
+
+    /// The Markdown preview tab of `path`.
+    pub fn find_preview(&self, path: &Path) -> Option<usize> {
+        self.tabs.iter().position(|t| t.markdown && t.path == path)
     }
 
     pub fn active_tab(&self) -> Option<&Tab<E>> {
@@ -716,7 +725,7 @@ mod tests {
 
     /// A new tab (view) in `pane`.
     fn view(pane: &mut Pane<()>, path: &str, preview: bool) {
-        pane.place(Tab { path: path.into(), preview, editor: () });
+        pane.place(Tab { path: path.into(), preview, markdown: false, editor: () });
     }
 
     /// A forgotten doc (replaced preview, I-062: `PaneGroup::open_in`) drops its earlier load.

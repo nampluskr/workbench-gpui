@@ -54,6 +54,10 @@ pub mod pane {
     gpui_kit::actions!(pane, [CloseActiveItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown]);
 }
 
+pub mod markdown {
+    gpui_kit::actions!(markdown, [OpenPreview, OpenPreviewToTheSide]);
+}
+
 pub mod zed {
     gpui_kit::actions!(zed, [Quit, Minimize, Zoom]);
 }

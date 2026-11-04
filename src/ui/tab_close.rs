@@ -312,7 +312,8 @@ const SAVE_WAIT: std::time::Duration = std::time::Duration::from_millis(25);
 #[derive(Clone)]
 pub enum Then {
     /// Close this one tab (the file's view in that pane).
-    Drop(Entity<FolderWorkspace>, PaneId, PathBuf),
+    /// The bool is a Markdown preview tab (L-69): the same path as the editor tab beside it.
+    Drop(Entity<FolderWorkspace>, PaneId, PathBuf, bool),
     /// Close the window / quit; covers every tab of every folder.
     Exit(Exit),
 }
@@ -320,11 +321,11 @@ pub enum Then {
 impl Then {
     fn run(&self, this: &mut super::Workbench, window: &mut Window, cx: &mut Context<super::Workbench>) {
         match self {
-            Then::Drop(ws, pane, path) => {
+            Then::Drop(ws, pane, path, markdown) => {
                 if this.prompt == Prompt::Asking {
                     this.prompt = Prompt::Idle;
                 }
-                this.drop_tab(ws, *pane, path, window, cx);
+                this.drop_tab(ws, *pane, path, *markdown, window, cx);
             }
             Then::Exit(exit) => {
                 this.prompt = Prompt::Leaving;
@@ -509,8 +510,8 @@ fn open_states(open: &[Open]) -> Vec<CloseState> {
 }
 
 /// Removes the view of `path` in pane `pane` (no question); the file goes with its last view.
-pub fn remove_tab(ws: &mut FolderWorkspace, pane: PaneId, path: &Path, cx: &mut Context<FolderWorkspace>) {
-    if let Some(ix) = ws.group.panes.get(&pane).and_then(|p| p.find(path)) {
+pub fn remove_tab(ws: &mut FolderWorkspace, pane: PaneId, path: &Path, markdown: bool, cx: &mut Context<FolderWorkspace>) {
+    if let Some(ix) = ws.group.panes.get(&pane).and_then(|p| if markdown { p.find_preview(path) } else { p.find(path) }) {
         ws.group.close_view(pane, ix);
         cx.notify();
     }
@@ -545,16 +546,16 @@ impl super::Workbench {
         if p.close_protected(ix) {
             return;
         }
-        let Some(path) = p.tabs.get(ix).map(|t| t.path.clone()) else { return };
+        let Some((path, markdown)) = p.tabs.get(ix).map(|t| (t.path.clone(), t.markdown)) else { return };
         match group.close_state(&path) {
             CloseState::Gone => {}
-            CloseState::Clean => self.drop_tab(&ws, pane, &path, window, cx),
+            CloseState::Clean => self.drop_tab(&ws, pane, &path, markdown, window, cx),
             CloseState::Wait | CloseState::Ask => {
                 if self.prompt != Prompt::Idle {
                     return;
                 }
                 self.prompt = Prompt::Asking;
-                let then = Then::Drop(ws, pane, path);
+                let then = Then::Drop(ws, pane, path, markdown);
                 cx.spawn_in(window, async move |this, cx| {
                     let go = resolve(then, &this, cx).await;
                     let _ = this.update(cx, |this, _| {
@@ -567,8 +568,8 @@ impl super::Workbench {
     }
 
     /// Removes the tab and gives the keyboard back to the pane (the closed editor may have had it).
-    pub(super) fn drop_tab(&mut self, ws: &Entity<FolderWorkspace>, pane: PaneId, path: &Path, window: &mut Window, cx: &mut Context<Self>) {
-        ws.update(cx, |ws, cx| remove_tab(ws, pane, path, cx));
+    pub(super) fn drop_tab(&mut self, ws: &Entity<FolderWorkspace>, pane: PaneId, path: &Path, markdown: bool, window: &mut Window, cx: &mut Context<Self>) {
+        ws.update(cx, |ws, cx| remove_tab(ws, pane, path, markdown, cx));
         self.center_focus.focus(window, cx);
         cx.notify();
     }
@@ -600,7 +601,7 @@ impl super::Workbench {
             out.push(Open { item: Dirty { ws: ws.clone(), path: path.to_path_buf(), name }, waiting });
         };
         match then {
-            Then::Drop(ws, _, path) => look(ws, path),
+            Then::Drop(ws, _, path, _) => look(ws, path),
             Then::Exit(_) => {
                 for folder in &self.folders.state.folders {
                     let Some(ws) = self.folders.workspaces.get(&folder.id) else { continue };

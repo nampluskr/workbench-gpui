@@ -80,6 +80,9 @@ pub const BUILTIN: &[Builtin] = &[
     b("f10", "Workspace", "app_menu::Toggle", "I-310"),
     // Pin and split (P4-2, P4-3b). Zed binds them in the Pane / Editor contexts; the editor and the tab bar sit inside Workspace here.
     b("ctrl-k shift-enter", "Workspace", "pane::TogglePinTab", "I-065"),
+    // Zed binds these in Editor / MarkdownPreview with a `.md` condition; the handler does nothing for other files.
+    b("ctrl-shift-v", "Workspace", "markdown::OpenPreview", "I-044, I-045"),
+    b("ctrl-k v", "Workspace", "markdown::OpenPreviewToTheSide", "I-044"),
     b("ctrl-\\", "Workspace", "pane::SplitRight", "I-731"),
     b("ctrl-k up", "Workspace", "pane::SplitUp", "I-731"),
     b("ctrl-k down", "Workspace", "pane::SplitDown", "I-731"),

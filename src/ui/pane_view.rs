@@ -19,6 +19,9 @@ use super::layout::{self, BarEnd, TabDrag, TabPress, TabView};
 use super::layout_probe::probe;
 use super::pane::editor_view;
 use super::pane_group::{Axis, Node, PaneGroup, PaneId, SPLIT_LINE_HITBOX, SPLIT_LINE_THICKNESS, SplitDirection, SplitMode, drop_overlay};
+use super::markdown_preview::{self, file_name, preview_title};
+use super::pane::Tab;
+use super::panel_menu::is_markdown;
 use super::tab_drag::body_hint;
 
 /// L-17 zoomed pane: 8px around it (`pane["zoomed_padding"]`) and a 1px border (`pane["zoomed_border"]`).
@@ -42,6 +45,11 @@ impl Render for DividerDrag {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div()
     }
+}
+
+/// The title a tab shows: the file name, or "Preview {name}" for a Markdown preview (L-69).
+fn tab_title<E>(t: &Tab<E>) -> String {
+    if t.markdown { preview_title(&file_name(&t.path)) } else { t.title() }
 }
 
 /// The flexes of the axis at `path` (child indices from `root`).
@@ -73,7 +81,9 @@ fn split_item(dir: SplitDirection) -> (&'static str, &'static str) {
 
 impl Workbench {
     /// The center area: the pane tree of the active folder, or the zoomed pane alone (I-730).
-    pub(super) fn pane_tree(&self, cx: &Context<Self>) -> AnyElement {
+    pub(super) fn pane_tree(&self, window: &Window, cx: &Context<Self>) -> AnyElement {
+        // L-306: the tree and the sidebar take focus away from the panes (a Markdown preview tab then dims).
+        let focus = !(self.panel_focus.is_focused(window) || self.sidebar_focus.is_focused(window));
         let Some(ws) = self.active_ws() else {
             let theme = cx.theme();
             return v_flex()
@@ -92,17 +102,17 @@ impl Workbench {
                     .size_full()
                     .p(ZOOMED_PADDING)
                     .bg(theme.background)
-                    .child(div().size_full().border_1().border_color(theme.border).child(self.pane_el(z, group, cx)))
+                    .child(div().size_full().border_1().border_color(theme.border).child(self.pane_el(z, group, focus, cx)))
                     .into_any_element()
             }
-            None => self.node_el(&group.root, &mut Vec::new(), group, cx),
+            None => self.node_el(&group.root, &mut Vec::new(), group, focus, cx),
         }
     }
 
-    fn node_el(&self, node: &Node, path: &mut Vec<usize>, group: &PaneGroup, cx: &Context<Self>) -> AnyElement {
+    fn node_el(&self, node: &Node, path: &mut Vec<usize>, group: &PaneGroup, focus: bool, cx: &Context<Self>) -> AnyElement {
         let Node::Axis { axis, children, flexes } = node else {
             let Node::Pane(id) = node else { unreachable!("a node is a pane or an axis") };
-            return self.pane_el(*id, group, cx);
+            return self.pane_el(*id, group, focus, cx);
         };
         let horizontal = *axis == Axis::Horizontal;
         let theme = cx.theme();
@@ -130,7 +140,7 @@ impl Workbench {
         }
         for (i, (child, flex)) in children.iter().zip(flexes).enumerate() {
             path.push(i);
-            let inner = self.node_el(child, path, group, cx);
+            let inner = self.node_el(child, path, group, focus, cx);
             path.pop();
             // The wrapper does not clip, so the divider's mouse area can reach 2px into the previous child.
             el = el.child(
@@ -171,7 +181,7 @@ impl Workbench {
     }
 
     /// One pane: its tab bar and the active tab's editor (I-706 end buttons only on the active pane).
-    fn pane_el(&self, id: PaneId, group: &PaneGroup, cx: &Context<Self>) -> AnyElement {
+    fn pane_el(&self, id: PaneId, group: &PaneGroup, focus: bool, cx: &Context<Self>) -> AnyElement {
         let pane = &group.panes[&id];
         let focused = group.active == id;
         let theme = cx.theme();
@@ -182,13 +192,15 @@ impl Workbench {
             .map(|(i, t)| {
                 let doc = group.docs.get(&t.path);
                 TabView {
-                    title: t.title().into(),
+                    title: tab_title(t).into(),
+                    markdown: t.markdown,
+                    focused: focus && focused,
                     preview: t.preview,
                     pinned: pane.is_pinned(i),
                     active: pane.active == Some(i),
                     press: Rc::new(cx.listener(move |this, p: &TabPress, window, cx| this.on_tab_press(id, i, *p, window, cx))),
                     unpin: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.toggle_pin_at(id, i, window, cx))),
-                    drag: TabDrag { pane: id, ix: i, title: t.title().into() },
+                    drag: TabDrag { pane: id, ix: i, title: tab_title(t).into() },
                     dropped: Rc::new(cx.listener(move |this, d: &TabDrag, window, cx| this.drop_tab_at(d, id, i, window, cx))),
                     dirty: doc.is_some_and(|d| d.modified()),
                     conflict: doc.is_some_and(|d| d.has_conflict()),
@@ -213,11 +225,27 @@ impl Workbench {
         });
         let item: AnyElement = match (focused.then_some(&self.editor_poc).and_then(Option::as_ref), pane.active_tab()) {
             (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
+            (None, Some(t)) if t.markdown => markdown_preview::body(id, t.editor.read(cx).value(), cx).into_any_element(),
             (None, Some(t)) => {
                 let readonly = !group.docs.get(&t.path).is_some_and(|d| d.loaded);
                 div().size_full().bg(theme.background).child(editor_view(&t.editor, readonly)).into_any_element()
             }
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
+        };
+        // E-038, E-039: a Markdown editor tab gets the toolbar with the preview button.
+        let item = match pane.active_tab().filter(|t| !t.markdown && is_markdown(&t.path)) {
+            Some(_) if !(focused && self.editor_poc.is_some()) => {
+                let on_preview: layout::CloseHandler = Rc::new(cx.listener(|this, _: &ClickEvent, window, cx| {
+                    let side = window.modifiers().alt;
+                    this.open_markdown_preview(side, window, cx)
+                }));
+                v_flex()
+                    .size_full()
+                    .child(layout::markdown_toolbar(on_preview, cx))
+                    .child(div().flex_1().min_h_0().child(item))
+                    .into_any_element()
+            }
+            _ => item,
         };
         v_flex()
             .on_children_prepainted(probe(&["tab-bar", "active-item"]))

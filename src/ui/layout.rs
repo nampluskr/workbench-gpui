@@ -171,6 +171,29 @@ pub fn tab_press(button: MouseButton, clicks: usize, pinned: bool) -> TabPress {
     }
 }
 
+/// Which text colour a tab title takes (L-306).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TabText {
+    Text,
+    Muted,
+    Hidden,
+}
+
+/// L-306, L-314: an editor tab is `text` when active and `text_muted` otherwise, whatever has focus. A Markdown preview
+/// tab follows its pane's focus: focused → the same; without focus (deemphasized) the active one is `text_muted` and
+/// the inactive one `status.hidden`, much fainter.
+pub fn tab_text(markdown: bool, active: bool, pane_focused: bool) -> TabText {
+    match (markdown && !pane_focused, active) {
+        (false, true) => TabText::Text,
+        (false, false) | (true, true) => TabText::Muted,
+        (true, false) => TabText::Hidden,
+    }
+}
+
+/// `status.hidden` has no spec value (spec/zed-metrics.toml, ambiguous.md); gpui-kit has no such token.
+// shortcut: the muted colour at half strength stands for `status.hidden`; replace with the measured colour (L-306).
+const HIDDEN_OPACITY: f32 = 0.5;
+
 /// Mouse press handler of a tab.
 pub type PressHandler = std::rc::Rc<dyn Fn(&TabPress, &mut Window, &mut App)>;
 
@@ -239,6 +262,10 @@ pub struct TabView {
     pub press: PressHandler,
     /// Click on the pin icon: unpin (L-66).
     pub unpin: CloseHandler,
+    /// A rendered Markdown preview tab (L-69): the `FileDoc` (book) icon is always drawn, no italic.
+    pub markdown: bool,
+    /// The tab's pane has focus (the active pane); a preview tab dims without it (L-306).
+    pub focused: bool,
     /// This tab as a drag payload (I-074) and what a drop on it does (I-715).
     pub drag: TabDrag,
     pub dropped: DropHandler,
@@ -330,7 +357,11 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
                         .gap(TAB_GAP)
                         .items_center()
                         .text_size(TEXT_SIZE_DEFAULT)
-                        .when(!tab.active, |d| d.text_color(theme.muted_foreground))
+                        .text_color(match tab_text(tab.markdown, tab.active, tab.focused) {
+                            TabText::Text => theme.foreground,
+                            TabText::Muted => theme.muted_foreground,
+                            TabText::Hidden => theme.muted_foreground.opacity(HIDDEN_OPACITY),
+                        })
                         .child(
                             div()
                                 .flex()
@@ -341,7 +372,13 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
                                 // shortcut: Accent approximated by the theme primary (no Accent token in gpui-kit); conflict uses Warning (L-65).
                                 .when(tab.dirty, |d| d.child(div().size(TAB_INDICATOR_SIZE).rounded_full().bg(if tab.conflict { theme.warning } else { theme.primary }))),
                         )
-                        .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone()))
+                        .child(
+                            h_flex()
+                                .gap(TAB_GAP)
+                                .items_center()
+                                .when(tab.markdown, |d| d.child(Icon::new(IconName::BookOpen).size(ICON_SMALL)))
+                                .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone())),
+                        )
                         .child(end_slot(i, tab, glyph_font, cx)),
                 ),
         );
@@ -492,6 +529,39 @@ pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, gly
         }))
 }
 
+/// E-038 toolbar box: padding 6 / 8, at least 32 high, 1px line below, quick actions 1px apart.
+const TOOLBAR_MIN_HEIGHT: Rems = rems_from_px(32.);
+const TOOLBAR_PADDING_X: Rems = rems_from_px(8.);
+const TOOLBAR_PADDING_Y: Rems = rems_from_px(6.);
+const TOOLBAR_QUICK_ACTIONS_GAP: Pixels = px(1.);
+
+/// The toolbar of a Markdown editor tab with its quick actions (E-038, E-039): the preview button (`Eye`, Small,
+/// tooltip "Preview Markdown" with its key and the meta line). Buffer Search and Selection Controls are not built yet.
+// shortcut: the toolbar shows for Markdown files only (no breadcrumbs, no other quick actions yet), and takes the editor
+// background for `toolbar_background`; extend to every editor tab with the breadcrumb work.
+pub fn markdown_toolbar(on_preview: CloseHandler, cx: &App) -> impl IntoElement {
+    let theme = cx.theme();
+    let mut tip = Spec::one("toolbar-btn-preview", Line::action("Preview Markdown", "markdown::OpenPreview"));
+    tip.meta = Some("Alt-Click to open in a split".into());
+    h_flex()
+        .on_children_prepainted(probe(&["toolbar-btn-preview"]))
+        .flex_shrink_0()
+        .w_full()
+        .min_h(TOOLBAR_MIN_HEIGHT)
+        .px(TOOLBAR_PADDING_X)
+        .py(TOOLBAR_PADDING_Y)
+        .justify_end()
+        .items_center()
+        .gap(TOOLBAR_QUICK_ACTIONS_GAP)
+        .border_b_1()
+        .border_color(theme.border)
+        .bg(theme.background)
+        .child(
+            icon_with_probe("toolbar-btn-preview", &["toolbar-icon-preview"], IconName::Eye, Some(tip), cx)
+                .on_click(move |e, window, cx| on_preview(e, window, cx)),
+        )
+}
+
 /// 1 논리 px (rem 16 기준) — 활성 탭 아래 여백(L-63 `pb_px`).
 fn rems_1px() -> Rems {
     BORDER_1PX
@@ -604,7 +674,7 @@ fn project_panel_toggle_tooltip(dock_open: bool) -> Spec {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{TabPress, tab_drop_left, tab_press};
+    use super::{TabPress, TabText, tab_drop_left, tab_press, tab_text};
     use gpui_kit::MouseButton;
 
     /// I-063, I-066, I-075, L-74: a left press activates, a double press promotes, a middle click closes a normal
@@ -617,6 +687,19 @@ mod tests {
         assert_eq!(tab_press(MouseButton::Middle, 1, false), TabPress::Close);
         assert_eq!(tab_press(MouseButton::Middle, 1, true), TabPress::Ignore);
         assert_eq!(tab_press(MouseButton::Right, 1, false), TabPress::Ignore);
+    }
+
+    /// L-306, L-314: only a Markdown preview tab dims with the pane's focus.
+    #[test]
+    fn tab_text_follows_l306() {
+        for focused in [true, false] {
+            assert_eq!(tab_text(false, true, focused), TabText::Text);
+            assert_eq!(tab_text(false, false, focused), TabText::Muted);
+        }
+        assert_eq!(tab_text(true, true, true), TabText::Text);
+        assert_eq!(tab_text(true, false, true), TabText::Muted);
+        assert_eq!(tab_text(true, true, false), TabText::Muted);
+        assert_eq!(tab_text(true, false, false), TabText::Hidden);
     }
 
     /// I-715: the line is on the left when the dragged tab starts after the target (or in another pane), else right.

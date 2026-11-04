@@ -376,12 +376,26 @@ impl<E> PaneGroup<E> {
             p.active = Some(i);
             return Some(Opened { ix: i, created: false, read: None });
         }
-        let (ix, replaced) = p.place(Tab { path: path.to_path_buf(), preview, editor: make() });
+        let (ix, replaced) = p.place(Tab { path: path.to_path_buf(), preview, markdown: false, editor: make() });
         if let Some(old) = replaced {
             self.forget_if_unseen(&old.path);
         }
         let read = self.docs.find(path).is_none().then(|| self.docs.add(path));
         Some(Opened { ix, created: true, read })
+    }
+
+    /// L-69: opens the Markdown preview of `path` in `pane` next to the active tab; one that is already there is activated.
+    /// Returns its index and whether it is new (it then needs its text: `copy_source`). The file must be open (its doc).
+    pub fn open_markdown(&mut self, pane: PaneId, path: &Path, make: impl FnOnce() -> E) -> Option<(usize, bool)> {
+        self.docs.find(path)?;
+        let p = self.panes.get_mut(&pane)?;
+        self.active = pane;
+        if let Some(i) = p.find_preview(path) {
+            p.active = Some(i);
+            return Some((i, false));
+        }
+        let (ix, _) = p.place(Tab { path: path.to_path_buf(), preview: false, markdown: true, editor: make() });
+        Some((ix, true))
     }
 
     /// A user edit in view `editor` whose buffer hashes to `hash`: the file's dirty state, and the edit promotes that
@@ -417,7 +431,7 @@ impl<E> PaneGroup<E> {
     pub fn close_path(&mut self, path: &Path) {
         let ids: Vec<PaneId> = self.panes.keys().copied().collect();
         for id in ids {
-            while let Some(ix) = self.panes.get(&id).and_then(|p| p.find(path)) {
+            while let Some(ix) = self.panes.get(&id).and_then(|p| p.tabs.iter().position(|t| t.path == path)) {
                 self.close_view(id, ix);
             }
         }
@@ -459,7 +473,7 @@ impl<E> PaneGroup<E> {
         match mode {
             SplitMode::Clone => {
                 let tab = self.active_pane().active_tab()?;
-                let view = Tab { path: tab.path.clone(), preview: false, editor: clone(tab) };
+                let view = Tab { path: tab.path.clone(), preview: false, markdown: tab.markdown, editor: clone(tab) };
                 let id = self.add_pane(src, dir);
                 self.panes.get_mut(&id)?.insert_at(view, 0, false);
                 self.active = id;
@@ -550,7 +564,7 @@ impl<E> PaneGroup<E> {
         let pinned = src.is_pinned(ix);
         let Some(tab) = src.close_tab(ix) else { return };
         let dst = self.panes.get_mut(&to).expect("checked above");
-        match dst.find(&tab.path) {
+        match if tab.markdown { dst.find_preview(&tab.path) } else { dst.find(&tab.path) } {
             // The file is already shown there: keep that tab, drop the dragged view.
             Some(i) => dst.active = Some(i),
             None => {
@@ -571,12 +585,12 @@ impl<E> PaneGroup<E> {
     /// the tab. `copy` (Ctrl held, an editor that can clone) puts a new view there instead and leaves the source.
     pub fn drop_split(&mut self, from: PaneId, ix: usize, target: PaneId, dir: SplitDirection, copy: Option<E>) -> Option<PaneId> {
         let tab = self.panes.get(&from)?.tabs.get(ix)?;
-        let path = tab.path.clone();
+        let (path, markdown) = (tab.path.clone(), tab.markdown);
         let pinned = self.panes[&from].is_pinned(ix);
         let id = self.add_pane(target, dir);
         match copy {
             Some(editor) => {
-                self.panes.get_mut(&id)?.insert_at(Tab { path, preview: false, editor }, 0, false);
+                self.panes.get_mut(&id)?.insert_at(Tab { path, preview: false, markdown, editor }, 0, false);
             }
             None => {
                 let tab = self.panes.get_mut(&from)?.close_tab(ix)?;
@@ -592,12 +606,12 @@ impl<E> PaneGroup<E> {
     /// a new view (`editor`, a copy made by the caller; never a preview). A pane that already shows the file only
     /// activates that tab. Nothing happens within one pane.
     pub fn copy_tab_view(&mut self, from: PaneId, ix: usize, to: PaneId, at: usize, editor: E) {
-        let Some(path) = self.panes.get(&from).and_then(|p| p.tabs.get(ix)).map(|t| t.path.clone()) else { return };
+        let Some((path, markdown)) = self.panes.get(&from).and_then(|p| p.tabs.get(ix)).map(|t| (t.path.clone(), t.markdown)) else { return };
         let Some(dst) = self.panes.get_mut(&to).filter(|_| from != to) else { return };
-        match dst.find(&path) {
+        match if markdown { dst.find_preview(&path) } else { dst.find(&path) } {
             Some(i) => dst.active = Some(i),
             None => {
-                dst.insert_at(Tab { path, preview: false, editor }, at, false);
+                dst.insert_at(Tab { path, preview: false, markdown, editor }, at, false);
             }
         }
         self.active = to;
@@ -696,6 +710,19 @@ impl PaneGroup {
         (o.ix, true)
     }
 
+    /// Opens the Markdown preview tab of `path` in `pane` (L-69, `open_markdown`). Its hidden editor starts with the
+    /// text of another view; a file still being read fills it with the rest (`fill`).
+    pub fn open_preview(&mut self, pane: PaneId, path: &Path, window: &mut Window, cx: &mut Context<FolderWorkspace>) -> Option<usize> {
+        let (ix, created) = self.open_markdown(pane, path, || Self::new_editor(window, cx))?;
+        if created {
+            let new = self.panes[&pane].tabs[ix].editor.clone();
+            if let Some(text) = copy_source(self.views(path), &new).map(|src| src.read(cx).value()) {
+                new.update(cx, |e, cx| e.set_value(text, window, cx));
+            }
+        }
+        Some(ix)
+    }
+
     /// A new editor with the text of tab `ix` of pane `from` (the copy of a Ctrl-drag, I-718).
     pub fn clone_view(&self, from: PaneId, ix: usize, window: &mut Window, cx: &mut Context<FolderWorkspace>) -> Option<Entity<EditorState>> {
         let text = self.panes.get(&from)?.tabs.get(ix)?.editor.read(cx).value();
@@ -783,6 +810,26 @@ mod tests {
 
     fn clone(g: &mut G, dir: SplitDirection) -> Option<u32> {
         g.split(dir, SplitMode::Clone, |t| t.editor + 1000)
+    }
+
+    /// L-69: a preview is a second tab of the same file beside the editor tab; `find` still means the editor tab, a
+    /// second request activates the preview, and the file stays open while either view is.
+    #[test]
+    fn markdown_preview_is_its_own_tab() {
+        let mut g = G::default();
+        open(&mut g, "a.md", false);
+        assert_eq!(g.open_markdown(0, Path::new("b.md"), || 9), None, "the file must be open");
+        assert_eq!(g.open_markdown(0, Path::new("a.md"), || 9), Some((1, true)));
+        assert_eq!(g.panes[&0].find(Path::new("a.md")), Some(0));
+        assert_eq!(g.panes[&0].find_preview(Path::new("a.md")), Some(1));
+        g.panes.get_mut(&0).unwrap().active = Some(0);
+        assert_eq!(g.open_markdown(0, Path::new("a.md"), || 10), Some((1, false)));
+        assert_eq!(g.panes[&0].active, Some(1));
+        assert_eq!(g.views(Path::new("a.md")).count(), 2, "the hidden editor is a view that stays in sync");
+        g.close_view(0, 0);
+        assert!(g.docs.find(Path::new("a.md")).is_some(), "the preview keeps the file");
+        g.close_path(Path::new("a.md"));
+        assert_eq!(g.tab_count(), 0);
     }
 
     /// I-718: a Ctrl-drop copies the tab to another pane and keeps the source; a pane that has the file only activates it.
@@ -951,9 +998,9 @@ mod tests {
     #[test]
     fn i722_dropped_tab_is_normal_and_pins_in_run() {
         let mut p = super::Pane::<u32>::default();
-        p.insert_at(super::Tab { path: "a".into(), preview: true, editor: 1 }, 0, false);
+        p.insert_at(super::Tab { path: "a".into(), preview: true, markdown: false, editor: 1 }, 0, false);
         p.toggle_pin(0);
-        p.insert_at(super::Tab { path: "b".into(), preview: true, editor: 2 }, 0, false);
+        p.insert_at(super::Tab { path: "b".into(), preview: true, markdown: false, editor: 2 }, 0, false);
         assert_eq!((p.pinned_count, p.tabs[0].preview), (2, false));
     }
 

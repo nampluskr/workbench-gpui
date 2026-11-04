@@ -7,6 +7,7 @@ mod context_menu;
 mod editor_poc;
 mod folders;
 mod keymap;
+mod markdown_preview;
 mod layout;
 mod layout_probe;
 mod menu_common;
@@ -244,7 +245,7 @@ impl Workbench {
         let project_panel = self.render_project_panel(window, cx);
         let editing = self.panel_editing(cx);
         // P4-3b: every pane of the active folder (tab bar and body each), or the zoomed one alone.
-        let tree = self.pane_tree(cx);
+        let tree = self.pane_tree(window, cx);
         let theme = cx.theme();
         let handle = to_px(DOCK_HANDLE_WIDTH, window);
         // Dock 폭과 핸들 위치 모두 유효 폭 기준이다.
@@ -571,6 +572,8 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_close_active_item))
             .on_action(cx.listener(Self::on_toggle_pin_tab))
+            .on_action(cx.listener(Self::on_open_preview))
+            .on_action(cx.listener(Self::on_open_preview_to_the_side))
             .on_action(cx.listener(Self::on_split_right))
             .on_action(cx.listener(Self::on_split_left))
             .on_action(cx.listener(Self::on_split_up))

@@ -46,7 +46,7 @@ pub struct OpenPanelMenu {
 /// 항목 하나: (글자, 켜짐, 단축키를 고를 액션 이름, 명령).
 type Item = (&'static str, bool, Option<&'static str>, PanelCmd);
 
-fn is_markdown(path: &Path) -> bool {
+pub(super) fn is_markdown(path: &Path) -> bool {
     path.extension()
         .map(|e| e.to_string_lossy().to_lowercase())
         .is_some_and(|e| e == "md" || e == "markdown")

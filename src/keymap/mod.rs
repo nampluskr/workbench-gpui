@@ -22,6 +22,8 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("workspace::Save", false),
     ("pane::CloseActiveItem", false),
     ("pane::TogglePinTab", false),
+    ("markdown::OpenPreview", false),
+    ("markdown::OpenPreviewToTheSide", false),
     ("pane::SplitRight", false),
     ("pane::SplitLeft", false),
     ("pane::SplitUp", false),
