@@ -19,8 +19,7 @@
 //! 닫힘(I-519): 메뉴 밖 누름, Escape, 실행 뒤, 포커스 잃음. 실행 전에 원래 포커스를 복원한다(I-309).
 //! 메뉴가 열린 채 항목의 단축키를 누르면 그 항목을 선택 표시하고 50ms 뒤 닫고 실행한다(I-520).
 
-use std::time::{SystemTime, UNIX_EPOCH};
-
+use crate::dev::now_ms;
 use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
@@ -28,6 +27,7 @@ use gpui_kit::*;
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
 use super::metrics::menu::*;
+use super::menu_common::{self, Chord, Feed};
 use super::metrics::{BUTTON_DEFAULT, ICON_SMALL};
 use super::tooltip::{self, Line, Spec};
 
@@ -229,13 +229,6 @@ const NAME_PROBES: [&str; 8] = [
     "menu-name-6", "menu-name-7",
 ];
 
-fn now_ms() -> u128 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or_default()
-}
-
 pub struct AppMenu {
     menus: Vec<(String, Vec<Entry>)>,
     focus: FocusHandle,
@@ -252,10 +245,8 @@ pub struct AppMenu {
     pending: Option<(Box<dyn Action>, u64)>,
     /// 예약 세대. 메뉴를 열거나 바꾸거나 닫을 때마다 올린다.
     generation: u64,
-    /// 메뉴가 열린 채 받은 chord 의 앞 키들(항목 단축키 해석용, 리뷰 1회차 ③).
-    pending_input: Vec<Keystroke>,
-    /// chord 대기 시간 초과 표지. 새 접두를 기다릴 때마다 올린다.
-    chord_token: u64,
+    /// 메뉴가 열린 채 받은 chord 의 앞 키들과 대기 시간 초과 표지(항목 단축키 해석용, 리뷰 1회차 ③).
+    chord: Chord,
     /// 메뉴를 열기 직전 포커스의 컨텍스트 스택(항목 단축키 해석용, 리뷰 2회차 ⓑ).
     prev_stack: Vec<KeyContext>,
     _intercept: Option<Subscription>,
@@ -291,8 +282,7 @@ impl AppMenu {
             bar_bounds: None,
             pending: None,
             generation: 0,
-            pending_input: Vec::new(),
-            chord_token: 0,
+            chord: Chord::default(),
             prev_stack: Vec::new(),
             last_logged: String::new(),
             _blur: Some(blur),
@@ -477,7 +467,7 @@ impl AppMenu {
     /// 단축키 실행 예약을 지우고 세대를 올린다(이미 걸린 50ms 타이머는 세대가 달라 아무것도 하지 않는다).
     fn cancel_pending(&mut self) {
         self.pending = None;
-        self.pending_input.clear();
+        self.chord.clear();
         self.generation += 1;
     }
 
@@ -530,39 +520,26 @@ impl AppMenu {
             .position(|e| matches!(e, Entry::Item { action, .. } if *action == name))
     }
 
-    /// 입력을 메뉴를 열기 직전 포커스의 컨텍스트 스택으로 푼다(gpui `Keymap::bindings_for_input`: 깊이·순서·해제·가려짐,
-    /// I-702~I-704). (이기는 바인딩의 액션 이름, 더 긴 바인딩이 이어질 수 있는가).
-    fn resolve(&self, input: &[Keystroke], cx: &App) -> (Option<&'static str>, bool) {
-        let keymap = cx.key_bindings();
-        let keymap = keymap.borrow();
-        let (bindings, pending) = keymap.bindings_for_input(input, &self.prev_stack);
-        (bindings.first().map(|b| b.action().name()), pending)
-    }
-
-    /// gpui 의 접두 확정과 같다: 기다리던 키들 가운데 가장 긴 앞부분이 바인딩으로 풀리면 그것을 실행 대상으로 본다.
-    /// 그 액션이 열린 메뉴의 항목이면 예약한다.
+    /// gpui 의 접두 확정과 같다: 기다리던 키들 가운데 가장 긴 앞부분이 바인딩으로 풀리면 그것을 실행 대상으로 본다
+    /// (메뉴를 열기 직전 포커스의 컨텍스트 스택, I-702~I-704). 그 액션이 열린 메뉴의 항목이면 예약한다.
     fn replay_prefix(&mut self, prefix: &[Keystroke], window: &mut Window, cx: &mut Context<Self>) {
-        for len in (1..=prefix.len()).rev() {
-            let (first, _) = self.resolve(&prefix[..len], cx);
-            if let Some(name) = first {
-                if let Some(index) = self.item_index(name) {
-                    self.schedule_item(index, window, cx);
-                }
-                return;
-            }
+        if let Some(name) = menu_common::prefix_action(&self.prev_stack, prefix, cx)
+            && let Some(index) = self.item_index(name)
+        {
+            self.schedule_item(index, window, cx);
         }
     }
 
     /// chord 앞부분을 기다리기 시작한다. gpui 와 같은 시간(1초, gpui-pre `window.rs` `PENDING_INPUT_TIMEOUT`)이
     /// 지나도록 다음 키가 없으면 기다리던 키들로 확정한다.
     fn start_chord_timeout(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        self.chord_token += 1;
-        let token = self.chord_token;
+        let token = self.chord.wait();
         cx.spawn_in(window, async move |this, cx| {
             cx.background_executor().timer(CHORD_TIMEOUT).await;
             let _ = this.update_in(cx, |this, window, cx| {
-                if this.chord_token == token && this.open.is_some() && !this.pending_input.is_empty() {
-                    let prefix = std::mem::take(&mut this.pending_input);
+                if this.open.is_some()
+                    && let Some(prefix) = this.chord.take_expired(token)
+                {
                     if this.dev(cx) {
                         println!("[dev] menu-chord-timeout keys={} t_ms={}", prefix.len(), now_ms());
                     }
@@ -586,42 +563,31 @@ impl AppMenu {
         if self.open.is_none() {
             return false;
         }
-        if self.pending_input.is_empty() {
-            let keymap = cx.key_bindings();
-            let keymap = keymap.borrow();
-            let (bindings, _) =
-                keymap.bindings_for_input(std::slice::from_ref(&event.keystroke), &event.context_stack);
-            if let Some(first) = bindings.first() {
-                let name = first.action().name();
-                if name.starts_with("menu::") || name == "app_menu::Toggle" {
-                    return false;
+        if self
+            .chord
+            .is_list_key(event, cx, |name| name.starts_with("menu::") || name == "app_menu::Toggle")
+        {
+            return false;
+        }
+        match self.chord.feed(&event.keystroke, &self.prev_stack, cx) {
+            Feed::Wait => {
+                self.start_chord_timeout(window, cx);
+                true
+            }
+            Feed::Action { name, chord } => {
+                if let Some(index) = self.item_index(name) {
+                    self.schedule_item(index, window, cx);
+                    return true;
                 }
+                // 메뉴 항목이 아닌 동작. chord 였으면 앞 키를 이미 소비했으니 이번 키도 소비해 반쪽 입력을 남기지 않는다.
+                chord
             }
-        }
-        let mut input = self.pending_input.clone();
-        input.push(event.keystroke.clone());
-        let (first, pending) = self.resolve(&input, cx);
-        if pending {
-            self.pending_input = input;
-            self.start_chord_timeout(window, cx);
-            return true;
-        }
-        if let Some(name) = first {
-            let chord = input.len() > 1;
-            self.pending_input.clear();
-            if let Some(index) = self.item_index(name) {
-                self.schedule_item(index, window, cx);
-                return true;
+            Feed::Replay(prefix) => {
+                self.replay_prefix(&prefix, window, cx);
+                self.intercept(event, window, cx)
             }
-            // 메뉴 항목이 아닌 동작. chord 였으면 앞 키를 이미 소비했으니 이번 키도 소비해 반쪽 입력을 남기지 않는다.
-            return chord;
+            Feed::Pass => false,
         }
-        if !self.pending_input.is_empty() {
-            let prefix = std::mem::take(&mut self.pending_input);
-            self.replay_prefix(&prefix, window, cx);
-            return self.intercept(event, window, cx);
-        }
-        false
     }
 
     fn on_mouse_down_out(&mut self, event: &MouseDownEvent, window: &mut Window, cx: &mut Context<Self>) {
@@ -657,27 +623,22 @@ impl AppMenu {
         let border = theme.border;
         let muted = theme.muted_foreground;
         let selected_bg = theme.secondary_hover;
-        let bg = theme.popover;
-        let fg = theme.popover_foreground;
-        let shadow = tooltip::elevation_2_shadow(theme.is_dark());
         let max_height = window.viewport_size().height * MAX_HEIGHT_RATIO;
         let prev_focus = self.prev_focus.clone();
 
         let entries = self.entries().to_vec();
         let mut rows_log = Vec::new();
-        let mut list = v_flex()
-            .on_children_prepainted(probe(&ROW_PROBES))
-            .id("app-menu-list")
-            // I-313: 최소 폭 200 은 테두리 안쪽 폭이다(바깥 폭 = 200 + 테두리 1 × 2 = 202).
-            .min_w(MIN_WIDTH)
-            .py(LIST_PAD_Y)
-            .max_h(max_height)
-            .overflow_y_scroll();
+        // I-313: 최소 폭 200 은 테두리 안쪽 폭이다(바깥 폭 = 200 + 테두리 1 × 2 = 202).
+        let mut list = menu_common::list(
+            v_flex().on_children_prepainted(probe(&ROW_PROBES)),
+            "app-menu-list",
+            max_height,
+        );
         for (i, entry) in entries.iter().enumerate() {
             match entry {
                 Entry::Separator => {
                     rows_log.push("---".to_string());
-                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(SEPARATOR_HEIGHT).w_full().bg(border));
+                    list = list.child(menu_common::separator(border));
                 }
                 Entry::Item { label, action } => {
                     let shortcut = keymap::shortcut_for_name(action, prev_focus.as_ref(), window, cx);
@@ -687,14 +648,7 @@ impl AppMenu {
                     ));
                     let selected = self.selected == Some(i);
                     list = list.child(
-                        h_flex()
-                            .id(("app-menu-row", i))
-                            .mx(ROW_MARGIN_X)
-                            .px(ROW_PAD_X)
-                            .rounded(ROW_RADIUS)
-                            .justify_between()
-                            .text_size(ROW_TEXT)
-                            .line_height(relative(ROW_LINE_HEIGHT))
+                        menu_common::row(("app-menu-row", i))
                             .when(selected, |row| row.bg(selected_bg))
                             .on_hover(cx.listener(move |this, hovered: &bool, _, cx| {
                                 if *hovered && this.selected != Some(i) {
@@ -707,11 +661,7 @@ impl AppMenu {
                             .child(div().whitespace_nowrap().child(label.clone()))
                             .when_some(shortcut, |row, s| {
                                 row.child(
-                                    div()
-                                        .flex_shrink_0()
-                                        .ml(SHORTCUT_GAP)
-                                        .text_color(muted)
-                                        .child(s),
+                                    menu_common::shortcut_cell().text_color(muted).child(s),
                                 )
                             }),
                     );
@@ -733,15 +683,8 @@ impl AppMenu {
             .on_action(cx.listener(Self::on_next_menu))
             .on_action(cx.listener(Self::on_previous_menu))
             // I-520 항목 단축키는 `intercept`(키 입력 가로채기)가 맡는다.
-            .on_mouse_down_out(cx.listener(Self::on_mouse_down_out))
-            .occlude()
-            .bg(bg)
-            .text_color(fg)
-            .border_1()
-            .border_color(border)
-            .rounded(RADIUS)
-            .shadow(shadow)
-            .child(list);
+            .on_mouse_down_out(cx.listener(Self::on_mouse_down_out));
+        let popup = menu_common::popup_surface(popup, cx).child(list);
 
         div()
             .absolute()

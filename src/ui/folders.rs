@@ -823,14 +823,18 @@ impl Workbench {
                 .hover(move |s| s.bg(hover_bg))
                 .child(label)
         };
-        let Some(index) = self.folders.active_index() else {
-            return v_flex()
-                .on_children_prepainted(super::layout_probe::probe(&["project-empty-text", "project-empty-open"]))
+        // Same body for the empty and missing-path guide screens (AUDIT 10).
+        let guide = || {
+            v_flex()
                 .size_full()
                 .p(super::metrics::EMPTY_BODY_PADDING)
                 .gap(super::metrics::EMPTY_BODY_GAP)
                 .text_size(super::metrics::TEXT_SIZE_DEFAULT)
                 .text_color(muted)
+        };
+        let Some(index) = self.folders.active_index() else {
+            return guide()
+                .on_children_prepainted(super::layout_probe::probe(&["project-empty-text", "project-empty-open"]))
                 .child(div().child("Choose one of the options below to use the Project Panel"))
                 .child(button("project-open-project", "Open Project").on_click(cx.listener(
                     |this, _: &ClickEvent, window, cx| {
@@ -844,13 +848,8 @@ impl Workbench {
         };
         let id = self.folders.state.folders[index].id.clone();
         if self.folders.missing.contains(&id) {
-            return v_flex()
+            return guide()
                 .on_children_prepainted(super::layout_probe::probe(&["project-missing-text", "project-missing-remove"]))
-                .size_full()
-                .p(super::metrics::EMPTY_BODY_PADDING)
-                .gap(super::metrics::EMPTY_BODY_GAP)
-                .text_size(super::metrics::TEXT_SIZE_DEFAULT)
-                .text_color(muted)
                 .child(div().child("This folder no longer exists."))
                 .child(button("project-missing-remove", "Remove").on_click(cx.listener(
                     move |this, _: &ClickEvent, window, cx| {

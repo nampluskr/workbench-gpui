@@ -8,17 +8,15 @@
 //! 닫힘(I-519): 메뉴 밖 누름, Escape, 실행 뒤, 포커스 잃음. Escape·실행이면 원래 포커스를 돌려준다(I-309).
 //! 고른 항목은 `ContextMenuEvent::Chosen(번호)` 로 알린다. 닫히면 `Dismissed`.
 
-use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
+use gpui_kit::component::{ActiveTheme as _, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
-use super::metrics::menu::{
-    CHORD_TIMEOUT, LIST_PAD_Y, MAX_HEIGHT_RATIO, MIN_WIDTH, RADIUS, ROW_LINE_HEIGHT, ROW_MARGIN_X, ROW_PAD_X, ROW_RADIUS,
-    ROW_TEXT, SEPARATOR_HEIGHT, SEPARATOR_MARGIN_Y, SHORTCUT_FLASH, SHORTCUT_GAP, WINDOW_MARGIN,
-};
+use crate::dev::now_ms;
+use super::metrics::menu::{CHORD_TIMEOUT, MAX_HEIGHT_RATIO, SHORTCUT_FLASH, WINDOW_MARGIN};
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
-use super::tooltip;
+use super::menu_common::{self, Chord, Feed};
 
 #[derive(Clone, Debug)]
 pub enum CmEntry {
@@ -69,9 +67,8 @@ pub struct ContextMenu {
     /// I-520 예약(항목 번호, 세대). 50ms 뒤 세대가 같고 메뉴가 열려 있을 때만 실행한다(☰ 메뉴 D-032·D-033 과 같은 방식).
     pending: Option<(usize, u64)>,
     generation: u64,
-    /// 메뉴가 열린 채 받은 chord 앞 키들.
-    pending_input: Vec<Keystroke>,
-    chord_token: u64,
+    /// 메뉴가 열린 채 받은 chord 앞 키들과 대기 token.
+    chord: Chord,
     /// 메뉴를 열기 직전 포커스의 컨텍스트 스택(항목 단축키는 이 자리에서 해석한다, 11.2절 머리말·I-307).
     prev_stack: Vec<KeyContext>,
     _intercept: Option<Subscription>,
@@ -133,8 +130,7 @@ impl ContextMenu {
             closed: false,
             pending: None,
             generation: 0,
-            pending_input: Vec::new(),
-            chord_token: 0,
+            chord: Chord::default(),
             prev_stack,
             _intercept: intercept,
             _blur: blur,
@@ -237,34 +233,22 @@ impl Render for ContextMenu {
         let disabled_fg = theme.muted_foreground;
         let muted = theme.muted_foreground;
         let selected_bg = theme.secondary_hover;
-        let bg = theme.popover;
-        let fg = theme.popover_foreground;
-        let shadow = tooltip::elevation_2_shadow(theme.is_dark());
         let max_height = window.viewport_size().height * MAX_HEIGHT_RATIO;
 
-        let mut list = v_flex()
-            .on_children_prepainted(probe(&ROW_PROBES))
-            .id("ctx-menu-list")
-            .min_w(MIN_WIDTH)
-            .py(LIST_PAD_Y)
-            .max_h(max_height)
-            .overflow_y_scroll();
+        let mut list = menu_common::list(
+            v_flex().on_children_prepainted(probe(&ROW_PROBES)),
+            "ctx-menu-list",
+            max_height,
+        );
         for (i, entry) in self.entries.clone().into_iter().enumerate() {
             match entry {
                 CmEntry::Separator => {
-                    list = list.child(div().my(SEPARATOR_MARGIN_Y).h(SEPARATOR_HEIGHT).w_full().bg(border));
+                    list = list.child(menu_common::separator(border));
                 }
                 CmEntry::Item { label, enabled, shortcut } => {
                     let selected = enabled && self.selected == Some(i);
                     list = list.child(
-                        h_flex()
-                            .id(("ctx-menu-row", i))
-                            .mx(ROW_MARGIN_X)
-                            .px(ROW_PAD_X)
-                            .rounded(ROW_RADIUS)
-                            .justify_between()
-                            .text_size(ROW_TEXT)
-                            .line_height(relative(ROW_LINE_HEIGHT))
+                        menu_common::row(("ctx-menu-row", i))
                             .when(!enabled, |row| row.text_color(disabled_fg))
                             .when(selected, |row| row.bg(selected_bg))
                             .when(enabled, |row| {
@@ -282,9 +266,7 @@ impl Render for ContextMenu {
                             // I-509 라벨과 단축키는 양끝 정렬, 단축키 앞 여백 16.
                             .when_some(shortcut, |row, s| {
                                 row.child(
-                                    div()
-                                        .flex_shrink_0()
-                                        .ml(SHORTCUT_GAP)
+                                    menu_common::shortcut_cell()
                                         .when(enabled, |d| d.text_color(muted))
                                         .child(s),
                                 )
@@ -305,15 +287,8 @@ impl Render for ContextMenu {
             .on_action(cx.listener(Self::on_confirm))
             .on_mouse_down_out(cx.listener(|this, _: &MouseDownEvent, window, cx| {
                 this.close("click-outside", false, window, cx);
-            }))
-            .occlude()
-            .bg(bg)
-            .text_color(fg)
-            .border_1()
-            .border_color(border)
-            .rounded(RADIUS)
-            .shadow(shadow)
-            .child(list);
+            }));
+        let popup = menu_common::popup_surface(popup, cx).child(list);
 
         deferred(
             anchored()
@@ -335,7 +310,7 @@ impl ContextMenu {
     /// 예약을 지우고 세대를 올린다. 이미 걸린 50ms 타이머는 세대가 달라 아무것도 하지 않는다.
     fn cancel_pending(&mut self) {
         self.pending = None;
-        self.pending_input.clear();
+        self.chord.clear();
         self.generation += 1;
     }
 
@@ -370,33 +345,23 @@ impl ContextMenu {
         .detach();
     }
 
-    /// 메뉴를 열기 직전 자리의 컨텍스트 스택으로 푼다: (이기는 액션 이름, 더 긴 바인딩이 이어질 수 있는가).
-    fn resolve(&self, input: &[Keystroke], cx: &App) -> (Option<&'static str>, bool) {
-        let keymap = cx.key_bindings();
-        let keymap = keymap.borrow();
-        let (bindings, pending) = keymap.bindings_for_input(input, &self.prev_stack);
-        (bindings.first().map(|b| b.action().name()), pending)
-    }
-
+    /// 메뉴를 열기 직전 자리의 컨텍스트 스택으로 접두를 푼다. 그 액션이 켜진 항목이면 예약한다.
     fn replay_prefix(&mut self, prefix: &[Keystroke], window: &mut Window, cx: &mut Context<Self>) {
-        for len in (1..=prefix.len()).rev() {
-            if let (Some(name), _) = self.resolve(&prefix[..len], cx) {
-                if let Some(index) = self.item_index(name) {
-                    self.schedule_item(index, window, cx);
-                }
-                return;
-            }
+        if let Some(name) = menu_common::prefix_action(&self.prev_stack, prefix, cx)
+            && let Some(index) = self.item_index(name)
+        {
+            self.schedule_item(index, window, cx);
         }
     }
 
     fn start_chord_timeout(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        self.chord_token += 1;
-        let token = self.chord_token;
+        let token = self.chord.wait();
         cx.spawn_in(window, async move |this, cx| {
             cx.background_executor().timer(CHORD_TIMEOUT).await;
             let _ = this.update_in(cx, |this, window, cx| {
-                if this.chord_token == token && !this.closed && !this.pending_input.is_empty() {
-                    let prefix = std::mem::take(&mut this.pending_input);
+                if !this.closed
+                    && let Some(prefix) = this.chord.take_expired(token)
+                {
                     this.replay_prefix(&prefix, window, cx);
                 }
             });
@@ -412,43 +377,26 @@ impl ContextMenu {
         if self.closed {
             return false;
         }
-        if self.pending_input.is_empty() {
-            let keymap = cx.key_bindings();
-            let keymap = keymap.borrow();
-            let (bindings, _) = keymap.bindings_for_input(std::slice::from_ref(&event.keystroke), &event.context_stack);
-            if bindings.first().is_some_and(|b| b.action().name().starts_with("menu::")) {
-                return false;
+        if self.chord.is_list_key(event, cx, |name| name.starts_with("menu::")) {
+            return false;
+        }
+        match self.chord.feed(&event.keystroke, &self.prev_stack, cx) {
+            Feed::Wait => {
+                self.start_chord_timeout(window, cx);
+                true
             }
-        }
-        let mut input = self.pending_input.clone();
-        input.push(event.keystroke.clone());
-        let (first, pending) = self.resolve(&input, cx);
-        if pending {
-            self.pending_input = input;
-            self.start_chord_timeout(window, cx);
-            return true;
-        }
-        if let Some(name) = first {
-            let chord = input.len() > 1;
-            self.pending_input.clear();
-            if let Some(index) = self.item_index(name) {
-                self.schedule_item(index, window, cx);
-                return true;
+            Feed::Action { name, chord } => {
+                if let Some(index) = self.item_index(name) {
+                    self.schedule_item(index, window, cx);
+                    return true;
+                }
+                chord
             }
-            return chord;
+            Feed::Replay(prefix) => {
+                self.replay_prefix(&prefix, window, cx);
+                self.intercept(event, window, cx)
+            }
+            Feed::Pass => false,
         }
-        if !self.pending_input.is_empty() {
-            let prefix = std::mem::take(&mut self.pending_input);
-            self.replay_prefix(&prefix, window, cx);
-            return self.intercept(event, window, cx);
-        }
-        false
     }
-}
-
-fn now_ms() -> u128 {
-    std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or_default()
 }
