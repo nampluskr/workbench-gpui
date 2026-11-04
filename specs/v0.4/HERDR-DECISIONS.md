@@ -28,3 +28,8 @@
 - 9장 예외: 이 lead 세션이 끝까지 이어간다. Phase마다 HANDOFF 맨 위 절을 갱신하고 하위 에이전트는 새 대화로 시작한다.
 - 멈춤 방지: 상시 감시기(scratchpad `watch4.sh`, Monitor)가 담당 범위 안 승인을 자동 처리하고 `auto-approved.log`에 남긴다. 모르는 프롬프트는 종료하지 않고 lead에게 알린다(v0.3 watch.sh는 종료해서 멈췄다).
 - 한도 전환: Codex 5h ≤10% 또는 weekly ≤5%이면 기능 카드 리뷰·최종 확인을 `review`로 넘긴다(최종 확인을 미루지 않는 것은 1.1의 예외, 사용자 지시). agy 5h 90% 이상이면 1.1의 대체로 바꾼다.
+
+### H-5 · 2026-11-04 · lead (agy 편집 자동 승인 모드, 위임 H-4)
+- 요청: spec(agy)이 `spec/zed-metrics.toml` 편집마다 승인을 묻는다. 감시기는 긴 diff 화면에서 경로를 놓쳤다.
+- 판단: spec은 v0.3처럼 agy 편집 자동 승인 모드(shift+tab, v0.3 F5 Q-4)로 둔다. spec은 `spec/` 밖을 고치지 않는다는 규칙이 있고, 결과는 review가 표본 대조한다. impl-ui·review도 Phase 1 시작 때 같은 모드로 바꾼다. impl-ui는 worktree 안에서만 일하고, 병합 전 리뷰가 diff를 본다. `Cargo.*`·담당 밖 파일이 diff에 있으면 병합하지 않는다. 명령 승인은 감시기가 계속 맡는다.
+- 결과: spec 모드 전환. 감시기는 경로를 화면 전체에서 찾도록 고쳤다.

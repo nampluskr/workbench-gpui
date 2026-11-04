@@ -1,0 +1,68 @@
+   Compiling workbench-gpui v0.1.0 (D:\projects\workbench-gpui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.69s
+     Running unittests src\main.rs (target\debug\deps\workbench_gpui-853662eb30985309.exe)
+
+running 60 tests
+test dev::tests::cp949_lossless_cases_round_trip ... ok
+test dev::tests::cp949_detected_and_written_back_identically ... ok
+test fsops::ident::tests::d046_plain_and_prefix ... ok
+test dev::tests::cp949_rejects_yen_sign ... ok
+test fsops::names::tests::p022_confirm_rules ... ok
+test fsops::list::tests::l50_directories_first_natural ... ok
+test fsops::names::d043_tests::d043_rename_rejects_paths_and_bad_names ... ok
+test dev::tests::cp949_rejects_won_sign ... ok
+test fsops::paths::tests::copy_path_strings ... ok
+test fsops::watch::tests::d046_own_rename_taken_once ... ok
+test fsops::watch::tests::d046_root_replaced ... ok
+test fsops::watch::tests::d047_own_rename_matched_by_receive_time ... ok
+test fsops::watch::tests::p5_batch_tree_root_rename ... ok
+test fsops::watch::tests::p5_batch_waits_for_quiet_or_max ... ok
+test keymap::display::tests::l219_examples ... ok
+test fsops::watch::tests::p5_self_ops_distinguished ... ok
+test keymap::display::tests::l219_order_all_modifiers ... ok
+test keymap::display::tests::l220_key_names ... ok
+test keymap::display::tests::l221_chord ... ok
+test keymap::file::tests::broken_file ... ok
+test keymap::file::tests::empty_and_bom ... ok
+test keymap::file::tests::comments_and_trailing_commas ... ok
+test keymap::file::tests::null_unbinds ... ok
+test fsops::watch::tests::p5_batch_keeps_limit_then_lost ... ok
+test keymap::file::tests::override_binding ... ok
+test keymap::file::tests::unknown_action_is_skipped_rest_applied ... ok
+test keymap::file::tests::several_errors_in_order ... ok
+test keymap::tests::builtin_uses_only_known_actions ... ok
+test keymap::tests::action_names_unique ... ok
+test state::path::tests::a28_5_simple_case_folding ... ok
+test state::path::tests::a28_6_rejects_and_cleans ... ok
+test state::path::tests::a28_examples ... ok
+test state::path::tests::names ... ok
+test state::tests::missing_file_is_empty_without_notice ... ok
+test fsops::names::tests::p021_validation ... ok
+test state::time::tests::known_dates ... ok
+test state::win::tests::uuid_v4_shape ... ok
+test ui::app_menu::tests::definition_matches_9_2_tree ... ok
+test state::tests::newer_version_is_read_only ... ok
+test ui::app_menu::tests::phase3_menus_follow_9_2_order ... ok
+test ui::context_menu::tests::disabled_item_is_never_reserved ... ok
+test ui::layout_probe::tests::layout_json_shape ... ok
+test ui::menu_common::tests::late_timer_does_not_end_a_newer_wait ... ok
+test fsops::ident::tests::d046_dir_id_changes_with_new_folder ... ok
+test fsops::ops::tests::copy_keeps_existing_destination ... ok
+test fsops::ops::tests::copy_keeps_streams_and_mtime ... ok
+test state::tests::broken_file_is_moved_and_tmp_recovers ... ok
+test state::tests::roundtrip_and_unknown_keys ... ok
+test fsops::tree::tests::l42_fold_and_l38_guides ... ok
+test ui::task_dialog::d043_tests::d043_comctl32_loaded_once ... ok
+test ui::task_dialog::tests::config_layout_is_packed_like_commctrl ... ok
+test state::tests::keeps_three_bad_files ... ok
+test ui::metrics::tests::spec_cond_mismatch_fails - should panic ... ok
+test fsops::ops::tests::paste_names_and_copy ... ok
+test fsops::ops::d044_tests::d044_copy_report_and_verified_move ... ok
+test ui::metrics::tests::spec_font_size_tolerance_applies_to_font_size_ids - should panic ... ok
+test ui::panel_view::row_height_matches_spec ... ok
+test ui::metrics::tests::spec_value_mismatch_fails - should panic ... ok
+test ui::metrics::tests::spec_missing_id_error_names_the_id ... ok
+test ui::metrics::tests::spec_lookup_and_titlebar ... ok
+
+test result: ok. 60 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+

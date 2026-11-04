@@ -233,6 +233,10 @@ src = "04-APP-SPEC 7.1절 A-30.2"
 "end_buttons_area.border_end_left" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-27" }
 "bar_icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-300" }
 "overflow.empty_drop_width" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-70" }
+"border_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-63" }
+"active_padding_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-63" }
+"indicator_size" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-65" }
+"secondary_path.font_size" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-69" }
 
 # ==============================================================================
 # 7. 편집기·Pane 및 분할 영역 (Pane & PaneGroup)
@@ -249,6 +253,7 @@ src = "04-APP-SPEC 7.1절 A-30.2"
 "tab_bar_end_drop_min_width" = { value = 24, unit = "px", cond = "default", src = "01-LAYOUT 4.5절 I-716" }
 "zoomed_padding" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-17" }
 "zoomed_border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 3절 L-17" }
+"max_preview_tabs" = { value = 1, unit = "tabs", cond = "default", src = "02-INTERACTION 2절 I-062" }
 
 # ==============================================================================
 # 8. 상태 표시줄 (Status Bar)
@@ -372,6 +377,9 @@ src = "04-APP-SPEC 7.1절 A-30.2"
 "vertical_scroll_margin" = { value = 3, unit = "lines", cond = "default", src = "02-INTERACTION 14.3절 E-036" }
 "horizontal_scroll_margin" = { value = 5, unit = "chars", cond = "default", src = "02-INTERACTION 14.3절 E-036" }
 "alt_wheel_multiplier" = { value = 4, unit = "multiplier", cond = "default", src = "02-INTERACTION 14.3절 E-037" }
+"cursor_width" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.12.2절 E-012" }
+"cursor_blink_interval" = { value = 500, unit = "ms", cond = "default", src = "01-LAYOUT 4.12.2절 E-013" }
+"selection.corner_radius_multiplier" = { value = 0.15, unit = "ratio", cond = "default", src = "01-LAYOUT 4.12.2절 E-015" }
 
 # ==============================================================================
 # 13. Picker, 대화상자 및 인라인 입력 (Pickers, Dialogs & Inline Input)
@@ -526,13 +534,19 @@ src = "04-APP-SPEC 7.1절 A-30.2"
 "table.cell_padding_x" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
 "table.cell_padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
 "table.cell_border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-107" }
+"table.header_font_weight" = { value = 600, unit = "weight", cond = "default", src = "01-LAYOUT 5절 L-107" }
 "link.underline_width" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-108" }
+"link.underline_opacity" = { value = 0.5, unit = "ratio", cond = "default", src = "01-LAYOUT 5절 L-108" }
 "inline_code.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
+"inline_code.background_opacity" = { value = 0.08, unit = "ratio", cond = "default", src = "01-LAYOUT 5절 L-109" }
 "code_block.padding" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
 "code_block.margin_y" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
 "code_block.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
 "frontmatter.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
 "frontmatter.corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
+"frontmatter.key_cell_font_weight" = { value = 600, unit = "weight", cond = "default", src = "01-LAYOUT 5절 L-111" }
+"frontmatter.value_border_left" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
+"frontmatter.row_border_top" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
 "parse_debounce" = { value = 200, unit = "ms", cond = "default", src = "02-INTERACTION 4.1절 I-082" }
 
 # ==============================================================================

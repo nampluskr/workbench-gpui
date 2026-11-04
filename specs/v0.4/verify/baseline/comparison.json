@@ -1,0 +1,69 @@
+[
+  {
+    "script": "verify-v02-phase1",
+    "checks": 0,
+    "failedChecks": 0,
+    "cases": 9,
+    "failed": [],
+    "note": "no checks array; console.log: failures 0, cleanup errors 0, keymap restored"
+  },
+  {
+    "script": "verify-v02-phase2",
+    "checks": 137,
+    "failedChecks": 0,
+    "cases": 11,
+    "failed": []
+  },
+  {
+    "script": "verify-v02-phase3",
+    "checks": 122,
+    "failedChecks": 2,
+    "cases": 23,
+    "failed": [
+      "state R-28: expect 300 got 375",
+      "state-restart R-28: expect 494 got 617"
+    ]
+  },
+  {
+    "script": "verify-v02-phase4",
+    "checks": 208,
+    "failedChecks": 0,
+    "cases": 12,
+    "failed": []
+  },
+  {
+    "script": "verify-v02-phase4-d043",
+    "checks": 13,
+    "failedChecks": 0,
+    "cases": 6,
+    "failed": []
+  },
+  {
+    "script": "verify-v02-phase4-d044",
+    "checks": 6,
+    "failedChecks": 0,
+    "cases": 3,
+    "failed": []
+  },
+  {
+    "script": "verify-v02-phase5",
+    "checks": 62,
+    "failedChecks": 0,
+    "cases": 7,
+    "failed": []
+  },
+  {
+    "script": "verify-v02-phase5-d046",
+    "checks": 23,
+    "failedChecks": 0,
+    "cases": 6,
+    "failed": []
+  },
+  {
+    "script": "verify-v02-phase5-d047",
+    "checks": 16,
+    "failedChecks": 0,
+    "cases": 4,
+    "failed": []
+  }
+]

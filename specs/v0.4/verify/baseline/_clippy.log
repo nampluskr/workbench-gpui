@@ -1,0 +1,118 @@
+    Checking workbench-gpui v0.1.0 (D:\projects\workbench-gpui)
+warning: manual implementation of `.is_multiple_of()`
+   --> src\dev.rs:266:8
+    |
+266 |     if bytes.len() % 2 != 0 {
+    |        ^^^^^^^^^^^^^^^^^^^^ help: replace with: `!bytes.len().is_multiple_of(2)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_is_multiple_of
+    = note: `#[warn(clippy::manual_is_multiple_of)]` on by default
+
+warning: using `chunks_exact` with a constant chunk size
+   --> src\dev.rs:270:10
+    |
+270 |         .chunks_exact(2)
+    |          ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<2>().0.iter()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#chunks_exact_to_as_chunks
+    = note: `#[warn(clippy::chunks_exact_to_as_chunks)]` on by default
+
+warning: unnecessary closure used with `bool::then`
+  --> src\fsops\ident.rs:53:5
+   |
+53 |     (ok != 0).then(|| (info.volume_serial, ((info.index_high as u64) << 32) | info.index_low as u64))
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#unnecessary_lazy_evaluations
+   = note: `#[warn(clippy::unnecessary_lazy_evaluations)]` on by default
+help: use `then_some` instead
+   |
+53 -     (ok != 0).then(|| (info.volume_serial, ((info.index_high as u64) << 32) | info.index_low as u64))
+53 +     (ok != 0).then_some((info.volume_serial, ((info.index_high as u64) << 32) | info.index_low as u64))
+   |
+
+warning: this `let...else` may be rewritten with the `?` operator
+   --> src\fsops\names.rs:99:5
+    |
+ 99 | /     let Some(confirmed) = confirm(input, new_entry, false) else {
+100 | |         return None;
+101 | |     };
+    | |______^ help: replace it with: `let confirmed = confirm(input, new_entry, false)?;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#question_mark
+    = note: `#[warn(clippy::question_mark)]` on by default
+
+warning: the loop variable `k` is used to index `rows`
+   --> src\fsops\tree.rs:201:18
+    |
+201 |         for k in i + 1..=j {
+    |                  ^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#needless_range_loop
+    = note: `#[warn(clippy::needless_range_loop)]` on by default
+help: consider using an iterator and enumerate()
+    |
+201 -         for k in i + 1..=j {
+201 +         for (k, <item>) in rows.iter_mut().enumerate().take(j + 1).skip(i + 1) {
+    |
+
+warning: doc list item without indentation
+  --> src\state\mod.rs:13:5
+   |
+13 | //! A-24.2(500ms 묶어 쓰기)·A-24.3(종료 직전 쓰기)은 화면 쪽(`ui::folders`)이 부른다.
+   |     ^
+   |
+   = help: if this is supposed to be its own paragraph, add a blank line
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#doc_lazy_continuation
+   = note: `#[warn(clippy::doc_lazy_continuation)]` on by default
+help: indent this line
+   |
+13 | //!   A-24.2(500ms 묶어 쓰기)·A-24.3(종료 직전 쓰기)은 화면 쪽(`ui::folders`)이 부른다.
+   |     ++
+
+warning: redundant closure
+   --> src\ui\keymap.rs:520:30
+    |
+520 |                 if cx.update(|window, cx| load(window, cx)).is_err() {
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: replace the closure with the function itself: `load`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#redundant_closure
+    = note: `#[warn(clippy::redundant_closure)]` on by default
+
+warning: doc list item without indentation
+   --> src\ui\layout.rs:143:5
+    |
+143 | /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
+    |     ^
+    |
+    = help: if this is supposed to be its own paragraph, add a blank line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#doc_lazy_continuation
+help: indent this line
+    |
+143 | ///   탭 하나의 표시 값(Phase 4 최소 탭, R-27).
+    |     ++
+
+warning: doc list item without indentation
+   --> src\ui\layout.rs:395:5
+    |
+395 | /// Dock 이 열려 있으면 활성이다.
+    |     ^
+    |
+    = help: if this is supposed to be its own paragraph, add a blank line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#doc_lazy_continuation
+help: indent this line
+    |
+395 | ///   Dock 이 열려 있으면 활성이다.
+    |     ++
+
+warning: manual implementation of `.is_multiple_of()`
+   --> src\ui\watch.rs:274:12
+    |
+274 |         if self.watch.ticks % EXIST_EVERY == 0 {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: replace with: `self.watch.ticks.is_multiple_of(EXIST_EVERY)`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#manual_is_multiple_of
+
+warning: `workbench-gpui` (bin "workbench-gpui" test) generated 10 warnings (run `cargo clippy --fix --bin "workbench-gpui" -p workbench-gpui --tests -- ` to apply 5 suggestions)
+warning: `workbench-gpui` (bin "workbench-gpui") generated 10 warnings (10 duplicates)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.10s

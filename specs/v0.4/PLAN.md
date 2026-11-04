@@ -147,8 +147,8 @@ R-12 · R-13 · R-14 · R-15 · D-7
 
 | Phase | 상태 | 시작일 | 완료일 | 태그 | 비고 |
 |---|---|---|---|---|---|
-| Phase 0 | todo | | | `v0.4-phase-0` | |
-| Phase 1 | todo | | | `v0.4-phase-1` | |
+| Phase 0 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-0` | 기준선 v0.3과 같음(585/2), 스펙 14줄·모호 4, 최종 판정 REWORK 1 → R1 PASS |
+| Phase 1 | doing | 2026-11-04 | | `v0.4-phase-1` | |
 | Phase 2 | todo | | | `v0.4-phase-2` | |
 | Phase 3 | todo | | | `v0.4-phase-3` | |
 | Phase 4 | todo | | | `v0.4-phase-4` | |

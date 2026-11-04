@@ -1,0 +1,18 @@
+START verify-v02-phase1
+END verify-v02-phase1 exit=0
+START verify-v02-phase2
+END verify-v02-phase2 exit=0
+START verify-v02-phase3
+END verify-v02-phase3 exit=1
+START verify-v02-phase4
+END verify-v02-phase4 exit=0
+START verify-v02-phase4-d043
+END verify-v02-phase4-d043 exit=0
+START verify-v02-phase4-d044
+END verify-v02-phase4-d044 exit=0
+START verify-v02-phase5
+END verify-v02-phase5 exit=0
+START verify-v02-phase5-d046
+END verify-v02-phase5-d046 exit=0
+START verify-v02-phase5-d047
+END verify-v02-phase5-d047 exit=0

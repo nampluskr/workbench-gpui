@@ -8,7 +8,39 @@
 
 ### Phase 0 — 기준선과 새 화면 스펙
 
-없음(시작 전).
+**P0-1 v0.4 기준선 (R-1)** (2026-11-04)
+- 무엇을 했나: measure가 master에서 build·apply-manifest·test·clippy를 돌리고, v0.3 `run-p0-0c.ps1`을 경로만 바꾼 `run-baseline.ps1`로 v0.2 검증 스크립트 9개를 `-OutDir specs\v0.4\verify\baseline\<이름>`으로 1회씩 실행했다. 사용자 부재, 입력 없음, 실행 전 클립보드 비움.
+- 결과
+
+  | R-n | 항목 | v0.3 종료(기준) | v0.4 기준선 | 증거 |
+  |---|---|---|---|---|
+  | R-1 | 빌드 경고 | 0 | 0 | `verify/baseline/build.md`, `_build.log` |
+  | R-1 | 테스트 | 60 통과 | 60 통과 / 0 실패 | `_test.log` |
+  | R-1 | clippy 경고 | 10 | 10 | `_clippy.log` |
+  | R-1 | 스크립트 8개(checks 배열) | 585 통과 / 2 실패 | 585 통과 / 2 실패 | `comparison.json`, 폴더별 `results.json` |
+  | R-1 | phase1 | 9사례, failures 0 | 9사례, failures 0 | `verify-v02-phase1/` |
+  | R-1 | 알려진 실패 phase3 R-28 | 300→375, 494→617 | 같음 | `README.md` |
+
+- 검증: V3(스크립트 실행). measure 보고, reviewer 대조(`verify/reviews/phase0-final.md`). 앱 데이터 전후 파일 없음(`_backup/after.json` restored=true).
+- 특이사항: d043-clip 미실행·휴지통 판정 불가는 v0.3과 같은 이유다. phase3 폭 실패 2건은 Phase 2(P4)에서 `sidebar["default_width"]` 300으로 맞출 대상이다(D-3).
+
+**P0-2 새 화면 수치 스펙화 (R-2)** (2026-11-04)
+- 무엇을 했나: spec이 탭·편집기 저장·분할·마크다운 미리보기·에디터 8건 관련 원문 절을 확인하고 `spec/zed-metrics.toml`에 없는 항목을 더했다(14줄). 이미 있는 항목은 ID만 확인했다. 동작 규칙은 `spec/INDEX.md`에 위치만 색인(4.4·4.12·13.4절 보강).
+- 결과: 모호·추정 4건을 `spec/ambiguous.md`에 기록 — E-034 스크롤바 마커 개별 치수, E-012·D-10 한글 혼합 줄 기준선 허용치, I-713·I-842 분할 드롭 경계·우선순위, I-726·I-840 Pane 최소 드래그 크기.
+- 검증: spec의 `tomllib` 파싱·필수 필드 검사. review 표본 대조 P0-3.
+- 특이사항: 모호 4건은 Phase 2·4 카드에서 V3 실측으로 판정한다.
+
+**P0-3 P0-2 표본 대조** (2026-11-04)
+- 무엇을 했나: review가 5개 영역 22건을 원문과 대조했다.
+- 결과: PASS(`verify/reviews/P0-3.md`).
+- 검증: 원문 대조, `cargo test` 60 통과.
+- 특이사항: 없음.
+
+**Phase 0 종료** (2026-11-04, lead, 위임 H-4)
+- 무엇을 했나: PLAN "Phase 종료 때". R-15는 Phase 0 제외. V3·V4 대상 없음(src 변경 없음). `/ponytail-debt` 대상 없음. reviewer 최종 판정.
+- 결과: reviewer 1차 REWORK(이 PROGRESS 대조표 없음) → lead가 기록. src 변경 0.
+- 검증: `git diff --stat` src 없음.
+- 특이사항: 없음.
 
 ### Phase 1 — 정리: AUDIT 3·4, `Duration` 하드코딩, clippy
 

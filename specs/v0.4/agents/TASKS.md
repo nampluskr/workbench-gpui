@@ -8,7 +8,7 @@
 순서: P0-1 ∥ P0-2 → P0-3. src는 아무도 바꾸지 않는다.
 
 ### P0-1 v0.4 기준선(R-1)
-- 상태: doing
+- 상태: done
 - 담당: measure
 - 리뷰: reviewer(판정만, Phase 0 끝)
 - 브랜치: master
@@ -24,7 +24,7 @@
 - 비고: 사용자가 자리를 비운 상태다. 화면 잠금이면 [BLOCKED]로 보고.
 
 ### P0-2 새 화면 수치 스펙화(R-2)
-- 상태: doing
+- 상태: done
 - 담당: spec
 - 리뷰: review(P0-3)
 - 요구·결정: R-2, D-6, D-7, D-10
@@ -39,7 +39,48 @@
 - 완료 조건: `[DONE] P0-2`와 추가 항목 수·모호 수·ID 목록 보고.
 
 ### P0-3 P0-2 표본 대조
-- 상태: todo
+- 상태: done (review PASS `verify/reviews/P0-3.md`)
 - 담당: review
 - 요구: R-2
 - 할 일: P0-2로 더해진 항목 가운데 영역마다 3개 이상(전체 15개 이상)을 원문과 대조한다. `specs/v0.4/verify/reviews/P0-3.md`, 결론 PASS/REWORK.
+
+## Phase 1 — 정리: AUDIT 3·4, `Duration` 하드코딩, clippy (todo, Phase 0 끝난 뒤)
+
+순서: (P1-1 → P1-2) ∥ P1-3 → P1-4 → P1-5. AUDIT 카드(P1-1~P1-3)는 동작 변경이라 카드마다 별도 커밋, 리뷰 `reviewer`.
+
+### P1-1 AUDIT 3: 붙여넣기·복제 실패 알림, 실패한 cut 항목 보존
+- 상태: todo · 담당: impl-ui · 리뷰: reviewer · 브랜치: work/ui
+- 요구·결정: R-3, D-4 · 원문: `specs/v0.3/AUDIT.md` 3
+- 범위: `src/ui/panel_ops.rs`(필요하면 `src/fsops/ops.rs`의 결과 타입만)
+- 검증 수준: V1(부분 성공·부분 실패 테스트)
+- 할 일: 일반 실패를 기존 `notify`(panel_ops.rs 87행) 또는 삭제 실패 집계 알림 패턴으로 알린다. 부분 성공이면 성공한 대상만 선택하고, 실패한 cut 항목은 `file_clipboard`에 남긴다(지금은 178행에서 전부 비운다).
+
+### P1-2 AUDIT 4 (패널 쪽): 트리 열기·복사·이동을 백그라운드로
+- 상태: todo · 담당: impl-ui · 리뷰: reviewer · 브랜치: work/ui
+- 요구·결정: R-4, D-4 · 원문: AUDIT 4
+- 범위: `src/ui/panel_nav.rs`(286행 `open_file` 주변), `src/ui/panel_ops.rs`(paste·duplicate의 복사·이동)
+- 검증 수준: V1
+- 할 일: 파일 IO를 `watch_io.rs`(200~240행)·`panel_delete.rs`(133행)의 background executor 패턴으로 옮긴다. 완료 때 workspace·요청이 아직 유효한지 확인하고 반영한다. 겹친 요청: 복사·이동은 서로 독립으로 돈다. 취소 UI 없음.
+- 테스트: 무효 요청 결과를 버리는 테스트 1개 이상.
+
+### P1-3 AUDIT 4 (탭 쪽): 큰 파일 첫 열기를 백그라운드로
+- 상태: todo · 담당: impl-editor · 리뷰: reviewer · 브랜치: work/editor
+- 요구·결정: R-4, D-4, D-10
+- 범위: `src/ui/pane.rs`(`read_text`·`open`), 필요하면 `src/ui/mod.rs`의 호출부(공통 — lead 지정: 호출부만)
+- 검증 수준: V1
+- 할 일: `read_text`를 백그라운드로 옮긴다. 탭은 먼저 만들고 내용은 읽기가 끝나면 넣는다(`set_value`는 UI 스레드). 같은 탭에 열기 요청이 겹치면 마지막 요청 결과만 반영한다. 완료 전에 탭·workspace가 닫히면 결과를 버린다. 기존 해시(`hash`, D-046) 동작을 유지한다.
+- 테스트: 겹친 열기에서 마지막 요청만 반영되는 테스트, 닫힌 탭 결과를 버리는 테스트.
+
+### P1-4 남은 `Duration` 하드코딩을 metrics.rs 앱 상수로
+- 상태: todo · 담당: impl-ui · 리뷰: review · 브랜치: work/ui
+- 요구·결정: R-5, D-5
+- 범위: `src/ui/metrics.rs`(이 카드에 한해 impl-ui에 지정), `src/fsops/watch.rs`, `src/state/mod.rs`, `src/ui/watch.rs`, `src/ui/watch_io.rs`, `src/ui/keymap.rs`, `src/ui/mod.rs`(타이머 리터럴만)
+- 검증 수준: V0(값 불변)
+- 할 일: 테스트 밖의 `Duration::from_*(<숫자 리터럴>)`과 모듈 로컬 Duration 상수를 `metrics.rs`로 옮기고 `// spec: none (app value)` 주석을 단다(Zed 원문 값이면 스펙 ID). 값은 그대로. 변수 인자(`from_millis(ms)`)는 대상 아님.
+- 판정: grep 집계 명령과 결과 0건을 완료 보고에 적는다.
+
+### P1-5 clippy 기준선 경고 0건
+- 상태: todo · 담당: impl-ui(에디터 코어 파일 경고는 impl-editor) · 리뷰: review
+- 요구·결정: R-6, D-5
+- 검증 수준: V0(경고마다 동작 불변)
+- 할 일: `cargo clippy --all-targets -- -D warnings` exit 0. `allow`로 숨기지 않는다.

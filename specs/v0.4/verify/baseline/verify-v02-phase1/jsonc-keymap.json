@@ -1,0 +1,10 @@
+// 사용자 키맵 (주석 허용)
+[
+  /* F10 을 프로젝트 패널 포커스로 */
+  {
+    "context": "Workspace",
+    "bindings": {
+      "f10": "project_panel::ToggleFocus", // 줄 끝 주석
+    },
+  },
+]
