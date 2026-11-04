@@ -6,20 +6,16 @@
 //! - 앱 자신이 한 파일 작업의 경로(`SelfOps`)는 잠깐 기억해, 그 작업이 일으킨 이벤트를 바깥 변경과 구분한다.
 
 use std::path::{Path, PathBuf};
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
-/// 마지막 이벤트 뒤 이만큼 조용하면 반영한다(판단).
-pub const QUIET: Duration = Duration::from_millis(150);
-/// 이벤트가 끊이지 않아도 첫 이벤트 뒤 이만큼 지나면 반영한다(판단).
-pub const MAX_WAIT: Duration = Duration::from_millis(1000);
+use crate::ui::metrics::timing::{KEEP_RECORDS, RECORD_SLACK};
+// Timing values live in metrics.rs; re-exported so `fw::QUIET` etc. keep working.
+pub use crate::ui::metrics::timing::{MAX_WAIT, QUIET, SELF_WINDOW, SETTLE};
+
 /// 한 묶음에 낱낱이 남기는 이벤트 수. 넘으면 경로는 버리고 전부 다시 읽는다(판단).
 pub const KEEP: usize = 2048;
 /// 이보다 많은 묶음 뒤에는 잠시 뒤 한 번 더 다시 읽는다(감시 버퍼가 넘쳐 잃은 이벤트 대비, 판단).
 pub const FLOOD: usize = 256;
-/// 폭주 뒤 한 번 더 다시 읽기까지의 시간(판단).
-pub const SETTLE: Duration = Duration::from_millis(500);
-/// 앱 자신의 작업 경로를 기억하는 시간(판단).
-pub const SELF_WINDOW: Duration = Duration::from_millis(3000);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Kind {
@@ -155,11 +151,6 @@ impl Batch {
     }
 }
 
-/// 앱 작업 기록은 이 시간이 지나면 지운다(쌓이지 않게). 대응 판단은 이벤트를 받은 시각으로 한다(D-047 ⓐ).
-const KEEP_RECORDS: Duration = Duration::from_secs(60);
-/// 감시 스레드가 이벤트를 앱이 작업을 기록하기 조금 전에 받을 수 있다(작업 → 이벤트 → 기록 차례). 그만큼 앞도 본다.
-const RECORD_SLACK: Duration = Duration::from_millis(1000);
-
 /// 이벤트를 받은 시각이 앱 작업 기록 시각과 대응하는가: 기록보다 조금 앞(RECORD_SLACK)부터 기록 뒤 SELF_WINDOW 안.
 /// UI 반영이 늦어져도(지금 시각) 판단이 바뀌지 않는다(D-047 ⓐ).
 fn matches_time(event_at: Instant, recorded: Instant) -> bool {
@@ -232,6 +223,7 @@ impl SelfOps {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::time::Duration;
 
     fn ch(kind: Kind, p: &str) -> Change {
         Change { kind, path: PathBuf::from(p) }

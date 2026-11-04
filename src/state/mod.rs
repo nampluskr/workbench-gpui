@@ -17,7 +17,6 @@ pub mod time;
 pub mod win;
 
 use std::path::{Path, PathBuf};
-use std::time::Duration;
 
 use serde_json::{Map, Value, json};
 
@@ -33,8 +32,8 @@ const TMP: &str = "state.json.tmp";
 const BAD_PREFIX: &str = "state.json.bad-";
 /// A-24.6 남기는 깨진 파일 수.
 const BAD_KEEP: usize = 3;
-/// A-24.4 다시 시도 간격·횟수.
-const RETRY_DELAY: Duration = Duration::from_millis(50);
+/// A-24.4 다시 시도 횟수(간격은 metrics::timing).
+use crate::ui::metrics::timing::STATE_RETRY_DELAY as RETRY_DELAY;
 const RETRIES: usize = 3;
 
 /// 등록 폴더 하나(A-22.3~A-22.5).

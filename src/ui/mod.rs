@@ -10,7 +10,7 @@ mod keymap;
 mod layout;
 mod layout_probe;
 mod menu_common;
-mod metrics;
+pub(crate) mod metrics;
 mod pane;
 mod panel_delete;
 mod panel_edit;
@@ -370,7 +370,7 @@ impl Workbench {
             let mut seq = 0u32;
             loop {
                 cx.background_executor()
-                    .timer(Duration::from_millis(300))
+                    .timer(metrics::timing::LAYOUT_DUMP_POLL)
                     .await;
                 let mut doc = None;
                 let Ok(text) = this.update_in(cx, |this, window, cx| {
@@ -736,7 +736,7 @@ pub fn run(dev: DevOptions) {
                 // App 을 빌린 상태(cx.update 안)에서 부르지 않는다 (G-125 이벤트 루프 충돌 확인).
                 cx.spawn(async move |cx| {
                     cx.background_executor()
-                        .timer(Duration::from_millis(800))
+                        .timer(metrics::timing::DEV_CHECKS_DELAY)
                         .await;
                     crate::dev::run_checks(&dev);
                 })

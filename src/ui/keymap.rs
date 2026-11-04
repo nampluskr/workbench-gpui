@@ -13,7 +13,6 @@ use std::path::PathBuf;
 use std::rc::Rc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc;
-use std::time::Duration;
 
 use gpui_kit::component::WindowExt as _;
 use gpui_kit::*;
@@ -503,7 +502,7 @@ pub fn watch(window: &mut Window, cx: &mut App) {
         .spawn(cx, async move |cx| {
             loop {
                 cx.background_executor()
-                    .timer(Duration::from_millis(100))
+                    .timer(crate::ui::metrics::timing::KEYMAP_POLL)
                     .await;
                 if rx.try_recv().is_err() {
                     continue;
@@ -511,7 +510,7 @@ pub fn watch(window: &mut Window, cx: &mut App) {
                 // 저장 한 번에 이벤트가 여러 개 온다. 잠잠해질 때까지 기다렸다가 한 번만 읽는다.
                 loop {
                     cx.background_executor()
-                        .timer(Duration::from_millis(150))
+                        .timer(crate::ui::metrics::timing::KEYMAP_QUIET)
                         .await;
                     if rx.try_iter().count() == 0 {
                         break;

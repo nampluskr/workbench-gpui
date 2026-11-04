@@ -220,6 +220,36 @@ pub mod tooltip {
     pub const SHADOW_1_BLUR: Pixels = px(3.);
     pub const SHADOW_2_OFFSET_Y: Pixels = px(1.);
 }
+/// App timers and delays (QUIET, TICK, retry, ...). None are Zed values, so all are `spec: none`.
+pub mod timing {
+    use std::time::Duration;
+    // spec: none (app value) — apply watch events once quiet for this long after the last one (judgement).
+    pub const QUIET: Duration = Duration::from_millis(150);
+    // spec: none (app value) — apply watch events this long after the first even if they keep coming (judgement).
+    pub const MAX_WAIT: Duration = Duration::from_millis(1000);
+    // spec: none (app value) — delay before one more full reload after an event flood (judgement).
+    pub const SETTLE: Duration = Duration::from_millis(500);
+    // spec: none (app value) — how long the app's own file-op paths are remembered (judgement).
+    pub const SELF_WINDOW: Duration = Duration::from_millis(3000);
+    // spec: none (app value) — app op records are dropped after this long (D-047 a).
+    pub const KEEP_RECORDS: Duration = Duration::from_secs(60);
+    // spec: none (app value) — the watcher may report an event slightly before the app records its op; look back this far.
+    pub const RECORD_SLACK: Duration = Duration::from_millis(1000);
+    // spec: none (app value) — A-24.4 state file write retry delay.
+    pub const STATE_RETRY_DELAY: Duration = Duration::from_millis(50);
+    // spec: none (app value) — watch loop tick (judgement).
+    pub const WATCH_TICK: Duration = Duration::from_millis(100);
+    // spec: none (app value) — a tick gap longer than this is logged in dev output.
+    pub const WATCH_TICK_LATE: Duration = Duration::from_millis(250);
+    // spec: none (app value) — keymap file watcher channel poll interval.
+    pub const KEYMAP_POLL: Duration = Duration::from_millis(100);
+    // spec: none (app value) — keymap file events are batched until quiet for this long.
+    pub const KEYMAP_QUIET: Duration = Duration::from_millis(150);
+    // spec: none (app value) — `--dev-layout` dump poll interval.
+    pub const LAYOUT_DUMP_POLL: Duration = Duration::from_millis(300);
+    // spec: none (app value) — delay before dev checks start after the window opens.
+    pub const DEV_CHECKS_DELAY: Duration = Duration::from_millis(800);
+}
 /// Test helper: look up spec values by ID (`table["key"]`) in `spec/zed-metrics.toml`.
 #[cfg(test)]
 pub mod spec {
