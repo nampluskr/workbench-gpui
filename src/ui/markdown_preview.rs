@@ -69,14 +69,23 @@ fn frontmatter_body(source: &str) -> Option<&str> {
     let rest = source.strip_prefix("---")?;
     let inner = rest.strip_prefix("\r\n").or_else(|| rest.strip_prefix('\n'))?;
     let inner = inner.strip_suffix("---").or_else(|| (inner == "---").then_some(""))?;
-    Some(inner.trim_end_matches(['\r', '\n']))
+    // Only the line break that ends the last body line goes: a blank line before the closing fence stays in the body
+    // (`"a: b\n"` is `a: b` plus an empty line), so L-110 sees it.
+    Some(inner.strip_suffix("\r\n").or_else(|| inner.strip_suffix('\n')).unwrap_or(inner))
+}
+
+/// The front matter of a node `source`: a table or a raw box (L-110); `None` if `source` is not a fenced block.
+fn classify(source: &str) -> Option<Frontmatter> {
+    let body = frontmatter_body(source)?;
+    Some(frontmatter_rows(body).map_or_else(|| Frontmatter::Raw(body.to_owned()), Frontmatter::Table))
 }
 
 /// L-110: a table only if EVERY line is `key: value` with a key and a value, both non-empty, and does not start with a
 /// space; any other line (comment, blank, indented, block scalar continuation) makes the whole block a raw box.
 pub fn frontmatter_rows(body: &str) -> Option<Vec<(String, String)>> {
     let rows: Option<Vec<(String, String)>> = body
-        .lines()
+        // `split`, not `lines`: a trailing empty line (a blank line before the closing fence) must be seen.
+        .split('\n')
         .map(|line| {
             if line.starts_with(char::is_whitespace) {
                 return None;
@@ -94,9 +103,9 @@ pub fn frontmatter_rows(body: &str) -> Option<Vec<(String, String)>> {
 fn with_frontmatter(view: TextView) -> TextView {
     view.markdown_block_parser(|node, cx| {
         let source = cx.node_source(node)?;
-        let body = frontmatter_body(source)?;
-        let data = frontmatter_rows(body).map_or_else(|| Frontmatter::Raw(body.to_owned()), Frontmatter::Table);
-        Some(MarkdownNode::new("frontmatter", data).text(body.to_owned()).markdown(source.to_owned()))
+        let data = classify(source)?;
+        let text = frontmatter_body(source)?.to_owned();
+        Some(MarkdownNode::new("frontmatter", data).text(text).markdown(source.to_owned()))
     })
     .markdown_block_renderer("frontmatter", |node, _window, cx| {
         let theme = cx.theme();
@@ -235,7 +244,7 @@ pub fn file_name(path: &Path) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
+    use super::{Frontmatter, classify, BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
     use crate::ui::metrics::spec::assert_spec;
     use std::path::Path;
 
@@ -286,6 +295,18 @@ mod tests {
         assert_eq!(frontmatter_body("---\n---"), Some(""));
         assert_eq!(frontmatter_body("# heading"), None);
         assert_eq!(frontmatter_body("---"), None);
+    }
+
+    /// P4-45-R2 (4, L-110): a blank line right before the closing `---` is kept by the extraction and makes the whole
+    /// block raw, for LF and CRLF alike; the same block without it is a table.
+    #[test]
+    fn blank_line_before_the_closing_fence_makes_it_raw() {
+        for (flat, blank) in [("---\na: b\n---", "---\na: b\n\n---"), ("---\r\na: b\r\n---", "---\r\na: b\r\n\r\n---")] {
+            assert_eq!(classify(flat), Some(Frontmatter::Table(vec![("a".into(), "b".into())])), "{flat:?}");
+            assert!(matches!(classify(blank), Some(Frontmatter::Raw(_))), "{blank:?}");
+        }
+        assert_eq!(frontmatter_body("---\na: b\n\n---"), Some("a: b\n"));
+        assert_eq!(frontmatter_body("---\r\na: b\r\n\r\n---"), Some("a: b\r\n"));
     }
 
     /// L-69: "Preview {name}", 24 characters at most, an ellipsis after a cut one; no name → "Markdown Preview".

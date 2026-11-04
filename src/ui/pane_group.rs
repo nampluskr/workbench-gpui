@@ -917,6 +917,43 @@ mod tests {
         assert!(g.docs.get(Path::new("a")).unwrap().dirty, "the doc keeps the edit state");
     }
 
+    /// P4-45-R2 (5): the read and save tokens belong to the doc, not to a pane, so a tab moved to another pane keeps
+    /// them. The save started before the move completes on the right file (and no other), a read pending on the
+    /// other file still lands on its own file, and a stale token changes nothing.
+    #[test]
+    fn tokens_and_state_survive_a_tab_move() {
+        use crate::text_io::{Format, LineEnding, TextEncoding};
+        use crate::ui::pane::{ReadApply, ReadOutcome, SaveStart, text_hash};
+        let fmt = Some(Format { encoding: TextEncoding::Utf8, line_ending: LineEnding::Lf });
+        let mut g = G::default();
+        let read_a = g.open_in(0, Path::new("a"), false, || 1).unwrap().read.unwrap();
+        let read_b = g.open_in(0, Path::new("b"), false, || 2).unwrap().read.unwrap();
+        assert_eq!(g.docs.finish_read(read_a, ReadOutcome::Changed(text_hash("A"), fmt, 11)), ReadApply::Fill("a".into()));
+        // Edit "a", start its save, and only then move both tabs to a new pane ("b" is still being read).
+        assert_eq!(g.on_edit(&1, text_hash("A!")), Some("a".into()));
+        let ia = g.docs.find(Path::new("a")).unwrap();
+        let SaveStart::Write(save, _) = g.docs.begin_save(ia, "A!") else { panic!("a loaded and modified: it writes") };
+        let to = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
+        g.move_tab(0, 0, to, 0);
+        g.move_tab(0, 0, to, 1);
+        assert_eq!(names(&g, to), ["a", "b"]);
+        let (da, db) = (g.docs.get(Path::new("a")).unwrap(), g.docs.get(Path::new("b")).unwrap());
+        assert_eq!((da.saving, da.dirty), (Some(save), true), "the save in flight is still a's");
+        assert_eq!((db.pending, db.loaded), (Some(read_b), false), "the read in flight is still b's");
+        // A stale token completes nothing; the real one clears a's save and leaves b alone.
+        assert!(!g.docs.finish_save(save + 1000, true, text_hash("A!"), text_hash("A!")));
+        assert!(g.docs.finish_save(save, true, text_hash("A!"), text_hash("A!")));
+        let da = g.docs.get(Path::new("a")).unwrap();
+        assert_eq!((da.saving, da.dirty, da.hash), (None, false, text_hash("A!")));
+        let db = g.docs.get(Path::new("b")).unwrap();
+        assert_eq!((db.pending, db.hash), (Some(read_b), text_hash("")), "b is untouched by a's save");
+        // b's read, started before the move, applies to b in its new pane.
+        assert_eq!(g.docs.finish_read(read_b, ReadOutcome::Changed(text_hash("B"), fmt, 22)), ReadApply::Fill("b".into()));
+        let db = g.docs.get(Path::new("b")).unwrap();
+        assert_eq!((db.loaded, db.hash), (true, text_hash("B")));
+        assert_eq!(g.docs.get(Path::new("a")).unwrap().hash, text_hash("A!"), "and not to a");
+    }
+
     /// P4-45-R1 (3, I-045): the editor tab for a preview is found in the preview pane first, then in any other pane;
     /// none when its source was closed.
     #[test]
