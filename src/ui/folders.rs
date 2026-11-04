@@ -431,10 +431,12 @@ impl Workbench {
         let was_active = self.folders.active_index() == Some(index);
         let removed = self.folders.state.folders.remove(index);
         // R-13: 엔티티째 버리므로 그 폴더의 탭도 닫힌다.
-        if let Some(ws) = self.folders.workspaces.remove(&removed.id)
-            && self.dev(cx)
-        {
-            println!("[dev] folder-tabs-closed id={} count={}", removed.id, ws.read(cx).pane.tabs.len());
+        if let Some(ws) = self.folders.workspaces.remove(&removed.id) {
+            // Reload jobs may still hold the entity; drop their pending reads explicitly (P1-3-R1).
+            ws.update(cx, |ws, _| ws.pane.close());
+            if self.dev(cx) {
+                println!("[dev] folder-tabs-closed id={} count={}", removed.id, ws.read(cx).pane.tabs.len());
+            }
         }
         self.folders.missing.remove(&removed.id);
         let len = self.folders.state.folders.len();

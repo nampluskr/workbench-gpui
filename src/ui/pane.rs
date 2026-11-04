@@ -5,22 +5,30 @@
 //! - 이미 임시로 열린 파일을 일반으로 열면 일반 탭이 된다(I-063).
 //! - 새 탭은 활성 탭 바로 뒤에 넣는다(판단: Zed 의 새 항목 자리).
 //! - 내용은 gpui-kit Editor 로 보이고 편집을 막는다(D-18). 저장·탭 닫기·이동 기록은 없다(PoC 6단계).
+//! - First open reads the file on the background executor; the tab exists at once and gets its text when
+//!   the read finishes (v0.4 P1-3, AUDIT 4). First read and watch reload share one request token per tab:
+//!   only the latest started read applies, and a closed pane (folder removed) applies nothing.
 
 use std::path::{Path, PathBuf};
 
 use gpui_kit::component::input::EditorState;
 use gpui_kit::*;
 
-pub struct Tab {
+use super::folders::FolderWorkspace;
+
+/// `E` is the editor handle; generic only so tab bookkeeping is testable without a window.
+pub struct Tab<E = Entity<EditorState>> {
     pub path: PathBuf,
     pub preview: bool,
-    pub editor: Entity<EditorState>,
+    pub editor: E,
     /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046). 보기 전용이라
-    /// 편집기 내용은 늘 넣은 내용과 같다(D-18).
+    /// 편집기 내용은 늘 넣은 내용과 같다(D-18). While the first read is pending the editor is empty, so this is `text_hash("")`.
     pub hash: u64,
+    /// Token of the latest started read (first read or reload) not yet applied.
+    pub pending: Option<u64>,
 }
 
-impl Tab {
+impl<E> Tab<E> {
     /// 탭 제목: 파일 이름(L-64). 같은 이름 구별 설명은 넣지 않는다(판단).
     pub fn title(&self) -> String {
         self.path
@@ -30,10 +38,18 @@ impl Tab {
     }
 }
 
-#[derive(Default)]
-pub struct Pane {
-    pub tabs: Vec<Tab>,
+pub struct Pane<E = Entity<EditorState>> {
+    pub tabs: Vec<Tab<E>>,
     pub active: Option<usize>,
+    next_load: u64,
+    /// Set when the folder is removed; reads finishing afterwards are dropped (strong refs may keep it alive).
+    closed: bool,
+}
+
+impl<E> Default for Pane<E> {
+    fn default() -> Self {
+        Self { tabs: Vec::new(), active: None, next_load: 0, closed: false }
+    }
 }
 
 /// 내용 해시: UTF-8 바이트의 FNV-1a 64(dev 출력 `fnv=` 와 같은 값).
@@ -49,43 +65,66 @@ pub fn read_text(path: &Path) -> String {
     }
 }
 
-impl Pane {
+impl<E> Pane<E> {
     pub fn find(&self, path: &Path) -> Option<usize> {
         self.tabs.iter().position(|t| t.path == path)
     }
 
-    pub fn active_tab(&self) -> Option<&Tab> {
+    pub fn active_tab(&self) -> Option<&Tab<E>> {
         self.active.and_then(|i| self.tabs.get(i))
     }
 
-    /// 파일을 연다. 돌려주는 값: (탭 번호, 새로 만들었나).
-    pub fn open<V: 'static>(
-        &mut self,
-        path: &Path,
-        preview: bool,
-        window: &mut Window,
-        cx: &mut Context<V>,
-    ) -> (usize, bool) {
-        if let Some(i) = self.find(path) {
-            if !preview {
-                self.tabs[i].preview = false;
-            }
-            self.active = Some(i);
-            return (i, false);
-        }
-        let text = read_text(path);
-        let editor = cx.new(|cx| EditorState::new(window, cx));
-        editor.update(cx, |state, cx| state.set_value(text.as_str(), window, cx));
-        let tab = Tab { path: path.to_path_buf(), preview, editor, hash: text_hash(&text) };
-        if preview && let Some(pi) = self.tabs.iter().position(|t| t.preview) {
+    fn next_token(&mut self) -> u64 {
+        self.next_load += 1;
+        self.next_load
+    }
+
+    /// A new pending tab for `path` with a fresh read token.
+    fn pending_tab(&mut self, path: &Path, preview: bool, editor: E) -> (Tab<E>, u64) {
+        let token = self.next_token();
+        (Tab { path: path.to_path_buf(), preview, editor, hash: text_hash(""), pending: Some(token) }, token)
+    }
+
+    /// Starts a read for tab `ix`; any earlier read of that tab stops applying.
+    pub fn start_read(&mut self, ix: usize) -> u64 {
+        let token = self.next_token();
+        self.tabs[ix].pending = Some(token);
+        token
+    }
+
+    /// Drops every pending read (folder removal).
+    pub fn close(&mut self) {
+        self.closed = true;
+    }
+
+    /// Puts a new tab in place: replaces the preview tab (I-062) or inserts after the active tab. Returns its index.
+    fn place(&mut self, tab: Tab<E>) -> usize {
+        if tab.preview
+            && let Some(pi) = self.tabs.iter().position(|t| t.preview)
+        {
             self.tabs[pi] = tab;
             self.active = Some(pi);
-            return (pi, true);
+            return pi;
         }
         let at = self.active.map(|a| a + 1).unwrap_or(self.tabs.len()).min(self.tabs.len());
         self.tabs.insert(at, tab);
         self.active = Some(at);
-        (at, true)
+        at
+    }
+
+    /// Accepts a finished read if it is still the latest for its tab; a replaced, removed or closed tab drops it.
+    /// `hash` is the new content hash, or `None` when the content stays (unchanged or unreadable). Returns the editor
+    /// to fill. Content cannot change between start and accept: only the latest token applies.
+    pub fn finish_read(&mut self, token: u64, hash: Option<u64>) -> Option<&E> {
+        if self.closed {
+            return None;
+        }
+        let tab = self.tabs.iter_mut().find(|t| t.pending == Some(token))?;
+        tab.pending = None;
+        if let Some(h) = hash {
+            tab.hash = h;
+        }
+        Some(&tab.editor)
     }
 
     /// 트리에서 이름을 바꾸거나 옮긴 파일·폴더를 탭 경로에 반영한다(판단).
@@ -104,5 +143,110 @@ impl Pane {
             .map(|t| format!("{}|{}|{}", t.title(), if t.preview { "preview" } else { "normal" }, t.path.display()))
             .collect::<Vec<_>>()
             .join("\t")
+    }
+}
+
+impl Pane {
+    /// 파일을 연다. 돌려주는 값: (탭 번호, 새로 만들었나). A new tab starts empty and is filled when the
+    /// background read finishes; the result is dropped if the tab or workspace is gone by then.
+    pub fn open(
+        &mut self,
+        path: &Path,
+        preview: bool,
+        window: &mut Window,
+        cx: &mut Context<FolderWorkspace>,
+    ) -> (usize, bool) {
+        if let Some(i) = self.find(path) {
+            if !preview {
+                self.tabs[i].preview = false;
+            }
+            self.active = Some(i);
+            return (i, false);
+        }
+        let editor = cx.new(|cx| EditorState::new(window, cx));
+        let (tab, token) = self.pending_tab(path, preview, editor);
+        let ix = self.place(tab);
+        let path = path.to_path_buf();
+        cx.spawn_in(window, async move |ws, cx| {
+            let text = cx.background_executor().spawn(async move { read_text(&path) }).await;
+            let _ = ws.update_in(cx, |ws, window, cx| {
+                if let Some(editor) = ws.pane.finish_read(token, Some(text_hash(&text))).cloned() {
+                    editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
+                }
+            });
+        })
+        .detach();
+        (ix, true)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
+    use super::{Pane, Path, text_hash};
+
+    fn open(pane: &mut Pane<()>, path: &str, preview: bool) -> u64 {
+        let (tab, token) = pane.pending_tab(Path::new(path), preview, ());
+        pane.place(tab);
+        token
+    }
+
+    #[test]
+    fn replaced_preview_drops_earlier_load() {
+        let mut pane = Pane::<()>::default();
+        let a = open(&mut pane, "a.txt", true);
+        let b = open(&mut pane, "b.txt", true);
+        assert_eq!(pane.tabs.len(), 1);
+        assert!(pane.finish_read(a, Some(1)).is_none());
+        assert!(pane.finish_read(b, Some(2)).is_some());
+        assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (2, None));
+        // A finished token is not accepted twice.
+        assert!(pane.finish_read(b, Some(3)).is_none());
+    }
+
+    #[test]
+    fn closed_tab_drops_load() {
+        let mut pane = Pane::<()>::default();
+        let a = open(&mut pane, "a.txt", false);
+        let b = open(&mut pane, "b.txt", false);
+        pane.tabs.retain(|t| t.pending != Some(a));
+        assert!(pane.finish_read(a, Some(1)).is_none());
+        assert!(pane.finish_read(b, Some(2)).is_some());
+        assert_eq!(pane.tabs[0].hash, 2);
+    }
+
+    /// First read got A, reload got B and applied first; the late first read must not bring A back.
+    #[test]
+    fn late_first_read_after_reload_is_dropped() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        let reload = pane.start_read(0);
+        assert!(pane.finish_read(reload, Some(text_hash("B"))).is_some());
+        assert!(pane.finish_read(first, Some(text_hash("A"))).is_none());
+        assert_eq!(pane.tabs[0].hash, text_hash("B"));
+    }
+
+    /// Reload started while loading saw the file emptied (`Same` against the empty hash). The earlier first
+    /// read of A must not apply, so the tab stays empty like the disk.
+    #[test]
+    fn empty_same_reload_wins_over_first_read() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        let reload = pane.start_read(0);
+        assert!(pane.finish_read(first, Some(text_hash("A"))).is_none());
+        assert!(pane.finish_read(reload, None).is_some());
+        assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (text_hash(""), None));
+    }
+
+    /// Folder removed while first read and reload are in flight (reload keeps the workspace alive).
+    #[test]
+    fn closed_pane_drops_all_reads() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        let reload = pane.start_read(0);
+        pane.close();
+        assert!(pane.finish_read(first, Some(1)).is_none());
+        assert!(pane.finish_read(reload, Some(2)).is_none());
+        assert_eq!(pane.tabs[0].hash, text_hash(""));
     }
 }

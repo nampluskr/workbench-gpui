@@ -32,7 +32,8 @@ enum ReadResult {
 
 struct ReloadItem {
     ws: Entity<FolderWorkspace>,
-    editor: EntityId,
+    /// Pane read token; shared with the first read so only the latest started read applies (P1-3-R1).
+    token: u64,
     path: PathBuf,
     old_hash: u64,
 }
@@ -196,8 +197,11 @@ impl Workbench {
         let items: Vec<ReloadItem> = queue
             .into_iter()
             .filter_map(|(ws, path)| {
-                let tab = ws.read(cx).pane.tabs.iter().find(|t| t.path == path)?;
-                Some(ReloadItem { editor: tab.editor.entity_id(), old_hash: tab.hash, path, ws: ws.clone() })
+                let (token, old_hash) = ws.update(cx, |ws, _| {
+                    let ix = ws.pane.find(&path)?;
+                    Some((ws.pane.start_read(ix), ws.pane.tabs[ix].hash))
+                })?;
+                Some(ReloadItem { token, old_hash, path, ws })
             })
             .collect();
         if items.is_empty() {
@@ -234,15 +238,12 @@ impl Workbench {
         let dev = keymap::dev_enabled(cx);
         for (item, result) in items.into_iter().zip(results) {
             let folder_id = item.ws.read(cx).folder_id.clone();
-            // 같은 탭(편집기·경로)이 아직 있을 때만 쓴다.
-            let editor = item
-                .ws
-                .read(cx)
-                .pane
-                .tabs
-                .iter()
-                .find(|t| t.editor.entity_id() == item.editor && t.path == item.path)
-                .map(|t| t.editor.clone());
+            // Apply only if this is still the tab's latest read and the folder is not removed.
+            let new_hash = match &result {
+                ReadResult::Changed(_, h) => Some(*h),
+                _ => None,
+            };
+            let editor = item.ws.update(cx, |ws, _| ws.pane.finish_read(item.token, new_hash).cloned());
             let Some(editor) = editor else { continue };
             match result {
                 ReadResult::Same => {}
@@ -253,11 +254,6 @@ impl Workbench {
                 }
                 ReadResult::Changed(text, h) => {
                     editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
-                    item.ws.update(cx, |ws, _| {
-                        if let Some(t) = ws.pane.tabs.iter_mut().find(|t| t.editor.entity_id() == item.editor) {
-                            t.hash = h;
-                        }
-                    });
                     if dev {
                         println!(
                             "[dev] tab-reload folder={folder_id} path={} result=reloaded len={} fnv={h:016x} t_ms={}",
