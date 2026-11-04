@@ -88,7 +88,9 @@ struct Workbench {
     /// 열린 프로젝트 패널 우클릭 메뉴(R-22).
     panel_menu: Option<panel_menu::OpenPanelMenu>,
     /// 열린 탭 바 분할 팝업(I-706, P4-3b).
-    split_menu: Option<pane_view::OpenSplitMenu>,
+    split_menu: Option<pane_view::OpenMenu>,
+    /// 열린 탭 우클릭 메뉴(Pin / Unpin, P4-23b-R1).
+    tab_menu: Option<pane_view::OpenMenu>,
     /// Where a tab being dragged would land over a pane body (I-714, P4-4).
     drop_hint: Option<tab_drag::DropHint>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
@@ -329,6 +331,7 @@ impl Workbench {
             .children(dock)
             .child(
                 v_flex()
+                    .key_context(crate::keymap::builtin::PANE_CONTEXT)
                     .track_focus(&self.center_focus)
                     .flex_1()
                     .min_w_0()
@@ -589,7 +592,8 @@ impl Render for Workbench {
             .child(content)
             .children(context_menu)
             .children(self.panel_menu.as_ref().map(|m| m.menu.clone()))
-            .children(self.split_menu.as_ref().map(|m| m.menu.clone()));
+            .children(self.split_menu.as_ref().map(|m| m.menu.clone()))
+            .children(self.tab_menu.as_ref().map(|m| m.menu.clone()));
 
         client_decorations(window, border, root)
     }
@@ -684,6 +688,7 @@ pub fn run(dev: DevOptions) {
                         clip_gen: 0,
                         panel_menu: None,
                         split_menu: None,
+                        tab_menu: None,
                         drop_hint: None,
                         pending_press: None,
                         deleting: false,

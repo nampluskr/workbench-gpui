@@ -27,10 +27,16 @@ use super::tab_drag::body_hint;
 /// L-17 zoomed pane: 8px around it (`pane["zoomed_padding"]`) and a 1px border (`pane["zoomed_border"]`).
 const ZOOMED_PADDING: Pixels = px(8.);
 
-/// The open split popup (I-706, I-707) with the subscription that hears its choice.
-pub struct OpenSplitMenu {
+/// An open popup (the split popup of I-706 or a tab menu) with the subscription that hears its choice.
+pub struct OpenMenu {
     pub menu: Entity<ContextMenu>,
     _sub: Subscription,
+}
+
+impl OpenMenu {
+    pub fn new(menu: Entity<ContextMenu>, sub: Subscription) -> Self {
+        Self { menu, _sub: sub }
+    }
 }
 
 /// A divider being dragged: the axis (child indices from the root) and the divider's index in it (between children
@@ -200,6 +206,7 @@ impl Workbench {
                     active: pane.active == Some(i),
                     press: Rc::new(cx.listener(move |this, p: &TabPress, window, cx| this.on_tab_press(id, i, *p, window, cx))),
                     unpin: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.toggle_pin_at(id, i, window, cx))),
+                    context: Rc::new(cx.listener(move |this, p: &Point<Pixels>, window, cx| this.open_tab_menu(id, i, *p, window, cx))),
                     drag: TabDrag { pane: id, ix: i, title: tab_title(t).into() },
                     dropped: Rc::new(cx.listener(move |this, d: &TabDrag, window, cx| this.drop_tab_at(d, id, i, window, cx))),
                     dirty: doc.is_some_and(|d| d.modified()),
@@ -228,7 +235,13 @@ impl Workbench {
             (None, Some(t)) if t.markdown => markdown_preview::body(id, t.editor.read(cx).value(), cx).into_any_element(),
             (None, Some(t)) => {
                 let readonly = !group.docs.get(&t.path).is_some_and(|d| d.loaded);
-                div().size_full().bg(theme.background).child(editor_view(&t.editor, readonly)).into_any_element()
+                div()
+                    .size_full()
+                    .bg(theme.background)
+                    // The editor handled the press itself (selection, IME); the pane handler above is for the rest.
+                    .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
+                    .child(editor_view(&t.editor, readonly))
+                    .into_any_element()
             }
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
         };
@@ -253,6 +266,9 @@ impl Workbench {
             .size_full()
             // A press anywhere in the pane makes it the active one (the editor still gets the press).
             .capture_any_mouse_down(cx.listener(move |this, _: &MouseDownEvent, _, cx| this.activate_pane(id, cx)))
+            // A press the editor body did not take (tab bar, toolbar, empty or preview body) moves the keyboard to the
+            // pane too, so typing, Save and Close go where the active pane is (P4-23b-R1).
+            .on_mouse_down(MouseButton::Left, cx.listener(|this, _: &MouseDownEvent, window, cx| this.focus_active_pane(window, cx)))
             .child(layout::tab_bar(&tabs, end, end_drop, &self.glyph_font, cx))
             .child(
                 div()
@@ -348,7 +364,7 @@ impl Workbench {
                 }
             }
         });
-        self.split_menu = Some(OpenSplitMenu { menu, _sub: sub });
+        self.split_menu = Some(OpenMenu::new(menu, sub));
         cx.notify();
     }
 

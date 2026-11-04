@@ -4,19 +4,41 @@
 use gpui_kit::*;
 
 use super::Workbench;
+use super::context_menu::{CmEntry, ContextMenu, ContextMenuEvent};
+use super::pane_view::OpenMenu;
 use super::keymap::{self, pane as pane_actions};
 use super::layout::TabPress;
 use super::pane_group::PaneId;
+
+/// Where the keyboard goes for the active pane: its editor, or the center area for an empty pane and a preview.
+#[derive(Debug, PartialEq, Eq)]
+pub enum FocusTarget {
+    Editor,
+    Center,
+}
+
+/// `markdown`: the active tab is a Markdown preview; `None`: the pane has no tab.
+pub fn focus_target(active_is_markdown: Option<bool>) -> FocusTarget {
+    match active_is_markdown {
+        Some(false) => FocusTarget::Editor,
+        _ => FocusTarget::Center,
+    }
+}
+
+/// The context menu entry of a tab (Zed: "Pin Tab" / "Unpin Tab").
+pub fn pin_menu_label(pinned: bool) -> &'static str {
+    if pinned { "Unpin Tab" } else { "Pin Tab" }
+}
 
 impl Workbench {
 
     /// Keyboard focus to the active pane's active editor, else the center area.
     pub(super) fn focus_active_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         // A Markdown preview tab shows no editor, so the center area keeps the keys (its editor is hidden).
-        let handle = self.active_ws().and_then(|ws| ws.read(cx).group.active_tab().filter(|t| !t.markdown).map(|t| t.editor.focus_handle(cx)));
-        match handle {
-            Some(h) => h.focus(window, cx),
-            None => self.center_focus.focus(window, cx),
+        let active = self.active_ws().and_then(|ws| ws.read(cx).group.active_tab().map(|t| (t.markdown, t.editor.focus_handle(cx))));
+        match (focus_target(active.as_ref().map(|a| a.0)), active) {
+            (FocusTarget::Editor, Some((_, h))) => h.focus(window, cx),
+            _ => self.center_focus.focus(window, cx),
         }
     }
 
@@ -56,6 +78,36 @@ impl Workbench {
         cx.notify();
     }
 
+    /// The right-click menu of tab `ix` in pane `pane` (P4-2): Pin Tab / Unpin Tab for that tab, whichever is active.
+    /// The menu restores the focus it found when it closes.
+    pub(super) fn open_tab_menu(&mut self, pane: PaneId, ix: usize, position: Point<Pixels>, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(ws) = self.active_ws() else { return };
+        let Some(pinned) = ws.read(cx).group.panes.get(&pane).filter(|p| ix < p.tabs.len()).map(|p| p.is_pinned(ix)) else { return };
+        let focus = window.focused(cx);
+        let shortcut = keymap::shortcut_for_name("pane::TogglePinTab", focus.as_ref(), window, cx);
+        let entries = vec![CmEntry::with_shortcut(pin_menu_label(pinned), true, shortcut)];
+        let menu = cx.new(|cx| ContextMenu::new(entries, Vec::new(), position, window, cx));
+        let sub = cx.subscribe_in(&menu, window, move |this, menu, event: &ContextMenuEvent, window, cx| {
+            if !this.tab_menu.as_ref().is_some_and(|m| m.menu == *menu) {
+                return;
+            }
+            match event {
+                ContextMenuEvent::Dismissed => {
+                    let menu = menu.clone();
+                    cx.defer_in(window, move |this, _, cx| {
+                        if this.tab_menu.as_ref().is_some_and(|m| m.menu == menu) {
+                            this.tab_menu = None;
+                            cx.notify();
+                        }
+                    });
+                }
+                ContextMenuEvent::Chosen(_) => this.toggle_pin_at(pane, ix, window, cx),
+            }
+        });
+        self.tab_menu = Some(OpenMenu::new(menu, sub));
+        cx.notify();
+    }
+
     /// `pane::TogglePinTab` (Ctrl+K Shift+Enter, I-065).
     pub(super) fn on_toggle_pin_tab(&mut self, action: &pane_actions::TogglePinTab, window: &mut Window, cx: &mut Context<Self>) {
         keymap::log_handled(action, self.focus_name(window, cx), cx);
@@ -65,5 +117,26 @@ impl Workbench {
             let pane = group.active;
             self.toggle_pin_at(pane, ix, window, cx);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{FocusTarget, focus_target, pin_menu_label};
+
+    /// A press outside the editor body hands the keyboard to the pane: its editor, or the center area when the pane
+    /// is empty or shows a preview (no editor to focus), so typing, Save and Close share one target.
+    #[test]
+    fn focus_target_of_a_pane() {
+        assert_eq!(focus_target(Some(false)), FocusTarget::Editor);
+        assert_eq!(focus_target(Some(true)), FocusTarget::Center);
+        assert_eq!(focus_target(None), FocusTarget::Center);
+    }
+
+    /// The tab menu names the action the tab can take.
+    #[test]
+    fn tab_menu_label_follows_pin_state() {
+        assert_eq!(pin_menu_label(false), "Pin Tab");
+        assert_eq!(pin_menu_label(true), "Unpin Tab");
     }
 }

@@ -50,6 +50,12 @@ const AVAILABLE: &[&str] = &[
     "workspace::Open",
     "multi_workspace::ToggleWorkspaceSidebar",
     "multi_workspace::FocusWorkspaceSidebar",
+    // P4-23b-R1: View > Split Up/Down/Left/Right and Maximize Pane (I-711, I-730); same handlers as the keys.
+    "pane::SplitUp",
+    "pane::SplitDown",
+    "pane::SplitLeft",
+    "pane::SplitRight",
+    "workspace::ToggleZoom",
 ];
 
 #[derive(Clone)]
@@ -804,7 +810,18 @@ mod tests {
         assert_eq!(labels(&menus[1].1), ["Open Folder...", "---", "Close Editor", "Close Window"]);
         assert_eq!(
             labels(&menus[2].1),
-            ["Toggle Left Dock", "Toggle Folder Sidebar", "Focus Folder Sidebar", "---", "Project Panel"]
+            [
+                "Toggle Left Dock",
+                "Toggle Folder Sidebar",
+                "Focus Folder Sidebar",
+                "Split Up",
+                "Split Down",
+                "Split Left",
+                "Split Right",
+                "Maximize Pane",
+                "---",
+                "Project Panel"
+            ]
         );
         assert_eq!(labels(&menus[3].1), ["Minimize", "Zoom"]);
     }

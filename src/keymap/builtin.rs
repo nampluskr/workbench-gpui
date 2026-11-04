@@ -41,6 +41,8 @@ pub const SIDEBAR_CONTEXT: &str = "Sidebar";
 pub const PROJECT_PANEL_CONTEXT: &str = "ProjectPanel";
 /// 메뉴 컨텍스트 이름 (I-516).
 pub const MENU_CONTEXT: &str = "menu";
+/// 가운데 Pane 영역(탭 바·편집기·미리보기) 컨텍스트 이름. Zed 의 Pane / Editor 컨텍스트 자리다(I-731, I-065, I-044).
+pub const PANE_CONTEXT: &str = "Pane";
 /// 작업 영역 컨텍스트 이름 (I-022~I-024 의 컨텍스트 열).
 pub const WORKSPACE_CONTEXT: &str = "Workspace";
 /// 이름 편집 중이 아님 (I-033 "이름 편집 중 아님").
@@ -79,15 +81,16 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-f4", "Workspace", "pane::CloseActiveItem", "I-356, I-570"),
     b("f10", "Workspace", "app_menu::Toggle", "I-310"),
     // Pin and split (P4-2, P4-3b). Zed binds them in the Pane / Editor contexts; the editor and the tab bar sit inside Workspace here.
-    b("ctrl-k shift-enter", "Workspace", "pane::TogglePinTab", "I-065"),
+    // Pane context only: the sidebar, the project panel and its name input are outside it (P4-23b-R1).
+    b("ctrl-k shift-enter", "Pane", "pane::TogglePinTab", "I-065"),
     // Zed binds these in Editor / MarkdownPreview with a `.md` condition; the handler does nothing for other files.
-    b("ctrl-shift-v", "Workspace", "markdown::OpenPreview", "I-044, I-045"),
-    b("ctrl-k v", "Workspace", "markdown::OpenPreviewToTheSide", "I-044"),
-    b("ctrl-\\", "Workspace", "pane::SplitRight", "I-731"),
-    b("ctrl-k up", "Workspace", "pane::SplitUp", "I-731"),
-    b("ctrl-k down", "Workspace", "pane::SplitDown", "I-731"),
-    b("ctrl-k left", "Workspace", "pane::SplitLeft", "I-731"),
-    b("ctrl-k right", "Workspace", "pane::SplitRight", "I-731"),
+    b("ctrl-shift-v", "Pane", "markdown::OpenPreview", "I-044, I-045"),
+    b("ctrl-k v", "Pane", "markdown::OpenPreviewToTheSide", "I-044"),
+    b("ctrl-\\", "Pane", "pane::SplitRight", "I-731"),
+    b("ctrl-k up", "Pane", "pane::SplitUp", "I-731"),
+    b("ctrl-k down", "Pane", "pane::SplitDown", "I-731"),
+    b("ctrl-k left", "Pane", "pane::SplitLeft", "I-731"),
+    b("ctrl-k right", "Pane", "pane::SplitRight", "I-731"),
     b("ctrl-k ctrl-up", "Workspace", "workspace::ActivatePaneUp", "I-732"),
     b("ctrl-k ctrl-down", "Workspace", "workspace::ActivatePaneDown", "I-732"),
     b("ctrl-k ctrl-left", "Workspace", "workspace::ActivatePaneLeft", "I-732"),

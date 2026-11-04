@@ -194,6 +194,9 @@ pub fn tab_text(markdown: bool, active: bool, pane_focused: bool) -> TabText {
 // shortcut: the muted colour at half strength stands for `status.hidden`; replace with the measured colour (L-306).
 const HIDDEN_OPACITY: f32 = 0.5;
 
+/// A right press on a tab: the pointer position, where the tab menu opens.
+pub type ContextHandler = std::rc::Rc<dyn Fn(&Point<Pixels>, &mut Window, &mut App)>;
+
 /// Mouse press handler of a tab.
 pub type PressHandler = std::rc::Rc<dyn Fn(&TabPress, &mut Window, &mut App)>;
 
@@ -262,6 +265,8 @@ pub struct TabView {
     pub press: PressHandler,
     /// Click on the pin icon: unpin (L-66).
     pub unpin: CloseHandler,
+    /// Right press: the Pin / Unpin menu of this tab.
+    pub context: ContextHandler,
     /// A rendered Markdown preview tab (L-69): the `FileDoc` (book) icon is always drawn, no italic.
     pub markdown: bool,
     /// The tab's pane has focus (the active pane); a preview tab dims without it (L-306).
@@ -320,7 +325,7 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
         };
         let (press, pinned) = (tab.press.clone(), tab.pinned);
         let press_middle = press.clone();
-        let (me, dropped) = (tab.drag.clone(), tab.dropped.clone());
+        let (me, dropped, context) = (tab.drag.clone(), tab.dropped.clone(), tab.context.clone());
         let (mark_bg, mark_border) = (theme.drop_target, theme.drag_border);
         row = row.child(
             div()
@@ -331,6 +336,7 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
                 .on_mouse_down(MouseButton::Left, move |e, window, cx| {
                     press(&tab_press(MouseButton::Left, e.click_count, pinned), window, cx)
                 })
+                .on_mouse_down(MouseButton::Right, move |e, window, cx| context(&e.position, window, cx))
                 .on_mouse_up(MouseButton::Middle, move |_, window, cx| {
                     press_middle(&tab_press(MouseButton::Middle, 1, pinned), window, cx)
                 })
