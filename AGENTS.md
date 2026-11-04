@@ -11,7 +11,7 @@
 
 ---
 
-# 에이전트 공통 지침 (v0.3)
+# 에이전트 공통 지침 (v0.4)
 
 Rust + gpui(gpui-kit) 기반 Zed 재현 편집기의 에이전트 공통 지침이다. 모든 에이전트가 따른다.
 기준 문서는 `docs/refs/refactor-draft/AGENTS.draft.md`(사용자 검토)이고, 데스크톱·이 워크스페이스에 맞게 경로와 값을 고쳤다.
@@ -21,10 +21,10 @@ Rust + gpui(gpui-kit) 기반 Zed 재현 편집기의 에이전트 공통 지침�
 
 ## 0. 먼저 읽을 것
 
-1. `specs/v0.3/HERDR-SETUP.md`: 에이전트 구성, 역할, 파일 소유권, 작업 프로토콜, 데스크톱 환경
-2. `specs/v0.3/PLAN.md`: Phase별 목표, 작업 카드, 완료 기준, 진행 현황
-3. `specs/v0.3/agents/TASKS.md`: 현재 작업 보드
-4. `specs/v0.3/agents/HANDOFF.md`: 최근 진행 상황
+1. `specs/v0.4/HERDR-SETUP.md`: 에이전트 구성, 역할, 파일 소유권, 작업 프로토콜, 데스크톱 환경
+2. `specs/v0.4/PLAN.md`: Phase별 목표, 작업 카드, 완료 기준, 진행 현황
+3. `specs/v0.4/agents/TASKS.md`: 현재 작업 보드
+4. `specs/v0.4/agents/HANDOFF.md`: 최근 진행 상황
 5. `spec/INDEX.md`: Zed 실측 문서와 스펙의 색인. 원문은 이 색인을 보고 필요한 절만 연다.
 
 자기 역할(label)은 `lead`의 지시나 최초 프롬프트로 정해진다. 역할이 불분명하면 작업하지 말고 질문한다.
@@ -37,8 +37,9 @@ Rust + gpui(gpui-kit) 기반 Zed 재현 편집기의 에이전트 공통 지침�
 - 스택: Rust 1.99.1, gpui-kit 0.8.1(gpui + gpui-component), Windows 전용
 - 현재 상태
   - v0.2까지 완료: 창, 레이아웃, 키맵, 메뉴, 폴더·프로젝트 패널, 디스크 감시
-  - v0.3: ponytail 기반 리팩토링(Phase 0~3)
-  - 현재 Phase는 `specs/v0.3/PLAN.md` 진행 현황 표를 본다.
+  - v0.3 완료: ponytail 기반 리팩토링(Phase 0~3), AUDIT 1·2 데이터 손실 방지
+  - v0.4: 정리(AUDIT 3·4, Duration 하드코딩, clippy 경고) → Zed 일치(P4 UI 셸, P5 에디터 코어) → 기능(탭 편집과 저장, PoC 6단계 탭 기능). 버전 문서는 작성 중이다.
+  - 현재 Phase는 `specs/v0.4/PLAN.md` 진행 현황 표를 본다.
 - 핵심 원칙
   - Zed 실측값은 요구사항이다.
   - 기존 코드를 최대한 재사용하고 새 코드는 최소화한다(ponytail).
@@ -59,9 +60,9 @@ cargo run
 ```
 
 - 빌드는 공유 `CARGO_TARGET_DIR`(`D:\projects\workbench-gpui\target`)을 쓴다. 다른 빌드의 잠금 대기가 생기면 기다리고, 잠금 파일을 지우지 않는다.
-- 빌드 환경은 노트북과 같은 버전이다: Rust 1.99.1, Build Tools 2022, Windows SDK 10.0.26100.0(`specs/v0.3/HERDR-SETUP.md` 3.7).
+- 빌드 환경은 노트북과 같은 버전이다: Rust 1.99.1, Build Tools 2022, Windows SDK 10.0.26100.0(`specs/v0.4/HERDR-SETUP.md` 3.4).
 - 테스트와 clippy가 통과하지 않은 상태로 완료 보고를 하지 않는다. 단, Phase 0 기준선의 clippy 경고는 기록만 한다.
-- 검증 스크립트 `tools/verify-v02-*.ps1`은 항상 `-OutDir specs\v0.3\verify\...`를 넘긴다. 기본값은 지난 버전 폴더다. worktree에서는 `-Exe`에 절대 경로를 넘긴다.
+- 검증 스크립트 `tools/verify-v02-*.ps1`은 항상 `-OutDir specs\v0.4\verify\...`를 넘긴다. 기본값은 지난 버전 폴더다. worktree에서는 `-Exe`에 절대 경로를 넘긴다.
 - **스크립트 언어**
   - 측정·검증 스크립트는 PowerShell 7로 쓴다(기존 `tools/*.ps1`, `tools/capture.ps1` 재사용).
   - Python이 꼭 필요하면 WinPython 인터프리터를 전체 경로로 부른다.
@@ -111,7 +112,7 @@ cargo run
 
 ### 3A.3 V3 UI 실측 검증 필요 조건
 
-`lead`는 아래 중 하나에 해당하면 V3 작업 카드를 만든다. 개별 구현 작업마다 V3를 붙이지 않고, 화면 단위로 묶는다(Codex Plus 한도, `specs/v0.3/HERDR-SETUP.md` 1.3).
+`lead`는 아래 중 하나에 해당하면 V3 작업 카드를 만든다. 개별 구현 작업마다 V3를 붙이지 않고, 화면 단위로 묶는다(Codex Plus 한도, `specs/v0.4/HERDR-SETUP.md` 1.3).
 
 1. 새 화면이나 새 컴포넌트를 처음 구현했을 때(해당 영역의 실측 통과 기록이 없을 때)
 2. 테마·폰트·전역 간격·DPI 처리처럼 여러 화면에 영향을 주는 공통 값이 바뀌었을 때
@@ -123,13 +124,13 @@ cargo run
 ### 3A.4 V3 수행 절차
 
 1. **측정 목록 준비:** 측정할 화면 상태와 스펙 ID 목록을 먼저 작성한다. 목록에 없는 항목은 측정하지 않는다.
-2. **조건 고정:** 측정 조건을 고정한다. 데스크톱은 주 모니터 1920x1080, 100%다(`specs/v0.3/HERDR-SETUP.md` 3.8). 스펙의 측정 조건(노트북 200% 기준)과는 논리 px로 비교한다.
+2. **조건 고정:** 측정 조건을 고정한다. 데스크톱은 주 모니터 1920x1080, 100%다(`specs/v0.4/HERDR-SETUP.md` 3.4). 스펙의 측정 조건(노트북 200% 기준)과는 논리 px로 비교한다.
 3. **1회 실행:** 앱은 측정 세션당 1회만 실행한다. 목록의 상태를 순서대로 만든다.
 4. **최소 조작:** 마우스·키보드 조작은 목록의 화면 상태에 도달하는 데 필요한 만큼만 한다. 기능 동작 확인용 조작은 하지 않는다(V1 테스트의 몫).
 5. **도구로 측정:** 눈대중으로 판단하지 않는다.
    - 레이아웃 덤프(`--dev-layout`)를 먼저 쓴다.
    - 필요하면 `tools/capture.ps1`로 스크린샷을 저장하고 `tools/measure/` 스크립트로 픽셀 값을 구한다.
-6. **기록:** `specs/v0.3/verify/reviews/measure-<phase 또는 task-id>.md`에 스펙 ID, 기대값, 측정값, 차이, 판정, 스크린샷 경로를 표로 남긴다.
+6. **기록:** `specs/v0.4/verify/reviews/measure-<phase 또는 task-id>.md`에 스펙 ID, 기대값, 측정값, 차이, 판정, 스크린샷 경로를 표로 남긴다.
 7. **불일치 처리:** 측정자가 직접 고치지 않는다. 불일치 목록을 `lead`에게 보고한다.
    - 리팩토링 때문에 바뀐 값이면 `lead`가 담당자에게 rework 카드로 넘긴다.
    - 리팩토링 전부터 다르던 값이면 스펙 불일치 목록(v0.4 이후)으로 보낸다.
@@ -208,9 +209,9 @@ cargo run
 
 ## 6. 파일 소유권
 
-- `specs/v0.3/HERDR-SETUP.md` 4장의 소유권 표를 따른다.
+- `specs/v0.4/HERDR-SETUP.md` 4장의 소유권 표를 따른다.
 - 소유하지 않은 파일은 수정하지 않는다. 필요하면 `lead`에게 요청한다.
-- 공유 파일(`specs/v0.3/agents/TASKS.md`, `HANDOFF.md`, `PROGRESS.md`)은 `lead`만 수정한다. 다른 역할은 완료 보고로 전달한다.
+- 공유 파일(`specs/v0.4/agents/TASKS.md`, `HANDOFF.md`, `PROGRESS.md`)은 `lead`만 수정한다. 다른 역할은 완료 보고로 전달한다.
 - worktree 담당자는 자기 worktree 밖에서 작업하지 않는다.
 - 아무도 고치지 않는 것: `specs/v0.1/`, `specs/v0.2/`, `docs/HERDR-*.md`, `docs/refs/`
 
@@ -232,19 +233,20 @@ cargo run
 - 일반 리뷰에서는 앱을 띄워 확인하지 않는다. 담당자의 "실측 필요"·"사용자 확인 필요" 목록은 리뷰 결과에 그대로 옮겨 적는다.
 - V3 작업 카드를 받으면 3A.4 절차로 UI 실측을 한다. 측정 결과만 보고하고 src는 고치지 않는다.
 - 실행 환경에서 화면 캡처나 조작이 불가능하면 `[BLOCKED]`로 보고한다. `lead`가 화면 도구가 있는 세션을 실측 담당으로 지정한다.
-- 결과는 `specs/v0.3/verify/reviews/<task-id>.md`에 기록하고 결론을 `PASS` 또는 `REWORK`로 낸다.
+- 결과는 `specs/v0.4/verify/reviews/<task-id>.md`에 기록하고 결론을 `PASS` 또는 `REWORK`로 낸다.
 - `REWORK`에는 파일, 위치, 사유, 기대 수정을 항목별로 적는다.
 - src는 수정하지 않는다.
 
 ### 7.1a review (agy, gemini-3.8-flash-high) · measure (Claude Code, Sonnet 5.5 medium) — 구성 변경 H-20
 
-- `review`: 카드 리뷰를 맡는다. 7.1의 리뷰 절차 1·2·3·5를 따르고, `@ponytail-review` 대신 4장 규칙으로 점검한다. 결과는 `specs/v0.3/verify/reviews/<task-id>.md`, 결론은 `PASS`/`REWORK`. src는 수정하지 않는다.
+- v0.4(사용자 2026-11-04, `specs/v0.4/HERDR-SETUP.md` 1.2): 동작이 바뀌는 기능 카드는 `reviewer`(Codex)가 7.1 절차로 리뷰하고, 값 맞춤·정리 카드는 `review`가 리뷰한다.
+- `review`: 값 맞춤·정리 카드 리뷰를 맡는다. 7.1의 리뷰 절차 1·2·3·5를 따르고, `@ponytail-review` 대신 4장 규칙으로 점검한다. 결과는 `specs/v0.4/verify/reviews/<task-id>.md`, 결론은 `PASS`/`REWORK`. src는 수정하지 않는다.
 - `measure`: `tools/measure/` 스크립트, Phase별 R-12 재실행, V3 실측을 맡는다. V3는 3A.4 절차를 따르고 `[MEASURED]`로 보고한다. src는 수정하지 않는다.
-- `reviewer`(Codex)는 Phase당 1회 병합 직전 최종 확인(`@ponytail-review`, 전체 테스트 1회)과 R-12 결과 판정만 한다.
+- `reviewer`(Codex)는 기능 카드 리뷰와, Phase당 1회 병합 직전 최종 확인(`@ponytail-review`, 전체 테스트 1회)·R-12 결과 판정을 한다.
 
 ### 7.2 impl-ui (agy, Claude Sonnet 5.5 thinking)
 
-- 담당 범위는 UI 셸이다(메뉴, 패널, 타이틀 바, 사이드바, 툴팁 등. 경로는 `specs/v0.3/HERDR-SETUP.md` 4장).
+- 담당 범위는 UI 셸이다(메뉴, 패널, 타이틀 바, 사이드바, 툴팁 등. 경로는 `specs/v0.4/HERDR-SETUP.md` 4장).
 - gpui-kit 컴포넌트가 있으면 먼저 검토한다. 크기나 동작이 기준선과 다르면 자체 구현을 유지한다.
 - 작업이 끝나면 반드시 완료 보고를 남긴다. 백그라운드 작업이 남아 있으면 완료 보고를 하지 않는다.
 
@@ -260,8 +262,8 @@ cargo run
 ### 7.4 lead (Claude Code, Opus 5.5 high)
 
 - 코드를 직접 작성하지 않는다. 작업 분해, 지시, 병합 판단, `master` 병합만 한다.
-- `specs/v0.3/agents/TASKS.md`, `HANDOFF.md`, `PROGRESS.md`를 관리한다.
-- `specs/v0.3/PLAN.md`의 Phase 순서와 시작·종료 절차를 따른다. PLAN.md는 진행 현황 표만 갱신하고, 계획 변경은 사용자 승인 후 반영한다.
+- `specs/v0.4/agents/TASKS.md`, `HANDOFF.md`, `PROGRESS.md`를 관리한다.
+- `specs/v0.4/PLAN.md`의 Phase 순서와 시작·종료 절차를 따른다. PLAN.md는 진행 현황 표만 갱신하고, 계획 변경은 사용자 승인 후 반영한다.
 - 작업 카드마다 검증 수준(3A.1)을 지정한다. 기본값은 V0이며 근거 없이 올리지 않는다.
 - 작업 카드에 관련 요구 ID(`R-n`)·결정 ID(`D-n`)와, 읽어야 할 스펙 문서 절을 명시한다.
 - 3A.3 조건에 해당하면 V3 실측 작업 카드를 만든다. 개별 작업마다 만들지 않고 화면 단위로 묶는다. Phase 종료 때는 반드시 만든다.
@@ -275,7 +277,7 @@ cargo run
 
 ### 7.5 impl-editor (Claude Code, Opus 5.5 medium, 필요할 때만)
 
-- 담당 범위는 에디터 코어다(텍스트 버퍼, 커서, 선택, 텍스트 레이아웃, 입력·IME, 스크롤. v0.3 후보 경로는 `src/ui/editor_poc.rs`).
+- 담당 범위는 에디터 코어다(텍스트 버퍼, 커서, 선택, 텍스트 레이아웃, 입력·IME, 스크롤. v0.3 확정 경로는 `src/ui/editor_poc.rs`).
 - ponytail은 플러그인 훅으로 full 모드가 자동 적용된다. 4장과 같은 규칙이다.
 - 텍스트 레이아웃과 입력 처리 로직은 V1 이상으로 검증하고, 상호작용은 `#[gpui::test]` 입력 시뮬레이션으로 확인한다.
 - computer use나 화면 조작 도구로 앱을 직접 조작하지 않는다. 단, `lead`가 V3 실측 담당으로 지정한 경우에는 3A.4 절차 안에서만 쓴다.
@@ -300,7 +302,7 @@ V3 실측 결과는 다음 형식으로 보고한다.
 ```text
 [MEASURED] <task-id>
 - 측정 조건: <모니터·창 크기, DPI 배율, 테마, 폰트>
-- 결과 파일: specs/v0.3/verify/reviews/measure-<id>.md
+- 결과 파일: specs/v0.4/verify/reviews/measure-<id>.md
 - 통과: <개수>
 - 불일치: <스펙 ID, 기대값, 측정값, 차이 목록>
 - 측정 불가: <항목과 사유>
