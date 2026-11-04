@@ -12,6 +12,7 @@ use gpui_kit::component::{ActiveTheme as _, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
+use crate::dev::now_ms;
 use super::metrics::menu::{CHORD_TIMEOUT, MAX_HEIGHT_RATIO, SHORTCUT_FLASH, WINDOW_MARGIN};
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
@@ -398,11 +399,4 @@ impl ContextMenu {
             Feed::Pass => false,
         }
     }
-}
-
-fn now_ms() -> u128 {
-    std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or_default()
 }

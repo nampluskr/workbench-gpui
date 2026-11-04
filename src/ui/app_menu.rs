@@ -19,8 +19,7 @@
 //! 닫힘(I-519): 메뉴 밖 누름, Escape, 실행 뒤, 포커스 잃음. 실행 전에 원래 포커스를 복원한다(I-309).
 //! 메뉴가 열린 채 항목의 단축키를 누르면 그 항목을 선택 표시하고 50ms 뒤 닫고 실행한다(I-520).
 
-use std::time::{SystemTime, UNIX_EPOCH};
-
+use crate::dev::now_ms;
 use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
@@ -229,13 +228,6 @@ const NAME_PROBES: [&str; 8] = [
     "menu-name-0", "menu-name-1", "menu-name-2", "menu-name-3", "menu-name-4", "menu-name-5",
     "menu-name-6", "menu-name-7",
 ];
-
-fn now_ms() -> u128 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or_default()
-}
 
 pub struct AppMenu {
     menus: Vec<(String, Vec<Entry>)>,

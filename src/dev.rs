@@ -689,6 +689,14 @@ pub fn no_shell() -> bool {
     NO_SHELL.load(std::sync::atomic::Ordering::Relaxed)
 }
 
+/// Milliseconds since the Unix epoch for `t_ms=` dev log fields (0 if the clock is before the epoch).
+pub fn now_ms() -> u128 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or_default()
+}
+
 /// `--dev-slow-io <경로 조각> <ms>` (v0.2 Phase 5 리뷰 1회차 ⑤, D-046): 경로에 조각이 든 폴더 존재 확인·탭 파일 다시 읽기를
 /// 이만큼 늦춘다. 응답 없는 네트워크 경로·느린 저장 장치를 흉내 내어 그 일이 메인 스레드를 막는지 본다.
 static SLOW_IO: std::sync::OnceLock<(String, u64)> = std::sync::OnceLock::new();

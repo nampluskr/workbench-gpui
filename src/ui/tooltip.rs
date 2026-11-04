@@ -14,7 +14,7 @@
 //!
 //! 색 토큰은 테마 매핑(PoC 7단계) 전이라 gpui-kit 기본 테마의 가까운 토큰을 쓴다(R-6 판정 대상 아님).
 
-use std::time::{SystemTime, UNIX_EPOCH};
+use crate::dev::now_ms;
 
 use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
@@ -81,13 +81,6 @@ struct TooltipView {
     /// (제목, 단축키 표시 문자열).
     lines: Vec<(SharedString, Option<String>)>,
     meta: Option<SharedString>,
-}
-
-fn now_ms() -> u128 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or_default()
 }
 
 /// 요소에 `.tooltip(tooltip::build(spec))` 로 붙인다. gpui 가 지연이 지난 뒤 이 함수를 불러 뷰를 만든다.
