@@ -347,9 +347,7 @@ impl ContextMenu {
 
     /// 메뉴를 열기 직전 자리의 컨텍스트 스택으로 접두를 푼다. 그 액션이 켜진 항목이면 예약한다.
     fn replay_prefix(&mut self, prefix: &[Keystroke], window: &mut Window, cx: &mut Context<Self>) {
-        if let Some(name) = menu_common::prefix_action(&self.prev_stack, prefix, cx)
-            && let Some(index) = self.item_index(name)
-        {
+        if let Some(index) = menu_common::prefix_action(&self.prev_stack, prefix, cx).and_then(|name| self.item_index(name)) {
             self.schedule_item(index, window, cx);
         }
     }
@@ -380,23 +378,89 @@ impl ContextMenu {
         if self.chord.is_list_key(event, cx, |name| name.starts_with("menu::")) {
             return false;
         }
-        match self.chord.feed(&event.keystroke, &self.prev_stack, cx) {
-            Feed::Wait => {
+        let feed = self.chord.feed(&event.keystroke, &self.prev_stack, cx);
+        let step = decide(
+            &feed,
+            |name| self.item_index(name),
+            |prefix| menu_common::prefix_action(&self.prev_stack, prefix, cx),
+        );
+        match step {
+            Step::Wait => {
                 self.start_chord_timeout(window, cx);
                 true
             }
-            Feed::Action { name, chord } => {
-                if let Some(index) = self.item_index(name) {
+            Step::Act { index, consume } => {
+                if let Some(index) = index {
                     self.schedule_item(index, window, cx);
-                    return true;
                 }
-                chord
+                consume
             }
-            Feed::Replay(prefix) => {
-                self.replay_prefix(&prefix, window, cx);
+            Step::Replay { index } => {
+                if let Some(index) = index {
+                    self.schedule_item(index, window, cx);
+                }
                 self.intercept(event, window, cx)
             }
-            Feed::Pass => false,
+            Step::Pass => false,
         }
+    }
+}
+
+/// What `intercept` does for one [`Feed`]: which enabled item to reserve and whether the key is consumed.
+#[derive(Debug, PartialEq)]
+enum Step {
+    Wait,
+    Pass,
+    Act { index: Option<usize>, consume: bool },
+    Replay { index: Option<usize> },
+}
+
+/// Pure decision part of `intercept`. `item_index` finds an *enabled* item for an action name, so a
+/// disabled item is never reserved; a single key then passes through, while a chord (prefix already
+/// consumed) still reports consumed.
+fn decide(
+    feed: &Feed,
+    item_index: impl Fn(&str) -> Option<usize>,
+    prefix_action: impl Fn(&[Keystroke]) -> Option<&'static str>,
+) -> Step {
+    match feed {
+        Feed::Wait => Step::Wait,
+        Feed::Action { name, chord } => match item_index(name) {
+            Some(index) => Step::Act { index: Some(index), consume: true },
+            None => Step::Act { index: None, consume: *chord },
+        },
+        Feed::Replay(prefix) => Step::Replay { index: prefix_action(prefix).and_then(item_index) },
+        Feed::Pass => Step::Pass,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Item 0 ("cut") is disabled, item 1 ("copy") is enabled; same lookup rule as `ContextMenu::item_index`.
+    fn find(name: &str) -> Option<usize> {
+        [("cut", false), ("copy", true)].iter().position(|(n, enabled)| *enabled && *n == name)
+    }
+    fn prefix(name: Option<&'static str>) -> impl Fn(&[Keystroke]) -> Option<&'static str> {
+        move |_| name
+    }
+
+    #[core::prelude::rust_2024::test]
+    fn disabled_item_is_never_reserved() {
+        let none = |_: &[Keystroke]| None;
+        // single key: nothing reserved, not consumed
+        let single = Feed::Action { name: "cut", chord: false };
+        assert_eq!(decide(&single, find, none), Step::Act { index: None, consume: false });
+        // multi-key chord: nothing reserved, but the prefix was consumed
+        let chord = Feed::Action { name: "cut", chord: true };
+        assert_eq!(decide(&chord, find, none), Step::Act { index: None, consume: true });
+        // prefix confirmation resolving to the disabled item
+        let replay = || Feed::Replay(vec![Keystroke::parse("ctrl-k").unwrap()]);
+        assert_eq!(decide(&replay(), find, prefix(Some("cut"))), Step::Replay { index: None });
+        // enabled item is reserved and consumed, also through the prefix path
+        let enabled = Feed::Action { name: "copy", chord: false };
+        assert_eq!(decide(&enabled, find, none), Step::Act { index: Some(1), consume: true });
+        assert_eq!(decide(&replay(), find, prefix(Some("copy"))), Step::Replay { index: Some(1) });
     }
 }
