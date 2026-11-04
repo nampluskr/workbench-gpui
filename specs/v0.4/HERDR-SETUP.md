@@ -7,7 +7,7 @@
 - 소유: 사용자. 수정은 사용자 승인 후 `lead`가 반영한다(루트 `AGENTS.md` "HERDR 문서" 규칙).
 
 > 모든 에이전트는 작업 시작 전에 이 문서를 읽는다. 루트 `AGENTS.md`(Claude는 `CLAUDE.md`의 `@AGENTS.md`)가 이 문서를 가리킨다.
-> Phase별 목표, 작업 카드, 완료 기준은 `specs/v0.4/PLAN.md`에, 요구는 `specs/v0.4/SPEC.md`에 있다(작성 중).
+> Phase별 목표, 작업 카드, 완료 기준은 `specs/v0.4/PLAN.md`에, 요구는 `specs/v0.4/SPEC.md`에 있다.
 
 ## 0. 근거
 
@@ -175,8 +175,8 @@ agy --model claude-sonnet-5-5-medium    # impl-ui. 기본 모드 유지
 | `specs/v0.4/verify/reviews/` | `review`·`reviewer`(카드 리뷰·최종 확인), `measure`(`measure-*.md`) | 리뷰, 실측 비교 결과. 파일 이름으로 나눈다 |
 | `specs/v0.4/verify/baseline/` | `measure` | Phase별 R-12 재실행 결과(`phase<n>/`) |
 | `tools/measure/` | `measure` | V3 측정 스크립트 |
-| 에디터 코어: `src/ui/editor_poc.rs` | `impl-editor` | v0.3 P0-5 확정. 탭 편집·저장의 버퍼·저장 경로를 어디에 둘지는 미정(Phase 3 착수 때 사용자 확정) |
-| UI 셸: `src/ui/`의 나머지 파일(공통 제외), `src/keymap/`, `src/fsops/`, `src/state/`, `src/main.rs` | `impl-ui` | v0.3 P0-5 확정 |
+| 에디터 코어: `src/ui/pane.rs`, 탭 편집용 새 모듈(이름은 카드에서 정함), `src/ui/editor_poc.rs` | `impl-editor` | `DECISIONS.md` D-10(사용자 2026-11-04). `pane.rs`는 v0.3에서 `impl-ui` 소유였다 |
+| UI 셸: `src/ui/`의 나머지 파일(공통·에디터 코어 제외), `src/keymap/`, `src/fsops/`, `src/state/`, `src/main.rs` | `impl-ui` | v0.3 P0-5 확정 |
 | 공통 모듈(`src/ui/mod.rs`, `src/ui/metrics.rs`, `src/ui/rem.rs`, `src/ui/layout_probe.rs`, `src/ui/theme.rs`, `src/ui/menu_common.rs`), `src/dev.rs`, `Cargo.toml` | `lead`가 카드 단위로 지정 | v0.3 P0-5 확정 |
 
 - 소유자가 아니면 그 파일을 고치지 않는다. 고쳐야 하면 `lead`에게 요청한다.
@@ -225,7 +225,7 @@ agy --model claude-sonnet-5-5-medium    # impl-ui. 기본 모드 유지
 - Zed 실측 수치(크기, 간격, 색상, 동작)는 요구사항이다. ponytail 단순화 대상이 아니다.
 - 수치는 `spec/zed-metrics.toml`에서만 가져온다. 코드에 하드코딩하지 않는다.
 - 스펙에 없는 수치가 필요하면 `lead`를 통해 `spec`에게 요청한다. 새 화면은 `spec`이 먼저 스펙에 추가한 뒤 구현한다(초안 PLAN P6 운영).
-- v0.4에서 코드 값을 스펙 값으로 맞추는 범위(P4·P5)와 맞추는 방법은 `specs/v0.4/DECISIONS.md`가 정한다(작성 중). 정해지기 전까지는 v0.3 규칙(코드 값 유지, 불일치는 목록)을 따른다.
+- 코드 값을 스펙 값으로 맞추는 것은 Phase 2(P4·P5) 카드에서만 한다. 허용 오차 안 불일치도 맞춘다(`specs/v0.4/DECISIONS.md` D-3). 그 밖의 카드에서 찾은 불일치는 완료 보고에 적는다.
 
 ### 6.2 ponytail
 
@@ -260,7 +260,7 @@ agy --model claude-sonnet-5-5-medium    # impl-ui. 기본 모드 유지
 
 ## 7. 최초 지시 프롬프트
 
-v0.4 버전 문서(INTENT·DECISIONS·SPEC·PLAN)가 확정되기 전에는 역할만 알리고 대기시킨다. 작업 지시는 PLAN 확정 뒤 `lead`가 카드로 한다.
+처음 띄울 때는 역할만 알리고 대기시킨다(2026-11-04에 이 프롬프트로 띄웠다). 작업 지시는 `lead`가 카드로 한다. 버전 문서는 2026-11-04에 확정되었다.
 
 ```text
 너는 workbench-gpui v0.4의 <label>이다. 루트 AGENTS.md와 specs/v0.4/HERDR-SETUP.md(1장 역할, 4장 소유권)를 읽어라.
@@ -274,7 +274,7 @@ v0.4 버전 문서는 아직 작성 중이다. 읽은 뒤 자기 역할을 한 �
 
 ## 8. 단계 계획
 
-Phase별 목표, 작업 카드, 완료 기준은 `specs/v0.4/PLAN.md`를 따른다(작성 중). 사용자 결정(2026-11-04)의 순서는 정리 → 일치 → 기능이다.
+Phase별 목표, 작업 카드, 완료 기준은 `specs/v0.4/PLAN.md`를 따른다. 사용자 결정(2026-11-04)의 순서는 정리 → 일치 → 기능이다.
 
 | 순서 | 내용 | 주 담당 | 리뷰 |
 |---|---|---|---|

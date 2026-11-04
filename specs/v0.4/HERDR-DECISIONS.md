@@ -17,3 +17,7 @@
 - 요청: 시작 프롬프트 뒤 `Get-ChildItem specs -Recurse -Depth 1 | Select-Object -First 40 FullName; git branch --show-current` 실행 승인.
 - 판단: 쓰기 토큰이 없는 읽기 전용 명령이라 1회 승인한다(HERDR-SETUP 6.4, 위임).
 - 결과: 승인. worktree에 v0.4 문서가 없다는 보고를 받아, 문서를 master에 커밋하고 `work/ui`를 fast-forward했다.
+
+### H-3 · 2026-11-04 · impl-ui → lead (읽기 전용 명령 승인)
+- 요청: `Select-String -Path specs\v0.4\HERDR-SETUP.md -Pattern '^#' ...` 실행 승인.
+- 판단·결과: 읽기 전용이라 1회 승인(6.4). impl-ui가 역할 확인 후 대기.
