@@ -90,8 +90,9 @@ pub enum ReadApply {
     /// Accepted, the buffer already matches (same hash or unreadable): leave the editor alone (`set_value` would
     /// reset selection, scroll and undo).
     Kept,
-    /// Accepted with new content: fill every view of the file.
-    Fill,
+    /// Accepted with new content: fill every view of the file at this path (the doc's path now; a rename may have
+    /// changed it since the read was requested, P4-3-R1).
+    Fill(PathBuf),
 }
 
 /// See `Docs::close_state`.
@@ -495,7 +496,7 @@ impl Docs {
                     return ReadApply::Kept;
                 }
                 tab.hash = h;
-                ReadApply::Fill
+                ReadApply::Fill(tab.path.clone())
             }
             ReadOutcome::Same(format) => {
                 tab.format = format;
@@ -576,13 +577,20 @@ impl Docs {
         tab.pending = None;
     }
 
-    /// The file or folder `from` was renamed or moved to `to`.
-    pub fn rename_path(&mut self, from: &Path, to: &Path) {
+    /// The file or folder `from` was renamed or moved to `to`. A read still running for a renamed doc may have read
+    /// the old place after the move, so it stops applying (P4-3-R1); the new paths that lost a read are returned so the
+    /// caller reads them again.
+    pub fn rename_path(&mut self, from: &Path, to: &Path) -> Vec<PathBuf> {
+        let mut reread = Vec::new();
         for doc in &mut self.docs {
             if let Ok(rest) = doc.path.strip_prefix(from) {
                 doc.path = if rest.as_os_str().is_empty() { to.to_path_buf() } else { to.join(rest) };
+                if doc.pending.take().is_some() {
+                    reread.push(doc.path.clone());
+                }
             }
         }
+        reread
     }
 }
 
@@ -809,7 +817,7 @@ mod tests {
 
     fn reload(pane: &mut Docs, outcome: ReadOutcome) -> bool {
         let token = pane.start_read(0);
-        matches!(pane.finish_read(token, outcome), ReadApply::Fill)
+        matches!(pane.finish_read(token, outcome), ReadApply::Fill(_))
     }
 
     /// P3-4a (E-086): a dirty buffer whose file changed is a conflict and keeps its text; the disk returning to the
@@ -1227,6 +1235,23 @@ mod tests {
         assert!(disk_differs(bytes_hash(b"\xFF\xFEA\0"), bytes_hash(b"A")));
         assert!(disk_differs(bytes_hash(b"a\r\nb"), bytes_hash(b"a\nb")));
         assert!(!disk_differs(bytes_hash(b"a\nb"), bytes_hash(b"a\nb")));
+    }
+
+    /// P4-3-R1 (2): a read in flight when the file is renamed does not apply (it may have read the old place); the
+    /// renamed doc is returned for a new read, which fills the views at the new path.
+    #[test]
+    fn rename_during_read_drops_it_and_rereads_new_path() {
+        let mut pane = Docs::default();
+        let first = open(&mut pane, "d/a.txt", false);
+        let other = open(&mut pane, "e.txt", false);
+        assert_eq!(pane.rename_path(Path::new("d"), Path::new("f")), vec![std::path::PathBuf::from("f/a.txt")]);
+        assert_eq!(pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, 1)), ReadApply::Dropped);
+        assert!(!pane.docs[0].loaded, "not loaded: still read-only, nothing typed can replace the file");
+        let again = pane.start_read(0);
+        assert_eq!(pane.finish_read(again, ReadOutcome::Changed(text_hash("A"), UTF8, 1)), ReadApply::Fill("f/a.txt".into()));
+        assert!(pane.docs[0].loaded && pane.docs[0].hash == text_hash("A"));
+        assert!(pane.finish_read(other, ReadOutcome::Same(UTF8)).accepted(), "untouched doc keeps its read");
+        assert!(pane.rename_path(Path::new("d"), Path::new("g")).is_empty());
     }
 
     /// P3-12-R1: a pasted "\r\n" hashes like the LF text reads produce, so it is not a phantom edit.

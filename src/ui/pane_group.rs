@@ -146,9 +146,9 @@ pub fn drop_overlay(w: f32, h: f32, split: Option<SplitDirection>) -> Rect {
 }
 
 /// I-726: drags divider `ix` (between children `ix` and `ix + 1`) by `delta` px on an axis `len` px long. The growing
-/// side takes what the other side gives; a child at `min` passes the rest to the next one further away. Flexes keep
-/// the I-724 scale (child length = len × flex ÷ count).
-pub fn drag_divider(flexes: &mut [f32], ix: usize, delta: f32, len: f32, min: f32) {
+/// side takes what the other side gives; a child at its minimum (`mins[i]`, the subtree's own minimum, `Node::min_len`)
+/// passes the rest to the next one further away. Flexes keep the I-724 scale (child length = len × flex ÷ count).
+pub fn drag_divider(flexes: &mut [f32], ix: usize, delta: f32, len: f32, mins: &[f32]) {
     let n = flexes.len();
     if ix + 1 >= n || len <= 0. {
         return;
@@ -158,7 +158,7 @@ pub fn drag_divider(flexes: &mut [f32], ix: usize, delta: f32, len: f32, min: f3
         if delta > 0. { (ix, (ix + 1..n).collect()) } else { (ix + 1, (0..=ix).rev().collect()) };
     let mut left = delta.abs();
     for i in shrink {
-        let take = (sizes[i] - min).max(0.).min(left);
+        let take = (sizes[i] - mins[i]).max(0.).min(left);
         sizes[i] -= take;
         sizes[grow] += take;
         left -= take;
@@ -261,12 +261,25 @@ impl Node {
         }
     }
 
-    /// The axis node at `path` (child indices from this node).
-    fn axis_at(&mut self, path: &[usize]) -> Option<(&mut Vec<f32>, Axis)> {
+    /// The node at `path` (child indices from this node).
+    fn node_at(&mut self, path: &[usize]) -> Option<&mut Node> {
         match (self, path) {
-            (Node::Axis { flexes, axis, .. }, []) => Some((flexes, *axis)),
-            (Node::Axis { children, .. }, [i, rest @ ..]) => children.get_mut(*i)?.axis_at(rest),
+            (node, []) => Some(node),
+            (Node::Axis { children, .. }, [i, rest @ ..]) => children.get_mut(*i)?.node_at(rest),
             _ => None,
+        }
+    }
+
+    /// I-726: the least length this subtree can take along `along` with every pane at its minimum (80 px wide,
+    /// 100 px high): children in a row along that axis add up, children across it take the largest.
+    fn min_len(&self, along: Axis) -> f32 {
+        match self {
+            Node::Pane(_) if along == Axis::Horizontal => MIN_DRAG_WIDTH,
+            Node::Pane(_) => MIN_DRAG_HEIGHT,
+            Node::Axis { axis, children, .. } => {
+                let each = children.iter().map(|c| c.min_len(along));
+                if *axis == along { each.sum() } else { each.fold(0., f32::max) }
+            }
         }
     }
 }
@@ -494,17 +507,17 @@ impl<E> PaneGroup<E> {
     }
 
     /// I-726: drags divider `ix` of the axis at `path` (child indices from the root) by `delta` px; `len` is that
-    /// axis' length in px. Minimums are 80 px wide (side by side) and 100 px high (stacked).
+    /// axis' length in px. Each child shrinks no further than its subtree's minimum (`Node::min_len`).
     pub fn drag_divider(&mut self, path: &[usize], ix: usize, delta: f32, len: f32) {
-        if let Some((flexes, axis)) = self.root.axis_at(path) {
-            let min = if axis == Axis::Horizontal { MIN_DRAG_WIDTH } else { MIN_DRAG_HEIGHT };
-            drag_divider(flexes, ix, delta, len, min);
+        if let Some(Node::Axis { axis, children, flexes }) = self.root.node_at(path) {
+            let mins: Vec<f32> = children.iter().map(|c| c.min_len(*axis)).collect();
+            drag_divider(flexes, ix, delta, len, &mins);
         }
     }
 
     /// I-727 divider double-click: that axis' children share equally (nested axes keep theirs).
     pub fn equalize(&mut self, path: &[usize]) {
-        if let Some((flexes, _)) = self.root.axis_at(path) {
+        if let Some(Node::Axis { flexes, .. }) = self.root.node_at(path) {
             flexes.iter_mut().for_each(|f| *f = 1.);
         }
     }
@@ -569,12 +582,13 @@ impl<E> PaneGroup<E> {
         Some(id)
     }
 
-    /// The file or folder `from` was renamed or moved to `to` (판단).
-    pub fn rename_path(&mut self, from: &Path, to: &Path) {
-        self.docs.rename_path(from, to);
+    /// The file or folder `from` was renamed or moved to `to` (판단). Returns the new paths whose read in flight was
+    /// dropped (`Docs::rename_path`); the caller reads them again.
+    pub fn rename_path(&mut self, from: &Path, to: &Path) -> Vec<std::path::PathBuf> {
         for p in self.panes.values_mut() {
             p.rename_path(from, to);
         }
+        self.docs.rename_path(from, to)
     }
 }
 
@@ -603,14 +617,13 @@ impl PaneGroup {
         let Some(path) = self.panes.values().flat_map(|p| p.tabs.iter()).find(|t| t.editor == *editor).map(|t| t.path.clone()) else {
             return;
         };
-        let others: Vec<Entity<EditorState>> = self.views(&path).filter(|e| *e != editor).cloned().collect();
-        if !others.is_empty() && others.iter().all(|o| o.read(cx).value() == text) {
-            return;
-        }
+        let others: Vec<(Entity<EditorState>, SharedString)> =
+            self.views(&path).filter(|e| *e != editor).map(|e| (e.clone(), e.read(cx).value())).collect();
+        let Some(targets) = sync_targets(&text, &others) else { return };
         // shortcut: hashes the whole buffer per edit, fine for typical files; keep a running state if large files lag.
         self.on_edit(editor, buffer_hash(&text));
-        for other in others {
-            sync_view(&other, &text, window, cx);
+        for other in targets {
+            sync_view(other, &text, window, cx);
         }
         cx.notify();
     }
@@ -633,27 +646,26 @@ impl PaneGroup {
             return (o.ix, false);
         }
         let Some(token) = o.read else {
-            let views: Vec<Entity<EditorState>> = self.views(path).cloned().collect();
-            if let [first, .., last] = views.as_slice() {
-                let (new, text) = if self.panes[&pane].tabs[o.ix].editor == *first { (first, last.read(cx).value()) } else { (last, first.read(cx).value()) };
-                let new = new.clone();
+            // The new view is the editor just placed at `o.ix`; its text comes from any other view (P4-3-R1).
+            let new = self.panes[&pane].tabs[o.ix].editor.clone();
+            if let Some(text) = copy_source(self.views(path), &new).map(|src| src.read(cx).value()) {
                 new.update(cx, |e, cx| e.set_value(text, window, cx));
             }
             return (o.ix, true);
         };
         let path = path.to_path_buf();
         cx.spawn_in(window, async move |ws, cx| {
-            let read_path = path.clone();
-            let text = cx.background_executor().spawn(async move { read_text(&read_path) }).await;
+            let text = cx.background_executor().spawn(async move { read_text(&path) }).await;
             let _ = ws.update_in(cx, |ws, window, cx| {
                 let outcome = match &text {
                     Some((t, format, raw)) => ReadOutcome::Changed(text_hash(t), *format, *raw),
                     None => ReadOutcome::Unreadable,
                 };
-                if ws.group.docs.finish_read(token, outcome) == ReadApply::Fill
+                // Fill the views at the doc's path now (P4-3-R1: not the path captured when the read started).
+                if let ReadApply::Fill(now) = ws.group.docs.finish_read(token, outcome)
                     && let Some((text, _, _)) = &text
                 {
-                    ws.group.fill(&path, text, window, cx);
+                    ws.group.fill(&now, text, window, cx);
                 }
                 // The window reads `loaded` to lift read-only; redraw it.
                 cx.notify();
@@ -684,13 +696,38 @@ impl PaneGroup {
 fn sync_view(view: &Entity<EditorState>, new: &str, window: &mut Window, cx: &mut App) {
     view.update(cx, |e, cx| {
         let old = e.value().to_string();
-        let Some((start, old_end, new_end)) = splice(&old, new) else { return };
+        let Some(cut) = splice(&old, new) else { return };
         let sel = e.selected_range();
-        e.set_selected_range(start..old_end, cx);
-        e.replace(new[start..new_end].to_string(), window, cx);
-        let map = |p: usize| if p <= start { p } else if p >= old_end { p - old_end + new_end } else { new_end };
-        e.set_selected_range(map(sel.start)..map(sel.end), cx);
+        e.set_selected_range(cut.0..cut.1, cx);
+        e.replace(new[cut.0..cut.2].to_string(), window, cx);
+        e.set_selected_range(shift(sel.start, cut)..shift(sel.end, cut), cx);
     });
+}
+
+/// The view that gives a new view of an open file its text: any view other than `new` (all hold the same text).
+pub fn copy_source<'a, E: PartialEq + 'a>(views: impl IntoIterator<Item = &'a E>, new: &E) -> Option<&'a E> {
+    views.into_iter().find(|v| *v != new)
+}
+
+/// The views to bring to `text` after an edit in one view, from the other views and their texts. `None`: every other
+/// view already holds `text`, so this is the echo of a sync and there is no edit to record (no dirty, no promotion).
+pub fn sync_targets<'a, E, S: AsRef<str>>(text: &str, others: &'a [(E, S)]) -> Option<Vec<&'a E>> {
+    if !others.is_empty() && others.iter().all(|(_, t)| t.as_ref() == text) {
+        return None;
+    }
+    Some(others.iter().filter(|(_, t)| t.as_ref() != text).map(|(e, _)| e).collect())
+}
+
+/// Where byte offset `p` of the old text lands after `splice` replaced `start..old_end` with `start..new_end`: before
+/// the change it stays, after it moves by the length difference, inside it goes to the end of the new part.
+pub fn shift(p: usize, (start, old_end, new_end): (usize, usize, usize)) -> usize {
+    if p <= start {
+        p
+    } else if p >= old_end {
+        p - old_end + new_end
+    } else {
+        new_end
+    }
 }
 
 #[cfg(test)]
@@ -699,7 +736,7 @@ mod tests {
     use super::{
         Axis, DROP_OVERLAY_RATIO, DROP_TARGET_RATIO, MIN_DRAG_HEIGHT, MIN_DRAG_WIDTH, Node, PaneGroup, Path, Rect,
         SPLIT_HORIZONTAL, SPLIT_LINE_HITBOX, SPLIT_LINE_THICKNESS, SPLIT_VERTICAL, SplitDirection, SplitMode,
-        drag_divider, drop_overlay, drop_split, split_button, splice,
+        copy_source, drag_divider, drop_overlay, drop_split, shift, split_button, splice, sync_targets,
     };
     use SplitDirection::{Down, Left, Right, Up};
 
@@ -915,14 +952,14 @@ mod tests {
         metrics::spec::assert_spec("pane[\"min_drag_height\"]", "default", MIN_DRAG_HEIGHT);
         // Three panes of 300 on 900.
         let mut f = vec![1.; 3];
-        drag_divider(&mut f, 0, 400., 900., 80.);
+        drag_divider(&mut f, 0, 400., 900., &[80.; 3]);
         let px: Vec<f32> = f.iter().map(|f| (f * 300.).round()).collect();
         assert_eq!(px, [700., 80., 120.], "neighbour stops at 80, the next one gives the rest");
-        drag_divider(&mut f, 0, 1000., 900., 80.);
+        drag_divider(&mut f, 0, 1000., 900., &[80.; 3]);
         let px: Vec<f32> = f.iter().map(|f| (f * 300.).round()).collect();
         assert_eq!(px, [740., 80., 80.], "nothing left to give");
         let mut f = vec![1.; 2];
-        drag_divider(&mut f, 0, -100., 600., 100.);
+        drag_divider(&mut f, 0, -100., 600., &[100.; 2]);
         assert_eq!(f.iter().map(|f| f * 300.).collect::<Vec<_>>(), [200., 400.]);
         let mut g = G::default();
         open(&mut g, "a", false);
@@ -930,6 +967,32 @@ mod tests {
         g.drag_divider(&[], 0, -250., 400.);
         let Node::Axis { flexes, .. } = &g.root else { panic!() };
         assert_eq!(flexes.iter().map(|f| f * 200.).collect::<Vec<_>>(), [100., 300.], "stacked minimum is 100");
+    }
+
+    /// P4-3-R1 (3): a nested subtree shrinks only to what its panes need: Horizontal[A, Vertical[B, Horizontal[C, D]]]
+    /// needs 160 px for the right side (C and D at 80 each), and across axes the largest child counts.
+    #[test]
+    fn i726_nested_subtree_minimum() {
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        clone(&mut g, Right).unwrap();
+        clone(&mut g, Down).unwrap();
+        clone(&mut g, Right).unwrap();
+        // Root: Horizontal[A, Vertical[B, Horizontal[C, D]]].
+        g.drag_divider(&[], 0, 370., 900.);
+        let Node::Axis { flexes, children, .. } = &g.root else { panic!() };
+        assert_eq!(flexes.iter().map(|f| (f * 450.).round()).collect::<Vec<_>>(), [740., 160.]);
+        assert_eq!(children[1].min_len(Axis::Horizontal), 160.);
+        assert_eq!(children[1].min_len(Axis::Vertical), 200., "stacked B over C|D: 100 + 100");
+        // Vertical drag of the right column: the lower row (C|D) keeps 100 px high, the rest goes nowhere.
+        g.drag_divider(&[1], 0, 500., 600.);
+        let Node::Axis { children, .. } = &g.root else { panic!() };
+        let Node::Axis { flexes, .. } = &children[1] else { panic!() };
+        assert_eq!(flexes.iter().map(|f| (f * 300.).round()).collect::<Vec<_>>(), [500., 100.]);
+        // What a subtree at its minimum cannot give passes on to the next child (middle child: a subtree needing 160).
+        let mut f = vec![1.; 3];
+        drag_divider(&mut f, 0, 400., 900., &[80., 160., 80.]);
+        assert_eq!(f.iter().map(|f| (f * 300.).round()).collect::<Vec<_>>(), [660., 160., 80.]);
     }
 
     /// I-727: double-click equalizes only that axis.
@@ -1082,6 +1145,48 @@ mod tests {
         // The last pane left is the root and stays (I-728).
         assert_eq!((g.tab_count(), g.docs.docs.len(), g.panes.len()), (0, 0, 1));
         let _ = r;
+    }
+
+    /// P4-3-R1 (1): a file shown in panes 0 and 2 opened in pane 1 (between them in id order) copies into the new view
+    /// from an existing one, whatever the order.
+    #[test]
+    fn third_view_in_middle_pane_copies_from_existing() {
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        let mid = g.split(Right, SplitMode::Empty, |_| 0).unwrap();
+        g.activate(0);
+        let last = clone(&mut g, Right).unwrap();
+        assert!(mid < last);
+        g.activate(mid);
+        let o = g.open_in(mid, Path::new("a"), false, || 555).unwrap();
+        assert_eq!((o.created, o.read), (true, None));
+        let new = g.panes[&mid].tabs[o.ix].editor;
+        assert_eq!(new, 555);
+        assert_eq!(g.views(Path::new("a")).copied().collect::<Vec<_>>(), [g.panes[&0].tabs[0].editor, 555, g.panes[&last].tabs[0].editor]);
+        let src = *copy_source(g.views(Path::new("a")), &new).unwrap();
+        assert!(src != new && (src == g.panes[&0].tabs[0].editor || src == g.panes[&last].tabs[0].editor));
+        assert_eq!(copy_source([1, 2].iter(), &1), Some(&2));
+        assert_eq!(copy_source([1].iter(), &1), None);
+    }
+
+    /// P4-3-R1 (4, H-9): an edit syncs only the views that differ; the sync's echo (all equal) records nothing; a single
+    /// view is a plain edit.
+    #[test]
+    fn sync_targets_and_echo() {
+        assert_eq!(sync_targets::<u32, &str>("AB", &[]), Some(vec![]), "one view: a plain edit");
+        assert_eq!(sync_targets("AB", &[(1, "A"), (2, "A")]), Some(vec![&1, &2]));
+        assert_eq!(sync_targets("AB", &[(1, "AB"), (2, "A")]), Some(vec![&2]), "a third view still behind");
+        assert_eq!(sync_targets("AB", &[(1, "AB"), (2, "AB")]), None, "echo of a sync");
+    }
+
+    /// P4-3-R1 (4): the synced view's selection moves with the change.
+    #[test]
+    fn selection_shift_after_splice() {
+        let cut = splice("hello world", "hello big world").unwrap();
+        assert_eq!(cut, (6, 6, 10));
+        assert_eq!((shift(3, cut), shift(6, cut), shift(8, cut)), (3, 6, 12));
+        let cut = splice("abcdef", "abXf").unwrap();
+        assert_eq!((shift(3, cut), shift(6, cut)), (3, 4), "inside the change goes to its end");
     }
 
     /// The splice between two views' texts covers only the changed bytes, on char boundaries.

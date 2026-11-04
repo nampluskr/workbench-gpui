@@ -252,15 +252,16 @@ impl Workbench {
                 ReadResult::Missing => ReadOutcome::Missing,
                 ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
-            // None: dropped. Some(false): accepted, buffer already matches. Some(true): fill every view.
+            // None: dropped. Some(None): accepted, buffer already matches. Some(Some(path)): fill every view at the doc's
+            // path now (a rename may have changed it, P4-3-R1).
             let apply = item.ws.update(cx, |ws, cx| {
                 let docs = &mut ws.group.docs;
                 let ix = docs.docs.iter().position(|t| t.pending == Some(item.token));
                 let before = ix.map(|i| docs.docs[i].marks());
                 let apply = match docs.finish_read(item.token, outcome) {
                     ReadApply::Dropped => None,
-                    ReadApply::Kept => Some(false),
-                    ReadApply::Fill => Some(true),
+                    ReadApply::Kept => Some(None),
+                    ReadApply::Fill(now) => Some(Some(now)),
                 };
                 // Conflict / deleted / modified changed without a fill: the tab bar must redraw (P3-4a-R1).
                 if ix.map(|i| docs.docs[i].marks()) != before {
@@ -286,10 +287,8 @@ impl Workbench {
                     }
                 }
                 ReadResult::Changed(h, text, _, _) => {
-                    if !fill {
-                        continue;
-                    }
-                    item.ws.update(cx, |ws, cx| ws.group.fill(&item.path, &text, window, cx));
+                    let Some(now) = fill else { continue };
+                    item.ws.update(cx, |ws, cx| ws.group.fill(&now, &text, window, cx));
                     if dev {
                         println!(
                             "[dev] tab-reload folder={folder_id} path={} result=reloaded len={} fnv={h:016x} t_ms={}",
