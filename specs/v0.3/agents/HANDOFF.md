@@ -2,6 +2,13 @@
 
 > 소유: `lead`. 세션이 바뀔 때 다음 `lead`가 이어받을 상태만 적는다. 최신이 위.
 
+## 2026-11-04 lead 세션 2 — Phase 3 종료 (계속 P3-D)
+
+### 현재 상태
+- Phase 3 완료 `v0.3-phase-3`(push 안 함). master에 P3-R1 cherry-pick `1684e70`. work/ui에는 그 순서가 P3-D1 `7f5e083` → P3-D2 `157808e` → P3-R1 `282cfae`.
+- P3-D: reviewer `P3-D.md` REWORK(ADS·속성·시각 손실) → H-31로 P3-D1-R1 진행 중(impl-ui). 다음: reviewer 재리뷰 → master 병합(D1·D2·D1-R1) → v0.2 검증 재실행으로 의도한 동작 변경 기록.
+- impl-ui는 Claude Code Sonnet 5.5 medium(H-29). reviewer는 새 세션이 Terra high로 열려 `/model` Sol medium으로 다시 맞췄다.
+
 ## 2026-11-04 lead 세션 2 — Phase 2 종료 (계속 Phase 3)
 
 ### 현재 상태

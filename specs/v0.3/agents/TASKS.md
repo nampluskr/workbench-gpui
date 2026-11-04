@@ -323,7 +323,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 순서: Phase 2 완료(`v0.3-phase-2`) 뒤 시작. P3-1 → P3-2 → P3-3 → P3-4(impl-ui, 순차, 카드마다 커밋 하나) → review 묶음 리뷰 → 병합 → P3-E → Phase 3 뒤 P3-D1·P3-D2. 공통: 동작·값을 바꾸지 않는다(Phase 1~3 리팩토링). gpui-kit에 같은 기능(메뉴·목록)이 있으면 먼저 검토하고, 크기나 동작이 기준선과 다르면 자체 구현을 남기고 이유를 보고에 적는다(R-11). 미사용 의존성: AUDIT 결론 0개 → Cargo 변경 없음. 공통 모듈은 lead가 지정한 `src/ui/menu_common.rs`(새 파일, P3-1·P3-2)와 기존 `src/dev.rs`(P3-4)만 쓴다.
 
 ### P3-1 메뉴 행·팝업 바탕 스타일 공통화
-- 상태: todo
+- 상태: done (`c4022a1`, review PASS, master `69a50ce`)
 - 담당: impl-ui (새 파일 `src/ui/menu_common.rs` 지정)
 - 브랜치: work/ui
 - 요구·결정: R-11, D-3, AUDIT 8
@@ -333,7 +333,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 두 메뉴의 현재 차이(행 높이 23 등 Q-11 기록)는 그대로 둔다
 
 ### P3-2 chord 대기·접두 해석 공통화
-- 상태: todo
+- 상태: done (`1bd1c09`, review PASS, master `69a50ce`. 최종 확인 REWORK 1 → P3-R1 `282cfae`/master `1684e70` PASS, H-30)
 - 담당: impl-ui (`src/ui/menu_common.rs`)
 - 브랜치: work/ui
 - 요구·결정: R-11, D-3, AUDIT 9, v0.2 D-032·D-033
@@ -343,7 +343,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 상호작용 확인은 `#[test]`/`#[gpui::test]`로만 한다. 앱을 띄워 누르지 않는다
 
 ### P3-3 프로젝트 패널 안내 화면 바탕 공통화
-- 상태: todo
+- 상태: done (`7fd50ca`, review PASS, master `69a50ce`)
 - 담당: impl-ui
 - 브랜치: work/ui
 - 요구·결정: R-11, AUDIT 10
@@ -352,7 +352,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: 폴더 없음·경로 없음 화면의 같은 바탕(size·padding·gap·글자색)만 로컬 closure 하나로. 문구·버튼·probe는 각 분기에. 새 파일 없음
 
 ### P3-4 밀리초 로그 시각 함수 공통화
-- 상태: todo
+- 상태: done (`b248a9d`, review PASS, master `69a50ce`)
 - 담당: impl-ui (이 카드에 한해 `src/dev.rs` 지정)
 - 브랜치: work/ui
 - 요구·결정: R-11, AUDIT 11
@@ -361,7 +361,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: SystemTime → UNIX_EPOCH 밀리초(실패 시 0) 함수 하나를 `src/dev.rs`에 두고 세 곳이 쓴다. 반환형·실패값 그대로. watch의 다른 epoch 형식은 합치지 않는다
 
 ### P3-E Phase 3 끝: V3 실측, R-12 재실행, R-11 재감사
-- 상태: todo
+- 상태: done (measure R-12 ok 뒤바뀜 0·V3 불일치 0 `4611dd3`, reviewer `phase3-final.md` R1 PASS, 테스트 59)
 - 담당: measure(V3·R-12), reviewer(R-11 재감사·최종 확인·R-12 판정)
 - 브랜치: master
 - 요구·결정: R-11, R-12
@@ -370,7 +370,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 완료 조건: P0-6 S5(앱 메뉴)·S6(컨텍스트 메뉴)·프로젝트 패널 안내 화면을 P0-6과 같은 방법으로 재측정해 같은지 표로. R-12 9개 재실행 기준선 대조(phase4 계열은 H-28 클립보드 비우기). reviewer가 AUDIT 8~11 처리 확인(R-11)
 
 ### P3-D1 복사 목적 파일 배타 생성 (Phase 3 뒤, 동작 변경)
-- 상태: todo
+- 상태: rework (`7f5e083`, reviewer `P3-D.md` REWORK: ADS·속성·시각 손실 → H-31 P3-D1-R1)
 - 담당: impl-ui
 - 브랜치: work/ui (별도 커밋, Phase 3 커밋과 섞지 않음)
 - 요구·결정: AUDIT 1, PLAN "Phase 3 뒤"
@@ -380,7 +380,7 @@ F1·F2는 P0-0a와 상관없이 먼저 시작할 수 있다.
 - 비고: 권한·타임스탬프 등 `fs::copy`가 하던 일 중 빠지는 것이 있으면 보고에 적는다(예: 파일 권한 복사)
 
 ### P3-D2 다른 볼륨 이동 원본 변경 대조 (Phase 3 뒤, 동작 변경)
-- 상태: todo
+- 상태: review (`157808e`, P3-D1-R1 뒤 재리뷰)
 - 담당: impl-ui
 - 브랜치: work/ui (별도 커밋)
 - 요구·결정: AUDIT 2, PLAN "Phase 3 뒤"

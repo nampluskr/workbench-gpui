@@ -228,6 +228,38 @@
   - 사용자 확인 필요(V4): 다크 테마 툴팁 그림자 렌더(코드의 0.06 분기는 보존 확인), 글자 크기 렌더 인상.
 - 상태: 완료
 
+### Phase 3 — 공통 컴포넌트
+
+#### P3-1~P3-4 (2026-11-04, impl-ui·review)
+
+- 무엇을: P3-1 두 메뉴의 목록·행·구분선·단축키 칸·팝업 바탕을 새 `src/ui/menu_common.rs` 함수 5개로(AUDIT 8), P3-2 chord 접두 보관·해석·1초 대기 토큰을 `menu_common::Chord`·`Feed`·`prefix_action`으로(AUDIT 9), P3-3 안내 화면 두 분기의 바탕을 `folders.rs` 로컬 closure로(AUDIT 10), P3-4 밀리초 로그 시각을 `dev::now_ms`로(AUDIT 11).
+- 결과: work/ui `c4022a1`·`1bd1c09`·`7fd50ca`·`b248a9d`, review `P3-1-2-3-4.md` 네 카드 PASS, master 병합 `69a50ce`(7파일 +264/−219). gpui-kit 메뉴는 항목 높이·여백·구분선이 고정이라 자체 구현 유지(R-11). impl-ui는 agy 한도 소진으로 Claude Code Sonnet 5.5 medium 대체(H-29).
+- 검증: V0/V1, `cargo test ui::` 12 통과(세대 보호 테스트 1개 추가), clippy 신규 0.
+- 상태: 완료
+
+#### P3-E Phase 3 끝: R-12·V3 (2026-11-04, measure)
+
+- 무엇을: master `69a50ce` 빌드(exe SHA-256 `9D2559CD…08B44`)로 v0.2 검증 9개 재실행(H-28), S1·S5·S6·'경로 없음' 재측정.
+- 결과
+  - R-12: 9개 모두 기준선과 같음. 1차 실행에서 창 이동·전면 창 불일치로 입력을 보내지 못한 4개(phase1·phase2·phase4·d043)를 같은 exe로 1회 재실행해 모두 통과, 1차 결과는 `_first-run/`에 보존.
+  - V3: Phase 2 대비 박스 차이 0(S1 57/57·S5 249/249·S6 262/262·경로 없음 58/58), 메뉴·안내 화면 픽셀 diff 0. 불일치 0.
+- 검증: `verify/phase3/README.md`·`comparison.json`, `verify/reviews/measure-phase3.md`. 커밋 `4611dd3`.
+- 상태: 완료
+
+#### Phase 3 최종 확인 (2026-11-04, reviewer)
+
+- 결과: 동작·값 회귀 없음, R-11 재감사(AUDIT 8~11 처리, 중복 잔여 0), 전체 테스트 57, clippy 신규 0, R-12·V3 수용. REWORK 1: P3-2 완료 조건의 비활성 항목 회귀 테스트 누락 → P3-R1(H-30: Cargo 변경 대신 `context_menu` intercept 판정을 순수 함수 `decide`로 빼고 `#[test]`), work/ui `282cfae` → master cherry-pick `1684e70`. R1 PASS, 전체 테스트 59.
+- 한계: R1 테스트는 `Feed`를 직접 만들어 넣으므로 실제 키맵 해석(`Chord::feed`)·타이머 경로는 코드 대조로만 확인.
+- 검증: `verify/reviews/phase3-final.md`(R1 절).
+
+#### Phase 3 종료 (2026-11-04, lead, 위임 H-26)
+
+- 결과
+  - `/ponytail-debt`: src에 `shortcut:` 표식 없음(Phase 3 범위). P3-D 커밋의 표식은 P3-D 절에서 다룬다.
+  - 스펙 불일치: Phase 1 목록과 같음.
+  - 사용자 확인 필요(V4): 없음(새 화면 없음, 렌더 픽셀 동일).
+- 상태: 완료
+
 ## 사용자 요청 작업
 
 ### docs\temp 이름 바꾸기·이동 (2026-11-03)

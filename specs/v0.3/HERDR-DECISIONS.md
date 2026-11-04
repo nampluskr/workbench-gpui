@@ -106,6 +106,10 @@
 - 판단: 가장 되돌리기 쉬운 쪽으로 정한다. 스펙에 없는 수치도 `src/ui/metrics.rs` 상수로 옮기고 주석을 `// spec: none (app value)`로 단다. `spec/zed-metrics.toml`에는 넣지 않는다(spec 소유, 추정 입력 금지). R-10 집계에서는 metrics.rs 안이므로 0건 판정에 들어간다. `px(0.)`은 gpui 상수(`Pixels::ZERO` 등)로 바꿔도 값이 같다.
 - 결과: TASKS Phase 2 카드에 반영. DECISIONS.md(사용자 소유)는 고치지 않는다. 사용자 확인 필요 목록에 올린다. 다르게 정하면 주석만 바꾸면 된다.
 
+### H-31 · 2026-11-04 · lead (P3-D1 복사 방식, 위임 H-26)
+- 요청: reviewer `P3-D.md` REWORK 1. P3-D1의 `create_new` + `io::copy` 스트림 복사는 기존 `fs::copy`(Windows CopyFileEx)가 하던 NTFS 추가 스트림·속성·수정 시각 보존을 잃는다. 다른 볼륨 이동에서는 원본 삭제로 ADS가 영구 손실된다.
+- 판단: 카드의 "스트림 복사"는 lead가 쓴 구현 방법이고 목적은 "이미 있는 파일을 덮어쓰지 않음"(AUDIT 1)이다. 목적은 지키고 방법을 바꾼다: `create_new(true)`로 이름을 배타 확보(빈 파일)한 뒤 그 파일에 `fs::copy`로 덮어써 기존 플랫폼 복사 동작(ADS·속성·시각)을 그대로 둔다. 복사 실패 시 확보한 빈 파일만 지운다. 확보~복사 사이에 다른 프로그램이 이 빈 파일에 쓰면 덮일 수 있는 한계는 `shortcut:` 주석. ADS·수정 시각 보존 테스트 1개. 새 크레이트·Cargo 변경 없음.
+
 ### H-30 · 2026-11-04 · lead (P3-R1 테스트 방식, 위임 H-26)
 - 요청: Phase 3 최종 확인 REWORK 1(P3-2 비활성 항목 회귀 테스트). impl-ui `[BLOCKED]`: 메뉴 intercept를 그대로 거치려면 `#[gpui::test]`가 필요한데 gpui test-support가 꺼져 있다. 선택지 (a) Cargo.toml dev-dependency에 test-support 추가, (b) intercept의 enabled 판정을 순수 함수로 빼고 `#[test]`.
 - 판단: (b). Cargo 변경은 위임 범위 밖이고(H-26), H-24에서도 test-support 없이 `#[test]`로 정했다. (b)는 동작을 바꾸지 않는 추출이라 Phase 3 리팩토링 범위다. `Chord::feed` 결과(`Feed`)와 항목 enabled 조회를 받아 "예약할 항목·소비 여부"를 돌려주는 함수 하나로 하고, intercept는 그 결과대로만 움직인다. reviewer가 같은 판단 경로를 거치는지 재확인한다. 사용자 확인 목록에 올린다.
