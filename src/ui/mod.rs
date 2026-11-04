@@ -12,6 +12,7 @@ mod layout_probe;
 mod menu_common;
 pub(crate) mod metrics;
 mod pane;
+mod pane_group;
 mod panel_delete;
 mod panel_edit;
 mod panel_menu;
@@ -127,7 +128,7 @@ impl Workbench {
     fn active_editor_focused(&self, window: &Window, cx: &App) -> bool {
         self.active_ws().is_some_and(|ws| {
             ws.read(cx)
-                .pane
+                .group
                 .active_tab()
                 .is_some_and(|t| t.editor.focus_handle(cx).is_focused(window))
         })
@@ -239,7 +240,10 @@ impl Workbench {
         // Phase 4 최소 탭(R-27): 활성 폴더의 탭 목록과 활성 탭 편집기(보기 전용, D-18).
         let (tabs, active_editor) = match self.active_ws() {
             Some(ws) => {
-                let pane = &ws.read(cx).pane;
+                // P4-3: the active pane only; drawing the pane tree is P4-3b (impl-ui).
+                let group = &ws.read(cx).group;
+                let pane = group.active_pane();
+                let doc = |t: &pane::Tab| group.docs.get(&t.path);
                 let tabs: Vec<layout::TabView> = pane
                     .tabs
                     .iter()
@@ -248,13 +252,13 @@ impl Workbench {
                         title: t.title().into(),
                         preview: t.preview,
                         active: pane.active == Some(i),
-                        dirty: t.modified(),
-                        conflict: t.has_conflict(),
-                        deleted: t.deleted,
+                        dirty: doc(t).is_some_and(|d| d.modified()),
+                        conflict: doc(t).is_some_and(|d| d.has_conflict()),
+                        deleted: doc(t).is_some_and(|d| d.deleted),
                         close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(i, window, cx))),
                     })
                     .collect();
-                (tabs, pane.active_tab().map(|t| (t.editor.clone(), !t.loaded)))
+                (tabs, pane.active_tab().map(|t| (t.editor.clone(), !doc(t).is_some_and(|d| d.loaded))))
             }
             None => (Vec::new(), None),
         };
@@ -410,7 +414,7 @@ impl Workbench {
                         let y = ws.read(cx).tree.state.read(cx).scroll_handle().0.borrow().base_handle.offset().y;
                         out.push_str(&format!(" tree_scroll_y={:.1}", f32::from(y)));
                         // R-27·D-18: 활성 탭 편집기 내용(길이·FNV-1a). 보기 전용이면 글자를 쳐도 바뀌지 않는다.
-                        if let Some(tab) = ws.read(cx).pane.active_tab() {
+                        if let Some(tab) = ws.read(cx).group.active_tab() {
                             let text = tab.editor.read(cx).text().to_string();
                             let fnv = text.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3));
                             out.push_str(&format!(" active_text_len={} active_text_fnv={fnv:016x}", text.len()));

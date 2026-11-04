@@ -1,4 +1,4 @@
-//! 최소 탭 (v0.2 Phase 4, SPEC R-27, DECISIONS D-9·D-18). 폴더(Workspace)마다 Pane 하나를 둔다(A-15.1).
+//! 최소 탭 (v0.2 Phase 4, SPEC R-27, DECISIONS D-9·D-18). 폴더(Workspace)마다 Pane 트리를 둔다(A-15.1; P4-3 `pane_group`).
 //!
 //! - 트리에서 임시(preview)로 열거나 일반 탭으로 연다(I-087, I-033, I-061).
 //! - 임시 탭은 하나다. 다른 파일을 임시로 열면 그 자리(인덱스)에서 바꾼다(I-062).
@@ -17,25 +17,31 @@
 //! - First open reads the file on the background executor; the tab exists at once and gets its text when
 //!   the read finishes (v0.4 P1-3, AUDIT 4). First read and watch reload share one request token per tab:
 //!   only the latest started read applies, and a closed pane (folder removed) applies nothing.
+//! - P4-3: a file's disk and edit state is one `Doc` per path in the workspace (`Docs`); a `Tab` is one view of it in
+//!   a `Pane`. Several panes can show the same file (ClonePane, I-708); each view has its own editor and they are
+//!   kept equal (`pane_group`). The pane tree is `pane_group::PaneGroup`.
 
 use std::path::{Path, PathBuf};
-use std::rc::Rc;
 
 use gpui_kit::base::Scrollbar;
 use gpui_kit::base::input::EditorScrollbarContext;
-use gpui_kit::component::input::{Editor, EditorState, InputEvent};
+use gpui_kit::component::input::{Editor, EditorState};
 use gpui_kit::*;
 
-use super::folders::FolderWorkspace;
 use super::metrics;
 use super::tab_close::End;
 use crate::text_io::{self, Format};
 
-/// `E` is the editor handle; generic only so tab bookkeeping is testable without a window.
+/// One view of a file in a pane. `E` is the editor handle; generic only so tab bookkeeping is testable without a window.
 pub struct Tab<E = Entity<EditorState>> {
     pub path: PathBuf,
     pub preview: bool,
     pub editor: E,
+}
+
+/// The disk and edit state of one open file, shared by all its views (P4-3).
+pub struct Doc {
+    pub path: PathBuf,
     /// 편집기에 넣은 내용의 해시(`text_hash`). 감시가 다시 읽은 내용과 비교한다(Phase 5 리뷰 1회차 ⑤, D-046).
     /// Hash of the content last read from disk; the buffer may differ once edited (`dirty`). While the first read is
     /// pending the editor is empty, so this is `text_hash("")`.
@@ -77,18 +83,18 @@ pub enum ReadOutcome {
 
 /// What `finish_read` decided.
 #[derive(Debug, PartialEq)]
-pub enum ReadApply<'a, E> {
+pub enum ReadApply {
     /// Not the tab's latest read, the tab is saving, or the pane is closed: ignore the result. Also a dirty tab: its
     /// buffer is left alone, only its conflict / deleted state is recorded.
     Dropped,
     /// Accepted, the buffer already matches (same hash or unreadable): leave the editor alone (`set_value` would
     /// reset selection, scroll and undo).
     Kept,
-    /// Accepted with new content: fill this editor.
-    Fill(&'a E),
+    /// Accepted with new content: fill every view of the file.
+    Fill,
 }
 
-/// See `Pane::close_state`.
+/// See `Docs::close_state`.
 #[derive(Debug, PartialEq)]
 pub enum CloseState {
     /// No such tab.
@@ -120,7 +126,9 @@ impl<E> Tab<E> {
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_else(|| self.path.display().to_string())
     }
+}
 
+impl Doc {
     /// Modified for the tab dot and saving: edited, in conflict, or deleted on disk with a non-empty buffer (E-087). A clean
     /// buffer equals `hash`, so its emptiness is `hash == text_hash("")`.
     pub fn modified(&self) -> bool {
@@ -139,20 +147,27 @@ impl<E> Tab<E> {
     }
 }
 
+/// The tabs of one pane (a leaf of `pane_group::PaneGroup`).
 pub struct Pane<E = Entity<EditorState>> {
     pub tabs: Vec<Tab<E>>,
     pub active: Option<usize>,
     /// Tabs `0..pinned_count` are pinned (I-065, I-719, A-23.4); the tab bar draws them in the same row (I-066).
     pub pinned_count: usize,
-    next_load: u64,
-    /// Set when the folder is removed; reads finishing afterwards are dropped (strong refs may keep it alive).
-    closed: bool,
 }
 
 impl<E> Default for Pane<E> {
     fn default() -> Self {
-        Self { tabs: Vec::new(), active: None, pinned_count: 0, next_load: 0, closed: false }
+        Self { tabs: Vec::new(), active: None, pinned_count: 0 }
     }
+}
+
+/// The open files of a workspace, one `Doc` per path, whatever number of views show it.
+#[derive(Default)]
+pub struct Docs {
+    pub docs: Vec<Doc>,
+    next_load: u64,
+    /// Set when the folder is removed; reads finishing afterwards are dropped (strong refs may keep it alive).
+    closed: bool,
 }
 
 /// 내용 해시: UTF-8 바이트의 FNV-1a 64(dev 출력 `fnv=` 와 같은 값).
@@ -178,7 +193,7 @@ pub(super) fn buffer_hash(text: &str) -> u64 {
 
 /// Tab editor scrollbar: gpui-base's own scrollbar on the editor's scroll handle, track width from the spec
 /// (P2-5, D-10 item 6). Axis follows the editor (vertical with soft wrap, both without), like gpui-base's default.
-fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App) -> AnyElement {
+pub(super) fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App) -> AnyElement {
     Scrollbar::new(&context)
         .axis(context.axis())
         .styles(|s| s.track(|t| t.width(metrics::EDITOR_SCROLLBAR_WIDTH)))
@@ -258,170 +273,38 @@ impl<E> Pane<E> {
         self.active.and_then(|i| self.tabs.get(i))
     }
 
-    fn next_token(&mut self) -> u64 {
-        self.next_load += 1;
-        self.next_load
-    }
-
-    /// A new pending tab for `path` with a fresh read token.
-    fn pending_tab(&mut self, path: &Path, preview: bool, editor: E) -> (Tab<E>, u64) {
-        let token = self.next_token();
-        let tab = Tab {
-            path: path.to_path_buf(),
-            preview,
-            editor,
-            hash: text_hash(""),
-            pending: Some(token),
-            dirty: false,
-            loaded: false,
-            format: None,
-            saving: None,
-            disk_hash: bytes_hash(b""),
-            saving_hash: 0,
-            disk_changed: false,
-            deleted: false,
-        };
-        (tab, token)
-    }
-
-    /// Starts a read for tab `ix`; any earlier read of that tab stops applying.
-    pub fn start_read(&mut self, ix: usize) -> u64 {
-        let token = self.next_token();
-        self.tabs[ix].pending = Some(token);
-        token
-    }
-
-    /// Drops every pending read (folder removal).
-    pub fn close(&mut self) {
-        self.closed = true;
-    }
-
     /// Puts a new tab in place: replaces the preview tab (I-062) or inserts after the active tab, but never inside the
-    /// pinned run (I-719). Returns its index.
-    fn place(&mut self, tab: Tab<E>) -> usize {
+    /// pinned run (I-719). Returns its index and the preview tab it replaced.
+    pub fn place(&mut self, tab: Tab<E>) -> (usize, Option<Tab<E>>) {
         if tab.preview
             && let Some(pi) = self.tabs.iter().position(|t| t.preview)
         {
-            self.tabs[pi] = tab;
+            let old = std::mem::replace(&mut self.tabs[pi], tab);
             self.active = Some(pi);
-            return pi;
+            return (pi, Some(old));
         }
         let at = self.active.map(|a| a + 1).unwrap_or(self.tabs.len()).max(self.pinned_count).min(self.tabs.len());
+        self.tabs.insert(at, tab);
+        self.active = Some(at);
+        (at, None)
+    }
+
+    /// Inserts a dropped or moved `tab` at `at` (clamped) and activates it. It is never a preview (I-717, I-722). A
+    /// place inside the pinned run pins it (I-719, I-720, I-722); `pinned` keeps a pin at the run's end (I-720).
+    pub fn insert_at(&mut self, mut tab: Tab<E>, at: usize, pinned: bool) -> usize {
+        let at = at.min(self.tabs.len());
+        tab.preview = false;
+        let at = if pinned { at.min(self.pinned_count) } else { at };
+        if pinned || at < self.pinned_count {
+            self.pinned_count += 1;
+        }
         self.tabs.insert(at, tab);
         self.active = Some(at);
         at
     }
 
-    /// Decides a finished read. It applies only if it is still the tab's latest read; a replaced, removed or closed
-    /// tab drops it. A dirty tab keeps its buffer (no reload over edits, P3-1) and records the disk state instead:
-    /// changed raw bytes are a conflict (E-086, H-18), a missing file is deleted (E-087, any tab). A tab being saved
-    /// drops it. A save also invalidates reads started before it finished (`finish_save`), so a read
-    /// from before or during a save never lands after it. Content cannot change between start and accept: only the
-    /// latest token applies, and edits make the tab dirty.
-    pub fn finish_read(&mut self, token: u64, outcome: ReadOutcome) -> ReadApply<'_, E> {
-        if self.closed {
-            return ReadApply::Dropped;
-        }
-        let Some(tab) = self.tabs.iter_mut().find(|t| t.pending == Some(token)) else {
-            return ReadApply::Dropped;
-        };
-        tab.pending = None;
-        if tab.saving.is_some() {
-            return ReadApply::Dropped;
-        }
-        // Disk state first, by raw bytes (E-086, E-087, H-18); an unreadable file (e.g. locked) tells nothing.
-        match outcome {
-            ReadOutcome::Missing => tab.deleted = true,
-            ReadOutcome::Same(_) => (tab.deleted, tab.disk_changed) = (false, false),
-            ReadOutcome::Changed(_, _, raw) => (tab.deleted, tab.disk_changed) = (false, disk_differs(raw, tab.disk_hash)),
-            ReadOutcome::Unreadable => {}
-        }
-        if tab.dirty {
-            // Edits stay; the format and `disk_hash` stay the ones the buffer was read with.
-            return ReadApply::Dropped;
-        }
-        match outcome {
-            ReadOutcome::Changed(h, format, raw) => {
-                // A clean buffer takes the new file, even one left clean by undo during a conflict (P3-4a-R1).
-                (tab.format, tab.disk_hash, tab.disk_changed) = (format, raw, false);
-                tab.loaded = format.is_some();
-                if h == tab.hash {
-                    // The text already matches (D-046: no `set_value`); e.g. only the line ending or encoding changed.
-                    return ReadApply::Kept;
-                }
-                tab.hash = h;
-                ReadApply::Fill(&tab.editor)
-            }
-            ReadOutcome::Same(format) => {
-                tab.format = format;
-                tab.loaded = format.is_some();
-                ReadApply::Kept
-            }
-            // A deleted file's buffer stays as it was (E-087).
-            ReadOutcome::Missing | ReadOutcome::Unreadable => ReadApply::Kept,
-        }
-    }
-
-    /// Starts saving tab `ix` whose buffer is `text`: encodes it with the tab's encoding and line ending (P3-2, D-6).
-    /// A tab that is not modified is not written (H-15), so an unedited file keeps its exact bytes. A deleted file with
-    /// a non-empty buffer is modified, so saving recreates it (E-085, E-087); saving over a conflict overwrites (E-084;
-    /// the confirmation dialog is P3-3's).
-    pub fn begin_save(&mut self, ix: usize, text: &str) -> SaveStart {
-        let tab = &self.tabs[ix];
-        let (true, true, Some(format), None) = (tab.loaded, tab.modified(), tab.format, tab.saving) else {
-            return SaveStart::Skip;
-        };
-        match text_io::encode_text(text, format) {
-            Ok(bytes) => {
-                let token = self.next_token();
-                (self.tabs[ix].saving, self.tabs[ix].saving_hash) = (Some(token), bytes_hash(&bytes));
-                SaveStart::Write(token, bytes)
-            }
-            Err(e) => SaveStart::Refused(e),
-        }
-    }
-
-    /// The save with `token` finished. On success the disk now holds the buffer text `saved_hash` and the written
-    /// bytes (`disk_hash`, which the watch reload compares with, so the own write reads back as `Same`, D-046, H-18); the tab is dirty only if the buffer
-    /// (`buffer_hash`) changed since. Reads started before now are invalidated either way: they may hold content
-    /// from before the write. Returns `false` when the tab is gone.
-    pub fn finish_save(&mut self, token: u64, ok: bool, saved_hash: u64, buffer_hash: u64) -> bool {
-        let Some(tab) = self.tabs.iter_mut().find(|t| t.saving == Some(token)) else {
-            return false;
-        };
-        tab.saving = None;
-        tab.pending = None;
-        if ok {
-            tab.hash = saved_hash;
-            tab.dirty = buffer_hash != saved_hash;
-            // The disk now holds the written bytes: the new reference (H-18), no conflict, a deleted file exists again.
-            (tab.disk_hash, tab.disk_changed, tab.deleted) = (tab.saving_hash, false, false);
-        }
-        true
-    }
-
-    /// A user edit on tab `ix` whose buffer now hashes to `buffer_hash`: dirty when it differs from the disk
-    /// content, and the edit promotes a preview tab (I-063).
-    pub fn on_edit(&mut self, ix: usize, buffer_hash: u64) {
-        let tab = &mut self.tabs[ix];
-        // Undo back to `hash` during a conflict clears `dirty` but not `disk_changed`: still a modified conflict.
-        tab.dirty = buffer_hash != tab.hash;
-        tab.preview = false;
-    }
-
-    /// What a closing flow must do with the tab at `path` right now (P3-3-R1). A save in flight comes first: its
-    /// result and the buffer are judged after it ends, even if the buffer looks clean (undo during the write).
-    pub fn close_state(&self, path: &Path) -> CloseState {
-        match self.find(path).map(|i| &self.tabs[i]) {
-            None => CloseState::Gone,
-            Some(t) if t.saving.is_some() => CloseState::Wait,
-            Some(t) if !t.modified() => CloseState::Clean,
-            Some(_) => CloseState::Ask,
-        }
-    }
-
-    /// Removes tab `ix` (v0.4 P3-3, H-16). Its pending reads and saves stop applying (no tab to match). The active
-    /// tab stays active; closing the active one activates the tab that slides into its place, else the last.
+    /// Removes tab `ix` (v0.4 P3-3, H-16). The active tab stays active; closing the active one activates the tab
+    /// that slides into its place, else the last.
     // shortcut: neighbour instead of Zed's most-recently-used order (`activate_on_close: history`); needs an
     // activation history if that order is wanted.
     pub fn close_tab(&mut self, ix: usize) -> Option<Tab<E>> {
@@ -441,7 +324,6 @@ impl<E> Pane<E> {
         Some(tab)
     }
 
-    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
     pub fn is_pinned(&self, ix: usize) -> bool {
         ix < self.pinned_count
     }
@@ -476,9 +358,9 @@ impl<E> Pane<E> {
         }
     }
 
-    /// Moves tab `from` to index `to`; the active tab follows its tab.
-    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
-    fn move_tab(&mut self, from: usize, to: usize) {
+    /// Moves tab `from` to index `to`; the active tab follows its tab. The pinned count is not touched (`reorder`
+    /// judges pinning by the new place).
+    pub fn move_tab(&mut self, from: usize, to: usize) {
         let tab = self.tabs.remove(from);
         self.tabs.insert(to, tab);
         self.active = self.active.map(|a| match a {
@@ -487,18 +369,6 @@ impl<E> Pane<E> {
             a if to <= a && a < from => a + 1,
             a => a,
         });
-    }
-
-    /// E-084 "Discard Edits": the buffer was reset to the disk text (`hash`, `format` from that read), so the tab is
-    /// clean again. Reads started earlier stop applying (they may hold older content).
-    pub fn discard_edits(&mut self, ix: usize, hash: u64, format: Option<Format>, raw: u64) {
-        let tab = &mut self.tabs[ix];
-        (tab.disk_hash, tab.disk_changed, tab.deleted) = (raw, false, false);
-        tab.hash = hash;
-        tab.format = format;
-        tab.loaded = format.is_some();
-        tab.dirty = false;
-        tab.pending = None;
     }
 
     /// 트리에서 이름을 바꾸거나 옮긴 파일·폴더를 탭 경로에 반영한다(판단).
@@ -518,6 +388,202 @@ impl<E> Pane<E> {
             .collect::<Vec<_>>()
             .join("\t")
     }
+
+    /// Same-pane drag or Ctrl+Shift+PageUp/PageDown (I-715, I-734): moves tab `from` to `to`. Pinned is judged by the
+    /// new place (I-719): into the pinned run pins it, out of it unpins it.
+    pub fn reorder(&mut self, from: usize, to: usize) {
+        if from >= self.tabs.len() {
+            return;
+        }
+        let to = to.min(self.tabs.len() - 1);
+        let (was, now) = (from < self.pinned_count, to < self.pinned_count);
+        self.move_tab(from, to);
+        self.tabs[to].preview = false;
+        match (was, now) {
+            (false, true) => self.pinned_count += 1,
+            (true, false) => self.pinned_count -= 1,
+            _ => {}
+        }
+    }
+}
+
+impl Docs {
+    pub fn find(&self, path: &Path) -> Option<usize> {
+        self.docs.iter().position(|d| d.path == path)
+    }
+
+    pub fn get(&self, path: &Path) -> Option<&Doc> {
+        self.find(path).map(|i| &self.docs[i])
+    }
+
+    fn next_token(&mut self) -> u64 {
+        self.next_load += 1;
+        self.next_load
+    }
+
+    /// A new pending doc for `path` with a fresh read token (its first read).
+    pub fn add(&mut self, path: &Path) -> u64 {
+        let token = self.next_token();
+        self.docs.push(Doc {
+            path: path.to_path_buf(),
+            hash: text_hash(""),
+            pending: Some(token),
+            dirty: false,
+            loaded: false,
+            format: None,
+            saving: None,
+            disk_hash: bytes_hash(b""),
+            saving_hash: 0,
+            disk_changed: false,
+            deleted: false,
+        });
+        token
+    }
+
+    /// Forgets `path` (its last view closed). Its pending reads and saves stop applying (nothing to match).
+    pub fn remove(&mut self, path: &Path) {
+        self.docs.retain(|d| d.path != path);
+    }
+
+    /// Starts a read for tab `ix`; any earlier read of that tab stops applying.
+    pub fn start_read(&mut self, ix: usize) -> u64 {
+        let token = self.next_token();
+        self.docs[ix].pending = Some(token);
+        token
+    }
+
+    /// Drops every pending read (folder removal).
+    pub fn close(&mut self) {
+        self.closed = true;
+    }
+
+    /// Decides a finished read. It applies only if it is still the tab's latest read; a replaced, removed or closed
+    /// tab drops it. A dirty tab keeps its buffer (no reload over edits, P3-1) and records the disk state instead:
+    /// changed raw bytes are a conflict (E-086, H-18), a missing file is deleted (E-087, any tab). A tab being saved
+    /// drops it. A save also invalidates reads started before it finished (`finish_save`), so a read
+    /// from before or during a save never lands after it. Content cannot change between start and accept: only the
+    /// latest token applies, and edits make the tab dirty.
+    pub fn finish_read(&mut self, token: u64, outcome: ReadOutcome) -> ReadApply {
+        if self.closed {
+            return ReadApply::Dropped;
+        }
+        let Some(tab) = self.docs.iter_mut().find(|t| t.pending == Some(token)) else {
+            return ReadApply::Dropped;
+        };
+        tab.pending = None;
+        if tab.saving.is_some() {
+            return ReadApply::Dropped;
+        }
+        // Disk state first, by raw bytes (E-086, E-087, H-18); an unreadable file (e.g. locked) tells nothing.
+        match outcome {
+            ReadOutcome::Missing => tab.deleted = true,
+            ReadOutcome::Same(_) => (tab.deleted, tab.disk_changed) = (false, false),
+            ReadOutcome::Changed(_, _, raw) => (tab.deleted, tab.disk_changed) = (false, disk_differs(raw, tab.disk_hash)),
+            ReadOutcome::Unreadable => {}
+        }
+        if tab.dirty {
+            // Edits stay; the format and `disk_hash` stay the ones the buffer was read with.
+            return ReadApply::Dropped;
+        }
+        match outcome {
+            ReadOutcome::Changed(h, format, raw) => {
+                // A clean buffer takes the new file, even one left clean by undo during a conflict (P3-4a-R1).
+                (tab.format, tab.disk_hash, tab.disk_changed) = (format, raw, false);
+                tab.loaded = format.is_some();
+                if h == tab.hash {
+                    // The text already matches (D-046: no `set_value`); e.g. only the line ending or encoding changed.
+                    return ReadApply::Kept;
+                }
+                tab.hash = h;
+                ReadApply::Fill
+            }
+            ReadOutcome::Same(format) => {
+                tab.format = format;
+                tab.loaded = format.is_some();
+                ReadApply::Kept
+            }
+            // A deleted file's buffer stays as it was (E-087).
+            ReadOutcome::Missing | ReadOutcome::Unreadable => ReadApply::Kept,
+        }
+    }
+
+    /// Starts saving tab `ix` whose buffer is `text`: encodes it with the tab's encoding and line ending (P3-2, D-6).
+    /// A tab that is not modified is not written (H-15), so an unedited file keeps its exact bytes. A deleted file with
+    /// a non-empty buffer is modified, so saving recreates it (E-085, E-087); saving over a conflict overwrites (E-084;
+    /// the confirmation dialog is P3-3's).
+    pub fn begin_save(&mut self, ix: usize, text: &str) -> SaveStart {
+        let tab = &self.docs[ix];
+        let (true, true, Some(format), None) = (tab.loaded, tab.modified(), tab.format, tab.saving) else {
+            return SaveStart::Skip;
+        };
+        match text_io::encode_text(text, format) {
+            Ok(bytes) => {
+                let token = self.next_token();
+                (self.docs[ix].saving, self.docs[ix].saving_hash) = (Some(token), bytes_hash(&bytes));
+                SaveStart::Write(token, bytes)
+            }
+            Err(e) => SaveStart::Refused(e),
+        }
+    }
+
+    /// The save with `token` finished. On success the disk now holds the buffer text `saved_hash` and the written
+    /// bytes (`disk_hash`, which the watch reload compares with, so the own write reads back as `Same`, D-046, H-18); the tab is dirty only if the buffer
+    /// (`buffer_hash`) changed since. Reads started before now are invalidated either way: they may hold content
+    /// from before the write. Returns `false` when the tab is gone.
+    pub fn finish_save(&mut self, token: u64, ok: bool, saved_hash: u64, buffer_hash: u64) -> bool {
+        let Some(tab) = self.docs.iter_mut().find(|t| t.saving == Some(token)) else {
+            return false;
+        };
+        tab.saving = None;
+        tab.pending = None;
+        if ok {
+            tab.hash = saved_hash;
+            tab.dirty = buffer_hash != saved_hash;
+            // The disk now holds the written bytes: the new reference (H-18), no conflict, a deleted file exists again.
+            (tab.disk_hash, tab.disk_changed, tab.deleted) = (tab.saving_hash, false, false);
+        }
+        true
+    }
+
+    /// A user edit on doc `ix` whose buffer now hashes to `buffer_hash`: dirty when it differs from the disk
+    /// content. The view's preview promotion (I-063) is `PaneGroup::on_edit`.
+    pub fn on_edit(&mut self, ix: usize, buffer_hash: u64) {
+        let tab = &mut self.docs[ix];
+        // Undo back to `hash` during a conflict clears `dirty` but not `disk_changed`: still a modified conflict.
+        tab.dirty = buffer_hash != tab.hash;
+    }
+
+    /// What a closing flow must do with the tab at `path` right now (P3-3-R1). A save in flight comes first: its
+    /// result and the buffer are judged after it ends, even if the buffer looks clean (undo during the write).
+    pub fn close_state(&self, path: &Path) -> CloseState {
+        match self.find(path).map(|i| &self.docs[i]) {
+            None => CloseState::Gone,
+            Some(t) if t.saving.is_some() => CloseState::Wait,
+            Some(t) if !t.modified() => CloseState::Clean,
+            Some(_) => CloseState::Ask,
+        }
+    }
+
+    /// E-084 "Discard Edits": the buffer was reset to the disk text (`hash`, `format` from that read), so the tab is
+    /// clean again. Reads started earlier stop applying (they may hold older content).
+    pub fn discard_edits(&mut self, ix: usize, hash: u64, format: Option<Format>, raw: u64) {
+        let tab = &mut self.docs[ix];
+        (tab.disk_hash, tab.disk_changed, tab.deleted) = (raw, false, false);
+        tab.hash = hash;
+        tab.format = format;
+        tab.loaded = format.is_some();
+        tab.dirty = false;
+        tab.pending = None;
+    }
+
+    /// The file or folder `from` was renamed or moved to `to`.
+    pub fn rename_path(&mut self, from: &Path, to: &Path) {
+        for doc in &mut self.docs {
+            if let Ok(rest) = doc.path.strip_prefix(from) {
+                doc.path = if rest.as_os_str().is_empty() { to.to_path_buf() } else { to.join(rest) };
+            }
+        }
+    }
 }
 
 impl super::Workbench {
@@ -526,11 +592,11 @@ impl super::Workbench {
     pub(super) fn on_save(&mut self, action: &super::keymap::workspace::Save, window: &mut Window, cx: &mut Context<Self>) {
         super::keymap::log_handled(action, self.focus_name(window, cx), cx);
         let Some(ws) = self.active_ws() else { return };
-        let Some(path) = ws.read(cx).pane.active_tab().map(|t| t.path.clone()) else { return };
+        let Some(path) = ws.read(cx).group.active_tab().map(|t| t.path.clone()) else { return };
         cx.spawn_in(window, async move |this, cx| {
             if super::tab_close::save_tab(&ws, &path, None, cx).await == End::Closed {
-                // E-085 "Close": the user gave the tab up.
-                let _ = this.update_in(cx, |this, window, cx| this.drop_tab(&ws, &path, window, cx));
+                // E-085 "Close": the user gave the file up.
+                let _ = this.update_in(cx, |this, window, cx| this.drop_file(&ws, &path, window, cx));
             }
         })
         .detach();
@@ -547,71 +613,11 @@ pub(super) fn save_failed(path: &Path, error: &str, window: &mut Window, cx: &mu
     window.push_notification(SharedString::from(text), cx);
 }
 
-impl Pane {
-    /// 파일을 연다. 돌려주는 값: (탭 번호, 새로 만들었나). A new tab starts empty and is filled when the
-    /// background read finishes; the result is dropped if the tab or workspace is gone by then.
-    pub fn open(
-        &mut self,
-        path: &Path,
-        preview: bool,
-        window: &mut Window,
-        cx: &mut Context<FolderWorkspace>,
-    ) -> (usize, bool) {
-        if let Some(i) = self.find(path) {
-            if !preview {
-                self.promote(i);
-            }
-            self.active = Some(i);
-            return (i, false);
-        }
-        let editor = cx.new(|cx| {
-            let mut state = EditorState::new(window, cx);
-            state.set_scrollbar_renderer(Some(Rc::new(editor_scrollbar)));
-            state
-        });
-        // Only user edits emit Change (`set_value` does not), so this tracks edits, not reads.
-        cx.subscribe(&editor, |ws, editor, event: &InputEvent, cx| {
-            if !matches!(event, InputEvent::Change) {
-                return;
-            }
-            // shortcut: hashes the whole buffer per edit, fine for typical files; keep a running state if large files lag.
-            let h = buffer_hash(&editor.read(cx).value());
-            if let Some(ix) = ws.pane.tabs.iter().position(|t| t.editor == editor) {
-                ws.pane.on_edit(ix, h);
-                cx.notify();
-            }
-        })
-        .detach();
-        let (tab, token) = self.pending_tab(path, preview, editor);
-        let ix = self.place(tab);
-        let path = path.to_path_buf();
-        cx.spawn_in(window, async move |ws, cx| {
-            let text = cx.background_executor().spawn(async move { read_text(&path) }).await;
-            let _ = ws.update_in(cx, |ws, window, cx| {
-                let outcome = match &text {
-                    Some((t, format, raw)) => ReadOutcome::Changed(text_hash(t), *format, *raw),
-                    None => ReadOutcome::Unreadable,
-                };
-                if let ReadApply::Fill(editor) = ws.pane.finish_read(token, outcome)
-                    && let Some((text, _, _)) = &text
-                {
-                    let editor = editor.clone();
-                    editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
-                }
-                // The window reads `loaded` to lift read-only; redraw it.
-                cx.notify();
-            });
-        })
-        .detach();
-        (ix, true)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
     use super::{
-        buffer_hash, Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadApply, ReadOutcome, SaveStart, column_select_events,
+        buffer_hash, Capslock, Docs, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadApply, ReadOutcome, SaveStart, Tab, column_select_events,
         CloseState, bytes_hash, disk_differs, column_select_press, metrics, point, px, text_hash,
     };
 
@@ -635,7 +641,7 @@ mod tests {
 
     const UTF8: Option<Format> = Some(Format { encoding: TextEncoding::Utf8, line_ending: LineEnding::Lf });
 
-    impl<E> ReadApply<'_, E> {
+    impl ReadApply {
         fn accepted(&self) -> bool {
             !matches!(self, Self::Dropped)
         }
@@ -697,137 +703,142 @@ mod tests {
         assert_eq!(metrics::spec::lookup(id).unwrap().value, f64::from(width));
     }
 
-    fn open(pane: &mut Pane<()>, path: &str, preview: bool) -> u64 {
-        let (tab, token) = pane.pending_tab(Path::new(path), preview, ());
-        pane.place(tab);
-        token
+    /// A new doc for `path`; returns its first-read token.
+    fn open(docs: &mut Docs, path: &str, _preview: bool) -> u64 {
+        docs.add(Path::new(path))
     }
 
+    /// A new tab (view) in `pane`.
+    fn view(pane: &mut Pane<()>, path: &str, preview: bool) {
+        pane.place(Tab { path: path.into(), preview, editor: () });
+    }
+
+    /// A forgotten doc (replaced preview, I-062: `PaneGroup::open_in`) drops its earlier load.
     #[test]
     fn replaced_preview_drops_earlier_load() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let a = open(&mut pane, "a.txt", true);
+        pane.remove(Path::new("a.txt"));
         let b = open(&mut pane, "b.txt", true);
-        assert_eq!(pane.tabs.len(), 1);
+        assert_eq!(pane.docs.len(), 1);
         assert!(!pane.finish_read(a, ReadOutcome::Changed(1, UTF8, 1)).accepted());
         assert!(pane.finish_read(b, ReadOutcome::Changed(2, UTF8, 2)).accepted());
-        assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (2, None));
+        assert_eq!((pane.docs[0].hash, pane.docs[0].pending), (2, None));
         // A finished token is not accepted twice.
         assert!(!pane.finish_read(b, ReadOutcome::Changed(3, UTF8, 3)).accepted());
     }
 
     #[test]
     fn closed_tab_drops_load() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let a = open(&mut pane, "a.txt", false);
         let b = open(&mut pane, "b.txt", false);
-        pane.tabs.retain(|t| t.pending != Some(a));
+        pane.docs.retain(|t| t.pending != Some(a));
         assert!(!pane.finish_read(a, ReadOutcome::Changed(1, UTF8, 1)).accepted());
         assert!(pane.finish_read(b, ReadOutcome::Changed(2, UTF8, 2)).accepted());
-        assert_eq!(pane.tabs[0].hash, 2);
+        assert_eq!(pane.docs[0].hash, 2);
     }
 
     /// First read got A, reload got B and applied first; the late first read must not bring A back.
     #[test]
     fn late_first_read_after_reload_is_dropped() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
         assert!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))).accepted());
         assert!(!pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A"))).accepted());
-        assert_eq!(pane.tabs[0].hash, text_hash("B"));
+        assert_eq!(pane.docs[0].hash, text_hash("B"));
     }
 
     /// Reload started while loading saw the file emptied (`Same` against the empty hash). The earlier first
     /// read of A must not apply, so the tab stays empty like the disk.
     #[test]
     fn empty_same_reload_wins_over_first_read() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
         assert!(!pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A"))).accepted());
         assert!(pane.finish_read(reload, ReadOutcome::Same(UTF8)).accepted());
-        assert_eq!((pane.tabs[0].hash, pane.tabs[0].pending), (text_hash(""), None));
+        assert_eq!((pane.docs[0].hash, pane.docs[0].pending), (text_hash(""), None));
     }
 
     /// Folder removed while first read and reload are in flight (reload keeps the workspace alive).
     #[test]
     fn closed_pane_drops_all_reads() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         let reload = pane.start_read(0);
         pane.close();
         assert!(!pane.finish_read(first, ReadOutcome::Changed(1, UTF8, 1)).accepted());
         assert!(!pane.finish_read(reload, ReadOutcome::Changed(2, UTF8, 2)).accepted());
-        assert_eq!(pane.tabs[0].hash, text_hash(""));
+        assert_eq!(pane.docs[0].hash, text_hash(""));
     }
 
-    /// P3-1: the first read loads the tab (editing allowed); an edit that changes the text makes it dirty and
-    /// promotes the preview tab (I-063); undoing back to the disk text clears dirty.
+    /// P3-1: the first read loads the tab (editing allowed); an edit that changes the text makes it dirty; undoing
+    /// back to the disk text clears dirty. (Preview promotion by the edit: `pane_group` tests.)
     #[test]
-    fn edit_marks_dirty_and_promotes_preview() {
-        let mut pane = Pane::<()>::default();
+    fn edit_marks_dirty() {
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", true);
-        assert!(!pane.tabs[0].loaded);
+        assert!(!pane.docs[0].loaded);
         assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A"))).accepted());
-        assert!(pane.tabs[0].loaded && !pane.tabs[0].dirty);
+        assert!(pane.docs[0].loaded && !pane.docs[0].dirty);
         pane.on_edit(0, text_hash("AB"));
-        assert!(pane.tabs[0].dirty);
-        assert!(!pane.tabs[0].preview);
+        assert!(pane.docs[0].dirty);
         pane.on_edit(0, text_hash("A"));
-        assert!(!pane.tabs[0].dirty);
+        assert!(!pane.docs[0].dirty);
     }
 
     /// P3-1: a reload of a dirty tab keeps the buffer and the disk hash (no apply), and is not accepted again.
     #[test]
     fn dirty_tab_is_not_reloaded() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A")));
         pane.on_edit(0, text_hash("A edited"));
         let reload = pane.start_read(0);
         assert!(!pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))).accepted());
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty, t.pending), (text_hash("A"), true, None));
     }
 
-    fn loaded(pane: &mut Pane<()>, text: &str) {
+    fn loaded(pane: &mut Docs, text: &str) {
         let first = open(pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash(text), UTF8, text_hash(text)));
     }
 
-    fn reload(pane: &mut Pane<()>, outcome: ReadOutcome) -> bool {
+    fn reload(pane: &mut Docs, outcome: ReadOutcome) -> bool {
         let token = pane.start_read(0);
-        matches!(pane.finish_read(token, outcome), ReadApply::Fill(_))
+        matches!(pane.finish_read(token, outcome), ReadApply::Fill)
     }
 
     /// P3-4a (E-086): a dirty buffer whose file changed is a conflict and keeps its text; the disk returning to the
     /// read content clears it; a save clears it.
     #[test]
     fn disk_change_on_dirty_tab_is_conflict_until_saved() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
         pane.on_edit(0, text_hash("A edited"));
         assert!(!reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))), "buffer kept");
-        assert!(pane.tabs[0].has_conflict() && pane.tabs[0].modified());
+        assert!(pane.docs[0].has_conflict() && pane.docs[0].modified());
         assert!(!reload(&mut pane, ReadOutcome::Same(UTF8)));
-        assert!(!pane.tabs[0].has_conflict(), "disk back to the read content");
+        assert!(!pane.docs[0].has_conflict(), "disk back to the read content");
         reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B")));
         // Locked file: says nothing about the disk, the conflict stays.
         reload(&mut pane, ReadOutcome::Unreadable);
-        assert!(pane.tabs[0].has_conflict());
+        assert!(pane.docs[0].has_conflict());
         let SaveStart::Write(token, _) = pane.begin_save(0, "A edited") else { panic!("conflict saves (overwrite)") };
         pane.finish_save(token, true, text_hash("A edited"), text_hash("A edited"));
-        assert!(!pane.tabs[0].has_conflict() && !pane.tabs[0].modified());
+        assert!(!pane.docs[0].has_conflict() && !pane.docs[0].modified());
     }
 
     /// P3-4a (E-086): a clean tab still reloads on a disk change and never shows a conflict.
     #[test]
     fn disk_change_on_clean_tab_reloads() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
         assert!(reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))));
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.has_conflict(), t.disk_changed), (text_hash("B"), false, false));
     }
 
@@ -835,32 +846,32 @@ mod tests {
     /// a save writes it (recreates the file) and clears deleted. A file that comes back clears it too.
     #[test]
     fn deleted_file_is_marked_and_save_recreates() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
         assert!(!reload(&mut pane, ReadOutcome::Missing), "buffer kept");
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert!(t.deleted && t.modified() && !t.dirty && !t.has_conflict());
         let SaveStart::Write(token, bytes) = pane.begin_save(0, "A") else { panic!("deleted non-empty tab saves") };
         assert_eq!(bytes, b"A");
         pane.finish_save(token, true, text_hash("A"), text_hash("A"));
-        assert!(!pane.tabs[0].deleted && !pane.tabs[0].modified());
+        assert!(!pane.docs[0].deleted && !pane.docs[0].modified());
         // Deleted then restored with the same content: not deleted, not modified.
         reload(&mut pane, ReadOutcome::Missing);
         reload(&mut pane, ReadOutcome::Same(UTF8));
-        assert!(!pane.tabs[0].deleted && !pane.tabs[0].modified());
+        assert!(!pane.docs[0].deleted && !pane.docs[0].modified());
     }
 
     /// P3-4a (E-087): an empty deleted buffer is not modified (nothing to save); a dirty one is deleted and modified.
     #[test]
     fn deleted_empty_and_dirty_tabs() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "");
         reload(&mut pane, ReadOutcome::Missing);
-        assert!(pane.tabs[0].deleted && !pane.tabs[0].modified());
+        assert!(pane.docs[0].deleted && !pane.docs[0].modified());
         assert_eq!(pane.begin_save(0, ""), SaveStart::Skip);
         pane.on_edit(0, text_hash("x"));
         reload(&mut pane, ReadOutcome::Missing);
-        assert!(pane.tabs[0].deleted && pane.tabs[0].modified() && !pane.tabs[0].has_conflict());
+        assert!(pane.docs[0].deleted && pane.docs[0].modified() && !pane.docs[0].has_conflict());
     }
 
     /// P3-4a-R1 (1): A read, C typed, disk changed to B, undo back to A. The buffer is clean against the read but not
@@ -868,21 +879,21 @@ mod tests {
     /// of the clean buffer fills the latest file.
     #[test]
     fn undo_during_conflict_keeps_conflict() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
         pane.on_edit(0, text_hash("C"));
         reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B")));
         pane.on_edit(0, text_hash("A"));
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert!(!t.dirty && t.has_conflict() && t.modified());
         assert!(matches!(pane.begin_save(0, "A"), SaveStart::Write(..)), "overwrite stays possible");
-        let mut pane2 = Pane::<()>::default();
+        let mut pane2 = Docs::default();
         loaded(&mut pane2, "A");
         pane2.on_edit(0, text_hash("C"));
         reload(&mut pane2, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B")));
         pane2.on_edit(0, text_hash("A"));
         assert!(reload(&mut pane2, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))), "latest file fills");
-        assert!(!pane2.tabs[0].has_conflict() && !pane2.tabs[0].modified());
+        assert!(!pane2.docs[0].has_conflict() && !pane2.docs[0].modified());
     }
 
     /// P3-4a-R1 (2, H-18): same text with other bytes (UTF-16 BOM, CRLF) is a disk change: a conflict for a dirty
@@ -892,70 +903,70 @@ mod tests {
     fn raw_bytes_decide_disk_change() {
         let utf16 = fmt(TextEncoding::Utf16Le, LineEnding::Lf);
         let crlf = fmt(TextEncoding::Utf8, LineEnding::Crlf);
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
         pane.on_edit(0, text_hash("A edited"));
         reload(&mut pane, ReadOutcome::Changed(text_hash("A"), utf16, bytes_hash(b"\xFF\xFEA\0")));
-        assert!(pane.tabs[0].has_conflict() && pane.tabs[0].format == UTF8, "dirty keeps its format");
+        assert!(pane.docs[0].has_conflict() && pane.docs[0].format == UTF8, "dirty keeps its format");
 
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "a\nb");
         let token = pane.start_read(0);
         assert_eq!(pane.finish_read(token, ReadOutcome::Changed(text_hash("a\nb"), crlf, bytes_hash(b"a\r\nb"))), ReadApply::Kept);
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.format, t.disk_hash, t.has_conflict()), (crlf, bytes_hash(b"a\r\nb"), false));
 
         pane.on_edit(0, text_hash("a\nbc"));
         let SaveStart::Write(token, bytes) = pane.begin_save(0, "a\nbc") else { panic!("expected a write") };
         pane.finish_save(token, true, text_hash("a\nbc"), text_hash("a\nbc"));
-        assert_eq!(pane.tabs[0].disk_hash, bytes_hash(&bytes));
+        assert_eq!(pane.docs[0].disk_hash, bytes_hash(&bytes));
         pane.on_edit(0, text_hash("a\nbcd"));
         // The watch read compares raw bytes with `disk_hash`: equal is `Same`, and a dirty tab is no conflict.
         reload(&mut pane, ReadOutcome::Same(crlf));
-        assert!(!pane.tabs[0].has_conflict());
+        assert!(!pane.docs[0].has_conflict());
         // Bytes equal to the reference reported as Changed (only the text hash differs) are no conflict either.
         reload(&mut pane, ReadOutcome::Changed(0, crlf, bytes_hash(&bytes)));
-        assert!(!pane.tabs[0].has_conflict());
+        assert!(!pane.docs[0].has_conflict());
     }
 
     /// P3-4a-R1 (3): a dirty conflict and a clean deletion change the tab marks without a fill, so the reload
     /// completion must redraw (watch_io compares `marks` before and after); a no-op reload does not.
     #[test]
     fn state_only_reads_change_marks() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
         pane.on_edit(0, text_hash("A edited"));
-        let before = pane.tabs[0].marks();
+        let before = pane.docs[0].marks();
         assert!(!reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))));
-        assert_ne!(pane.tabs[0].marks(), before, "dirty conflict");
+        assert_ne!(pane.docs[0].marks(), before, "dirty conflict");
 
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         loaded(&mut pane, "A");
-        let before = pane.tabs[0].marks();
+        let before = pane.docs[0].marks();
         assert!(!reload(&mut pane, ReadOutcome::Missing));
-        assert_ne!(pane.tabs[0].marks(), before, "clean deletion");
-        let before = pane.tabs[0].marks();
+        assert_ne!(pane.docs[0].marks(), before, "clean deletion");
+        let before = pane.docs[0].marks();
         reload(&mut pane, ReadOutcome::Unreadable);
-        assert_eq!(pane.tabs[0].marks(), before, "nothing new");
+        assert_eq!(pane.docs[0].marks(), before, "nothing new");
     }
 
     /// P3-1: an unreadable first read leaves the tab not loaded (read-only), so nothing typed can replace the file.
     #[test]
     fn unreadable_first_read_stays_read_only() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         assert!(pane.finish_read(first, ReadOutcome::Unreadable).accepted());
-        assert!(!pane.tabs[0].loaded);
+        assert!(!pane.docs[0].loaded);
         // A later reload that reads the (empty) file loads it.
         let reload = pane.start_read(0);
         pane.finish_read(reload, ReadOutcome::Same(UTF8));
-        assert!(pane.tabs[0].loaded);
+        assert!(pane.docs[0].loaded);
     }
     /// P3-2: save writes the tab's encoding; a second save waits; success records the saved hash and keeps the
     /// tab dirty only if the buffer changed while writing.
     #[test]
     fn save_encodes_with_tab_encoding_and_records_hash() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         assert_eq!(pane.begin_save(0, "x"), SaveStart::Skip, "not loaded yet");
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), fmt(TextEncoding::Utf8Bom, LineEnding::Lf), text_hash("A")));
@@ -965,33 +976,33 @@ mod tests {
         assert_eq!(pane.begin_save(0, "AB"), SaveStart::Skip, "save in flight");
         // Typed "C" while writing: saved, but still dirty against the new disk content.
         assert!(pane.finish_save(token, true, text_hash("AB"), text_hash("ABC")));
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty, t.saving), (text_hash("AB"), true, None));
         let SaveStart::Write(token, _) = pane.begin_save(0, "ABC") else { panic!("expected a write") };
         assert!(pane.finish_save(token, true, text_hash("ABC"), text_hash("ABC")));
-        assert!(!pane.tabs[0].dirty);
+        assert!(!pane.docs[0].dirty);
     }
 
     /// P3-2: a failed write keeps the old disk hash and the dirty mark.
     #[test]
     fn failed_save_keeps_dirty() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A")));
         pane.on_edit(0, text_hash("AB"));
         let SaveStart::Write(token, _) = pane.begin_save(0, "AB") else { panic!("expected a write") };
         pane.finish_save(token, false, text_hash("AB"), text_hash("AB"));
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty, t.saving), (text_hash("A"), true, None));
     }
 
     /// P3-2: an undecodable file is shown but never editable or saved.
     #[test]
     fn undecodable_file_is_read_only_and_not_saved() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "bin.dat", false);
         assert!(pane.finish_read(first, ReadOutcome::Changed(text_hash("\u{FFFD}"), None, text_hash("\u{FFFD}"))).accepted());
-        assert!(!pane.tabs[0].loaded);
+        assert!(!pane.docs[0].loaded);
         assert_eq!(pane.begin_save(0, "\u{FFFD}"), SaveStart::Skip);
     }
 
@@ -999,17 +1010,17 @@ mod tests {
     #[cfg(windows)]
     #[test]
     fn cp949_loss_refuses_save() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "k.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("가격"), fmt(TextEncoding::Cp949, LineEnding::Lf), text_hash("가격")));
         pane.on_edit(0, text_hash("가격 \u{20A9}1000"));
         let SaveStart::Refused(e) = pane.begin_save(0, "가격 \u{20A9}1000") else { panic!("expected refusal") };
         assert!(e.contains("U+20A9"), "{e}");
-        assert_eq!(pane.tabs[0].saving, None);
+        assert_eq!(pane.docs[0].saving, None);
     }
 
     /// Loaded "A", edited to `buffer`, save started. Returns the save token.
-    fn loaded_and_saving(pane: &mut Pane<()>, buffer: &str) -> u64 {
+    fn loaded_and_saving(pane: &mut Docs, buffer: &str) -> u64 {
         let first = open(pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A")));
         pane.on_edit(0, text_hash(buffer));
@@ -1021,12 +1032,12 @@ mod tests {
     /// after it. It must not fill the editor again (set_value would reset undo and the cursor).
     #[test]
     fn own_write_read_back_after_save_is_dropped() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let save = loaded_and_saving(&mut pane, "B");
         let reload = pane.start_read(0);
         assert!(pane.finish_save(save, true, text_hash("B"), text_hash("B")));
         assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))), ReadApply::Dropped);
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty), (text_hash("B"), false));
         // A reload started after the save reads the same text: accepted but nothing to fill.
         let after = pane.start_read(0);
@@ -1037,7 +1048,7 @@ mod tests {
     /// saved. It must not replace the saved buffer.
     #[test]
     fn stale_read_from_before_save_is_dropped() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, text_hash("A")));
         let reload = pane.start_read(0);
@@ -1045,7 +1056,7 @@ mod tests {
         let SaveStart::Write(save, _) = pane.begin_save(0, "C") else { panic!("expected a write") };
         assert!(pane.finish_save(save, true, text_hash("C"), text_hash("C")));
         assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8, text_hash("B"))), ReadApply::Dropped);
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty), (text_hash("C"), false));
     }
 
@@ -1053,14 +1064,14 @@ mod tests {
     /// back to the disk text during the save), and the save's end invalidates it.
     #[test]
     fn read_landing_during_save_is_dropped() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let save = loaded_and_saving(&mut pane, "B");
         pane.on_edit(0, text_hash("A"));
-        assert!(!pane.tabs[0].dirty);
+        assert!(!pane.docs[0].dirty);
         let reload = pane.start_read(0);
         assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(text_hash("X"), UTF8, text_hash("X"))), ReadApply::Dropped);
         pane.finish_save(save, true, text_hash("B"), text_hash("A"));
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty), (text_hash("B"), true));
     }
 
@@ -1068,7 +1079,7 @@ mod tests {
     /// detected majority ending.
     #[test]
     fn clean_tab_is_not_written_and_edit_saves_majority_ending() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "mixed.txt", false);
         // "a\nb\r\nc\r\nd" read as LF text, CRLF by majority.
         pane.finish_read(first, ReadOutcome::Changed(text_hash("a\nb\nc\nd"), fmt(TextEncoding::Utf8, LineEnding::Crlf), text_hash("a\nb\nc\nd")));
@@ -1081,7 +1092,7 @@ mod tests {
     /// P3-12-R1: the tab's line ending is used for the save, typed lines included.
     #[test]
     fn save_writes_tab_line_ending() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("a\nb"), fmt(TextEncoding::Utf8, LineEnding::Crlf), text_hash("a\nb")));
         pane.on_edit(0, text_hash("a\nb\nc"));
@@ -1094,7 +1105,7 @@ mod tests {
     fn close_tab_picks_next_active() {
         let mut pane = Pane::<()>::default();
         for n in ["a", "b", "c", "d"] {
-            open(&mut pane, n, false);
+            view(&mut pane, n, false);
         }
         assert_eq!(pane.active, Some(3));
         pane.close_tab(0);
@@ -1112,13 +1123,13 @@ mod tests {
     /// P3-3: a closed tab's late read and save results are dropped.
     #[test]
     fn closed_tab_ignores_late_results() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
         pane.on_edit(0, text_hash("AB"));
         let SaveStart::Write(save, _) = pane.begin_save(0, "AB") else { panic!("expected a write") };
         let reload = pane.start_read(0);
-        pane.close_tab(0);
+        pane.remove(Path::new("a.txt"));
         assert!(!pane.finish_save(save, true, text_hash("AB"), text_hash("AB")));
         assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(1, UTF8, 1)), ReadApply::Dropped);
     }
@@ -1126,12 +1137,12 @@ mod tests {
     /// P3-3: "Discard Edits" resets the tab to the disk read.
     #[test]
     fn discard_edits_resets_to_disk() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let first = open(&mut pane, "a.txt", false);
         pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
         pane.on_edit(0, text_hash("AB"));
         pane.discard_edits(0, text_hash("B"), UTF8, bytes_hash(b"B"));
-        let t = &pane.tabs[0];
+        let t = &pane.docs[0];
         assert_eq!((t.hash, t.dirty, t.pending, t.disk_hash, t.disk_changed), (text_hash("B"), false, None, bytes_hash(b"B"), false));
     }
 
@@ -1139,11 +1150,11 @@ mod tests {
     /// clean; after it ends the buffer is judged again (a later edit asks, a matching buffer is clean).
     #[test]
     fn close_waits_for_save_then_rejudges_buffer() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let save = loaded_and_saving(&mut pane, "B");
         let p = Path::new("a.txt");
         pane.on_edit(0, text_hash("A")); // undo back to the disk text while "B" is being written
-        assert!(!pane.tabs[0].modified());
+        assert!(!pane.docs[0].modified());
         assert_eq!(pane.close_state(p), CloseState::Wait);
         pane.finish_save(save, true, text_hash("B"), text_hash("A"));
         assert_eq!(pane.close_state(p), CloseState::Ask, "buffer A differs from the saved B");
@@ -1157,7 +1168,7 @@ mod tests {
     /// P3-3-R1 (review 1): edits typed while the save wrote leave the tab to ask again, not to close.
     #[test]
     fn edit_during_save_asks_again() {
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         let save = loaded_and_saving(&mut pane, "B");
         pane.on_edit(0, text_hash("BC"));
         pane.finish_save(save, true, text_hash("B"), text_hash("BC"));
@@ -1171,14 +1182,14 @@ mod tests {
     fn multi_tab_exit_rejudges_until_clean_and_aborts_on_stuck_save() {
         use super::super::tab_close::{Next, next};
         use std::time::Duration;
-        let mut pane = Pane::<()>::default();
+        let mut pane = Docs::default();
         for n in ["a.txt", "b.txt"] {
             let t = open(&mut pane, n, false);
             pane.finish_read(t, ReadOutcome::Changed(text_hash("0"), UTF8, bytes_hash(b"0")));
         }
         let (a, b) = (Path::new("a.txt"), Path::new("b.txt"));
-        let look = |pane: &Pane<()>, waited| {
-            let all: Vec<_> = pane.tabs.iter().map(|t| pane.close_state(&t.path)).collect();
+        let look = |pane: &Docs, waited| {
+            let all: Vec<_> = pane.docs.iter().map(|t| pane.close_state(&t.path)).collect();
             next(&all, Duration::from_secs(waited))
         };
         let (ia, ib) = (pane.find(a).unwrap(), pane.find(b).unwrap());
@@ -1194,7 +1205,7 @@ mod tests {
         assert_eq!(look(&pane, 1), Next::Sleep);
         // The write of b never finishes: after the limit only the close request is dropped; nothing else changes.
         assert_eq!(look(&pane, 10), Next::Abort);
-        assert_eq!((pane.tabs[ib].saving, pane.tabs[ib].dirty), (Some(tb), true));
+        assert_eq!((pane.docs[ib].saving, pane.docs[ib].dirty), (Some(tb), true));
         // A later request is judged normally once the write ends: a (re-edited) still needs a question.
         pane.finish_save(tb, true, text_hash("B1"), text_hash("B1"));
         assert_eq!(look(&pane, 0), Next::Ask, "a was edited after its save");
@@ -1237,12 +1248,12 @@ mod tests {
     #[test]
     fn i060_pinned_is_never_preview() {
         let mut pane = Pane::<()>::default();
-        open(&mut pane, "a", true);
+        view(&mut pane, "a", true);
         pane.toggle_pin(0);
         assert!(pane.is_pinned(0));
         assert!(!pane.tabs[0].preview);
         // The next preview open makes a new tab instead of replacing the pinned one.
-        open(&mut pane, "b", true);
+        view(&mut pane, "b", true);
         assert_eq!(names(&pane), ["a", "b"]);
         assert_eq!(previews(&pane), [false, true]);
     }
@@ -1251,8 +1262,8 @@ mod tests {
     #[test]
     fn i061_preview_open_is_preview() {
         let mut pane = Pane::<()>::default();
-        open(&mut pane, "a", true);
-        open(&mut pane, "b", false);
+        view(&mut pane, "a", true);
+        view(&mut pane, "b", false);
         assert_eq!(previews(&pane), [true, false]);
     }
 
@@ -1260,16 +1271,16 @@ mod tests {
     #[test]
     fn i062_preview_replaced_in_place() {
         let mut pane = Pane::<()>::default();
-        open(&mut pane, "a", false);
-        open(&mut pane, "p", true);
-        open(&mut pane, "b", false);
+        view(&mut pane, "a", false);
+        view(&mut pane, "p", true);
+        view(&mut pane, "b", false);
         pane.active = Some(0);
-        open(&mut pane, "q", true);
+        view(&mut pane, "q", true);
         assert_eq!(names(&pane), ["a", "q", "b"]);
         assert_eq!(pane.active, Some(1));
         assert_eq!(pane.tabs.iter().filter(|t| t.preview).count(), 1);
         let mut other = Pane::<()>::default();
-        open(&mut other, "r", true);
+        view(&mut other, "r", true);
         assert!(pane.tabs[1].preview && other.tabs[0].preview);
     }
 
@@ -1277,13 +1288,13 @@ mod tests {
     #[test]
     fn i063_double_click_promotes() {
         let mut pane = Pane::<()>::default();
-        open(&mut pane, "a", true);
+        view(&mut pane, "a", true);
         pane.promote(0);
         assert!(!pane.tabs[0].preview);
         assert!(!pane.is_pinned(0), "promoting does not pin (I-065)");
-        open(&mut pane, "b", true);
+        view(&mut pane, "b", true);
         assert_eq!(names(&pane), ["a", "b"]);
-        pane.on_edit(1, buffer_hash("x"));
+        pane.promote(1); // an edit promotes the same way (`PaneGroup::on_edit`)
         assert_eq!(previews(&pane), [false, false]);
     }
 
@@ -1291,8 +1302,8 @@ mod tests {
     #[test]
     fn i064_preview_state_is_reported() {
         let mut pane = Pane::<()>::default();
-        open(&mut pane, "a", true);
-        open(&mut pane, "b", false);
+        view(&mut pane, "a", true);
+        view(&mut pane, "b", false);
         assert_eq!(pane.describe(), "a|preview|a\tb|normal|b");
         pane.toggle_pin(0);
         assert!(pane.describe().starts_with("a|normal|"));
@@ -1304,7 +1315,7 @@ mod tests {
     fn i065_toggle_pin_moves_tab() {
         let mut pane = Pane::<()>::default();
         for p in ["a", "b", "c", "d"] {
-            open(&mut pane, p, false);
+            view(&mut pane, p, false);
         }
         pane.active = Some(2);
         pane.toggle_pin(2);
@@ -1315,7 +1326,7 @@ mod tests {
         assert_eq!((names(&pane), pane.pinned_count, pane.active), (vec!["d".into(), "c".into(), "a".into(), "b".into()], 1, Some(1)));
         // New tabs never land inside the pinned run, even after a pinned active tab (I-719).
         pane.active = Some(0);
-        open(&mut pane, "e", false);
+        view(&mut pane, "e", false);
         assert_eq!(names(&pane)[1], "e");
         assert!(!pane.is_pinned(1));
         // Closing a pinned tab shrinks the run.
@@ -1327,8 +1338,8 @@ mod tests {
     #[test]
     fn i066_pinned_tab_protected_from_normal_close() {
         let mut pane = Pane::<()>::default();
-        open(&mut pane, "a", false);
-        open(&mut pane, "b", false);
+        view(&mut pane, "a", false);
+        view(&mut pane, "b", false);
         pane.toggle_pin(0);
         assert!(pane.close_protected(0));
         assert!(!pane.close_protected(1));

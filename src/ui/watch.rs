@@ -454,7 +454,7 @@ impl Workbench {
             ws.update(cx, |ws, cx| {
                 for (from, to) in &ready.pairs {
                     ws.tree.follow_rename(from, to);
-                    ws.pane.rename_path(from, to);
+                    ws.group.rename_path(from, to);
                 }
                 ws.tree.refresh(cx);
             });

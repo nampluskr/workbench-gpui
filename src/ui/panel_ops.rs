@@ -216,7 +216,7 @@ impl Workbench {
         for ws in all {
             let is_active = Some(ws.entity_id()) == active;
             ws.update(cx, |ws, cx| {
-                ws.pane.rename_path(from, to);
+                ws.group.rename_path(from, to);
                 if !is_active && (from.starts_with(&ws.tree.root) || to.starts_with(&ws.tree.root)) {
                     ws.tree.refresh(cx);
                 }
