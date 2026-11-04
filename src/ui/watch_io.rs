@@ -28,7 +28,8 @@ use crate::fsops::watch::Change;
 /// text uses LF line endings (the editor representation).
 enum ReadResult {
     Same(Option<Format>),
-    Changed(String, u64, Option<Format>),
+    /// (text hash, text, format, raw-byte hash)
+    Changed(u64, String, Option<Format>, u64),
     Missing,
     Unreadable,
 }
@@ -202,7 +203,7 @@ impl Workbench {
             .filter_map(|(ws, path)| {
                 let (token, old_hash) = ws.update(cx, |ws, _| {
                     let ix = ws.pane.find(&path)?;
-                    Some((ws.pane.start_read(ix), ws.pane.tabs[ix].hash))
+                    Some((ws.pane.start_read(ix), ws.pane.tabs[ix].disk_hash))
                 })?;
                 Some(ReloadItem { token, old_hash, path, ws })
             })
@@ -221,9 +222,9 @@ impl Workbench {
                             crate::dev::slow_io(&p);
                             // Same decoding as the first read, so a reload never turns UTF-16/CP949 into lossy UTF-8.
                             match read_text(&p) {
-                                Some((text, format)) => {
-                                    let h = text_hash(&text);
-                                    if h == old { ReadResult::Same(format) } else { ReadResult::Changed(text, h, format) }
+                                Some((text, format, raw)) => {
+                                    // Raw bytes decide (H-18); the text hash only spares `set_value` (D-046).
+                                    if raw == old { ReadResult::Same(format) } else { ReadResult::Changed(text_hash(&text), text, format, raw) }
                                 }
                                 // Only a confirmed absence is a deletion (E-087); other failures (locks) are not.
                                 None if matches!(p.try_exists(), Ok(false)) => ReadResult::Missing,
@@ -247,15 +248,24 @@ impl Workbench {
             // Dirty tabs keep their buffer and get the conflict / deleted state instead (P3-1, P3-4a).
             let outcome = match &result {
                 ReadResult::Same(e) => ReadOutcome::Same(*e),
-                ReadResult::Changed(_, h, e) => ReadOutcome::Changed(*h, *e),
+                ReadResult::Changed(h, _, e, raw) => ReadOutcome::Changed(*h, *e, *raw),
                 ReadResult::Missing => ReadOutcome::Missing,
                 ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
             // None: dropped. Some(None): accepted, buffer already matches. Some(Some(editor)): fill it.
-            let apply = item.ws.update(cx, |ws, _| match ws.pane.finish_read(item.token, outcome) {
-                ReadApply::Dropped => None,
-                ReadApply::Kept => Some(None),
-                ReadApply::Fill(editor) => Some(Some(editor.clone())),
+            let apply = item.ws.update(cx, |ws, cx| {
+                let ix = ws.pane.tabs.iter().position(|t| t.pending == Some(item.token));
+                let before = ix.map(|i| ws.pane.tabs[i].marks());
+                let apply = match ws.pane.finish_read(item.token, outcome) {
+                    ReadApply::Dropped => None,
+                    ReadApply::Kept => Some(None),
+                    ReadApply::Fill(editor) => Some(Some(editor.clone())),
+                };
+                // Conflict / deleted / modified changed without a fill: the tab bar must redraw (P3-4a-R1).
+                if ix.map(|i| ws.pane.tabs[i].marks()) != before {
+                    cx.notify();
+                }
+                apply
             });
             let Some(fill) = apply else {
                 // A dirty tab is not filled; log the state the read left it in (P3-4a).
@@ -274,7 +284,7 @@ impl Workbench {
                         println!("[dev] tab-reload folder={folder_id} path={} result={r}", item.path.display());
                     }
                 }
-                ReadResult::Changed(text, h, _) => {
+                ReadResult::Changed(h, text, _, _) => {
                     let Some(editor) = fill else { continue };
                     editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
                     if dev {
