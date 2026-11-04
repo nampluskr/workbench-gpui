@@ -84,7 +84,14 @@ pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
                 window.dispatch_event(PlatformInput::MouseDown(press), cx);
             });
         })
-        .child(Editor::new(editor).readonly(true).h_full())
+        .child(
+            // P2-7: font size and comfortable line height from the spec; refine over gpui-kit's mono size × 1.5.
+            Editor::new(editor)
+                .readonly(true)
+                .text_size(metrics::BUFFER_FONT_SIZE)
+                .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
+                .h_full(),
+        )
 }
 
 /// Ctrl+Shift+left press → the same press with Alt+Shift (gpui-base's column selection); anything else → `None`.
@@ -233,6 +240,19 @@ mod tests {
 
     fn press(button: MouseButton, modifiers: Modifiers) -> MouseDownEvent {
         MouseDownEvent { button, position: point(px(40.), px(60.)), modifiers, click_count: 1, first_mouse: false }
+    }
+
+    /// V2: tab editor font size 15 and line height 1.618 × 15 = 24.27 (P2-7). Exact checks, not only the ±1 tolerance.
+    #[test]
+    fn editor_font_and_line_height_are_spec() {
+        let size = f32::from(metrics::BUFFER_FONT_SIZE);
+        metrics::spec::assert_spec("typography[\"buffer_font_size\"]", "default", size);
+        assert_eq!(metrics::spec::lookup("typography[\"buffer_font_size\"]").unwrap().value, f64::from(size));
+        let mult = metrics::spec::lookup("editor[\"line_height.comfortable_multiplier\"]").unwrap().value;
+        assert_eq!(mult as f32, metrics::BUFFER_LINE_HEIGHT_MULTIPLIER);
+        let line = size * metrics::BUFFER_LINE_HEIGHT_MULTIPLIER;
+        let spec_line = metrics::spec::lookup("editor[\"line_height.comfortable\"]").unwrap().value as f32;
+        assert!((line - spec_line).abs() < 0.01, "line height {line} vs spec {spec_line}");
     }
 
     /// V1: Ctrl+Shift+left becomes gpui-base's Alt+Shift column press at the same spot (E-047).
