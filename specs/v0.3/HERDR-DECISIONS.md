@@ -106,6 +106,10 @@
 - 판단: 가장 되돌리기 쉬운 쪽으로 정한다. 스펙에 없는 수치도 `src/ui/metrics.rs` 상수로 옮기고 주석을 `// spec: none (app value)`로 단다. `spec/zed-metrics.toml`에는 넣지 않는다(spec 소유, 추정 입력 금지). R-10 집계에서는 metrics.rs 안이므로 0건 판정에 들어간다. `px(0.)`은 gpui 상수(`Pixels::ZERO` 등)로 바꿔도 값이 같다.
 - 결과: TASKS Phase 2 카드에 반영. DECISIONS.md(사용자 소유)는 고치지 않는다. 사용자 확인 필요 목록에 올린다. 다르게 정하면 주석만 바꾸면 된다.
 
+### H-30 · 2026-11-04 · lead (P3-R1 테스트 방식, 위임 H-26)
+- 요청: Phase 3 최종 확인 REWORK 1(P3-2 비활성 항목 회귀 테스트). impl-ui `[BLOCKED]`: 메뉴 intercept를 그대로 거치려면 `#[gpui::test]`가 필요한데 gpui test-support가 꺼져 있다. 선택지 (a) Cargo.toml dev-dependency에 test-support 추가, (b) intercept의 enabled 판정을 순수 함수로 빼고 `#[test]`.
+- 판단: (b). Cargo 변경은 위임 범위 밖이고(H-26), H-24에서도 test-support 없이 `#[test]`로 정했다. (b)는 동작을 바꾸지 않는 추출이라 Phase 3 리팩토링 범위다. `Chord::feed` 결과(`Feed`)와 항목 enabled 조회를 받아 "예약할 항목·소비 여부"를 돌려주는 함수 하나로 하고, intercept는 그 결과대로만 움직인다. reviewer가 같은 판단 경로를 거치는지 재확인한다. 사용자 확인 목록에 올린다.
+
 ### H-29 · 2026-11-04 · lead (impl-ui 대체 모델, 위임 H-26)
 - 요청: Phase 3 착수 시점(08:59)에 impl-ui agy Claude 5시간 한도 100%(초기화 12:20). 사용자 지시 "멈추지 말고, 단계별로 모든 phase 를 진행해 주세요."
 - 판단: HERDR-SETUP 1.1에 미리 정한 대체(`impl-ui` → Claude Code, Sonnet 5.5, effort medium)로 바꾼다. 같은 pane `wE:p1`, 같은 worktree `.worktrees/ui`, 이름 `impl-ui`. Claude 구독은 여유(사용자 2026-11-03), measure와 같은 구독이라 동시에 무거운 작업을 돌리지 않는다. 역할·소유권·지침은 그대로. 사용자 확인 목록에 올린다.
