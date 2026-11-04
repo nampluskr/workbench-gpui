@@ -351,25 +351,62 @@ async fn settle(items: &[&Dirty], this: &WeakEntity<super::Workbench>, cx: &mut 
     }
 }
 
+/// What a closing flow does next, from the state of every tab it covers and how long it has waited for a save.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Next {
+    /// Nothing left to keep: run the close.
+    Finish,
+    /// A save is running: look again shortly.
+    Sleep,
+    /// Unsaved tabs: ask.
+    Ask,
+    /// A save outlasted the limit: cancel the close request only (the save and the tabs stay as they are).
+    Abort,
+}
+
+pub fn next(states: &[CloseState], waited: std::time::Duration) -> Next {
+    if states.contains(&CloseState::Wait) {
+        return if waited >= metrics::timing::CLOSE_SAVE_WAIT_LIMIT { Next::Abort } else { Next::Sleep };
+    }
+    if states.contains(&CloseState::Ask) { Next::Ask } else { Next::Finish }
+}
+
 /// Runs a closing flow (P3-3-R1): look at the tabs, wait for running saves, ask, save, and look again until nothing
 /// is left to keep; then `then` runs in the same turn as the last look, so no edit can slip in between. `false`: the
-/// user cancelled or a save did not finish, and everything stays open.
+/// user cancelled, a save did not finish, or a running save took longer than the limit (R2; only this close request
+/// is cancelled and the user is told), and everything stays open.
 async fn resolve(then: Then, this: &WeakEntity<super::Workbench>, cx: &mut AsyncWindowContext) -> bool {
+    let mut waiting_since: Option<std::time::Instant> = None;
     loop {
         let seen = this.update_in(cx, |this, window, cx| {
             let open = this.open_tabs(&then, cx);
-            if open.is_empty() {
-                then.run(this, window, cx);
+            let states = open_states(&open);
+            let waited = if states.contains(&CloseState::Wait) {
+                waiting_since.get_or_insert_with(std::time::Instant::now).elapsed()
+            } else {
+                waiting_since = None;
+                std::time::Duration::ZERO
+            };
+            let next = next(&states, waited);
+            match next {
+                Next::Finish => then.run(this, window, cx),
+                Next::Abort => {
+                    use gpui_kit::component::WindowExt as _;
+                    window.push_notification(SharedString::from("Close cancelled: a save is still running."), cx);
+                }
+                Next::Sleep | Next::Ask => {}
             }
-            open
+            (next, open)
         });
-        let Ok(open) = seen else { return false };
-        if open.is_empty() {
-            return true;
-        }
-        if open.iter().any(|o| o.waiting) {
-            cx.background_executor().timer(SAVE_WAIT).await;
-            continue;
+        let Ok((next, open)) = seen else { return false };
+        match next {
+            Next::Finish => return true,
+            Next::Abort => return false,
+            Next::Sleep => {
+                cx.background_executor().timer(SAVE_WAIT).await;
+                continue;
+            }
+            Next::Ask => {}
         }
         let items: Vec<&Dirty> = open.iter().map(|o| &o.item).collect();
         match settle(&items, this, cx).await {
@@ -381,6 +418,10 @@ async fn resolve(then: Then, this: &WeakEntity<super::Workbench>, cx: &mut Async
             Settled::Saved => {}
         }
     }
+}
+
+fn open_states(open: &[Open]) -> Vec<CloseState> {
+    open.iter().map(|o| if o.waiting { CloseState::Wait } else { CloseState::Ask }).collect()
 }
 
 /// Removes the tab `path` (no question).
@@ -549,6 +590,20 @@ mod tests {
         assert!(guard_choice(Guard::Proceed).is_none());
     }
 
+
+    /// P3-3-R2: the wait limit decides Sleep vs Abort only while a save runs; without one the limit is irrelevant.
+    #[test]
+    fn wait_limit_aborts_only_a_running_save() {
+        use super::{Next, next};
+        use crate::ui::pane::CloseState::{Ask, Clean, Wait};
+        let limit = metrics::timing::CLOSE_SAVE_WAIT_LIMIT;
+        let just_under = limit - std::time::Duration::from_millis(1);
+        assert_eq!(next(&[Ask, Wait], just_under), Next::Sleep);
+        assert_eq!(next(&[Ask, Wait], limit), Next::Abort);
+        assert_eq!(next(&[Ask], limit * 2), Next::Ask);
+        assert_eq!(next(&[Clean], limit * 2), Next::Finish);
+        assert_eq!(next(&[], limit), Next::Finish);
+    }
     #[test]
     fn guard_buttons_map_to_actions() {
         use GuardAction::*;

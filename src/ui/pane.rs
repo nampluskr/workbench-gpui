@@ -1106,6 +1106,51 @@ mod tests {
         assert_eq!(pane.close_state(Path::new("a.txt")), CloseState::Ask);
     }
 
+    /// P3-3-R2: two dirty tabs closing together. Each step re-reads every tab: a tab re-edited after its save or a
+    /// new dirty tab keeps the close from finishing (R1 guarantee), and a save that never ends aborts only the
+    /// close request, leaving the save and the tab as they were.
+    #[test]
+    fn multi_tab_exit_rejudges_until_clean_and_aborts_on_stuck_save() {
+        use super::super::tab_close::{Next, next};
+        use std::time::Duration;
+        let mut pane = Pane::<()>::default();
+        for n in ["a.txt", "b.txt"] {
+            let t = open(&mut pane, n, false);
+            pane.finish_read(t, ReadOutcome::Changed(text_hash("0"), UTF8, bytes_hash(b"0")));
+        }
+        let (a, b) = (Path::new("a.txt"), Path::new("b.txt"));
+        let look = |pane: &Pane<()>, waited| {
+            let all: Vec<_> = pane.tabs.iter().map(|t| pane.close_state(&t.path)).collect();
+            next(&all, Duration::from_secs(waited))
+        };
+        let (ia, ib) = (pane.find(a).unwrap(), pane.find(b).unwrap());
+        pane.on_edit(ia, text_hash("A1"));
+        pane.on_edit(ib, text_hash("B1"));
+        assert_eq!(look(&pane, 0), Next::Ask);
+        // "Save all": a is saved, b is being written, and the user types into a again meanwhile.
+        let SaveStart::Write(ta, _) = pane.begin_save(ia, "A1") else { panic!("write") };
+        pane.finish_save(ta, true, text_hash("A1"), text_hash("A1"));
+        let SaveStart::Write(tb, _) = pane.begin_save(ib, "B1") else { panic!("write") };
+        assert_eq!(look(&pane, 0), Next::Sleep);
+        pane.on_edit(ia, text_hash("A2"));
+        assert_eq!(look(&pane, 1), Next::Sleep);
+        // The write of b never finishes: after the limit only the close request is dropped; nothing else changes.
+        assert_eq!(look(&pane, 10), Next::Abort);
+        assert_eq!((pane.tabs[ib].saving, pane.tabs[ib].dirty), (Some(tb), true));
+        // A later request is judged normally once the write ends: a (re-edited) still needs a question.
+        pane.finish_save(tb, true, text_hash("B1"), text_hash("B1"));
+        assert_eq!(look(&pane, 0), Next::Ask, "a was edited after its save");
+        let SaveStart::Write(ta, _) = pane.begin_save(ia, "A2") else { panic!("write") };
+        pane.finish_save(ta, true, text_hash("A2"), text_hash("A2"));
+        assert_eq!(look(&pane, 0), Next::Finish);
+        // A new dirty tab opened meanwhile is asked about too.
+        let t = open(&mut pane, "c.txt", false);
+        pane.finish_read(t, ReadOutcome::Changed(text_hash("0"), UTF8, bytes_hash(b"0")));
+        let ic = pane.find(Path::new("c.txt")).unwrap();
+        pane.on_edit(ic, text_hash("C1"));
+        assert_eq!(look(&pane, 0), Next::Ask);
+    }
+
     /// P3-3-R1 (review 3): the pre-save check and the watch reload share one rule on raw bytes (H-18): a re-encoded
     /// file differs even when its text is equal, identical bytes do not.
     #[test]

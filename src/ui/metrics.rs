@@ -237,6 +237,8 @@ pub mod timing {
     use std::time::Duration;
     // spec: none (app value) — apply watch events once quiet for this long after the last one (judgement).
     pub const QUIET: Duration = Duration::from_millis(150);
+    // spec: none (app value) — a close request gives up waiting for a running save after this long (P3-3-R2, judgement).
+    pub const CLOSE_SAVE_WAIT_LIMIT: Duration = Duration::from_secs(10);
     // spec: none (app value) — apply watch events this long after the first even if they keep coming (judgement).
     pub const MAX_WAIT: Duration = Duration::from_millis(1000);
     // spec: none (app value) — delay before one more full reload after an event flood (judgement).
