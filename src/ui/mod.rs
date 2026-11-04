@@ -14,6 +14,7 @@ pub(crate) mod metrics;
 mod pane;
 mod pane_group;
 mod pane_view;
+mod tab_drag;
 mod tab_input;
 mod panel_delete;
 mod panel_edit;
@@ -87,6 +88,8 @@ struct Workbench {
     panel_menu: Option<panel_menu::OpenPanelMenu>,
     /// 열린 탭 바 분할 팝업(I-706, P4-3b).
     split_menu: Option<pane_view::OpenSplitMenu>,
+    /// Where a tab being dragged would land over a pane body (I-714, P4-4).
+    drop_hint: Option<tab_drag::DropHint>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
     pending_press: Option<std::path::PathBuf>,
     /// 휴지통·삭제 확인창이 떠 있다(겹쳐 띄우지 않는다).
@@ -678,6 +681,7 @@ pub fn run(dev: DevOptions) {
                         clip_gen: 0,
                         panel_menu: None,
                         split_menu: None,
+                        drop_hint: None,
                         pending_press: None,
                         deleting: false,
                         prompt: tab_close::Prompt::default(),

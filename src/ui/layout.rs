@@ -12,6 +12,7 @@ use gpui_kit::prelude::FluentBuilder as _;
 
 use super::layout_probe::{self, probe};
 use super::metrics::*;
+use super::rem::rems_from_px;
 use super::tooltip::{self, Line, Spec};
 
 /// 왼쪽 사이드바(등록 폴더 목록) 내용. resizable 패널 안에 들어간다(D-10 이후 변경).
@@ -173,6 +174,44 @@ pub fn tab_press(button: MouseButton, clicks: usize, pinned: bool) -> TabPress {
 /// Mouse press handler of a tab.
 pub type PressHandler = std::rc::Rc<dyn Fn(&TabPress, &mut Window, &mut App)>;
 
+/// Payload of a tab being dragged (I-074, I-715): where it comes from. Shown as a small ghost with the title.
+#[derive(Clone)]
+pub struct TabDrag {
+    pub pane: u32,
+    pub ix: usize,
+    pub title: SharedString,
+}
+
+impl Render for TabDrag {
+    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let theme = cx.theme();
+        div()
+            .px(TAB_PADDING_X)
+            .h(TAB_CONTENT_HEIGHT)
+            .flex()
+            .items_center()
+            .text_size(TEXT_SIZE_DEFAULT)
+            .bg(theme.tab_bar)
+            .border_1()
+            .border_color(theme.border)
+            .child(self.title.clone())
+    }
+}
+
+/// A tab drag dropped on a tab, the tab-bar end or a pane body.
+pub type DropHandler = std::rc::Rc<dyn Fn(&TabDrag, &mut Window, &mut App)>;
+
+/// I-715: a drop mark on the tab's left edge when the dragged tab starts after it (or in another pane), else on its
+/// right edge. `true` is left. The pointer's side of the tab does not matter.
+pub fn tab_drop_left(drag_pane: u32, drag_ix: usize, pane: u32, ix: usize) -> bool {
+    drag_pane != pane || drag_ix > ix
+}
+
+/// `tab_bar_end_drop_min_width` (I-716, L-70): the empty tab-bar end takes a drop from 24px wide.
+const TAB_BAR_END_DROP_MIN_WIDTH: Rems = rems_from_px(24.);
+/// `tab_drop_line_width` (I-715).
+const TAB_DROP_LINE_WIDTH: Pixels = px(2.);
+
 /// Segoe Fluent Icons / MDL2 "Pin" (E718). gpui-kit's bundled icon set has no pin (Cargo files are off limits), so the
 /// pin slot uses the title bar's glyph font.
 // shortcut: glyph font instead of an SVG pin; switch to `IconName::Pin` once the full icon catalog is bundled.
@@ -200,6 +239,9 @@ pub struct TabView {
     pub press: PressHandler,
     /// Click on the pin icon: unpin (L-66).
     pub unpin: CloseHandler,
+    /// This tab as a drag payload (I-074) and what a drop on it does (I-715).
+    pub drag: TabDrag,
+    pub dropped: DropHandler,
     /// 수정됨(편집·충돌·내용 있는 지워진 파일)이면 시작 슬롯에 점(L-65, `Tab::modified`).
     pub dirty: bool,
     /// 디스크와 충돌(E-086): 점이 Warning 색.
@@ -251,8 +293,11 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
         };
         let (press, pinned) = (tab.press.clone(), tab.pinned);
         let press_middle = press.clone();
+        let (me, dropped) = (tab.drag.clone(), tab.dropped.clone());
+        let (mark_bg, mark_border) = (theme.drop_target, theme.drag_border);
         row = row.child(
             div()
+                .id(("tab", i))
                 .flex_shrink_0()
                 .h_full()
                 .group(SharedString::from(format!("tab-{i}")))
@@ -261,6 +306,17 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
                 })
                 .on_mouse_up(MouseButton::Middle, move |_, window, cx| {
                     press_middle(&tab_press(MouseButton::Middle, 1, pinned), window, cx)
+                })
+                .on_drag(tab.drag.clone(), |drag, _, _, cx| cx.new(|_| drag.clone()))
+                .on_drop::<TabDrag>(move |d, window, cx| dropped(d, window, cx))
+                // I-715: background, border and a 2px line on the side the tab will land on.
+                .drag_over::<TabDrag>(move |s, d, _, _| {
+                    let s = s.bg(mark_bg).border_color(mark_border);
+                    if tab_drop_left(d.pane, d.ix, me.pane, me.ix) {
+                        s.border_l(TAB_DROP_LINE_WIDTH)
+                    } else {
+                        s.border_r(TAB_DROP_LINE_WIDTH)
+                    }
                 })
                 .border_r_1()
                 .border_color(theme.border)
@@ -333,8 +389,9 @@ fn close_slot(i: usize, tab: &TabView, cx: &App) -> impl IntoElement {
         .child(Icon::new(IconName::Close).size(ICON_SMALL))
 }
 
-pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, glyph_font: &SharedString, cx: &App) -> impl IntoElement {
+pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, glyph_font: &SharedString, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
+    let drop_bg = theme.drop_target;
     h_flex()
         .on_children_prepainted(probe(&[
             "tab-bar-start",
@@ -377,11 +434,15 @@ pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, glyph_font: &SharedString,
             tab_list(tabs, glyph_font, cx),
         )
         .child(
+            // I-716: a drop on the empty end puts the tab last and does not split.
             div()
                 .flex_1()
+                .min_w(TAB_BAR_END_DROP_MIN_WIDTH)
                 .h_full()
                 .border_b_1()
-                .border_color(theme.border),
+                .border_color(theme.border)
+                .on_drop::<TabDrag>(move |d, window, cx| end_drop(d, window, cx))
+                .drag_over::<TabDrag>(move |s, _, _, _| s.bg(drop_bg)),
         )
         // I-706: the end buttons belong to the pane that has focus only.
         .children(end.map(|end| {
@@ -543,7 +604,7 @@ fn project_panel_toggle_tooltip(dock_open: bool) -> Spec {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{TabPress, tab_press};
+    use super::{TabPress, tab_drop_left, tab_press};
     use gpui_kit::MouseButton;
 
     /// I-063, I-066, I-075, L-74: a left press activates, a double press promotes, a middle click closes a normal
@@ -556,5 +617,14 @@ mod tests {
         assert_eq!(tab_press(MouseButton::Middle, 1, false), TabPress::Close);
         assert_eq!(tab_press(MouseButton::Middle, 1, true), TabPress::Ignore);
         assert_eq!(tab_press(MouseButton::Right, 1, false), TabPress::Ignore);
+    }
+
+    /// I-715: the line is on the left when the dragged tab starts after the target (or in another pane), else right.
+    #[test]
+    fn tab_drop_line_side_follows_drag_start() {
+        assert!(tab_drop_left(0, 3, 0, 1));
+        assert!(!tab_drop_left(0, 1, 0, 3));
+        assert!(!tab_drop_left(0, 2, 0, 2));
+        assert!(tab_drop_left(1, 0, 0, 5));
     }
 }

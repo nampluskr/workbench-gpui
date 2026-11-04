@@ -7,8 +7,8 @@
 //! - Files are `Docs` (one per path); tabs are views. Views of one file are kept equal: an edit in one view is
 //!   spliced into the others (`sync_view`), so dirty and save state stay per file (H-20 option A).
 //! - Drawing (dividers, overlays, buttons) and keys are P4-3b / P4-4 (impl-ui); the judging functions are here.
-// P4-3b wired splits, divider drag, zoom and focus moves; the drop targets and tab moves wait for P4-4 (impl-ui).
-#![cfg_attr(not(test), expect(dead_code, reason = "callers of the drop functions are P4-4 (impl-ui)"))]
+// P4-3b wired splits, divider drag, zoom and focus moves; P4-4 wired the tab drops.
+#![cfg_attr(not(test), expect(dead_code, reason = "SPLIT_HORIZONTAL/VERTICAL and SplitMode::Empty have no caller yet (no SplitHorizontal/Vertical action, no empty-pane command)"))]
 
 use std::collections::BTreeMap;
 use std::path::Path;
@@ -588,6 +588,21 @@ impl<E> PaneGroup<E> {
         Some(id)
     }
 
+    /// I-718 Ctrl-drop of tab `ix` of pane `from` into another pane `to` at `at`: the source keeps its tab and `to` gets
+    /// a new view (`editor`, a copy made by the caller; never a preview). A pane that already shows the file only
+    /// activates that tab. Nothing happens within one pane.
+    pub fn copy_tab_view(&mut self, from: PaneId, ix: usize, to: PaneId, at: usize, editor: E) {
+        let Some(path) = self.panes.get(&from).and_then(|p| p.tabs.get(ix)).map(|t| t.path.clone()) else { return };
+        let Some(dst) = self.panes.get_mut(&to).filter(|_| from != to) else { return };
+        match dst.find(&path) {
+            Some(i) => dst.active = Some(i),
+            None => {
+                dst.insert_at(Tab { path, preview: false, editor }, at, false);
+            }
+        }
+        self.active = to;
+    }
+
     /// The file or folder `from` was renamed or moved to `to` (판단). Returns the new paths whose read in flight was
     /// dropped (`Docs::rename_path`); the caller reads them again.
     pub fn rename_path(&mut self, from: &Path, to: &Path) -> Vec<std::path::PathBuf> {
@@ -681,6 +696,14 @@ impl PaneGroup {
         (o.ix, true)
     }
 
+    /// A new editor with the text of tab `ix` of pane `from` (the copy of a Ctrl-drag, I-718).
+    pub fn clone_view(&self, from: PaneId, ix: usize, window: &mut Window, cx: &mut Context<FolderWorkspace>) -> Option<Entity<EditorState>> {
+        let text = self.panes.get(&from)?.tabs.get(ix)?.editor.read(cx).value();
+        let editor = Self::new_editor(window, cx);
+        editor.update(cx, |e, cx| e.set_value(text, window, cx));
+        Some(editor)
+    }
+
     /// Splits the active pane (Split Right/Left/Up/Down, I-707~I-711, I-731). A clone is a new editor with the
     /// active tab's text.
     pub fn split_active(&mut self, dir: SplitDirection, mode: SplitMode, window: &mut Window, cx: &mut Context<FolderWorkspace>) -> Option<PaneId> {
@@ -760,6 +783,24 @@ mod tests {
 
     fn clone(g: &mut G, dir: SplitDirection) -> Option<u32> {
         g.split(dir, SplitMode::Clone, |t| t.editor + 1000)
+    }
+
+    /// I-718: a Ctrl-drop copies the tab to another pane and keeps the source; a pane that has the file only activates it.
+    #[test]
+    fn i718_copy_tab_view() {
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        open(&mut g, "b", false);
+        let to = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
+        g.copy_tab_view(0, 1, to, 0, 77);
+        assert_eq!(names(&g, 0), ["a", "b"], "the source keeps its tab");
+        assert_eq!(names(&g, to), ["b"]);
+        assert_eq!(g.panes[&to].tabs[0].editor, 77);
+        assert!(!g.panes[&to].tabs[0].preview);
+        g.copy_tab_view(0, 1, to, 0, 88);
+        assert_eq!(names(&g, to), ["b"], "already there: no second view");
+        g.copy_tab_view(0, 0, 0, 0, 99);
+        assert_eq!(names(&g, 0), ["a", "b"], "same pane: nothing");
     }
 
     /// I-707: popup order Right, Left, Up, Down; clone by default, move for an unsplittable item with ≥2 tabs, else off.

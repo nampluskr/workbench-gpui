@@ -15,10 +15,11 @@ use gpui_kit::*;
 use super::Workbench;
 use super::context_menu::{CmEntry, ContextMenu, ContextMenuEvent};
 use super::keymap::{self, pane as pane_actions, workspace as ws_actions};
-use super::layout::{self, BarEnd, TabPress, TabView};
+use super::layout::{self, BarEnd, TabDrag, TabPress, TabView};
 use super::layout_probe::probe;
 use super::pane::editor_view;
-use super::pane_group::{Axis, Node, PaneGroup, PaneId, SPLIT_LINE_HITBOX, SPLIT_LINE_THICKNESS, SplitDirection, SplitMode};
+use super::pane_group::{Axis, Node, PaneGroup, PaneId, SPLIT_LINE_HITBOX, SPLIT_LINE_THICKNESS, SplitDirection, SplitMode, drop_overlay};
+use super::tab_drag::body_hint;
 
 /// L-17 zoomed pane: 8px around it (`pane["zoomed_padding"]`) and a 1px border (`pane["zoomed_border"]`).
 const ZOOMED_PADDING: Pixels = px(8.);
@@ -78,7 +79,7 @@ impl Workbench {
             return v_flex()
                 .on_children_prepainted(probe(&["tab-bar", "active-item"]))
                 .size_full()
-                .child(layout::tab_bar(&[], None, &self.glyph_font, cx))
+                .child(layout::tab_bar(&[], None, Rc::new(|_, _, _| {}), &self.glyph_font, cx))
                 .child(div().flex_1().min_h_0().child(div().size_full().bg(theme.background)))
                 .into_any_element();
         };
@@ -187,6 +188,8 @@ impl Workbench {
                     active: pane.active == Some(i),
                     press: Rc::new(cx.listener(move |this, p: &TabPress, window, cx| this.on_tab_press(id, i, *p, window, cx))),
                     unpin: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.toggle_pin_at(id, i, window, cx))),
+                    drag: TabDrag { pane: id, ix: i, title: t.title().into() },
+                    dropped: Rc::new(cx.listener(move |this, d: &TabDrag, window, cx| this.drop_tab_at(d, id, i, window, cx))),
                     dirty: doc.is_some_and(|d| d.modified()),
                     conflict: doc.is_some_and(|d| d.has_conflict()),
                     deleted: doc.is_some_and(|d| d.deleted),
@@ -199,6 +202,14 @@ impl Workbench {
             zoomed: group.zoomed == Some(id),
             on_split: Rc::new(cx.listener(|this, e: &ClickEvent, window, cx| this.open_split_menu(e, window, cx))),
             on_zoom: Rc::new(cx.listener(|this, _: &ClickEvent, window, cx| this.toggle_zoom(window, cx))),
+        });
+        let tab_count = pane.tabs.len();
+        let end_drop: layout::DropHandler = Rc::new(cx.listener(move |this, d: &TabDrag, window, cx| this.drop_tab_at(d, id, tab_count, window, cx)));
+        // I-714: the overlay of an ongoing tab drag over this body; the colour is the theme drop-target token.
+        // shortcut: gpui-kit's `drop_target` colour, not Zed's `drop_target_background` (no spec value, spec/ambiguous.md has none).
+        let overlay = self.drop_hint.filter(|h| h.pane == id && cx.has_active_drag()).map(|h| {
+            let r = drop_overlay(h.w, h.h, h.dir);
+            div().absolute().left(px(r.x)).top(px(r.y)).w(px(r.w)).h(px(r.h)).bg(theme.drop_target)
         });
         let item: AnyElement = match (focused.then_some(&self.editor_poc).and_then(Option::as_ref), pane.active_tab()) {
             (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
@@ -214,8 +225,25 @@ impl Workbench {
             .size_full()
             // A press anywhere in the pane makes it the active one (the editor still gets the press).
             .capture_any_mouse_down(cx.listener(move |this, _: &MouseDownEvent, _, cx| this.activate_pane(id, cx)))
-            .child(layout::tab_bar(&tabs, end, &self.glyph_font, cx))
-            .child(div().flex_1().min_h_0().child(item))
+            .child(layout::tab_bar(&tabs, end, end_drop, &self.glyph_font, cx))
+            .child(
+                div()
+                    .relative()
+                    .flex_1()
+                    .min_h_0()
+                    // I-712: the drop zone is judged on the body below the tab bar.
+                    .on_drag_move::<TabDrag>(cx.listener(move |this, e: &DragMoveEvent<TabDrag>, _, cx| {
+                        let (b, p) = (e.bounds, e.event.position);
+                        let hint = b.contains(&p).then(|| {
+                            let (w, h) = (f32::from(b.size.width), f32::from(b.size.height));
+                            body_hint(id, e.drag(cx).pane, tab_count, w, h, f32::from(p.x - b.left()), f32::from(p.y - b.top()))
+                        });
+                        this.set_drop_hint(id, hint, cx);
+                    }))
+                    .on_drop::<TabDrag>(cx.listener(move |this, d: &TabDrag, window, cx| this.drop_on_body(d, id, window, cx)))
+                    .child(item)
+                    .children(overlay),
+            )
             .into_any_element()
     }
 
