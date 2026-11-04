@@ -154,6 +154,8 @@ pub struct TabView {
     /// 임시 탭이면 제목 기울임(I-064, L-68).
     pub preview: bool,
     pub active: bool,
+    /// 수정됨이면 시작 슬롯에 점(L-65).
+    pub dirty: bool,
     /// 닫기 버튼 처리기 (L-66, P3-3).
     pub close: CloseHandler,
 }
@@ -215,7 +217,16 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                         .items_center()
                         .text_size(TEXT_SIZE_DEFAULT)
                         .when(!tab.active, |d| d.text_color(theme.muted_foreground))
-                        .child(div().flex_shrink_0().size(TAB_START_SLOT))
+                        .child(
+                            div()
+                                .flex()
+                                .flex_shrink_0()
+                                .items_center()
+                                .justify_center()
+                                .size(TAB_START_SLOT)
+                                // shortcut: Accent approximated by the theme primary; conflict (Warning) arrives with P3-4.
+                                .when(tab.dirty, |d| d.child(div().size(TAB_INDICATOR_SIZE).rounded_full().bg(theme.primary))),
+                        )
                         .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).child(tab.title.clone()))
                         .child(close_slot(i, tab, cx)),
                 ),

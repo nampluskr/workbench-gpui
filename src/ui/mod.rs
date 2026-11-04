@@ -248,6 +248,7 @@ impl Workbench {
                         title: t.title().into(),
                         preview: t.preview,
                         active: pane.active == Some(i),
+                        dirty: t.dirty,
                         close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(i, window, cx))),
                     })
                     .collect();
