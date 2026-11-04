@@ -577,6 +577,7 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_toggle_app_menu))
             .on_action(cx.listener(Self::on_quit))
             .on_action(cx.listener(Self::on_close_window))
+            .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()

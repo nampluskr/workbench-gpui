@@ -2,6 +2,7 @@ mod dev;
 mod fsops;
 mod keymap;
 mod state;
+mod text_io;
 mod ui;
 
 fn main() {

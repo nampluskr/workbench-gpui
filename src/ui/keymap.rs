@@ -34,7 +34,7 @@ pub const APP_DIR: &str = "workbench-gpui";
 pub mod workspace {
     gpui_kit::actions!(
         workspace,
-        [ToggleLeftDock, Open, CopyPath, CopyRelativePath, CloseWindow]
+        [ToggleLeftDock, Open, CopyPath, CopyRelativePath, CloseWindow, Save]
     );
 }
 

@@ -17,16 +17,17 @@ use notify::Watcher as _;
 use super::Workbench;
 use super::folders::FolderWorkspace;
 use super::keymap;
-use super::pane::{ReadOutcome, text_hash};
+use super::pane::{ReadOutcome, read_text, text_hash};
+use crate::text_io::TextEncoding;
 use super::watch::{ExtraWatch, Msg, epoch_ms, kind_of, same_path};
 use crate::fsops::ident::{self, DirId};
 use crate::fsops::ops;
 use crate::fsops::watch::Change;
 
-/// 탭 하나 다시 읽은 결과.
+/// 탭 하나 다시 읽은 결과. Encoding is the detected one (`None`: undecodable, shown lossy and read-only, P3-2).
 enum ReadResult {
-    Same,
-    Changed(String, u64),
+    Same(Option<TextEncoding>),
+    Changed(String, u64, Option<TextEncoding>),
     Unreadable,
 }
 
@@ -216,13 +217,13 @@ impl Workbench {
                     jobs.into_iter()
                         .map(|(p, old)| {
                             crate::dev::slow_io(&p);
-                            match std::fs::read(&p) {
-                                Ok(bytes) => {
-                                    let text = String::from_utf8_lossy(&bytes).into_owned();
+                            // Same decoding as the first read, so a reload never turns UTF-16/CP949 into lossy UTF-8.
+                            match read_text(&p) {
+                                Some((text, encoding)) => {
                                     let h = text_hash(&text);
-                                    if h == old { ReadResult::Same } else { ReadResult::Changed(text, h) }
+                                    if h == old { ReadResult::Same(encoding) } else { ReadResult::Changed(text, h, encoding) }
                                 }
-                                Err(_) => ReadResult::Unreadable,
+                                None => ReadResult::Unreadable,
                             }
                         })
                         .collect()
@@ -241,20 +242,20 @@ impl Workbench {
             // Apply only if this is still the tab's latest read and the folder is not removed.
             // Dirty tabs keep their buffer (P3-1).
             let outcome = match &result {
-                ReadResult::Same => ReadOutcome::Same,
-                ReadResult::Changed(_, h) => ReadOutcome::Changed(*h),
+                ReadResult::Same(e) => ReadOutcome::Same(*e),
+                ReadResult::Changed(_, h, e) => ReadOutcome::Changed(*h, *e),
                 ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
             let editor = item.ws.update(cx, |ws, _| ws.pane.finish_read(item.token, outcome).cloned());
             let Some(editor) = editor else { continue };
             match result {
-                ReadResult::Same => {}
+                ReadResult::Same(_) => {}
                 ReadResult::Unreadable => {
                     if dev {
                         println!("[dev] tab-reload folder={folder_id} path={} result=unreadable", item.path.display());
                     }
                 }
-                ReadResult::Changed(text, h) => {
+                ReadResult::Changed(text, h, _) => {
                     editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
                     if dev {
                         println!(

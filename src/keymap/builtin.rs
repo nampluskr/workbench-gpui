@@ -74,6 +74,7 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-alt-j", "Workspace", "multi_workspace::ToggleWorkspaceSidebar", "I-024, A-17.1"),
     b("ctrl-alt-;", "Workspace", "multi_workspace::FocusWorkspaceSidebar", "I-024, A-17.2"),
     b("ctrl-k ctrl-o", "Workspace", "workspace::Open", "A-13.1, A-17.6"),
+    b("ctrl-s", "Workspace", "workspace::Save", "E-088"),
     b("f10", "Workspace", "app_menu::Toggle", "I-310"),
     // 사이드바 (A-17.3~A-17.5). 컨텍스트 이름은 D-027 ④.
     b("up", "Sidebar", "menu::SelectPrevious", "A-17.3"),
