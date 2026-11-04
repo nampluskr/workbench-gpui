@@ -15,7 +15,7 @@ use gpui_kit::*;
 use super::folders::FolderWorkspace;
 use super::keymap;
 use super::metrics;
-use super::pane::{SaveStart, buffer_hash, read_text, save_failed, text_hash};
+use super::pane::{CloseState, SaveStart, buffer_hash, disk_differs, read_text, save_failed, text_hash};
 use super::task_dialog::{self, Choice};
 use crate::text_io::{self, Format};
 
@@ -32,22 +32,16 @@ pub enum End {
     Cancelled,
 }
 
-impl End {
-    /// A closing flow may go on (the tab holds nothing the user wants to keep).
-    fn may_close(self) -> bool {
-        self != End::Cancelled
-    }
-}
-
 /// What the disk holds for a tab's file.
 pub enum Disk {
     Missing,
     /// Exists but cannot be read (permissions, locked): the write will report the error.
     Unreadable,
-    Read { text: String, hash: u64, format: Option<Format> },
+    /// `hash`: normalized text; `raw`: file bytes (H-18).
+    Read { text: String, hash: u64, format: Option<Format>, raw: u64 },
 }
 
-/// Result of comparing the disk with the tab's last read (`Tab::hash`).
+/// Result of comparing the disk with the tab's last read or save (`Tab::disk_hash`, raw bytes, H-18).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Guard {
     Proceed,
@@ -57,10 +51,10 @@ pub enum Guard {
     Deleted,
 }
 
-pub fn guard(disk: &Disk, base_hash: u64) -> Guard {
+pub fn guard(disk: &Disk, disk_hash: u64) -> Guard {
     match disk {
         Disk::Missing => Guard::Deleted,
-        Disk::Read { hash, .. } if *hash != base_hash => Guard::Changed,
+        Disk::Read { raw, .. } if disk_differs(*raw, disk_hash) => Guard::Changed,
         Disk::Read { .. } | Disk::Unreadable => Guard::Proceed,
     }
 }
@@ -195,7 +189,7 @@ fn probe(path: &Path) -> Disk {
         return Disk::Missing;
     }
     match read_text(path) {
-        Some((text, format)) => Disk::Read { hash: text_hash(&text), text, format },
+        Some((text, format, raw)) => Disk::Read { hash: text_hash(&text), text, format, raw },
         None => Disk::Unreadable,
     }
 }
@@ -211,10 +205,10 @@ pub async fn save_tab(ws: &Entity<FolderWorkspace>, path: &Path, cx: &mut AsyncW
     let start = cx.update(|window, cx| {
         let Some(ix) = ws.read(cx).pane.find(path) else { return Start::Nothing };
         let tab = &ws.read(cx).pane.tabs[ix];
-        if !tab.dirty {
+        if !tab.modified() {
             return Start::Nothing;
         }
-        let (editor, base) = (tab.editor.clone(), tab.hash);
+        let (editor, base) = (tab.editor.clone(), tab.disk_hash);
         let text = editor.read(cx).value();
         let saved_hash = buffer_hash(&text);
         match ws.update(cx, |ws, _| ws.pane.begin_save(ix, &text)) {
@@ -259,8 +253,8 @@ pub async fn save_tab(ws: &Entity<FolderWorkspace>, path: &Path, cx: &mut AsyncW
                 let _ = cx.update(|window, cx| {
                     ws.update(cx, |ws, cx| {
                         ws.pane.finish_save(token, false, 0, 0);
-                        if let (Some(ix), Disk::Read { text, hash, format }) = (ws.pane.find(path), &disk) {
-                            ws.pane.discard_edits(ix, *hash, *format);
+                        if let (Some(ix), Disk::Read { text, hash, format, raw }) = (ws.pane.find(path), &disk) {
+                            ws.pane.discard_edits(ix, *hash, *format, *raw);
                             editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
                         }
                         cx.notify();
@@ -293,20 +287,98 @@ pub async fn save_tab(ws: &Entity<FolderWorkspace>, path: &Path, cx: &mut AsyncW
     if result.is_ok() { End::Saved } else { End::Cancelled }
 }
 
-/// Asks about `items` (E-081 / E-082) and saves them when the answer is Save. `true`: the caller may go on
-/// (everything saved or given up); `false`: Cancel, or a save that did not finish.
-async fn settle(items: &[Dirty], cx: &mut AsyncWindowContext) -> bool {
+/// How long to wait before looking again at a tab whose save is running. spec: none (app value).
+const SAVE_WAIT: std::time::Duration = std::time::Duration::from_millis(25);
+
+/// What a closing flow does once nothing is left to keep (or the user gave it up).
+#[derive(Clone)]
+pub enum Then {
+    /// Close this one tab.
+    Drop(Entity<FolderWorkspace>, PathBuf),
+    /// Close the window / quit; covers every tab of every folder.
+    Exit(Exit),
+}
+
+impl Then {
+    fn run(&self, this: &mut super::Workbench, window: &mut Window, cx: &mut Context<super::Workbench>) {
+        match self {
+            Then::Drop(ws, path) => {
+                if this.prompt == Prompt::Asking {
+                    this.prompt = Prompt::Idle;
+                }
+                this.drop_tab(ws, path, window, cx);
+            }
+            Then::Exit(exit) => {
+                this.prompt = Prompt::Leaving;
+                this.finish_exit(*exit, window, cx);
+            }
+        }
+    }
+}
+
+/// A tab a closing flow still has to deal with; `waiting`: its save is running.
+pub struct Open {
+    item: Dirty,
+    waiting: bool,
+}
+
+enum Settled {
+    Cancel,
+    Discard,
+    /// Every listed tab was saved (or given up); look again, the buffers may have changed meanwhile.
+    Saved,
+}
+
+/// Asks about `items` (E-081 / E-082) and saves them when the answer is Save.
+async fn settle(items: &[&Dirty], this: &WeakEntity<super::Workbench>, cx: &mut AsyncWindowContext) -> Settled {
     let names: Vec<String> = items.iter().map(|d| d.name.clone()).collect();
     match close_action(ask(unsaved_choice(&names), cx).await) {
-        CloseAction::Cancel => false,
-        CloseAction::Discard => true,
+        CloseAction::Cancel => Settled::Cancel,
+        CloseAction::Discard => Settled::Discard,
         CloseAction::Save => {
             for d in items {
-                if !save_tab(&d.ws, &d.path, cx).await.may_close() {
-                    return false;
+                match save_tab(&d.ws, &d.path, cx).await {
+                    End::Cancelled => return Settled::Cancel,
+                    // E-085 "Close": the user gave this tab up.
+                    End::Closed => {
+                        let _ = this.update_in(cx, |this, window, cx| this.drop_tab(&d.ws, &d.path, window, cx));
+                    }
+                    End::Saved | End::Discarded => {}
                 }
             }
-            true
+            Settled::Saved
+        }
+    }
+}
+
+/// Runs a closing flow (P3-3-R1): look at the tabs, wait for running saves, ask, save, and look again until nothing
+/// is left to keep; then `then` runs in the same turn as the last look, so no edit can slip in between. `false`: the
+/// user cancelled or a save did not finish, and everything stays open.
+async fn resolve(then: Then, this: &WeakEntity<super::Workbench>, cx: &mut AsyncWindowContext) -> bool {
+    loop {
+        let seen = this.update_in(cx, |this, window, cx| {
+            let open = this.open_tabs(&then, cx);
+            if open.is_empty() {
+                then.run(this, window, cx);
+            }
+            open
+        });
+        let Ok(open) = seen else { return false };
+        if open.is_empty() {
+            return true;
+        }
+        if open.iter().any(|o| o.waiting) {
+            cx.background_executor().timer(SAVE_WAIT).await;
+            continue;
+        }
+        let items: Vec<&Dirty> = open.iter().map(|o| &o.item).collect();
+        match settle(&items, this, cx).await {
+            Settled::Cancel => return false,
+            Settled::Discard => {
+                let _ = this.update_in(cx, |this, window, cx| then.run(this, window, cx));
+                return true;
+            }
+            Settled::Saved => {}
         }
     }
 }
@@ -332,30 +404,30 @@ impl super::Workbench {
         self.close_tab_at(ix, window, cx);
     }
 
-    /// Closes tab `ix` of the active folder; a dirty tab asks first (E-081).
+    /// Closes tab `ix` of the active folder; a tab with a save running or unsaved state goes through `resolve`.
     pub(super) fn close_tab_at(&mut self, ix: usize, window: &mut Window, cx: &mut Context<Self>) {
         let Some(ws) = self.active_ws() else { return };
-        let Some(tab) = ws.read(cx).pane.tabs.get(ix) else { return };
-        let (path, dirty) = (tab.path.clone(), tab.dirty);
-        if !dirty {
-            self.drop_tab(&ws, &path, window, cx);
-            return;
-        }
-        if self.prompt != Prompt::Idle {
-            return;
-        }
-        self.prompt = Prompt::Asking;
-        let item = Dirty { name: ws.read(cx).tree.rel(&path), ws, path };
-        cx.spawn_in(window, async move |this, cx| {
-            let go = settle(std::slice::from_ref(&item), cx).await;
-            let _ = this.update_in(cx, |this, window, cx| {
-                this.prompt = Prompt::Idle;
-                if go {
-                    this.drop_tab(&item.ws, &item.path, window, cx);
+        let Some(path) = ws.read(cx).pane.tabs.get(ix).map(|t| t.path.clone()) else { return };
+        match ws.read(cx).pane.close_state(&path) {
+            CloseState::Gone => {}
+            CloseState::Clean => self.drop_tab(&ws, &path, window, cx),
+            CloseState::Wait | CloseState::Ask => {
+                if self.prompt != Prompt::Idle {
+                    return;
                 }
-            });
-        })
-        .detach();
+                self.prompt = Prompt::Asking;
+                let then = Then::Drop(ws, path);
+                cx.spawn_in(window, async move |this, cx| {
+                    let go = resolve(then, &this, cx).await;
+                    let _ = this.update(cx, |this, _| {
+                        if !go && this.prompt == Prompt::Asking {
+                            this.prompt = Prompt::Idle;
+                        }
+                    });
+                })
+                .detach();
+            }
+        }
     }
 
     /// Removes the tab and gives the keyboard back to the pane (the closed editor may have had it).
@@ -365,42 +437,55 @@ impl super::Workbench {
         cx.notify();
     }
 
-    /// Dirty tabs of every folder, in sidebar order.
-    fn dirty_tabs(&self, cx: &App) -> Vec<Dirty> {
+    /// The tabs `then` covers that still need attention now: unsaved or with a save running (`Pane::close_state`).
+    /// Names are workspace-relative, prefixed with the folder name when several folders are open.
+    fn open_tabs(&self, then: &Then, cx: &App) -> Vec<Open> {
         let several = self.folders.workspaces.len() > 1;
         let mut out = Vec::new();
-        for folder in &self.folders.state.folders {
-            let Some(ws) = self.folders.workspaces.get(&folder.id) else { continue };
+        let mut look = |ws: &Entity<FolderWorkspace>, path: &Path| {
             let w = ws.read(cx);
-            for tab in w.pane.tabs.iter().filter(|t| t.dirty) {
-                let rel = w.tree.rel(&tab.path);
-                let name = if several { format!("{}\\{rel}", w.tree.root_name) } else { rel };
-                out.push(Dirty { ws: ws.clone(), path: tab.path.clone(), name });
+            let waiting = match w.pane.close_state(path) {
+                CloseState::Gone | CloseState::Clean => return,
+                CloseState::Wait => true,
+                CloseState::Ask => false,
+            };
+            let rel = w.tree.rel(path);
+            let name = if several { format!("{}\\{rel}", w.tree.root_name) } else { rel };
+            out.push(Open { item: Dirty { ws: ws.clone(), path: path.to_path_buf(), name }, waiting });
+        };
+        match then {
+            Then::Drop(ws, path) => look(ws, path),
+            Then::Exit(_) => {
+                for folder in &self.folders.state.folders {
+                    let Some(ws) = self.folders.workspaces.get(&folder.id) else { continue };
+                    let paths: Vec<PathBuf> = ws.read(cx).pane.tabs.iter().map(|t| t.path.clone()).collect();
+                    for path in paths {
+                        look(ws, &path);
+                    }
+                }
             }
         }
         out
     }
 
-    /// A window close or quit was requested. Returns `true` when it may go on now (no dirty tab, or the exit was
-    /// already allowed); otherwise asks (E-081 / E-082) and finishes the exit itself when the answer allows it.
+    /// A window close or quit was requested. Returns `true` when it may go on now (nothing to keep, or the exit was
+    /// already allowed); otherwise runs `resolve`, which finishes the exit itself when the answer allows it.
     pub(super) fn request_exit(&mut self, exit: Exit, window: &mut Window, cx: &mut Context<Self>) -> bool {
-        if self.prompt == Prompt::Leaving {
-            return true;
+        match self.prompt {
+            Prompt::Leaving => return true,
+            Prompt::Asking => return false,
+            Prompt::Idle => {}
         }
-        if self.prompt == Prompt::Asking {
-            return false;
-        }
-        let items = self.dirty_tabs(cx);
-        if items.is_empty() {
+        let then = Then::Exit(exit);
+        if self.open_tabs(&then, cx).is_empty() {
             return true;
         }
         self.prompt = Prompt::Asking;
         cx.spawn_in(window, async move |this, cx| {
-            let go = settle(&items, cx).await;
-            let _ = this.update_in(cx, |this, window, cx| {
-                this.prompt = if go { Prompt::Leaving } else { Prompt::Idle };
-                if go {
-                    this.finish_exit(exit, window, cx);
+            let go = resolve(then, &this, cx).await;
+            let _ = this.update(cx, |this, _| {
+                if !go {
+                    this.prompt = Prompt::Idle;
                 }
             });
         })
@@ -427,10 +512,10 @@ impl super::Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{CloseAction, Disk, End, Guard, GuardAction, close_action, guard, guard_action, guard_choice, metrics, trim_front, unsaved_choice};
+    use super::{CloseAction, Disk, Guard, GuardAction, close_action, guard, guard_action, guard_choice, metrics, trim_front, unsaved_choice};
 
     fn read(hash: u64) -> Disk {
-        Disk::Read { text: String::new(), hash, format: None }
+        Disk::Read { text: String::new(), hash, format: None, raw: hash }
     }
 
     /// E-084 / E-085 conditions: a missing file is E-085, different content E-084, same content or an unreadable
@@ -443,6 +528,15 @@ mod tests {
         assert_eq!(guard(&Disk::Unreadable, 1), Guard::Proceed);
     }
 
+
+    /// P3-3-R1 (review 3, H-18): the pre-save check is on raw bytes, like the watch. Same text with other bytes
+    /// (re-encoded, other line ending) asks E-084; identical bytes go on.
+    #[test]
+    fn guard_sees_reencoded_file() {
+        let same_text = |raw| Disk::Read { text: "A".into(), hash: 7, format: None, raw };
+        assert_eq!(guard(&same_text(2), 1), Guard::Changed);
+        assert_eq!(guard(&same_text(1), 1), Guard::Proceed);
+    }
     /// E-084 / E-085 texts and buttons (02-INTERACTION 13.4), each ending with Cancel.
     #[test]
     fn guard_questions_match_spec() {
@@ -486,12 +580,5 @@ mod tests {
         assert_eq!(cut.chars().count(), 80);
         assert!(cut.starts_with('…') && cut.ends_with("file.rs"));
         assert_eq!(trim_front("short.rs", 80), "short.rs");
-    }
-
-    /// Only Cancelled stops a closing flow.
-    #[test]
-    fn closing_stops_only_on_cancel() {
-        assert!([End::Saved, End::Discarded, End::Closed].iter().all(|e| e.may_close()));
-        assert!(!End::Cancelled.may_close());
     }
 }

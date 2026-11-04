@@ -84,6 +84,19 @@ pub enum ReadApply<'a, E> {
     Fill(&'a E),
 }
 
+/// See `Pane::close_state`.
+#[derive(Debug, PartialEq)]
+pub enum CloseState {
+    /// No such tab.
+    Gone,
+    /// A save is running: wait for it, then look again.
+    Wait,
+    /// Nothing to keep: may close.
+    Clean,
+    /// Unsaved edits, a conflict or a deleted file with content: ask.
+    Ask,
+}
+
 /// What a save request turned into.
 #[derive(Debug, PartialEq)]
 pub enum SaveStart {
@@ -139,6 +152,11 @@ impl<E> Default for Pane<E> {
 /// 내용 해시: UTF-8 바이트의 FNV-1a 64(dev 출력 `fnv=` 와 같은 값).
 pub fn text_hash(text: &str) -> u64 {
     bytes_hash(text.as_bytes())
+}
+
+/// The disk bytes `raw` differ from the reference `disk_hash` (H-18): one rule for the watch reload and the pre-save check.
+pub fn disk_differs(raw: u64, disk_hash: u64) -> bool {
+    raw != disk_hash
 }
 
 /// FNV-1a 64 of raw file bytes (the disk state, H-18).
@@ -308,7 +326,7 @@ impl<E> Pane<E> {
         match outcome {
             ReadOutcome::Missing => tab.deleted = true,
             ReadOutcome::Same(_) => (tab.deleted, tab.disk_changed) = (false, false),
-            ReadOutcome::Changed(_, _, raw) => (tab.deleted, tab.disk_changed) = (false, raw != tab.disk_hash),
+            ReadOutcome::Changed(_, _, raw) => (tab.deleted, tab.disk_changed) = (false, disk_differs(raw, tab.disk_hash)),
             ReadOutcome::Unreadable => {}
         }
         if tab.dirty {
@@ -384,6 +402,17 @@ impl<E> Pane<E> {
         tab.preview = false;
     }
 
+    /// What a closing flow must do with the tab at `path` right now (P3-3-R1). A save in flight comes first: its
+    /// result and the buffer are judged after it ends, even if the buffer looks clean (undo during the write).
+    pub fn close_state(&self, path: &Path) -> CloseState {
+        match self.find(path).map(|i| &self.tabs[i]) {
+            None => CloseState::Gone,
+            Some(t) if t.saving.is_some() => CloseState::Wait,
+            Some(t) if !t.modified() => CloseState::Clean,
+            Some(_) => CloseState::Ask,
+        }
+    }
+
     /// Removes tab `ix` (v0.4 P3-3, H-16). Its pending reads and saves stop applying (no tab to match). The active
     /// tab stays active; closing the active one activates the tab that slides into its place, else the last.
     // shortcut: neighbour instead of Zed's most-recently-used order (`activate_on_close: history`); needs an
@@ -404,8 +433,9 @@ impl<E> Pane<E> {
 
     /// E-084 "Discard Edits": the buffer was reset to the disk text (`hash`, `format` from that read), so the tab is
     /// clean again. Reads started earlier stop applying (they may hold older content).
-    pub fn discard_edits(&mut self, ix: usize, hash: u64, format: Option<Format>) {
+    pub fn discard_edits(&mut self, ix: usize, hash: u64, format: Option<Format>, raw: u64) {
         let tab = &mut self.tabs[ix];
+        (tab.disk_hash, tab.disk_changed, tab.deleted) = (raw, false, false);
         tab.hash = hash;
         tab.format = format;
         tab.loaded = format.is_some();
@@ -524,7 +554,7 @@ mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
     use super::{
         buffer_hash, Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadApply, ReadOutcome, SaveStart, column_select_events,
-        bytes_hash, column_select_press, metrics, point, px, text_hash,
+        CloseState, bytes_hash, disk_differs, column_select_press, metrics, point, px, text_hash,
     };
 
     /// V1 (P2-6-R1): the re-sent press comes first, then the real Ctrl+Shift (and capslock) are restored, so
@@ -1026,13 +1056,13 @@ mod tests {
     fn closed_tab_ignores_late_results() {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "a.txt", false);
-        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8));
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
         pane.on_edit(0, text_hash("AB"));
         let SaveStart::Write(save, _) = pane.begin_save(0, "AB") else { panic!("expected a write") };
         let reload = pane.start_read(0);
         pane.close_tab(0);
         assert!(!pane.finish_save(save, true, text_hash("AB"), text_hash("AB")));
-        assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(1, UTF8)), ReadApply::Dropped);
+        assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(1, UTF8, 1)), ReadApply::Dropped);
     }
 
     /// P3-3: "Discard Edits" resets the tab to the disk read.
@@ -1040,11 +1070,49 @@ mod tests {
     fn discard_edits_resets_to_disk() {
         let mut pane = Pane::<()>::default();
         let first = open(&mut pane, "a.txt", false);
-        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8));
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
         pane.on_edit(0, text_hash("AB"));
-        pane.discard_edits(0, text_hash("B"), UTF8);
+        pane.discard_edits(0, text_hash("B"), UTF8, bytes_hash(b"B"));
         let t = &pane.tabs[0];
-        assert_eq!((t.hash, t.dirty, t.pending), (text_hash("B"), false, None));
+        assert_eq!((t.hash, t.dirty, t.pending, t.disk_hash, t.disk_changed), (text_hash("B"), false, None, bytes_hash(b"B"), false));
+    }
+
+    /// P3-3-R1 (review 2): a save in flight is waited for before anything else, even when undo made the buffer look
+    /// clean; after it ends the buffer is judged again (a later edit asks, a matching buffer is clean).
+    #[test]
+    fn close_waits_for_save_then_rejudges_buffer() {
+        let mut pane = Pane::<()>::default();
+        let save = loaded_and_saving(&mut pane, "B");
+        let p = Path::new("a.txt");
+        pane.on_edit(0, text_hash("A")); // undo back to the disk text while "B" is being written
+        assert!(!pane.tabs[0].modified());
+        assert_eq!(pane.close_state(p), CloseState::Wait);
+        pane.finish_save(save, true, text_hash("B"), text_hash("A"));
+        assert_eq!(pane.close_state(p), CloseState::Ask, "buffer A differs from the saved B");
+        let SaveStart::Write(save, _) = pane.begin_save(0, "A") else { panic!("expected a write") };
+        assert_eq!(pane.close_state(p), CloseState::Wait);
+        pane.finish_save(save, true, text_hash("A"), text_hash("A"));
+        assert_eq!(pane.close_state(p), CloseState::Clean);
+        assert_eq!(pane.close_state(Path::new("x")), CloseState::Gone);
+    }
+
+    /// P3-3-R1 (review 1): edits typed while the save wrote leave the tab to ask again, not to close.
+    #[test]
+    fn edit_during_save_asks_again() {
+        let mut pane = Pane::<()>::default();
+        let save = loaded_and_saving(&mut pane, "B");
+        pane.on_edit(0, text_hash("BC"));
+        pane.finish_save(save, true, text_hash("B"), text_hash("BC"));
+        assert_eq!(pane.close_state(Path::new("a.txt")), CloseState::Ask);
+    }
+
+    /// P3-3-R1 (review 3): the pre-save check and the watch reload share one rule on raw bytes (H-18): a re-encoded
+    /// file differs even when its text is equal, identical bytes do not.
+    #[test]
+    fn disk_rule_is_on_raw_bytes() {
+        assert!(disk_differs(bytes_hash(b"\xFF\xFEA\0"), bytes_hash(b"A")));
+        assert!(disk_differs(bytes_hash(b"a\r\nb"), bytes_hash(b"a\nb")));
+        assert!(!disk_differs(bytes_hash(b"a\nb"), bytes_hash(b"a\nb")));
     }
 
     /// P3-12-R1: a pasted "\r\n" hashes like the LF text reads produce, so it is not a phantom edit.
