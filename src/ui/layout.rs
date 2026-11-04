@@ -154,8 +154,12 @@ pub struct TabView {
     /// 임시 탭이면 제목 기울임(I-064, L-68).
     pub preview: bool,
     pub active: bool,
-    /// 수정됨이면 시작 슬롯에 점(L-65).
+    /// 수정됨(편집·충돌·내용 있는 지워진 파일)이면 시작 슬롯에 점(L-65, `Tab::modified`).
     pub dirty: bool,
+    /// 디스크와 충돌(E-086): 점이 Warning 색.
+    pub conflict: bool,
+    /// 디스크에서 지워짐(E-087): 제목 취소선.
+    pub deleted: bool,
     /// 닫기 버튼 처리기 (L-66, P3-3).
     pub close: CloseHandler,
 }
@@ -224,10 +228,10 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                                 .items_center()
                                 .justify_center()
                                 .size(TAB_START_SLOT)
-                                // shortcut: Accent approximated by the theme primary; conflict (Warning) arrives with P3-4.
-                                .when(tab.dirty, |d| d.child(div().size(TAB_INDICATOR_SIZE).rounded_full().bg(theme.primary))),
+                                // shortcut: Accent approximated by the theme primary (no Accent token in gpui-kit); conflict uses Warning (L-65).
+                                .when(tab.dirty, |d| d.child(div().size(TAB_INDICATOR_SIZE).rounded_full().bg(if tab.conflict { theme.warning } else { theme.primary }))),
                         )
-                        .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).child(tab.title.clone()))
+                        .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone()))
                         .child(close_slot(i, tab, cx)),
                 ),
         );

@@ -248,7 +248,9 @@ impl Workbench {
                         title: t.title().into(),
                         preview: t.preview,
                         active: pane.active == Some(i),
-                        dirty: t.dirty,
+                        dirty: t.modified(),
+                        conflict: t.has_conflict(),
+                        deleted: t.deleted,
                         close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(i, window, cx))),
                     })
                     .collect();
