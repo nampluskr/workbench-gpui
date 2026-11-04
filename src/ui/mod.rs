@@ -13,6 +13,7 @@ mod menu_common;
 pub(crate) mod metrics;
 mod pane;
 mod pane_group;
+mod tab_input;
 mod panel_delete;
 mod panel_edit;
 mod panel_menu;
@@ -243,6 +244,7 @@ impl Workbench {
                 // P4-3: the active pane only; drawing the pane tree is P4-3b (impl-ui).
                 let group = &ws.read(cx).group;
                 let pane = group.active_pane();
+                let pane_id = group.active;
                 let doc = |t: &pane::Tab| group.docs.get(&t.path);
                 let tabs: Vec<layout::TabView> = pane
                     .tabs
@@ -255,7 +257,10 @@ impl Workbench {
                         dirty: doc(t).is_some_and(|d| d.modified()),
                         conflict: doc(t).is_some_and(|d| d.has_conflict()),
                         deleted: doc(t).is_some_and(|d| d.deleted),
-                        close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(i, window, cx))),
+                        close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(pane_id, i, window, cx))),
+                        pinned: pane.is_pinned(i),
+                        press: Rc::new(cx.listener(move |this, p: &layout::TabPress, window, cx| this.on_tab_press(pane_id, i, *p, window, cx))),
+                        unpin: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.toggle_pin_at(pane_id, i, window, cx))),
                     })
                     .collect();
                 (tabs, pane.active_tab().map(|t| (t.editor.clone(), !doc(t).is_some_and(|d| d.loaded))))
@@ -359,7 +364,7 @@ impl Workbench {
                     .flex_1()
                     .min_w_0()
                     .h_full()
-                    .child(layout::tab_bar(&tabs, cx))
+                    .child(layout::tab_bar(&tabs, &self.glyph_font, cx))
                     .child(div().flex_1().min_h_0().child(item)),
             )
             .when(self.dock_open, |body| {
@@ -598,6 +603,7 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_close_active_item))
+            .on_action(cx.listener(Self::on_toggle_pin_tab))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()

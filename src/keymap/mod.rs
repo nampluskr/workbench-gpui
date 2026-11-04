@@ -21,6 +21,7 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("workspace::CloseWindow", false),
     ("workspace::Save", false),
     ("pane::CloseActiveItem", false),
+    ("pane::TogglePinTab", false),
     ("zed::Quit", false),
     ("zed::Minimize", false),
     ("zed::Zoom", false),

@@ -39,7 +39,7 @@ pub mod workspace {
 }
 
 pub mod pane {
-    gpui_kit::actions!(pane, [CloseActiveItem]);
+    gpui_kit::actions!(pane, [CloseActiveItem, TogglePinTab]);
 }
 
 pub mod zed {

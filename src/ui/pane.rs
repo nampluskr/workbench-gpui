@@ -330,7 +330,6 @@ impl<E> Pane<E> {
     }
 
     /// I-066: Ctrl+W, Ctrl+F4 and a middle click leave a pinned tab open. Closing the folder or window still closes it.
-    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
     pub fn close_protected(&self, ix: usize) -> bool {
         self.is_pinned(ix)
     }
@@ -344,7 +343,6 @@ impl<E> Pane<E> {
 
     /// `pane::TogglePinTab` (Ctrl+K Shift+Enter, I-065, I-577). Pin: the tab stops being a preview and moves to the
     /// end of the pinned run. Unpin: it moves to the first place after the run. The tab keeps its active state.
-    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
     pub fn toggle_pin(&mut self, ix: usize) {
         if ix >= self.tabs.len() {
             return;

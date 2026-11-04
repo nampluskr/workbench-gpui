@@ -525,17 +525,27 @@ impl super::Workbench {
         cx: &mut Context<Self>,
     ) {
         keymap::log_handled(action, self.focus_name(window, cx), cx);
-        let Some(ix) = self.active_ws().and_then(|ws| ws.read(cx).group.active_pane().active) else { return };
-        self.close_tab_at(ix, window, cx);
+        let Some((pane, ix)) = self.active_ws().and_then(|ws| {
+            let g = &ws.read(cx).group;
+            g.active_pane().active.map(|ix| (g.active, ix))
+        }) else {
+            return;
+        };
+        self.close_tab_at(pane, ix, window, cx);
     }
 
-    /// Closes tab `ix` of the active pane of the active folder; the last view of a file with a save running or unsaved
-    /// state goes through `resolve`. Another view keeps the file, so closing this one asks nothing (P4-3).
-    pub(super) fn close_tab_at(&mut self, ix: usize, window: &mut Window, cx: &mut Context<Self>) {
+    /// Closes tab `ix` of pane `pane` of the active folder; the last view of a file with a save running or unsaved
+    /// state goes through `resolve`. Another view keeps the file, so closing this one asks nothing (P4-3). A pinned
+    /// tab stays: Ctrl-W, Ctrl-F4, a middle click and the tab button all end here (I-066, I-735 `close_pinned = false`);
+    /// closing the folder or the window does not use this path.
+    pub(super) fn close_tab_at(&mut self, pane: PaneId, ix: usize, window: &mut Window, cx: &mut Context<Self>) {
         let Some(ws) = self.active_ws() else { return };
         let group = &ws.read(cx).group;
-        let pane = group.active;
-        let Some(path) = group.active_pane().tabs.get(ix).map(|t| t.path.clone()) else { return };
+        let Some(p) = group.panes.get(&pane) else { return };
+        if p.close_protected(ix) {
+            return;
+        }
+        let Some(path) = p.tabs.get(ix).map(|t| t.path.clone()) else { return };
         match group.close_state(&path) {
             CloseState::Gone => {}
             CloseState::Clean => self.drop_tab(&ws, pane, &path, window, cx),

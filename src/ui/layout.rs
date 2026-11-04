@@ -148,12 +148,48 @@ fn icon_with_probe(
 /// Click handler of a tab's close button.
 pub type CloseHandler = std::rc::Rc<dyn Fn(&ClickEvent, &mut Window, &mut App)>;
 
+/// What a mouse press on a tab asks for (I-063, I-066, I-075, L-74).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TabPress {
+    /// Single left press: make it the pane's active tab.
+    Activate,
+    /// Left double-click: the active tab becomes a normal tab (I-063).
+    Promote,
+    /// Middle click on a normal tab: close with the save question (I-075).
+    Close,
+    Ignore,
+}
+
+/// I-063, I-066, I-075: the request for a press of `button` (`clicks` in a row) on a pinned or normal tab.
+pub fn tab_press(button: MouseButton, clicks: usize, pinned: bool) -> TabPress {
+    match button {
+        MouseButton::Left if clicks >= 2 => TabPress::Promote,
+        MouseButton::Left => TabPress::Activate,
+        MouseButton::Middle if !pinned => TabPress::Close,
+        _ => TabPress::Ignore,
+    }
+}
+
+/// Mouse press handler of a tab.
+pub type PressHandler = std::rc::Rc<dyn Fn(&TabPress, &mut Window, &mut App)>;
+
+/// Segoe Fluent Icons / MDL2 "Pin" (E718). gpui-kit's bundled icon set has no pin (Cargo files are off limits), so the
+/// pin slot uses the title bar's glyph font.
+// shortcut: glyph font instead of an SVG pin; switch to `IconName::Pin` once the full icon catalog is bundled.
+const GLYPH_PIN: &str = "\u{E718}";
+
 /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
 pub struct TabView {
     pub title: SharedString,
     /// 임시 탭이면 제목 기울임(I-064, L-68).
     pub preview: bool,
+    /// 핀 탭이면 끝 슬롯에 닫기 대신 핀 아이콘(L-66). 핀 탭은 맨 앞 묶음이다(I-065).
+    pub pinned: bool,
     pub active: bool,
+    /// Mouse press on the tab (activate, double-click promote, middle-click close).
+    pub press: PressHandler,
+    /// Click on the pin icon: unpin (L-66).
+    pub unpin: CloseHandler,
     /// 수정됨(편집·충돌·내용 있는 지워진 파일)이면 시작 슬롯에 점(L-65, `Tab::modified`).
     pub dirty: bool,
     /// 디스크와 충돌(E-086): 점이 Warning 색.
@@ -172,7 +208,7 @@ const TAB_PROBES: [&str; 12] = [
 /// 탭 목록(L-61 가운데 영역). 탭이 없으면 v0.1 뼈대의 자리 표시 탭 하나를 그린다(판단: 앞 Phase 판정 그대로).
 /// L-63: 활성 탭은 아래 테두리 대신 1px 여백(내용 높이 31), 비활성 탭은 아래 테두리. 탭 사이는 오른쪽 테두리(판단).
 /// L-64 [시작 슬롯 12][제목][끝 슬롯 14], L-67 파일 아이콘 없음.
-fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
+fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement {
     let theme = cx.theme();
     if tabs.is_empty() {
         return div()
@@ -203,11 +239,19 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
             2 => &["", "tab-label-02", ""],
             _ => &[],
         };
+        let (press, pinned) = (tab.press.clone(), tab.pinned);
+        let press_middle = press.clone();
         row = row.child(
             div()
                 .flex_shrink_0()
                 .h_full()
                 .group(SharedString::from(format!("tab-{i}")))
+                .on_mouse_down(MouseButton::Left, move |e, window, cx| {
+                    press(&tab_press(MouseButton::Left, e.click_count, pinned), window, cx)
+                })
+                .on_mouse_up(MouseButton::Middle, move |_, window, cx| {
+                    press_middle(&tab_press(MouseButton::Middle, 1, pinned), window, cx)
+                })
                 .border_r_1()
                 .border_color(theme.border)
                 .when(tab.active, |d| d.pb(rems_1px()).bg(theme.background))
@@ -232,11 +276,33 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                                 .when(tab.dirty, |d| d.child(div().size(TAB_INDICATOR_SIZE).rounded_full().bg(if tab.conflict { theme.warning } else { theme.primary }))),
                         )
                         .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone()))
-                        .child(close_slot(i, tab, cx)),
+                        .child(end_slot(i, tab, glyph_font, cx)),
                 ),
         );
     }
     row.into_any_element()
+}
+
+/// Pin slot of a pinned tab (L-66): the pin icon replaces the close button; a click unpins.
+fn pin_slot(i: usize, tab: &TabView, glyph_font: &SharedString, cx: &App) -> AnyElement {
+    let unpin = tab.unpin.clone();
+    div()
+        .id(("tab-pin", i))
+        .flex()
+        .flex_shrink_0()
+        .items_center()
+        .justify_center()
+        .size(TAB_END_SLOT)
+        .text_color(cx.theme().muted_foreground)
+        .font_family(glyph_font.clone())
+        .text_size(ICON_SMALL)
+        .on_click(move |e, window, cx| unpin(e, window, cx))
+        .child(GLYPH_PIN)
+        .into_any_element()
+}
+
+fn end_slot(i: usize, tab: &TabView, glyph_font: &SharedString, cx: &App) -> AnyElement {
+    if tab.pinned { pin_slot(i, tab, glyph_font, cx) } else { close_slot(i, tab, cx).into_any_element() }
 }
 
 /// 탭 끝 슬롯 (L-64, L-66): 닫기 버튼. 아이콘 `Close` Small Muted, 탭에 마우스를 올릴 때만 보인다(`show_close_button` 기본 "hover").
@@ -257,7 +323,7 @@ fn close_slot(i: usize, tab: &TabView, cx: &App) -> impl IntoElement {
         .child(Icon::new(IconName::Close).size(ICON_SMALL))
 }
 
-pub fn tab_bar(tabs: &[TabView], cx: &App) -> impl IntoElement {
+pub fn tab_bar(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     h_flex()
         .on_children_prepainted(probe(&[
@@ -298,7 +364,7 @@ pub fn tab_bar(tabs: &[TabView], cx: &App) -> impl IntoElement {
         )
         .child(
             // 활성 탭: 아래 테두리 대신 1px 여백을 두어 내용 높이 31 을 남긴다. 탭이 없으면 자리 표시.
-            tab_list(tabs, cx),
+            tab_list(tabs, glyph_font, cx),
         )
         .child(
             div()
@@ -448,5 +514,24 @@ fn project_panel_toggle_tooltip(dock_open: bool) -> Spec {
             "status-btn-project-panel",
             Line::action("Project Panel", "project_panel::ToggleFocus"),
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
+    use super::{TabPress, tab_press};
+    use gpui_kit::MouseButton;
+
+    /// I-063, I-066, I-075, L-74: a left press activates, a double press promotes, a middle click closes a normal
+    /// tab and is ignored on a pinned one; other buttons do nothing.
+    #[test]
+    fn tab_press_follows_i063_i066_i075() {
+        assert_eq!(tab_press(MouseButton::Left, 1, false), TabPress::Activate);
+        assert_eq!(tab_press(MouseButton::Left, 2, false), TabPress::Promote);
+        assert_eq!(tab_press(MouseButton::Left, 3, true), TabPress::Promote);
+        assert_eq!(tab_press(MouseButton::Middle, 1, false), TabPress::Close);
+        assert_eq!(tab_press(MouseButton::Middle, 1, true), TabPress::Ignore);
+        assert_eq!(tab_press(MouseButton::Right, 1, false), TabPress::Ignore);
     }
 }
