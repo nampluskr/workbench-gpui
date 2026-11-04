@@ -198,8 +198,8 @@ fn add_guides(rows: &mut [Row]) {
         while j + 1 < rows.len() && rows[j + 1].depth > d {
             j += 1;
         }
-        for k in i + 1..=j {
-            rows[k].guides.push(Guide { depth: d, first: k == i + 1, last: k == j });
+        for (k, row) in rows.iter_mut().enumerate().take(j + 1).skip(i + 1) {
+            row.guides.push(Guide { depth: d, first: k == i + 1, last: k == j });
         }
     }
 }

@@ -516,7 +516,7 @@ pub fn watch(window: &mut Window, cx: &mut App) {
                         break;
                     }
                 }
-                if cx.update(|window, cx| load(window, cx)).is_err() {
+                if cx.update(load).is_err() {
                     break;
                 }
             }

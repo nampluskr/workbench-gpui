@@ -96,9 +96,7 @@ pub fn valid_component(p: &str) -> bool {
 /// P-021 입력할 때마다의 검증. 같은 위치에 같은 이름이 있으면 오류(이름 변경에서 자기 자신은 빼고),
 /// 아니면 앞뒤 공백이 있으면 경고. 빈 이름은 배너 없이 무시한다.
 pub fn validate(input: &str, parent: &Path, new_entry: bool, self_path: Option<&Path>) -> Option<Validation> {
-    let Some(confirmed) = confirm(input, new_entry, false) else {
-        return None;
-    };
+    let confirmed = confirm(input, new_entry, false)?;
     let target = confirmed.path_under(parent);
     let is_self = self_path.is_some_and(|p| same_path(p, &target));
     if !is_self && target.symlink_metadata().is_ok() {

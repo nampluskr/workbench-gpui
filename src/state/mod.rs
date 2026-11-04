@@ -10,6 +10,7 @@
 //! - A-24.6 깨진 `state.json` 은 `state.json.bad-YYYYMMDD-HHMMSS`(UTC, `-2`, `-3`…)로 옮기고 최근 3개만 남긴다.
 //!   알림 문구는 `Could not read the window state.`(우리 문구, D-035 ②).
 //! - A-24.7 `version` 이 앱(1)보다 크면 읽기만 하고 쓰지 않는다.
+//!
 //! A-24.2(500ms 묶어 쓰기)·A-24.3(종료 직전 쓰기)은 화면 쪽(`ui::folders`)이 부른다.
 
 pub mod path;

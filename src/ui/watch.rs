@@ -268,7 +268,7 @@ impl Workbench {
             self.watch_refresh_all("settle", window, cx);
         }
         self.watch.ticks = self.watch.ticks.wrapping_add(1);
-        if self.watch.ticks % EXIST_EVERY == 0 {
+        if self.watch.ticks.is_multiple_of(EXIST_EVERY) {
             self.request_exist("poll", window, cx);
         }
         // 활성 폴더가 바뀐 모든 경로를 한곳에서 맞춘다(폴더 전환·해제·사라짐·다시 생김).

@@ -263,18 +263,14 @@ pub fn encode(text: &str, encoding: TextEncoding) -> Result<Vec<u8>, String> {
 }
 
 fn decode_utf16(bytes: &[u8], big_endian: bool) -> Result<String, String> {
-    if bytes.len() % 2 != 0 {
+    if !bytes.len().is_multiple_of(2) {
         return Err("utf-16: odd byte length".into());
     }
     let units: Vec<u16> = bytes
-        .chunks_exact(2)
-        .map(|c| {
-            if big_endian {
-                u16::from_be_bytes([c[0], c[1]])
-            } else {
-                u16::from_le_bytes([c[0], c[1]])
-            }
-        })
+        .as_chunks::<2>()
+        .0
+        .iter()
+        .map(|&c| if big_endian { u16::from_be_bytes(c) } else { u16::from_le_bytes(c) })
         .collect();
     String::from_utf16(&units).map_err(|e| format!("utf-16: {e}"))
 }
