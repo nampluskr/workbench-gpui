@@ -145,12 +145,23 @@ fn icon_with_probe(
 /// - L-62 시작 영역 ← →, L-71~L-73 끝 영역 + · 분할 · 최대화 (Small 14).
 /// - L-63 활성 탭은 아래 테두리가 없어 내용과 이어진다. 탭은 자리 표시 하나(활성)다.
 ///
+/// Click handler of a tab's close button.
+pub type CloseHandler = std::rc::Rc<dyn Fn(&ClickEvent, &mut Window, &mut App)>;
+
 /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
 pub struct TabView {
     pub title: SharedString,
     /// 임시 탭이면 제목 기울임(I-064, L-68).
     pub preview: bool,
     pub active: bool,
+    /// 수정됨(편집·충돌·내용 있는 지워진 파일)이면 시작 슬롯에 점(L-65, `Tab::modified`).
+    pub dirty: bool,
+    /// 디스크와 충돌(E-086): 점이 Warning 색.
+    pub conflict: bool,
+    /// 디스크에서 지워짐(E-087): 제목 취소선.
+    pub deleted: bool,
+    /// 닫기 버튼 처리기 (L-66, P3-3).
+    pub close: CloseHandler,
 }
 
 const TAB_PROBES: [&str; 12] = [
@@ -196,6 +207,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
             div()
                 .flex_shrink_0()
                 .h_full()
+                .group(SharedString::from(format!("tab-{i}")))
                 .border_r_1()
                 .border_color(theme.border)
                 .when(tab.active, |d| d.pb(rems_1px()).bg(theme.background))
@@ -209,13 +221,40 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                         .items_center()
                         .text_size(TEXT_SIZE_DEFAULT)
                         .when(!tab.active, |d| d.text_color(theme.muted_foreground))
-                        .child(div().flex_shrink_0().size(TAB_START_SLOT))
-                        .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).child(tab.title.clone()))
-                        .child(div().flex_shrink_0().size(TAB_END_SLOT)),
+                        .child(
+                            div()
+                                .flex()
+                                .flex_shrink_0()
+                                .items_center()
+                                .justify_center()
+                                .size(TAB_START_SLOT)
+                                // shortcut: Accent approximated by the theme primary (no Accent token in gpui-kit); conflict uses Warning (L-65).
+                                .when(tab.dirty, |d| d.child(div().size(TAB_INDICATOR_SIZE).rounded_full().bg(if tab.conflict { theme.warning } else { theme.primary }))),
+                        )
+                        .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone()))
+                        .child(close_slot(i, tab, cx)),
                 ),
         );
     }
     row.into_any_element()
+}
+
+/// 탭 끝 슬롯 (L-64, L-66): 닫기 버튼. 아이콘 `Close` Small Muted, 탭에 마우스를 올릴 때만 보인다(`show_close_button` 기본 "hover").
+/// 보이지 않을 때도 슬롯 14 자리는 그대로다(L-25).
+fn close_slot(i: usize, tab: &TabView, cx: &App) -> impl IntoElement {
+    let close = tab.close.clone();
+    div()
+        .id(("tab-close", i))
+        .flex()
+        .flex_shrink_0()
+        .items_center()
+        .justify_center()
+        .size(TAB_END_SLOT)
+        .text_color(cx.theme().muted_foreground)
+        .invisible()
+        .group_hover(SharedString::from(format!("tab-{i}")), |s| s.visible())
+        .on_click(move |e, window, cx| close(e, window, cx))
+        .child(Icon::new(IconName::Close).size(ICON_SMALL))
 }
 
 pub fn tab_bar(tabs: &[TabView], cx: &App) -> impl IntoElement {

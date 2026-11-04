@@ -24,6 +24,7 @@ use gpui_kit::*;
 
 use super::folders::FolderWorkspace;
 use super::metrics;
+use super::tab_close::End;
 use crate::text_io::{self, Format};
 
 /// `E` is the editor handle; generic only so tab bookkeeping is testable without a window.
@@ -83,6 +84,19 @@ pub enum ReadApply<'a, E> {
     Fill(&'a E),
 }
 
+/// See `Pane::close_state`.
+#[derive(Debug, PartialEq)]
+pub enum CloseState {
+    /// No such tab.
+    Gone,
+    /// A save is running: wait for it, then look again.
+    Wait,
+    /// Nothing to keep: may close.
+    Clean,
+    /// Unsaved edits, a conflict or a deleted file with content: ask.
+    Ask,
+}
+
 /// What a save request turned into.
 #[derive(Debug, PartialEq)]
 pub enum SaveStart {
@@ -140,6 +154,11 @@ pub fn text_hash(text: &str) -> u64 {
     bytes_hash(text.as_bytes())
 }
 
+/// The disk bytes `raw` differ from the reference `disk_hash` (H-18): one rule for the watch reload and the pre-save check.
+pub fn disk_differs(raw: u64, disk_hash: u64) -> bool {
+    raw != disk_hash
+}
+
 /// FNV-1a 64 of raw file bytes (the disk state, H-18).
 pub fn bytes_hash(bytes: &[u8]) -> u64 {
     bytes.iter().fold(0xcbf29ce484222325u64, |h, &b| (h ^ b as u64).wrapping_mul(0x100000001b3))
@@ -147,7 +166,7 @@ pub fn bytes_hash(bytes: &[u8]) -> u64 {
 
 /// Hash of the editor buffer in the representation reads produce (LF, `text_io::to_lf`), so a pasted `\r\n`
 /// compares equal to the file it will be saved as.
-fn buffer_hash(text: &str) -> u64 {
+pub(super) fn buffer_hash(text: &str) -> u64 {
     if text.contains("\r\n") { text_hash(&text.replace("\r\n", "\n")) } else { text_hash(text) }
 }
 
@@ -307,7 +326,7 @@ impl<E> Pane<E> {
         match outcome {
             ReadOutcome::Missing => tab.deleted = true,
             ReadOutcome::Same(_) => (tab.deleted, tab.disk_changed) = (false, false),
-            ReadOutcome::Changed(_, _, raw) => (tab.deleted, tab.disk_changed) = (false, raw != tab.disk_hash),
+            ReadOutcome::Changed(_, _, raw) => (tab.deleted, tab.disk_changed) = (false, disk_differs(raw, tab.disk_hash)),
             ReadOutcome::Unreadable => {}
         }
         if tab.dirty {
@@ -383,6 +402,47 @@ impl<E> Pane<E> {
         tab.preview = false;
     }
 
+    /// What a closing flow must do with the tab at `path` right now (P3-3-R1). A save in flight comes first: its
+    /// result and the buffer are judged after it ends, even if the buffer looks clean (undo during the write).
+    pub fn close_state(&self, path: &Path) -> CloseState {
+        match self.find(path).map(|i| &self.tabs[i]) {
+            None => CloseState::Gone,
+            Some(t) if t.saving.is_some() => CloseState::Wait,
+            Some(t) if !t.modified() => CloseState::Clean,
+            Some(_) => CloseState::Ask,
+        }
+    }
+
+    /// Removes tab `ix` (v0.4 P3-3, H-16). Its pending reads and saves stop applying (no tab to match). The active
+    /// tab stays active; closing the active one activates the tab that slides into its place, else the last.
+    // shortcut: neighbour instead of Zed's most-recently-used order (`activate_on_close: history`); needs an
+    // activation history if that order is wanted.
+    pub fn close_tab(&mut self, ix: usize) -> Option<Tab<E>> {
+        if ix >= self.tabs.len() {
+            return None;
+        }
+        let tab = self.tabs.remove(ix);
+        self.active = match self.active {
+            _ if self.tabs.is_empty() => None,
+            Some(a) if a == ix => Some(ix.min(self.tabs.len() - 1)),
+            Some(a) if a > ix => Some(a - 1),
+            other => other,
+        };
+        Some(tab)
+    }
+
+    /// E-084 "Discard Edits": the buffer was reset to the disk text (`hash`, `format` from that read), so the tab is
+    /// clean again. Reads started earlier stop applying (they may hold older content).
+    pub fn discard_edits(&mut self, ix: usize, hash: u64, format: Option<Format>, raw: u64) {
+        let tab = &mut self.tabs[ix];
+        (tab.disk_hash, tab.disk_changed, tab.deleted) = (raw, false, false);
+        tab.hash = hash;
+        tab.format = format;
+        tab.loaded = format.is_some();
+        tab.dirty = false;
+        tab.pending = None;
+    }
+
     /// 트리에서 이름을 바꾸거나 옮긴 파일·폴더를 탭 경로에 반영한다(판단).
     pub fn rename_path(&mut self, from: &Path, to: &Path) {
         for tab in &mut self.tabs {
@@ -403,53 +463,24 @@ impl<E> Pane<E> {
 }
 
 impl super::Workbench {
-    /// `workspace::Save` (Ctrl-S, E-088): writes the active tab with its own encoding and line ending in the
-    /// background (AUDIT 4). A CP949 loss or a write error is shown as E-083's "Unable to save file: {error}";
-    /// `text_io::write_file` swaps a complete temp file in and keeps it (named in the error) if the swap lost the
-    /// original.
+    /// `workspace::Save` (Ctrl-S, E-088): saves the active tab (`tab_close::save_tab`: encoding kept, E-084/E-085
+    /// asked first, E-083 on failure).
     pub(super) fn on_save(&mut self, action: &super::keymap::workspace::Save, window: &mut Window, cx: &mut Context<Self>) {
         super::keymap::log_handled(action, self.focus_name(window, cx), cx);
         let Some(ws) = self.active_ws() else { return };
-        let Some((ix, editor, path)) =
-            ws.read(cx).pane.active.and_then(|i| ws.read(cx).pane.tabs.get(i).map(|t| (i, t.editor.clone(), t.path.clone())))
-        else {
-            return;
-        };
-        let text = editor.read(cx).value();
-        let saved_hash = buffer_hash(&text);
-        let dev = super::keymap::dev_enabled(cx);
-        let (token, bytes) = match ws.update(cx, |ws, _| ws.pane.begin_save(ix, &text)) {
-            SaveStart::Skip => return,
-            SaveStart::Refused(e) => return save_failed(&path, &e, window, cx),
-            SaveStart::Write(token, bytes) => (token, bytes),
-        };
-        cx.spawn_in(window, async move |_, cx| {
-            let target = path.clone();
-            let len = bytes.len();
-            let result = cx
-                .background_executor()
-                .spawn(async move { text_io::write_file(&target, &bytes).map_err(|e| e.to_string()) })
-                .await;
-            let _ = cx.update(|window, cx| {
-                let buffer_now = buffer_hash(&editor.read(cx).value());
-                ws.update(cx, |ws, cx| {
-                    ws.pane.finish_save(token, result.is_ok(), saved_hash, buffer_now);
-                    cx.notify();
-                });
-                if dev {
-                    println!("[dev] tab-save path={} bytes={len} ok={} fnv={saved_hash:016x}", path.display(), result.is_ok());
-                }
-                if let Err(e) = &result {
-                    save_failed(&path, e, window, cx);
-                }
-            });
+        let Some(path) = ws.read(cx).pane.active_tab().map(|t| t.path.clone()) else { return };
+        cx.spawn_in(window, async move |this, cx| {
+            if super::tab_close::save_tab(&ws, &path, None, cx).await == End::Closed {
+                // E-085 "Close": the user gave the tab up.
+                let _ = this.update_in(cx, |this, window, cx| this.drop_tab(&ws, &path, window, cx));
+            }
         })
         .detach();
     }
 }
 
 /// E-083 "Unable to save file: {error}" as a notification (D-14), plus the dev line other notifications use.
-fn save_failed(path: &Path, error: &str, window: &mut Window, cx: &mut App) {
+pub(super) fn save_failed(path: &Path, error: &str, window: &mut Window, cx: &mut App) {
     use gpui_kit::component::WindowExt as _;
     let text = format!("Unable to save file: {error}");
     if super::keymap::dev_enabled(cx) {
@@ -523,7 +554,7 @@ mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
     use super::{
         buffer_hash, Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, ReadApply, ReadOutcome, SaveStart, column_select_events,
-        bytes_hash, column_select_press, metrics, point, px, text_hash,
+        CloseState, bytes_hash, disk_differs, column_select_press, metrics, point, px, text_hash,
     };
 
     /// V1 (P2-6-R1): the re-sent press comes first, then the real Ctrl+Shift (and capslock) are restored, so
@@ -998,6 +1029,135 @@ mod tests {
         pane.on_edit(0, text_hash("a\nb\nc"));
         let SaveStart::Write(_, bytes) = pane.begin_save(0, "a\nb\nc") else { panic!("expected a write") };
         assert_eq!(bytes, b"a\r\nb\r\nc");
+    }
+
+    /// P3-3: closing keeps the active tab active; closing the active one picks the tab that slides in, else the last.
+    #[test]
+    fn close_tab_picks_next_active() {
+        let mut pane = Pane::<()>::default();
+        for n in ["a", "b", "c", "d"] {
+            open(&mut pane, n, false);
+        }
+        assert_eq!(pane.active, Some(3));
+        pane.close_tab(0);
+        assert_eq!(pane.active, Some(2), "left of active closed: follow the same tab");
+        pane.active = Some(0);
+        pane.close_tab(0);
+        assert_eq!((pane.active, pane.tabs[0].title()), (Some(0), "c".into()), "right neighbour slides in");
+        pane.close_tab(1);
+        assert_eq!(pane.active, Some(0));
+        pane.close_tab(0);
+        assert_eq!((pane.active, pane.tabs.len()), (None, 0));
+        assert!(pane.close_tab(0).is_none());
+    }
+
+    /// P3-3: a closed tab's late read and save results are dropped.
+    #[test]
+    fn closed_tab_ignores_late_results() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
+        pane.on_edit(0, text_hash("AB"));
+        let SaveStart::Write(save, _) = pane.begin_save(0, "AB") else { panic!("expected a write") };
+        let reload = pane.start_read(0);
+        pane.close_tab(0);
+        assert!(!pane.finish_save(save, true, text_hash("AB"), text_hash("AB")));
+        assert_eq!(pane.finish_read(reload, ReadOutcome::Changed(1, UTF8, 1)), ReadApply::Dropped);
+    }
+
+    /// P3-3: "Discard Edits" resets the tab to the disk read.
+    #[test]
+    fn discard_edits_resets_to_disk() {
+        let mut pane = Pane::<()>::default();
+        let first = open(&mut pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash("A"), UTF8, bytes_hash(b"A")));
+        pane.on_edit(0, text_hash("AB"));
+        pane.discard_edits(0, text_hash("B"), UTF8, bytes_hash(b"B"));
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.dirty, t.pending, t.disk_hash, t.disk_changed), (text_hash("B"), false, None, bytes_hash(b"B"), false));
+    }
+
+    /// P3-3-R1 (review 2): a save in flight is waited for before anything else, even when undo made the buffer look
+    /// clean; after it ends the buffer is judged again (a later edit asks, a matching buffer is clean).
+    #[test]
+    fn close_waits_for_save_then_rejudges_buffer() {
+        let mut pane = Pane::<()>::default();
+        let save = loaded_and_saving(&mut pane, "B");
+        let p = Path::new("a.txt");
+        pane.on_edit(0, text_hash("A")); // undo back to the disk text while "B" is being written
+        assert!(!pane.tabs[0].modified());
+        assert_eq!(pane.close_state(p), CloseState::Wait);
+        pane.finish_save(save, true, text_hash("B"), text_hash("A"));
+        assert_eq!(pane.close_state(p), CloseState::Ask, "buffer A differs from the saved B");
+        let SaveStart::Write(save, _) = pane.begin_save(0, "A") else { panic!("expected a write") };
+        assert_eq!(pane.close_state(p), CloseState::Wait);
+        pane.finish_save(save, true, text_hash("A"), text_hash("A"));
+        assert_eq!(pane.close_state(p), CloseState::Clean);
+        assert_eq!(pane.close_state(Path::new("x")), CloseState::Gone);
+    }
+
+    /// P3-3-R1 (review 1): edits typed while the save wrote leave the tab to ask again, not to close.
+    #[test]
+    fn edit_during_save_asks_again() {
+        let mut pane = Pane::<()>::default();
+        let save = loaded_and_saving(&mut pane, "B");
+        pane.on_edit(0, text_hash("BC"));
+        pane.finish_save(save, true, text_hash("B"), text_hash("BC"));
+        assert_eq!(pane.close_state(Path::new("a.txt")), CloseState::Ask);
+    }
+
+    /// P3-3-R2: two dirty tabs closing together. Each step re-reads every tab: a tab re-edited after its save or a
+    /// new dirty tab keeps the close from finishing (R1 guarantee), and a save that never ends aborts only the
+    /// close request, leaving the save and the tab as they were.
+    #[test]
+    fn multi_tab_exit_rejudges_until_clean_and_aborts_on_stuck_save() {
+        use super::super::tab_close::{Next, next};
+        use std::time::Duration;
+        let mut pane = Pane::<()>::default();
+        for n in ["a.txt", "b.txt"] {
+            let t = open(&mut pane, n, false);
+            pane.finish_read(t, ReadOutcome::Changed(text_hash("0"), UTF8, bytes_hash(b"0")));
+        }
+        let (a, b) = (Path::new("a.txt"), Path::new("b.txt"));
+        let look = |pane: &Pane<()>, waited| {
+            let all: Vec<_> = pane.tabs.iter().map(|t| pane.close_state(&t.path)).collect();
+            next(&all, Duration::from_secs(waited))
+        };
+        let (ia, ib) = (pane.find(a).unwrap(), pane.find(b).unwrap());
+        pane.on_edit(ia, text_hash("A1"));
+        pane.on_edit(ib, text_hash("B1"));
+        assert_eq!(look(&pane, 0), Next::Ask);
+        // "Save all": a is saved, b is being written, and the user types into a again meanwhile.
+        let SaveStart::Write(ta, _) = pane.begin_save(ia, "A1") else { panic!("write") };
+        pane.finish_save(ta, true, text_hash("A1"), text_hash("A1"));
+        let SaveStart::Write(tb, _) = pane.begin_save(ib, "B1") else { panic!("write") };
+        assert_eq!(look(&pane, 0), Next::Sleep);
+        pane.on_edit(ia, text_hash("A2"));
+        assert_eq!(look(&pane, 1), Next::Sleep);
+        // The write of b never finishes: after the limit only the close request is dropped; nothing else changes.
+        assert_eq!(look(&pane, 10), Next::Abort);
+        assert_eq!((pane.tabs[ib].saving, pane.tabs[ib].dirty), (Some(tb), true));
+        // A later request is judged normally once the write ends: a (re-edited) still needs a question.
+        pane.finish_save(tb, true, text_hash("B1"), text_hash("B1"));
+        assert_eq!(look(&pane, 0), Next::Ask, "a was edited after its save");
+        let SaveStart::Write(ta, _) = pane.begin_save(ia, "A2") else { panic!("write") };
+        pane.finish_save(ta, true, text_hash("A2"), text_hash("A2"));
+        assert_eq!(look(&pane, 0), Next::Finish);
+        // A new dirty tab opened meanwhile is asked about too.
+        let t = open(&mut pane, "c.txt", false);
+        pane.finish_read(t, ReadOutcome::Changed(text_hash("0"), UTF8, bytes_hash(b"0")));
+        let ic = pane.find(Path::new("c.txt")).unwrap();
+        pane.on_edit(ic, text_hash("C1"));
+        assert_eq!(look(&pane, 0), Next::Ask);
+    }
+
+    /// P3-3-R1 (review 3): the pre-save check and the watch reload share one rule on raw bytes (H-18): a re-encoded
+    /// file differs even when its text is equal, identical bytes do not.
+    #[test]
+    fn disk_rule_is_on_raw_bytes() {
+        assert!(disk_differs(bytes_hash(b"\xFF\xFEA\0"), bytes_hash(b"A")));
+        assert!(disk_differs(bytes_hash(b"a\r\nb"), bytes_hash(b"a\nb")));
+        assert!(!disk_differs(bytes_hash(b"a\nb"), bytes_hash(b"a\nb")));
     }
 
     /// P3-12-R1: a pasted "\r\n" hashes like the LF text reads produce, so it is not a phantom edit.

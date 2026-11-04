@@ -66,6 +66,8 @@ const IDCANCEL: i32 = 2;
 const ID_CONFIRM: i32 = 100;
 /// `TD_INFORMATION_ICON` = MAKEINTRESOURCEW(-3).
 const TD_INFORMATION_ICON: usize = 0xFFFD;
+/// `TD_WARNING_ICON` = MAKEINTRESOURCEW(-1).
+const TD_WARNING_ICON: usize = 0xFFFF;
 
 /// 확인창 내용.
 #[derive(Clone, Debug)]
@@ -119,20 +121,49 @@ fn task_dialog_proc() -> Result<TaskDialogIndirectFn, String> {
     addr.clone().map(|a| unsafe { std::mem::transmute::<usize, TaskDialogIndirectFn>(a) })
 }
 
+/// 저장 질문 같은 여러 버튼 선택창 (v0.4 P3-3, E-080~E-085): 경고 아이콘, 창 제목 "Warning".
+/// `buttons` 는 위에서 아래 순서이고 마지막이 Cancel 이다(Esc·창 닫기·기본 버튼).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Choice {
+    pub instruction: String,
+    pub content: Option<String>,
+    pub buttons: Vec<&'static str>,
+}
+
+/// 선택창을 띄우고 눌린 버튼의 번호를 돌려준다. Esc·창 닫기는 마지막(Cancel) 버튼이다. 스레드 규칙은 `show_blocking` 과 같다.
+pub fn choose_blocking(parent: isize, choice: &Choice) -> Result<usize, String> {
+    let pressed = run(parent, "Warning", TD_WARNING_ICON, &choice.instruction, choice.content.as_deref(), &choice.buttons)?;
+    Ok(if pressed >= ID_CONFIRM { (pressed - ID_CONFIRM) as usize } else { choice.buttons.len() - 1 })
+}
+
 /// 확인창을 띄우고 닫힐 때까지 기다린다. gpui 스레드가 아닌 스레드에서 부른다.
 pub fn show_blocking(parent: isize, prompt: &Prompt) -> Result<Answer, String> {
+    // P-015 버튼 순서: 확인 버튼, Cancel.
+    let pressed = run(
+        parent,
+        &prompt.title,
+        TD_INFORMATION_ICON,
+        &prompt.instruction,
+        prompt.content.as_deref(),
+        &[prompt.confirm_label, "Cancel"],
+    )?;
+    Ok(if pressed == ID_CONFIRM { Answer::Confirm } else { Answer::Cancel })
+}
+
+/// TaskDialog 하나. 버튼 `i` 의 번호는 `ID_CONFIRM + i`, 마지막 버튼만 IDCANCEL 이다(D-12: 기본 버튼도 마지막).
+fn run(parent: isize, title: &str, icon: usize, instruction: &str, content: Option<&str>, labels: &[&str]) -> Result<i32, String> {
     let task_dialog = task_dialog_proc()?;
 
-    let title = wide(&prompt.title);
-    let instruction = wide(&prompt.instruction);
-    let content = prompt.content.as_deref().map(wide);
-    let confirm = wide(prompt.confirm_label);
-    let cancel = wide("Cancel");
-    // P-015 버튼 순서: 확인 버튼, Cancel.
-    let buttons = [
-        Button { id: ID_CONFIRM, text: confirm.as_ptr() },
-        Button { id: IDCANCEL, text: cancel.as_ptr() },
-    ];
+    let title = wide(title);
+    let instruction = wide(instruction);
+    let content = content.map(wide);
+    let texts: Vec<Vec<u16>> = labels.iter().map(|l| wide(l)).collect();
+    let last = labels.len() - 1;
+    let buttons: Vec<Button> = texts
+        .iter()
+        .enumerate()
+        .map(|(i, t)| Button { id: if i == last { IDCANCEL } else { ID_CONFIRM + i as i32 }, text: t.as_ptr() })
+        .collect();
     let config = Config {
         cb_size: std::mem::size_of::<Config>() as u32,
         hwnd_parent: parent,
@@ -140,7 +171,7 @@ pub fn show_blocking(parent: isize, prompt: &Prompt) -> Result<Answer, String> {
         dw_flags: TDF_ALLOW_DIALOG_CANCELLATION | TDF_POSITION_RELATIVE_TO_WINDOW,
         dw_common_buttons: 0,
         psz_window_title: title.as_ptr(),
-        psz_main_icon: TD_INFORMATION_ICON as Pcwstr,
+        psz_main_icon: icon as Pcwstr,
         psz_main_instruction: instruction.as_ptr(),
         psz_content: content.as_ref().map_or(std::ptr::null(), |c| c.as_ptr()),
         c_buttons: buttons.len() as u32,
@@ -165,7 +196,7 @@ pub fn show_blocking(parent: isize, prompt: &Prompt) -> Result<Answer, String> {
     if hr < 0 {
         return Err(format!("TaskDialogIndirect hr=0x{:08X}", hr as u32));
     }
-    Ok(if pressed == ID_CONFIRM { Answer::Confirm } else { Answer::Cancel })
+    Ok(pressed)
 }
 
 #[cfg(test)]

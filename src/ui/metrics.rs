@@ -46,6 +46,8 @@ pub const TAB_PADDING_X: Rems = rems_from_px(4.);
 pub const TAB_GAP: Rems = rems_from_px(4.);
 /// L-25 탭 시작 슬롯 12×12, 끝 슬롯 14×14. A-32.5.
 pub const TAB_START_SLOT: Rems = rems_from_px(12.);
+/// tab["indicator_size"] (L-65) 수정 표시 점 지름 10, 시작 슬롯 12 가운데.
+pub const TAB_INDICATOR_SIZE: Rems = rems_from_px(10.);
 pub const TAB_END_SLOT: Rems = rems_from_px(14.);
 /// L-27 탭 바 양 끝 버튼 영역: 좌우 padding 6, gap 4. A-32.6.
 pub const TAB_BAR_EDGE_PADDING_X: Rems = rems_from_px(6.);
@@ -97,6 +99,8 @@ pub const EDITOR_SCROLLBAR_WIDTH: Pixels = px(15.);
 pub const BUFFER_FONT_SIZE: Pixels = px(15.);
 /// editor["line_height.comfortable_multiplier"] (E-010) 1.618 × font size = editor["line_height.comfortable"] 24.27.
 pub const BUFFER_LINE_HEIGHT_MULTIPLIER: f32 = 1.618;
+/// editor["confirm_close.path_max_chars"] (E-081) the unsaved-edits question shows at most 80 characters of the path.
+pub const CONFIRM_CLOSE_PATH_MAX_CHARS: usize = 80;
 // spec: none (app value) — 타이틀 바 폴더 이름 버튼 좌우 padding 6.
 pub const TITLE_FOLDER_NAME_PAD_X: Rems = rems_from_px(6.);
 // spec: none (app value) — A-24.2 폴더 목록 저장 디바운스(toml 에 없음).
@@ -233,6 +237,8 @@ pub mod timing {
     use std::time::Duration;
     // spec: none (app value) — apply watch events once quiet for this long after the last one (judgement).
     pub const QUIET: Duration = Duration::from_millis(150);
+    // spec: none (app value) — a close request gives up waiting for a running save after this long (P3-3-R2, judgement).
+    pub const CLOSE_SAVE_WAIT_LIMIT: Duration = Duration::from_secs(10);
     // spec: none (app value) — apply watch events this long after the first even if they keep coming (judgement).
     pub const MAX_WAIT: Duration = Duration::from_millis(1000);
     // spec: none (app value) — delay before one more full reload after an event flood (judgement).
@@ -397,5 +403,15 @@ mod tests {
         assert!((f64::from(line) - spec_line).abs() < 1e-3, "{line} vs {spec_line}");
         let tab = spec::lookup("tab[\"content_height\"]").unwrap().value;
         assert_eq!(f64::from(TAB_CONTENT_HEIGHT.0 * base), tab);
+    }
+}
+
+#[cfg(test)]
+mod tab_indicator_tests {
+    /// V2: dirty dot size is the spec value (L-65).
+    #[test]
+    fn tab_indicator_size_is_spec() {
+        let px = super::TAB_INDICATOR_SIZE.0 * 16.0;
+        super::spec::assert_spec("tab[\"indicator_size\"]", "default", px);
     }
 }
