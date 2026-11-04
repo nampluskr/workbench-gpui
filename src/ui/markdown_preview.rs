@@ -6,7 +6,8 @@
 use std::path::Path;
 
 use gpui_kit::component::ActiveTheme as _;
-use gpui_kit::component::text::{FrontmatterPlugin, MarkdownExtensions, TextView, TextViewStyle};
+use gpui_kit::component::text::{MarkdownExtensions, MarkdownNode, TextView, TextViewStyle};
+use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
 use super::Workbench;
@@ -38,6 +39,8 @@ const CELL_PADDING_Y: Pixels = px(4.);
 const CODE_PADDING: Pixels = px(12.);
 const CODE_MARGIN_Y: Pixels = px(16.);
 const CODE_RADIUS: Pixels = px(6.);
+/// `frontmatter.corner_radius` (L-111).
+const FRONTMATTER_RADIUS: Pixels = px(4.);
 /// `inline_code.background_opacity` (L-109).
 const INLINE_CODE_OPACITY: f32 = 0.08;
 
@@ -51,6 +54,84 @@ pub fn preview_title(file_name: &str) -> String {
         return title;
     }
     format!("{}…", title.chars().take(24).collect::<String>())
+}
+
+/// What a front matter block turned into: the flat `key: value` rows of L-110, or the raw text for a code-style box.
+#[derive(Clone, Debug, PartialEq)]
+enum Frontmatter {
+    Table(Vec<(String, String)>),
+    Raw(String),
+}
+
+/// The YAML between the `---` fences of a front matter node source, `None` if `source` is not a fenced block.
+fn frontmatter_body(source: &str) -> Option<&str> {
+    let source = source.trim_end();
+    let rest = source.strip_prefix("---")?;
+    let inner = rest.strip_prefix("\r\n").or_else(|| rest.strip_prefix('\n'))?;
+    let inner = inner.strip_suffix("---").or_else(|| (inner == "---").then_some(""))?;
+    Some(inner.trim_end_matches(['\r', '\n']))
+}
+
+/// L-110: a table only if EVERY line is `key: value` with a key and a value, both non-empty, and does not start with a
+/// space; any other line (comment, blank, indented, block scalar continuation) makes the whole block a raw box.
+pub fn frontmatter_rows(body: &str) -> Option<Vec<(String, String)>> {
+    let rows: Option<Vec<(String, String)>> = body
+        .lines()
+        .map(|line| {
+            if line.starts_with(char::is_whitespace) {
+                return None;
+            }
+            let (key, value) = line.split_once(':')?;
+            let (key, value) = (key.trim(), value.trim());
+            (!key.is_empty() && !value.is_empty()).then(|| (key.to_owned(), value.to_owned()))
+        })
+        .collect();
+    rows.filter(|r| !r.is_empty())
+}
+
+/// Installs the front matter parser and renderer (L-110, L-111) on a preview. The component's own plugin differs from
+/// the original in what it accepts and how it draws (description list), so the two public hooks are used instead.
+fn with_frontmatter(view: TextView) -> TextView {
+    view.markdown_block_parser(|node, cx| {
+        let source = cx.node_source(node)?;
+        let body = frontmatter_body(source)?;
+        let data = frontmatter_rows(body).map_or_else(|| Frontmatter::Raw(body.to_owned()), Frontmatter::Table);
+        Some(MarkdownNode::new("frontmatter", data).text(body.to_owned()).markdown(source.to_owned()))
+    })
+    .markdown_block_renderer("frontmatter", |node, _window, cx| {
+        let theme = cx.theme();
+        let (border, key_bg, fg, mono) = (theme.border, theme.sidebar, theme.foreground, theme.mono_font_family.clone());
+        let cell = || div().px(CELL_PADDING_X).py(CELL_PADDING_Y);
+        match node.data::<Frontmatter>() {
+            // L-111: 2 columns over the full width, 1px border with radius 4; key cell on `panel_background` and
+            // SEMIBOLD, value cell with a left line, rows after the first with a top line.
+            Some(Frontmatter::Table(rows)) => div()
+                .w_full()
+                .flex()
+                .flex_col()
+                .border_1()
+                .border_color(border)
+                .rounded(FRONTMATTER_RADIUS)
+                .overflow_hidden()
+                .children(rows.iter().enumerate().map(|(i, (k, v))| {
+                    div()
+                        .flex()
+                        .when(i > 0, |d| d.border_t_1().border_color(border))
+                        .child(cell().flex_1().bg(key_bg).font_weight(FontWeight::SEMIBOLD).child(k.clone()))
+                        .child(cell().flex_1().border_l_1().border_color(border).child(v.clone()))
+                }))
+                .into_any_element(),
+            Some(Frontmatter::Raw(text)) => div()
+                .w_full()
+                .p(CODE_PADDING)
+                .rounded(CODE_RADIUS)
+                .bg(fg.opacity(INLINE_CODE_OPACITY))
+                .font_family(mono)
+                .child(text.clone())
+                .into_any_element(),
+            None => div().into_any_element(),
+        }
+    })
 }
 
 /// The preview body (L-101~L-111): `text` rendered, a column of at most 800px centred in the pane with 16px around it,
@@ -81,36 +162,48 @@ pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
         .text_size(BODY_FONT_SIZE)
         .line_height(relative(BODY_LINE_HEIGHT))
         .child(
-            div().mx_auto().max_w(MAX_WIDTH).child(
+            div().mx_auto().max_w(MAX_WIDTH).child(with_frontmatter(
                 TextView::markdown(("markdown-text", pane as usize), text)
                     .style(style)
                     .blockquote_style(quote)
                     .markdown_extensions(MarkdownExtensions::default().frontmatter())
-                    .plugin(FrontmatterPlugin::new())
                     .selectable(true)
                     .scrollable(false),
-            ),
+            )),
         )
 }
 
 impl Workbench {
     /// Opens the preview of the active markdown tab (E-039, I-044): in the active pane, or `side` in a new pane to the
     /// right (the button with Alt, Ctrl+K V). On a preview tab it goes back to the editor tab beside it (I-045).
-    // shortcut: I-045 switches to the source tab; Zed closes the preview. Closing it would need the save question when
-    // the preview is the file's last view.
     pub(super) fn open_markdown_preview(&mut self, side: bool, window: &mut Window, cx: &mut Context<Self>) {
         let Some(ws) = self.active_ws() else { return };
         let Some((path, preview)) = ws.read(cx).group.active_tab().map(|t| (t.path.clone(), t.markdown)) else { return };
         if preview {
-            ws.update(cx, |ws, _| {
+            // I-045: back to the editor tab (found in any pane, since a side preview has it elsewhere; else a view of
+            // the shared buffer is opened here), then the preview closes through the usual close path, which asks
+            // the save question when it was the file's last view.
+            let (here, ix) = {
+                let g = &ws.read(cx).group;
+                (g.active, g.active_pane().active)
+            };
+            ws.update(cx, |ws, cx| {
                 let g = &mut ws.group;
-                let pane = g.active;
-                if let Some(p) = g.panes.get_mut(&pane)
-                    && let Some(i) = p.find(&path)
-                {
-                    p.active = Some(i);
+                match g.find_source(&path, here) {
+                    Some((pane, i)) => {
+                        g.activate(pane);
+                        if let Some(p) = g.panes.get_mut(&pane) {
+                            p.active = Some(i);
+                        }
+                    }
+                    None => {
+                        g.open(&path, false, window, cx);
+                    }
                 }
             });
+            if let Some(ix) = ix {
+                self.close_tab_at(here, ix, window, cx);
+            }
         } else if is_markdown(&path) {
             ws.update(cx, |ws, cx| {
                 let g = &mut ws.group;
@@ -142,8 +235,58 @@ pub fn file_name(path: &Path) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{file_name, preview_title};
+    use super::{BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
+    use crate::ui::metrics::spec::assert_spec;
     use std::path::Path;
+
+    /// P4-45-R1 (5): the L-101~L-111 values the preview sets equal the spec (`[markdown_preview]`).
+    #[test]
+    fn preview_values_equal_spec() {
+        let px = f32::from;
+        let s = |id: &str, v: f32| assert_spec(&format!("markdown_preview[\"{id}\"]"), "default", v);
+        s("max_width", px(MAX_WIDTH));
+        s("container_padding", px(CONTAINER_PADDING));
+        s("body.font_size", px(BODY_FONT_SIZE));
+        s("body.line_height_multiplier", BODY_LINE_HEIGHT);
+        s("paragraph_gap", PARAGRAPH_GAP);
+        for (i, size) in HEADING_SIZES.iter().enumerate() {
+            s(&format!("h{}.font_size", i + 1), *size);
+        }
+        s("blockquote.padding_left", px(QUOTE_PADDING_LEFT));
+        s("blockquote.border_left", px(QUOTE_BORDER_LEFT));
+        s("table.border_outer", px(TABLE_BORDER));
+        s("table.corner_radius", px(TABLE_RADIUS));
+        s("table.cell_padding_x", px(CELL_PADDING_X));
+        s("table.cell_padding_y", px(CELL_PADDING_Y));
+        s("code_block.padding", px(CODE_PADDING));
+        s("code_block.margin_y", px(CODE_MARGIN_Y));
+        s("code_block.corner_radius", px(CODE_RADIUS));
+        // A ratio held as f32 against the spec's f64: the helper has no tolerance for ratios.
+        let opacity = crate::ui::metrics::spec::lookup("markdown_preview[\"inline_code.background_opacity\"]").unwrap().value;
+        assert!((opacity - f64::from(INLINE_CODE_OPACITY)).abs() < 1e-6);
+        s("frontmatter.corner_radius", px(FRONTMATTER_RADIUS));
+    }
+
+    /// L-110: only a block whose every line is an unindented `key: value` (both non-empty) is a table; a Korean key is
+    /// fine, a comment, a blank line, an indented line or an empty value makes the whole block a raw box.
+    #[test]
+    fn frontmatter_table_only_for_flat_pairs() {
+        let rows = frontmatter_rows("title: Hello\n제목: 값\ntags: a: b").unwrap();
+        assert_eq!(rows, [("title".into(), "Hello".into()), ("제목".into(), "값".into()), ("tags".into(), "a: b".into())]);
+        for bad in ["title: hi\n# comment", "title: hi\n\nb: c", "title: hi\n  more", "title:", ": value", "just text", ""] {
+            assert_eq!(frontmatter_rows(bad), None, "{bad:?}");
+        }
+    }
+
+    /// The fenced source of a front matter node loses its `---` lines.
+    #[test]
+    fn frontmatter_body_strips_the_fences() {
+        assert_eq!(frontmatter_body("---\na: b\n---"), Some("a: b"));
+        assert_eq!(frontmatter_body("---\r\na: b\r\n---\r\n"), Some("a: b"));
+        assert_eq!(frontmatter_body("---\n---"), Some(""));
+        assert_eq!(frontmatter_body("# heading"), None);
+        assert_eq!(frontmatter_body("---"), None);
+    }
 
     /// L-69: "Preview {name}", 24 characters at most, an ellipsis after a cut one; no name → "Markdown Preview".
     #[test]

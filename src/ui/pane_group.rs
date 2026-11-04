@@ -609,19 +609,27 @@ impl<E> PaneGroup<E> {
         Some(id)
     }
 
-    /// I-718 Ctrl-drop of tab `ix` of pane `from` into another pane `to` at `at`: the source keeps its tab and `to` gets
-    /// a new view (`editor`, a copy made by the caller; never a preview). A pane that already shows the file only
-    /// activates that tab. Nothing happens within one pane.
-    pub fn copy_tab_view(&mut self, from: PaneId, ix: usize, to: PaneId, at: usize, editor: E) {
+    /// I-718 Ctrl-drop of tab `ix` of pane `from` into another pane `to`: the source keeps its tab and `to` gets a new
+    /// view (`editor`, a copy made by the caller; never a preview) added without a position, so by the plain add rule
+    /// (after the active tab, outside the pinned run; `Pane::place`), not at the drop place a move uses. A pane that
+    /// already shows the file only activates that tab. Nothing happens within one pane.
+    pub fn copy_tab_view(&mut self, from: PaneId, ix: usize, to: PaneId, editor: E) {
         let Some((path, markdown)) = self.panes.get(&from).and_then(|p| p.tabs.get(ix)).map(|t| (t.path.clone(), t.markdown)) else { return };
         let Some(dst) = self.panes.get_mut(&to).filter(|_| from != to) else { return };
         match if markdown { dst.find_preview(&path) } else { dst.find(&path) } {
             Some(i) => dst.active = Some(i),
             None => {
-                dst.insert_at(Tab { path, preview: false, markdown, editor }, at, false);
+                dst.place(Tab { path, preview: false, markdown, editor }, false);
             }
         }
         self.active = to;
+    }
+
+    /// I-045: where the editor tab of `path` is, looking in `prefer` first and then in the other panes (a preview opened
+    /// to the side has its source in another pane).
+    pub fn find_source(&self, path: &Path, prefer: PaneId) -> Option<(PaneId, usize)> {
+        let in_pane = |id: &PaneId| self.panes.get(id).and_then(|p| p.find(path)).map(|i| (*id, i));
+        in_pane(&prefer).or_else(|| self.panes.keys().find_map(in_pane))
     }
 
     /// The file or folder `from` was renamed or moved to `to` (판단). Returns the new paths whose read in flight was
@@ -846,15 +854,92 @@ mod tests {
         open(&mut g, "a", false);
         open(&mut g, "b", false);
         let to = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
-        g.copy_tab_view(0, 1, to, 0, 77);
+        g.copy_tab_view(0, 1, to, 77);
         assert_eq!(names(&g, 0), ["a", "b"], "the source keeps its tab");
         assert_eq!(names(&g, to), ["b"]);
         assert_eq!(g.panes[&to].tabs[0].editor, 77);
         assert!(!g.panes[&to].tabs[0].preview);
-        g.copy_tab_view(0, 1, to, 0, 88);
+        g.copy_tab_view(0, 1, to, 88);
         assert_eq!(names(&g, to), ["b"], "already there: no second view");
-        g.copy_tab_view(0, 0, 0, 0, 99);
+        g.copy_tab_view(0, 0, 0, 99);
         assert_eq!(names(&g, 0), ["a", "b"], "same pane: nothing");
+    }
+
+    /// P4-45-R1 (1, I-718): a copy lands by the plain add rule, after the target active tab and outside its pinned run,
+    /// whatever the drop place a move would use; the source tab stays.
+    #[test]
+    fn copy_lands_after_the_active_tab_not_at_the_drop_place() {
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        let to = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
+        open(&mut g, "x", false);
+        open(&mut g, "y", false);
+        open(&mut g, "z", false);
+        g.panes.get_mut(&to).unwrap().active = Some(0);
+        g.copy_tab_view(0, 0, to, 55);
+        assert_eq!(names(&g, to), ["x", "a", "y", "z"]);
+        assert_eq!(g.panes[&to].active, Some(1));
+        assert_eq!(names(&g, 0), ["a"], "the single source tab stays");
+        // A pinned run is not entered: the active tab is pinned, the copy goes after the run.
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        let to = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
+        open(&mut g, "p", false);
+        open(&mut g, "q", false);
+        g.panes.get_mut(&to).unwrap().toggle_pin(0);
+        g.panes.get_mut(&to).unwrap().active = Some(0);
+        g.copy_tab_view(0, 0, to, 56);
+        assert_eq!(names(&g, to), ["p", "a", "q"]);
+    }
+
+    /// P4-45-R1 (5): a dirty file keeps its doc, its editor handle and its dirty state when its last view moves to
+    /// another pane; dropped onto a pane that already shows it, the dragged view goes and the doc keeps the edit state.
+    #[test]
+    fn dirty_view_moves_without_losing_state() {
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        let editor = g.panes[&0].tabs[0].editor;
+        assert_eq!(g.on_edit(&editor, 123), Some("a".into()));
+        assert!(g.docs.get(Path::new("a")).unwrap().dirty);
+        let to = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
+        g.move_tab(0, 0, to, 0);
+        assert_eq!(g.panes[&to].tabs[0].editor, editor, "the same editor handle");
+        assert!(g.docs.get(Path::new("a")).unwrap().dirty, "still dirty");
+        assert!(!g.panes.contains_key(&0), "the emptied pane goes");
+        // Onto a pane that has the file: the other view stays, the doc is kept.
+        let mut g = G::default();
+        open(&mut g, "a", false);
+        let dup = clone(&mut g, Right).unwrap();
+        let first = g.panes[&0].tabs[0].editor;
+        g.on_edit(&first, 7);
+        g.move_tab(0, 0, dup, 0);
+        assert_eq!(g.views(Path::new("a")).count(), 1);
+        assert!(g.docs.get(Path::new("a")).unwrap().dirty, "the doc keeps the edit state");
+    }
+
+    /// P4-45-R1 (3, I-045): the editor tab for a preview is found in the preview pane first, then in any other pane;
+    /// none when its source was closed.
+    #[test]
+    fn find_source_looks_in_other_panes() {
+        let mut g = G::default();
+        open(&mut g, "a.md", false);
+        let side = g.split(Right, SplitMode::Empty, |t| t.editor).unwrap();
+        assert_eq!(g.open_markdown(side, Path::new("a.md"), || 9), Some((0, true)));
+        assert_eq!(g.find_source(Path::new("a.md"), side), Some((0, 0)), "source in the other pane");
+        assert_eq!(g.find_source(Path::new("a.md"), 0), Some((0, 0)), "same pane first");
+        g.close_view(0, 0);
+        assert_eq!(g.find_source(Path::new("a.md"), side), None, "source closed");
+    }
+
+    /// P4-45-R1 (5, L-109): a preview hidden view is a view of the file, so an edit in the source reaches it.
+    #[test]
+    fn preview_view_is_a_sync_target() {
+        let mut g = G::default();
+        open(&mut g, "a.md", false);
+        let source = g.panes[&0].tabs[0].editor;
+        g.open_markdown(0, Path::new("a.md"), || 9);
+        let others: Vec<(u32, &str)> = g.views(Path::new("a.md")).filter(|e| **e != source).map(|e| (*e, "old")).collect();
+        assert_eq!(sync_targets("new", &others), Some(vec![&9]), "the preview view is brought to the new text");
     }
 
     /// I-707: popup order Right, Left, Up, Down; clone by default, move for an unsplittable item with ≥2 tabs, else off.

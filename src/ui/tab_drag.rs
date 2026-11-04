@@ -21,9 +21,10 @@ pub struct DropHint {
 }
 
 /// I-712, I-713: the hint for a pointer at (`x`, `y`) in a `w` × `h` body of pane `pane`. A pane may split unless the
-/// drag is its own only tab (splitting would just empty it).
-pub fn body_hint(pane: PaneId, from: PaneId, tabs: usize, w: f32, h: f32, x: f32, y: f32) -> DropHint {
-    let can_split = !(from == pane && tabs <= 1);
+/// move is its own only tab (splitting would just empty it); a Ctrl copy keeps the source and may.
+pub fn body_hint(pane: PaneId, from: PaneId, tabs: usize, copy: bool, (w, h): (f32, f32), (x, y): (f32, f32)) -> DropHint {
+    // A copy leaves the source tab, so it may split even the dragged tab own single-tab pane (I-718).
+    let can_split = copy || !(from == pane && tabs <= 1);
     DropHint { pane, dir: drop_split(w, h, x, y, can_split), w, h }
 }
 
@@ -44,9 +45,9 @@ impl Workbench {
         let copy = window.modifiers().control;
         ws.update(cx, |ws, cx| {
             let g = &mut ws.group;
-            match copy.then(|| g.clone_view(d.pane, d.ix, window, cx)).flatten() {
-                Some(editor) if d.pane != to => g.copy_tab_view(d.pane, d.ix, to, at, editor),
-                _ => g.move_tab(d.pane, d.ix, to, at),
+            match (copy && d.pane != to).then(|| g.clone_view(d.pane, d.ix, window, cx)).flatten() {
+                Some(editor) => g.copy_tab_view(d.pane, d.ix, to, editor),
+                None => g.move_tab(d.pane, d.ix, to, at),
             }
         });
         self.after_drop(cx, window);
@@ -66,10 +67,7 @@ impl Workbench {
                     g.drop_split(d.pane, d.ix, target, dir, editor);
                 }
                 None if d.pane != target => match copy.then(|| g.clone_view(d.pane, d.ix, window, cx)).flatten() {
-                    Some(editor) => {
-                        let at = g.panes.get(&target).map_or(0, |p| p.active.map_or(p.tabs.len(), |a| a + 1));
-                        g.copy_tab_view(d.pane, d.ix, target, at, editor);
-                    }
+                    Some(editor) => g.copy_tab_view(d.pane, d.ix, target, editor),
                     None => g.drop_center(d.pane, d.ix, target),
                 },
                 None => {}
@@ -93,20 +91,31 @@ mod tests {
     /// I-712~I-714: an 800×600 body takes edges within 120px (min × 0.2); the overlay covers half on the split side.
     #[test]
     fn body_hint_edges_and_overlay() {
-        let h = body_hint(1, 0, 3, 800., 600., 50., 300.);
+        let h = body_hint(1, 0, 3, false, (800., 600.), (50., 300.));
         assert_eq!(h.dir, Some(SplitDirection::Left));
         let r = drop_overlay(h.w, h.h, h.dir);
         assert_eq!((r.x, r.y, r.w, r.h), (0., 0., 400., 600.));
-        assert_eq!(body_hint(1, 0, 3, 800., 600., 400., 300.).dir, None, "centre");
-        assert_eq!(body_hint(1, 0, 3, 800., 600., 120., 300.).dir, None, "boundary is centre");
-        assert_eq!(body_hint(1, 0, 3, 800., 600., 400., 580.).dir, Some(SplitDirection::Down));
+        assert_eq!(body_hint(1, 0, 3, false, (800., 600.), (400., 300.)).dir, None, "centre");
+        assert_eq!(body_hint(1, 0, 3, false, (800., 600.), (120., 300.)).dir, None, "boundary is centre");
+        assert_eq!(body_hint(1, 0, 3, false, (800., 600.), (400., 580.)).dir, Some(SplitDirection::Down));
     }
 
     /// Dragging the only tab of a pane over its own edge cannot split it; with two tabs it can; other panes always can.
     #[test]
     fn own_single_tab_cannot_split() {
-        assert_eq!(body_hint(0, 0, 1, 800., 600., 10., 300.).dir, None);
-        assert_eq!(body_hint(0, 0, 2, 800., 600., 10., 300.).dir, Some(SplitDirection::Left));
-        assert_eq!(body_hint(2, 0, 1, 800., 600., 10., 300.).dir, Some(SplitDirection::Left));
+        assert_eq!(body_hint(0, 0, 1, false, (800., 600.), (10., 300.)).dir, None);
+        assert_eq!(body_hint(0, 0, 2, false, (800., 600.), (10., 300.)).dir, Some(SplitDirection::Left));
+        assert_eq!(body_hint(2, 0, 1, false, (800., 600.), (10., 300.)).dir, Some(SplitDirection::Left));
+        // P4-45-R1 (1, I-718): a Ctrl copy keeps the source, so the single tab may still be copied to an edge.
+        assert_eq!(body_hint(0, 0, 1, true, (800., 600.), (10., 300.)).dir, Some(SplitDirection::Left));
+    }
+
+    /// The hint of a Ctrl drag over the own single-tab pane splits and its overlay covers the edge half.
+    #[test]
+    fn copy_hint_overlay_covers_the_edge_half() {
+        let h = body_hint(0, 0, 1, true, (800., 600.), (790., 300.));
+        assert_eq!(h.dir, Some(SplitDirection::Right));
+        let r = drop_overlay(h.w, h.h, h.dir);
+        assert_eq!((r.x, r.w), (400., 400.));
     }
 }

@@ -276,11 +276,11 @@ impl Workbench {
                     .flex_1()
                     .min_h_0()
                     // I-712: the drop zone is judged on the body below the tab bar.
-                    .on_drag_move::<TabDrag>(cx.listener(move |this, e: &DragMoveEvent<TabDrag>, _, cx| {
+                    .on_drag_move::<TabDrag>(cx.listener(move |this, e: &DragMoveEvent<TabDrag>, window, cx| {
                         let (b, p) = (e.bounds, e.event.position);
                         let hint = b.contains(&p).then(|| {
                             let (w, h) = (f32::from(b.size.width), f32::from(b.size.height));
-                            body_hint(id, e.drag(cx).pane, tab_count, w, h, f32::from(p.x - b.left()), f32::from(p.y - b.top()))
+                            body_hint(id, e.drag(cx).pane, tab_count, window.modifiers().control, (w, h), (f32::from(p.x - b.left()), f32::from(p.y - b.top())))
                         });
                         this.set_drop_hint(id, hint, cx);
                     }))
