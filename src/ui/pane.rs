@@ -3,6 +3,10 @@
 //! - 트리에서 임시(preview)로 열거나 일반 탭으로 연다(I-087, I-033, I-061).
 //! - 임시 탭은 하나다. 다른 파일을 임시로 열면 그 자리(인덱스)에서 바꾼다(I-062).
 //! - 이미 임시로 열린 파일을 일반으로 열면 일반 탭이 된다(I-063).
+//! - Preview, normal and pinned are separate states (I-060): a pinned tab is never a preview. Pinned tabs are the
+//!   first `pinned_count` tabs (I-065, I-719); new tabs never go inside that run. Edits, a tab double-click
+//!   (`promote`) or a non-preview open make a preview tab normal (I-063); pinning also does, but promoting never
+//!   pins (I-065). Normal closes (Ctrl+W, Ctrl+F4, middle click) skip pinned tabs (`close_protected`, I-066).
 //! - 새 탭은 활성 탭 바로 뒤에 넣는다(판단: Zed 의 새 항목 자리).
 //! - Tabs are editable (v0.4 D-6, P3-1; D-18 lifted). A tab is dirty when its buffer differs from the content last
 //!   read from disk (`hash`). An edit promotes a preview tab to a normal tab (I-063). The editor stays read-only
@@ -138,6 +142,8 @@ impl<E> Tab<E> {
 pub struct Pane<E = Entity<EditorState>> {
     pub tabs: Vec<Tab<E>>,
     pub active: Option<usize>,
+    /// Tabs `0..pinned_count` are pinned (I-065, I-719, A-23.4); the tab bar draws them in the same row (I-066).
+    pub pinned_count: usize,
     next_load: u64,
     /// Set when the folder is removed; reads finishing afterwards are dropped (strong refs may keep it alive).
     closed: bool,
@@ -145,7 +151,7 @@ pub struct Pane<E = Entity<EditorState>> {
 
 impl<E> Default for Pane<E> {
     fn default() -> Self {
-        Self { tabs: Vec::new(), active: None, next_load: 0, closed: false }
+        Self { tabs: Vec::new(), active: None, pinned_count: 0, next_load: 0, closed: false }
     }
 }
 
@@ -290,7 +296,8 @@ impl<E> Pane<E> {
         self.closed = true;
     }
 
-    /// Puts a new tab in place: replaces the preview tab (I-062) or inserts after the active tab. Returns its index.
+    /// Puts a new tab in place: replaces the preview tab (I-062) or inserts after the active tab, but never inside the
+    /// pinned run (I-719). Returns its index.
     fn place(&mut self, tab: Tab<E>) -> usize {
         if tab.preview
             && let Some(pi) = self.tabs.iter().position(|t| t.preview)
@@ -299,7 +306,7 @@ impl<E> Pane<E> {
             self.active = Some(pi);
             return pi;
         }
-        let at = self.active.map(|a| a + 1).unwrap_or(self.tabs.len()).min(self.tabs.len());
+        let at = self.active.map(|a| a + 1).unwrap_or(self.tabs.len()).max(self.pinned_count).min(self.tabs.len());
         self.tabs.insert(at, tab);
         self.active = Some(at);
         at
@@ -422,6 +429,9 @@ impl<E> Pane<E> {
             return None;
         }
         let tab = self.tabs.remove(ix);
+        if ix < self.pinned_count {
+            self.pinned_count -= 1;
+        }
         self.active = match self.active {
             _ if self.tabs.is_empty() => None,
             Some(a) if a == ix => Some(ix.min(self.tabs.len() - 1)),
@@ -429,6 +439,54 @@ impl<E> Pane<E> {
             other => other,
         };
         Some(tab)
+    }
+
+    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
+    pub fn is_pinned(&self, ix: usize) -> bool {
+        ix < self.pinned_count
+    }
+
+    /// I-066: Ctrl+W, Ctrl+F4 and a middle click leave a pinned tab open. Closing the folder or window still closes it.
+    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
+    pub fn close_protected(&self, ix: usize) -> bool {
+        self.is_pinned(ix)
+    }
+
+    /// I-063: a tab double-click (or a non-preview open of the same file) makes the tab normal. It does not pin (I-065).
+    pub fn promote(&mut self, ix: usize) {
+        if let Some(tab) = self.tabs.get_mut(ix) {
+            tab.preview = false;
+        }
+    }
+
+    /// `pane::TogglePinTab` (Ctrl+K Shift+Enter, I-065, I-577). Pin: the tab stops being a preview and moves to the
+    /// end of the pinned run. Unpin: it moves to the first place after the run. The tab keeps its active state.
+    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
+    pub fn toggle_pin(&mut self, ix: usize) {
+        if ix >= self.tabs.len() {
+            return;
+        }
+        if self.is_pinned(ix) {
+            self.pinned_count -= 1;
+            self.move_tab(ix, self.pinned_count);
+        } else {
+            self.tabs[ix].preview = false;
+            self.move_tab(ix, self.pinned_count);
+            self.pinned_count += 1;
+        }
+    }
+
+    /// Moves tab `from` to index `to`; the active tab follows its tab.
+    #[cfg_attr(not(test), expect(dead_code, reason = "callers are P4-2 (impl-ui): pin key, tab bar, Ctrl+W guard"))]
+    fn move_tab(&mut self, from: usize, to: usize) {
+        let tab = self.tabs.remove(from);
+        self.tabs.insert(to, tab);
+        self.active = self.active.map(|a| match a {
+            a if a == from => to,
+            a if from < a && a <= to => a - 1,
+            a if to <= a && a < from => a + 1,
+            a => a,
+        });
     }
 
     /// E-084 "Discard Edits": the buffer was reset to the disk text (`hash`, `format` from that read), so the tab is
@@ -501,7 +559,7 @@ impl Pane {
     ) -> (usize, bool) {
         if let Some(i) = self.find(path) {
             if !preview {
-                self.tabs[i].preview = false;
+                self.promote(i);
             }
             self.active = Some(i);
             return (i, false);
@@ -1165,5 +1223,114 @@ mod tests {
     fn pasted_crlf_hashes_as_lf() {
         assert_eq!(buffer_hash("a\r\nb"), text_hash("a\nb"));
         assert_eq!(buffer_hash("a\nb"), text_hash("a\nb"));
+    }
+
+    fn names(pane: &Pane<()>) -> Vec<String> {
+        pane.tabs.iter().map(|t| t.title()).collect()
+    }
+
+    fn previews(pane: &Pane<()>) -> Vec<bool> {
+        pane.tabs.iter().map(|t| t.preview).collect()
+    }
+
+    /// I-060: preview, normal and pinned are three states; a pinned tab is never a preview.
+    #[test]
+    fn i060_pinned_is_never_preview() {
+        let mut pane = Pane::<()>::default();
+        open(&mut pane, "a", true);
+        pane.toggle_pin(0);
+        assert!(pane.is_pinned(0));
+        assert!(!pane.tabs[0].preview);
+        // The next preview open makes a new tab instead of replacing the pinned one.
+        open(&mut pane, "b", true);
+        assert_eq!(names(&pane), ["a", "b"]);
+        assert_eq!(previews(&pane), [false, true]);
+    }
+
+    /// I-061: a single-click (preview) open makes a preview tab; a non-preview open makes a normal one.
+    #[test]
+    fn i061_preview_open_is_preview() {
+        let mut pane = Pane::<()>::default();
+        open(&mut pane, "a", true);
+        open(&mut pane, "b", false);
+        assert_eq!(previews(&pane), [true, false]);
+    }
+
+    /// I-062: one preview per pane, replaced at its own index (not the active one); other panes are separate.
+    #[test]
+    fn i062_preview_replaced_in_place() {
+        let mut pane = Pane::<()>::default();
+        open(&mut pane, "a", false);
+        open(&mut pane, "p", true);
+        open(&mut pane, "b", false);
+        pane.active = Some(0);
+        open(&mut pane, "q", true);
+        assert_eq!(names(&pane), ["a", "q", "b"]);
+        assert_eq!(pane.active, Some(1));
+        assert_eq!(pane.tabs.iter().filter(|t| t.preview).count(), 1);
+        let mut other = Pane::<()>::default();
+        open(&mut other, "r", true);
+        assert!(pane.tabs[1].preview && other.tabs[0].preview);
+    }
+
+    /// I-063: an edit or a double-click (`promote`) makes a preview tab normal; the next preview open adds a tab.
+    #[test]
+    fn i063_double_click_promotes() {
+        let mut pane = Pane::<()>::default();
+        open(&mut pane, "a", true);
+        pane.promote(0);
+        assert!(!pane.tabs[0].preview);
+        assert!(!pane.is_pinned(0), "promoting does not pin (I-065)");
+        open(&mut pane, "b", true);
+        assert_eq!(names(&pane), ["a", "b"]);
+        pane.on_edit(1, buffer_hash("x"));
+        assert_eq!(previews(&pane), [false, false]);
+    }
+
+    /// I-064: the italic title is drawn from `preview` alone (layout `TabView`); dev output reports the same state.
+    #[test]
+    fn i064_preview_state_is_reported() {
+        let mut pane = Pane::<()>::default();
+        open(&mut pane, "a", true);
+        open(&mut pane, "b", false);
+        assert_eq!(pane.describe(), "a|preview|a\tb|normal|b");
+        pane.toggle_pin(0);
+        assert!(pane.describe().starts_with("a|normal|"));
+    }
+
+    /// I-065: pin moves the tab to the end of the pinned run and clears preview; unpin moves it right after the run.
+    /// The active tab follows its tab.
+    #[test]
+    fn i065_toggle_pin_moves_tab() {
+        let mut pane = Pane::<()>::default();
+        for p in ["a", "b", "c", "d"] {
+            open(&mut pane, p, false);
+        }
+        pane.active = Some(2);
+        pane.toggle_pin(2);
+        assert_eq!((names(&pane), pane.pinned_count, pane.active), (vec!["c".into(), "a".into(), "b".into(), "d".into()], 1, Some(0)));
+        pane.toggle_pin(3);
+        assert_eq!((names(&pane), pane.pinned_count, pane.active), (vec!["c".into(), "d".into(), "a".into(), "b".into()], 2, Some(0)));
+        pane.toggle_pin(0);
+        assert_eq!((names(&pane), pane.pinned_count, pane.active), (vec!["d".into(), "c".into(), "a".into(), "b".into()], 1, Some(1)));
+        // New tabs never land inside the pinned run, even after a pinned active tab (I-719).
+        pane.active = Some(0);
+        open(&mut pane, "e", false);
+        assert_eq!(names(&pane)[1], "e");
+        assert!(!pane.is_pinned(1));
+        // Closing a pinned tab shrinks the run.
+        pane.close_tab(0);
+        assert_eq!(pane.pinned_count, 0);
+    }
+
+    /// I-066: normal closes leave pinned tabs; unpinned tabs close as before.
+    #[test]
+    fn i066_pinned_tab_protected_from_normal_close() {
+        let mut pane = Pane::<()>::default();
+        open(&mut pane, "a", false);
+        open(&mut pane, "b", false);
+        pane.toggle_pin(0);
+        assert!(pane.close_protected(0));
+        assert!(!pane.close_protected(1));
     }
 }
