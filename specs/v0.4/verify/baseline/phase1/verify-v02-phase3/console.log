@@ -1,0 +1,6 @@
+cases: empty, add, items, scroll, switch, title, remove, order, order-restart, keys, menus, state, state-restart, broken, tmp, dialog, quitsave, quitnochange, closesave, xclosesave, savefail, sigma, version
+checks: 122, failed: 2
+failures: 2
+user files restored: True
+  - state: R-28 시작 폭 300: 기대 300, 실제 375
+  - state-restart: R-28 다시 시작 → 사이드바 폭 복원: 기대 494, 실제 617

@@ -1,7 +1,14 @@
 # HANDOFF — workbench-gpui v0.4
 
 - 소유: `lead`. 맨 위 절이 지금 상태다. 지난 절은 지우지 않는다.
-## 지금 (2026-11-04 15:20, Phase 0 끝 → Phase 1 시작)
+## 지금 (2026-11-04 16:36, Phase 1 끝 → Phase 2 시작)
+
+- Phase 1 done(태그 `v0.4-phase-1`, master). AUDIT 3·4, Duration, clippy 0. 테스트 78.
+- herdr: impl-ui는 Claude Code Sonnet(H-8, agy Claude 주간 한도 소진). impl-editor Claude Code Opus(auto 모드). spec·review agy(편집 자동 승인).
+- Phase 2 카드 초안 P2-0~P2-E는 `TASKS.md`. 먼저 P2-0(measure 시작 V3 실측).
+- 감시기 `watch4.sh`(재시작 `restart-watch.sh`). 대기 중 프롬프트는 2분마다 다시 알린다.
+
+## 이전 (2026-11-04 15:20, Phase 0 끝 → Phase 1 시작)
 
 - Phase 0 done(태그 `v0.4-phase-0`). 기준선은 v0.3과 같다(빌드 경고 0, 테스트 60, clippy 10, 스크립트 585/2). 새 스펙 14줄, 모호 4건(`spec/ambiguous.md`).
 - Phase 1 카드 P1-1~P1-5는 `TASKS.md`. impl-ui(wF, work/ui)·impl-editor(wG, work/editor) 대기 중.

@@ -148,8 +148,8 @@ R-12 · R-13 · R-14 · R-15 · D-7
 | Phase | 상태 | 시작일 | 완료일 | 태그 | 비고 |
 |---|---|---|---|---|---|
 | Phase 0 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-0` | 기준선 v0.3과 같음(585/2), 스펙 14줄·모호 4, 최종 판정 REWORK 1 → R1 PASS |
-| Phase 1 | doing | 2026-11-04 | | `v0.4-phase-1` | |
-| Phase 2 | todo | | | `v0.4-phase-2` | |
+| Phase 1 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-1` | AUDIT 3·4·Duration·clippy 0, R-15 변화 0(흔들림 3, H-10), 테스트 78, 최종 확인 REWORK 2 → R2 PASS |
+| Phase 2 | doing | 2026-11-04 | | `v0.4-phase-2` | |
 | Phase 3 | todo | | | `v0.4-phase-3` | |
 | Phase 4 | todo | | | `v0.4-phase-4` | |
 

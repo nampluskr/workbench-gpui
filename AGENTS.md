@@ -61,7 +61,7 @@ cargo run
 
 - 빌드는 공유 `CARGO_TARGET_DIR`(`D:\projects\workbench-gpui\target`)을 쓴다. 다른 빌드의 잠금 대기가 생기면 기다리고, 잠금 파일을 지우지 않는다.
 - 빌드 환경은 노트북과 같은 버전이다: Rust 1.99.1, Build Tools 2022, Windows SDK 10.0.26100.0(`specs/v0.4/HERDR-SETUP.md` 3.4).
-- 테스트와 clippy가 통과하지 않은 상태로 완료 보고를 하지 않는다. 단, Phase 0 기준선의 clippy 경고는 기록만 한다.
+- 테스트와 `cargo clippy --all-targets -- -D warnings`가 통과하지 않은 상태로 완료 보고를 하지 않는다. clippy 기준선 경고는 v0.4 P1-5에서 0건이 되었다(D-5, R-6).
 - 검증 스크립트 `tools/verify-v02-*.ps1`은 항상 `-OutDir specs\v0.4\verify\...`를 넘긴다. 기본값은 지난 버전 폴더다. worktree에서는 `-Exe`에 절대 경로를 넘긴다.
 - **스크립트 언어**
   - 측정·검증 스크립트는 PowerShell 7로 쓴다(기존 `tools/*.ps1`, `tools/capture.ps1` 재사용).

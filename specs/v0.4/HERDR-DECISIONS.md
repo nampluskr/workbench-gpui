@@ -33,3 +33,28 @@
 - 요청: spec(agy)이 `spec/zed-metrics.toml` 편집마다 승인을 묻는다. 감시기는 긴 diff 화면에서 경로를 놓쳤다.
 - 판단: spec은 v0.3처럼 agy 편집 자동 승인 모드(shift+tab, v0.3 F5 Q-4)로 둔다. spec은 `spec/` 밖을 고치지 않는다는 규칙이 있고, 결과는 review가 표본 대조한다. impl-ui·review도 Phase 1 시작 때 같은 모드로 바꾼다. impl-ui는 worktree 안에서만 일하고, 병합 전 리뷰가 diff를 본다. `Cargo.*`·담당 밖 파일이 diff에 있으면 병합하지 않는다. 명령 승인은 감시기가 계속 맡는다.
 - 결과: spec 모드 전환. 감시기는 경로를 화면 전체에서 찾도록 고쳤다.
+
+### H-6 · 2026-11-04 · lead (impl-editor 권한 모드, 위임 H-4)
+- 요청: impl-editor(Claude Code)가 빌드·테스트·커밋마다 승인을 묻고, LSP 플러그인 설치 제안이 작업 중 반복해 떴다.
+- 판단: impl-editor를 Claude Code auto 모드로 둔다(measure와 같다). worktree `work/editor` 안에서만 일하고 병합 전 reviewer가 diff를 본다. LSP 플러그인은 설치하지 않는다("Never for this plugin", 감시기 규칙). 감시기의 deny 목록 `Format-`은 `Format-Volume`으로 좁혔다(Format-Table 오탐).
+- 결과: P1-3 커밋 `777abe1`(work/editor). 이후 Claude 계열 구현자는 auto 모드로 띄운다.
+
+### H-7 · 2026-11-04 · lead (P1-3 rework 범위, 위임 H-4)
+- 요청: reviewer P1-3 REWORK 2건(첫 읽기와 reload 경합, folder 해제 뒤 결과 적용). 수정이 `src/ui/watch_io.rs`·`src/ui/folders.rs`(impl-ui 소유)에 걸친다.
+- 판단: 원인이 P1-3에 있으니 같은 담당(impl-editor)이 고친다. 이 카드에 한해 `watch_io.rs`·`folders.rs`의 관련 부분을 impl-editor 범위로 지정한다. impl-ui는 지금 `panel_ops.rs`·`panel_nav.rs`(P1-2)를 맡아 파일이 겹치지 않는다. 병합 때 충돌은 lead가 푼다.
+- 결과: P1-3-R1 카드.
+
+### H-8 · 2026-11-04 15:40 · lead (impl-ui 대체 모델, 위임 H-4)
+- 요청: impl-ui(agy Claude Sonnet)가 P1-4 도중 "Individual quota reached … Resets in 150h"로 멈췄다(agy Claude 주간 한도).
+- 판단: HERDR-SETUP 1.1의 대체로 바꾼다. 같은 pane `wF:p1`, 같은 worktree `.worktrees/ui`, 이름 `impl-ui`, Claude Code Sonnet 5.5 medium, auto 모드(H-6과 같다). worktree에 남은 P1-4 미커밋 변경(`metrics.rs`, `fsops/watch.rs`)을 이어받게 한다. 이전 agy 대화: `agy --conversation=e5e62da5-518c-4e1c-8810-96e8ae21cdfd`.
+- 결과: Claude 구독(Max) 부담이 늘어난다(lead·measure·impl-editor·impl-ui 모두 Claude). 사용자 확인 목록에 올린다.
+
+### H-9 · 2026-11-04 · lead (P1-12-R2 설계, 위임 H-4)
+- 요청: reviewer P1-12-R1 REWORK — 복사(create_new 예약)와 같은 볼륨 이동(rename) 사이 앱 내부 경합으로 내용 손실 가능, 이동 전체를 잡는 전역 잠금이 큰 교차 볼륨 이동 동안 다른 이동을 막음, 완료 경로 테스트 부족.
+- 판단: 잠금 범위를 "이름 고르기 + 예약(복사: create_new / create_dir, 교차 볼륨 이동: 대상 예약) 또는 같은 볼륨 rename"으로 좁히고, 복사도 같은 잠금을 쓴다. 느린 복사·검증·원본 삭제는 잠금 밖에서 한다. 예약된 이름은 다른 작업이 고르지 않는다(이미 있으므로). 외부 프로그램 경합만 `shortcut:`으로 남는다. 테스트는 `#[gpui::test]`(Cargo test-support 필요, 위임 밖) 대신 완료 반영을 순수 "plan" 함수(입력: 결과·현재 workspace 목록·클립보드 세대, 출력: 알림·복원·선택·트리 갱신)로 빼서 검증하고, 핸들러는 plan을 그대로 실행한다(v0.3 H-30 방식).
+- 결과: P1-12-R2 카드(impl-ui).
+
+### H-10 · 2026-11-04 · lead (R-15 값 비교와 실행마다 흔들리는 위치 표본, 위임 H-4)
+- 요청: reviewer Phase 1 최종 확인 REWORK — R-15 비교기가 `ok`만 보고 `got` 값을 비교하지 않았다. phase3 A-16.7 휠 스크롤 `offset_y`가 R-1 −23, Phase 1 −234.
+- 판단: 같은 코드에서 이 값은 실행마다 −23/−234로 갈린다(v0.2 재실행 5회 −234, v0.3 기준선 −23, v0.3 phase1 −234, phase2·phase3 −23, v0.4 기준선 −23). 스크립트가 휠 입력 600ms 뒤 마지막 스크롤 로그를 저장하므로 스크롤 진행 중 표본이다. 위치 값이지만 시각에 따라 표본이 바뀌므로 D-8의 "흔들리는 시간 값"과 같이 스크립트 자체 판정(`offset_y < 0`)만 대조한다. 이 분류는 이력 근거가 있는 항목에만 쓰고, 근거 없는 값 차이는 회귀로 본다. R-15 비교는 앞으로 모든 `got` 값을 비교하고 차이마다 분류(의도한 변경 / 이력상 흔들림 / 미설명)를 남긴다.
+- 결과: measure에 값 비교 재대조 지시. 사용자 확인 목록에 올린다(D-8 해석).

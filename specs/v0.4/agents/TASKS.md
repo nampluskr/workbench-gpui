@@ -49,14 +49,14 @@
 순서: (P1-1 → P1-2) ∥ P1-3 → P1-4 → P1-5. AUDIT 카드(P1-1~P1-3)는 동작 변경이라 카드마다 별도 커밋, 리뷰 `reviewer`.
 
 ### P1-1 AUDIT 3: 붙여넣기·복제 실패 알림, 실패한 cut 항목 보존
-- 상태: todo · 담당: impl-ui · 리뷰: reviewer · 브랜치: work/ui
+- 상태: done · 담당: impl-ui · 리뷰: reviewer · 브랜치: work/ui
 - 요구·결정: R-3, D-4 · 원문: `specs/v0.3/AUDIT.md` 3
 - 범위: `src/ui/panel_ops.rs`(필요하면 `src/fsops/ops.rs`의 결과 타입만)
 - 검증 수준: V1(부분 성공·부분 실패 테스트)
 - 할 일: 일반 실패를 기존 `notify`(panel_ops.rs 87행) 또는 삭제 실패 집계 알림 패턴으로 알린다. 부분 성공이면 성공한 대상만 선택하고, 실패한 cut 항목은 `file_clipboard`에 남긴다(지금은 178행에서 전부 비운다).
 
 ### P1-2 AUDIT 4 (패널 쪽): 트리 열기·복사·이동을 백그라운드로
-- 상태: todo · 담당: impl-ui · 리뷰: reviewer · 브랜치: work/ui
+- 상태: done · 담당: impl-ui · 리뷰: reviewer · 브랜치: work/ui
 - 요구·결정: R-4, D-4 · 원문: AUDIT 4
 - 범위: `src/ui/panel_nav.rs`(286행 `open_file` 주변), `src/ui/panel_ops.rs`(paste·duplicate의 복사·이동)
 - 검증 수준: V1
@@ -64,7 +64,7 @@
 - 테스트: 무효 요청 결과를 버리는 테스트 1개 이상.
 
 ### P1-3 AUDIT 4 (탭 쪽): 큰 파일 첫 열기를 백그라운드로
-- 상태: todo · 담당: impl-editor · 리뷰: reviewer · 브랜치: work/editor
+- 상태: done · 담당: impl-editor · 리뷰: reviewer · 브랜치: work/editor
 - 요구·결정: R-4, D-4, D-10
 - 범위: `src/ui/pane.rs`(`read_text`·`open`), 필요하면 `src/ui/mod.rs`의 호출부(공통 — lead 지정: 호출부만)
 - 검증 수준: V1
@@ -72,7 +72,7 @@
 - 테스트: 겹친 열기에서 마지막 요청만 반영되는 테스트, 닫힌 탭 결과를 버리는 테스트.
 
 ### P1-4 남은 `Duration` 하드코딩을 metrics.rs 앱 상수로
-- 상태: todo · 담당: impl-ui · 리뷰: review · 브랜치: work/ui
+- 상태: done · 담당: impl-ui · 리뷰: review · 브랜치: work/ui
 - 요구·결정: R-5, D-5
 - 범위: `src/ui/metrics.rs`(이 카드에 한해 impl-ui에 지정), `src/fsops/watch.rs`, `src/state/mod.rs`, `src/ui/watch.rs`, `src/ui/watch_io.rs`, `src/ui/keymap.rs`, `src/ui/mod.rs`(타이머 리터럴만)
 - 검증 수준: V0(값 불변)
@@ -80,7 +80,33 @@
 - 판정: grep 집계 명령과 결과 0건을 완료 보고에 적는다.
 
 ### P1-5 clippy 기준선 경고 0건
-- 상태: todo · 담당: impl-ui(에디터 코어 파일 경고는 impl-editor) · 리뷰: review
+- 상태: done · 담당: impl-ui · 리뷰: review
 - 요구·결정: R-6, D-5
 - 검증 수준: V0(경고마다 동작 불변)
 - 할 일: `cargo clippy --all-targets -- -D warnings` exit 0. `allow`로 숨기지 않는다.
+
+## Phase 2 — Zed 일치: P4 UI 셸 ∥ P5 에디터 코어 (todo)
+
+순서: P2-0(시작 실측) → (P2-1 ∥ P2-2 …) → P2-E. 값 맞춤 카드 리뷰는 review, 에디터 로직(P2-5·P2-6)은 reviewer.
+
+### P2-0 시작 V3 실측: UI 셸·에디터 불일치 목록 (D-3)
+- 담당: measure · 검증 수준: V3
+- 측정 목록: UI 셸(titlebar, sidebar, project_panel, tab bar, statusbar, menu, tooltip) 스펙 ID 전부 + 에디터(거터, 커서, 선택, 줄 높이, 스크롤바) 스펙 ID. 기존 `tools/measure/`와 `--dev-layout` 덤프를 쓴다. 허용 오차 안 불일치도 목록에 넣는다(D-3).
+- 결과: `specs/v0.4/verify/reviews/measure-p2-0.md`(스펙 ID, 기대, 측정, 차이, 판정). [MEASURED] P2-0.
+
+### P2-1 사이드바 시작 폭 300·복원 폭(R-7, Q-15)
+- 담당: impl-ui · 리뷰: review · V2
+- 할 일: 데스크톱에서 시작 폭이 300 → 375(약 1.25배)로 나오는 원인을 찾아 고친다(스케일 이중 적용 의심). `sidebar["default_width"]` 300, 복원 폭 494 그대로. phase3 R-28 실패 2건이 통과로 바뀌는 것이 기대 결과다.
+
+### P2-2 UI 셸 나머지 불일치(P2-0 목록에서, 영역별 카드로 나눔)
+- 담당: impl-ui · 리뷰: review · V2. `sidebar["footer.height"]` 31 → 30 포함.
+
+### P2-5 에디터 표시 4건 + 스크롤바 2건(D-10)
+- 담당: impl-editor · 리뷰: reviewer · V2
+- 거터 줄 번호 최소 4자리, 커서 2px, 선택 모서리 0.15×줄 높이, 한글 혼합 줄 기준선, 스크롤바 15px, 스크롤바 마커. gpui-kit Editor 위에 더한다(렌더러 훅·래퍼). 수치는 스펙 ID로.
+
+### P2-6 에디터 입력 2건(D-10)
+- 담당: impl-editor · 리뷰: reviewer · V1
+- Ctrl+Shift 드래그 열 선택(gpui-kit은 Alt+Shift), 선택 끌어 옮기기.
+
+### P2-E Phase 2 끝: R-15, V3(바뀐 화면), 반복 측정 항목 V2 이전(R-16), 최종 확인
