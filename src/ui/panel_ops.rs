@@ -15,6 +15,16 @@ pub struct FileClipboard {
     pub cut: bool,
 }
 
+/// Aggregate failure line, same shape as `panel_delete::failure_text`.
+fn failure_text(verb: &str, failed: usize, total: usize) -> String {
+    format!("Failed to {verb} {failed} of {total} file(s).")
+}
+
+/// Clipboard left after a cut paste: only the entries that failed to move, `None` if all moved.
+fn cut_leftover(failed: Vec<PathBuf>) -> Option<FileClipboard> {
+    (!failed.is_empty()).then_some(FileClipboard { paths: failed, cut: true })
+}
+
 impl Workbench {
     /// dev 출력: 디스크 작업 하나.
     pub(super) fn log_fs(&self, op: &str, targets: &[&Path], error: Option<String>, cx: &App) {
@@ -143,6 +153,8 @@ impl Workbench {
         let Some(clip) = self.file_clipboard.clone() else { return };
         let Some(dir) = self.target_dir(cx) else { return };
         let mut created = Vec::new();
+        let mut failed: Vec<PathBuf> = Vec::new();
+        let mut general_failed = 0;
         for src in &clip.paths {
             let Some(name) = src.file_name().map(|n| n.to_string_lossy().into_owned()) else { continue };
             if clip.cut && src.parent() == Some(dir.as_path()) {
@@ -160,11 +172,14 @@ impl Workbench {
             if let Ok(report) = &result {
                 self.log_skipped(op, report, cx);
             }
-            if let Err(e) = &result
-                && e.to_string() == ops::MOVE_REFUSED_LINKS
-            {
+            if let Err(e) = &result {
+                failed.push(src.clone());
+                if e.to_string() != ops::MOVE_REFUSED_LINKS {
+                    general_failed += 1;
+                } else {
                 // D-044 ②: 다른 볼륨 이동을 시작 전에 거부했다(원본·대상 변화 없음). 문구는 원문에 없어 판단으로 정했다.
                 self.notify(format!("Cannot move `{name}` to another drive because it contains links (junctions or symbolic links)."), window, cx);
+                }
             }
             // 맨 위 항목이 링크라 건너뛰었으면 만든 것이 없다.
             if result.is_ok() && dst.symlink_metadata().is_ok() {
@@ -174,8 +189,12 @@ impl Workbench {
                 created.push(dst);
             }
         }
+        // AUDIT 3: a cut keeps only the entries that failed so they can be retried.
         if clip.cut {
-            self.file_clipboard = None;
+            self.file_clipboard = cut_leftover(failed);
+        }
+        if general_failed > 0 {
+            self.notify(failure_text(if clip.cut { "move" } else { "copy" }, general_failed, clip.paths.len()), window, cx);
         }
         self.after_create(created, "paste", window, cx);
     }
@@ -183,6 +202,7 @@ impl Workbench {
     /// Duplicate(I-543): 같은 폴더에 ` copy` 이름으로 복사한다.
     pub(super) fn duplicate(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let mut created = Vec::new();
+        let (mut failed, mut total) = (0, 0);
         for src in self.panel_targets(cx) {
             let (Some(parent), Some(name)) = (src.parent(), src.file_name()) else { continue };
             if self.active_ws().is_some_and(|ws| ws.read(cx).tree.is_root(&src)) {
@@ -190,6 +210,8 @@ impl Workbench {
             }
             let dst = ops::paste_path(parent, &name.to_string_lossy(), src.is_dir());
             let result = ops::copy_entry(&src, &dst);
+            total += 1;
+            failed += usize::from(result.is_err());
             self.log_fs("duplicate", &[&src, &dst], result.as_ref().err().map(|e| e.to_string()), cx);
             if let Ok(report) = &result {
                 self.log_skipped("duplicate", report, cx);
@@ -197,6 +219,9 @@ impl Workbench {
             if result.is_ok() && dst.symlink_metadata().is_ok() {
                 created.push(dst);
             }
+        }
+        if failed > 0 {
+            self.notify(failure_text("duplicate", failed, total), window, cx);
         }
         self.after_create(created, "duplicate", window, cx);
     }
@@ -243,5 +268,20 @@ impl Workbench {
     pub(super) fn on_copy_relative_path(&mut self, a: &ws_actions::CopyRelativePath, w: &mut Window, cx: &mut Context<Self>) {
         keymap::log_handled(a, self.focus_name(w, cx), cx);
         self.copy_paths(true, cx);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // Explicit imports: gpui_kit::* via super::* shadows the 	est macro.
+    use super::{PathBuf, cut_leftover, failure_text};
+
+    #[test]
+    fn partial_cut_failure_keeps_only_failed_entries() {
+        assert!(cut_leftover(Vec::new()).is_none());
+        let left = cut_leftover(vec![PathBuf::from("b")]).unwrap();
+        assert_eq!(left.paths, vec![PathBuf::from("b")]);
+        assert!(left.cut);
+        assert_eq!(failure_text("move", 1, 3), "Failed to move 1 of 3 file(s).");
     }
 }
