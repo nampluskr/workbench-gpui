@@ -81,7 +81,10 @@ pub fn editor_view(editor: &Entity<EditorState>) -> impl IntoElement {
             let Some(press) = column_select_press(event) else { return };
             cx.stop_propagation();
             window.defer(cx, move |window, cx| {
-                window.dispatch_event(PlatformInput::MouseDown(press), cx);
+                // Real modifiers right before the re-send (the original press already set them).
+                for input in column_select_events(press, window.modifiers(), window.capslock()) {
+                    window.dispatch_event(input, cx);
+                }
             });
         })
         .child(
@@ -104,6 +107,18 @@ fn column_select_press(event: &MouseDownEvent) -> Option<MouseDownEvent> {
     press.modifiers.control = false;
     press.modifiers.alt = true;
     Some(press)
+}
+
+/// What to dispatch, in order, for a remapped press: the Alt+Shift press, then the real modifiers back.
+/// `dispatch_event` stores a mouse event's modifiers as the window's (gpui-pre window.rs 5664), and the only public
+/// way to set them back is a `ModifiersChanged` event (`set_modifiers` is test-support only). The restore keeps
+/// Ctrl+Shift (two modifiers), so gpui never turns it into a modifier-only keystroke (window.rs 6063: that needs
+/// zero), and gpui-base only re-renders on it (state.rs 5112); the column selection started by the press stays.
+fn column_select_events(press: MouseDownEvent, real: Modifiers, capslock: Capslock) -> [PlatformInput; 2] {
+    [
+        PlatformInput::MouseDown(press),
+        PlatformInput::ModifiersChanged(ModifiersChangedEvent { modifiers: real, capslock }),
+    ]
 }
 
 /// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계).
@@ -236,7 +251,26 @@ impl Pane {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{Modifiers, MouseButton, MouseDownEvent, Pane, Path, column_select_press, metrics, point, px, text_hash};
+    use super::{
+        Capslock, Modifiers, MouseButton, MouseDownEvent, Pane, Path, PlatformInput, column_select_events,
+        column_select_press, metrics, point, px, text_hash,
+    };
+
+    /// V1 (P2-6-R1): the re-sent press comes first, then the real Ctrl+Shift (and capslock) are restored, so
+    /// `window.modifiers()` does not keep the fake Alt. The restore has ≥2 modifiers: never a modifier-only keystroke.
+    #[test]
+    fn column_press_then_real_modifiers_restored() {
+        let real = Modifiers { control: true, shift: true, ..Default::default() };
+        let pressed = press(MouseButton::Left, real);
+        let remapped = column_select_press(&pressed).unwrap();
+        let caps = Capslock { on: true };
+        let [first, second] = column_select_events(remapped, real, caps);
+        let PlatformInput::MouseDown(down) = first else { panic!("first must be the re-sent press") };
+        assert_eq!(down.modifiers, Modifiers { alt: true, shift: true, ..Default::default() });
+        let PlatformInput::ModifiersChanged(restore) = second else { panic!("second must restore modifiers") };
+        assert_eq!((restore.modifiers, restore.capslock), (real, caps));
+        assert!(restore.modifiers.number_of_modifiers() >= 2);
+    }
 
     fn press(button: MouseButton, modifiers: Modifiers) -> MouseDownEvent {
         MouseDownEvent { button, position: point(px(40.), px(60.)), modifiers, click_count: 1, first_mouse: false }
