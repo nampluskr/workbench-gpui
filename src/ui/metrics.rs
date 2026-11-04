@@ -247,6 +247,8 @@ pub mod timing {
     pub const KEYMAP_QUIET: Duration = Duration::from_millis(150);
     // spec: none (app value) — `--dev-layout` dump poll interval.
     pub const LAYOUT_DUMP_POLL: Duration = Duration::from_millis(300);
+    // spec: none (app value) — retry delay after parent watch registration fails (judgement).
+    pub const EXTRA_RETRY: Duration = Duration::from_millis(1000);
     // spec: none (app value) — delay before dev checks start after the window opens.
     pub const DEV_CHECKS_DELAY: Duration = Duration::from_millis(800);
 }

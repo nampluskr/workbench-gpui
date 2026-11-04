@@ -359,13 +359,13 @@ impl Workbench {
             if dev {
                 let list = dirs.iter().map(|d| d.display().to_string()).collect::<Vec<_>>().join(";");
                 if let Some(e) = &failed {
-                    println!("[dev] watch-extra-failed dirs={list} error={e} retry_ms={} t_ms={}", EXTRA_RETRY.as_millis(), epoch_ms());
+                    println!("[dev] watch-extra-failed dirs={list} error={e} retry_ms={} t_ms={}", super::metrics::timing::EXTRA_RETRY.as_millis(), epoch_ms());
                 }
                 println!("[dev] watch-extra folder={fid} dirs={list} active={} t_ms={}", w.extra.is_some(), epoch_ms());
             }
             if failed.is_some() {
                 // 성공 서명을 저장하지 않는다. 잠시 뒤 다시 시도한다(D-047 ⓒ).
-                self.watch.real_retry_at = Some(Instant::now() + EXTRA_RETRY);
+                self.watch.real_retry_at = Some(Instant::now() + super::metrics::timing::EXTRA_RETRY);
                 return;
             }
         }
@@ -377,9 +377,6 @@ impl Workbench {
         }
     }
 }
-
-/// 부모 감시 등록에 실패하면 이만큼 뒤에 다시 시도한다(판단).
-const EXTRA_RETRY: std::time::Duration = std::time::Duration::from_millis(1000);
 
 fn tab_sig(fid: &str, root: &std::path::Path, tabs: &[PathBuf]) -> String {
     let mut s = format!("{fid}|{}", root.display());
