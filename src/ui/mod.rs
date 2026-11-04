@@ -21,6 +21,7 @@ mod panel_view;
 mod project_panel;
 mod rem;
 mod shell;
+mod tab_close;
 mod task_dialog;
 mod theme;
 mod title_bar;
@@ -28,6 +29,7 @@ mod tooltip;
 mod watch;
 mod watch_io;
 
+use std::rc::Rc;
 use std::time::Duration;
 
 use gpui_kit::component::{
@@ -85,6 +87,8 @@ struct Workbench {
     pending_press: Option<std::path::PathBuf>,
     /// 휴지통·삭제 확인창이 떠 있다(겹쳐 띄우지 않는다).
     deleting: bool,
+    /// 저장 질문(탭 닫기·창 닫기·종료)이 떠 있나 (P3-3, `tab_close`).
+    prompt: tab_close::Prompt,
     /// 활성 폴더 디스크 감시(Phase 5, R-24).
     watch: watch::WatchState,
 }
@@ -176,8 +180,10 @@ impl Workbench {
     /// Quit workbench-gpui (I-341).
     fn on_quit(&mut self, action: &keymap::zed::Quit, window: &mut Window, cx: &mut Context<Self>) {
         keymap::log_handled(action, self.focus_name(window, cx), cx);
-        self.flush_save(Some(window), "quit", cx);
-        cx.quit();
+        // Dirty tabs are asked about first (P3-3, E-081/E-082); the exit finishes there when the answer allows it.
+        if self.request_exit(tab_close::Exit::Quit, window, cx) {
+            self.finish_exit(tab_close::Exit::Quit, window, cx);
+        }
     }
 
     /// Close Window (I-358). 창이 하나라 창을 닫으면 앱도 끝난다.
@@ -188,9 +194,9 @@ impl Workbench {
         cx: &mut Context<Self>,
     ) {
         keymap::log_handled(action, self.focus_name(window, cx), cx);
-        // 창이 사라지기 전에 쓰지 않은 변경을 쓴다(A-24.3, 리뷰 1회차 ①).
-        self.flush_save(Some(window), "close-window", cx);
-        window.remove_window();
+        if self.request_exit(tab_close::Exit::CloseWindow, window, cx) {
+            self.finish_exit(tab_close::Exit::CloseWindow, window, cx);
+        }
     }
 
     /// Window > Minimize (I-445).
@@ -238,7 +244,12 @@ impl Workbench {
                     .tabs
                     .iter()
                     .enumerate()
-                    .map(|(i, t)| layout::TabView { title: t.title().into(), preview: t.preview, active: pane.active == Some(i) })
+                    .map(|(i, t)| layout::TabView {
+                        title: t.title().into(),
+                        preview: t.preview,
+                        active: pane.active == Some(i),
+                        close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(i, window, cx))),
+                    })
                     .collect();
                 (tabs, pane.active_tab().map(|t| (t.editor.clone(), !t.loaded)))
             }
@@ -579,6 +590,7 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_quit))
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_save))
+            .on_action(cx.listener(Self::on_close_active_item))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()
@@ -680,6 +692,7 @@ pub fn run(dev: DevOptions) {
                         panel_menu: None,
                         pending_press: None,
                         deleting: false,
+                        prompt: tab_close::Prompt::default(),
                         watch: watch::WatchState::default(),
                     };
                     // 알림은 gpui-kit Root 가 생긴 뒤에 띄운다(창을 연 다음 차례).
@@ -707,8 +720,16 @@ pub fn run(dev: DevOptions) {
                     .detach();
                     let weak_close = cx.entity().downgrade();
                     window.on_window_should_close(cx, move |window, cx| {
-                        let _ = weak_close.update(cx, |this, cx| this.flush_save(Some(window), "window-close", cx));
-                        true
+                        // Dirty tabs keep the window open until the question is answered (P3-3); finish_exit closes it.
+                        weak_close
+                            .update(cx, |this, cx| {
+                                let go = this.request_exit(tab_close::Exit::CloseWindow, window, cx);
+                                if go {
+                                    this.flush_save(Some(window), "window-close", cx);
+                                }
+                                go
+                            })
+                            .unwrap_or(true)
                     });
                     this.center_focus.focus(window, cx);
                     keymap::register_place("center", this.center_focus.clone(), cx);

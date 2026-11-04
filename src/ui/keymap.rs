@@ -38,6 +38,10 @@ pub mod workspace {
     );
 }
 
+pub mod pane {
+    gpui_kit::actions!(pane, [CloseActiveItem]);
+}
+
 pub mod zed {
     gpui_kit::actions!(zed, [Quit, Minimize, Zoom]);
 }

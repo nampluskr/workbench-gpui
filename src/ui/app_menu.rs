@@ -40,6 +40,7 @@ pub const APP_NAME: &str = "workbench-gpui";
 /// `multi_workspace::ToggleWorkspaceSidebar`, `multi_workspace::FocusWorkspaceSidebar` 를 더했다.
 const AVAILABLE: &[&str] = &[
     "zed::Quit",
+    "pane::CloseActiveItem",
     "workspace::CloseWindow",
     "workspace::ToggleLeftDock",
     "project_panel::ToggleFocus",
@@ -800,7 +801,7 @@ mod tests {
         let names: Vec<_> = menus.iter().map(|(n, _)| n.as_str()).collect();
         assert_eq!(names, ["workbench-gpui", "File", "View", "Window"]);
         assert_eq!(labels(&menus[0].1), ["Quit workbench-gpui"]);
-        assert_eq!(labels(&menus[1].1), ["Open Folder...", "---", "Close Window"]);
+        assert_eq!(labels(&menus[1].1), ["Open Folder...", "---", "Close Editor", "Close Window"]);
         assert_eq!(
             labels(&menus[2].1),
             ["Toggle Left Dock", "Toggle Folder Sidebar", "Focus Folder Sidebar", "---", "Project Panel"]

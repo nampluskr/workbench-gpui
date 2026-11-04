@@ -97,6 +97,8 @@ pub const EDITOR_SCROLLBAR_WIDTH: Pixels = px(15.);
 pub const BUFFER_FONT_SIZE: Pixels = px(15.);
 /// editor["line_height.comfortable_multiplier"] (E-010) 1.618 × font size = editor["line_height.comfortable"] 24.27.
 pub const BUFFER_LINE_HEIGHT_MULTIPLIER: f32 = 1.618;
+/// editor["confirm_close.path_max_chars"] (E-081) the unsaved-edits question shows at most 80 characters of the path.
+pub const CONFIRM_CLOSE_PATH_MAX_CHARS: usize = 80;
 // spec: none (app value) — 타이틀 바 폴더 이름 버튼 좌우 padding 6.
 pub const TITLE_FOLDER_NAME_PAD_X: Rems = rems_from_px(6.);
 // spec: none (app value) — A-24.2 폴더 목록 저장 디바운스(toml 에 없음).
