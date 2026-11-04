@@ -28,7 +28,7 @@ use gpui_kit::*;
 use super::keymap::{self, menu as menu_actions};
 use super::layout_probe::{self, probe};
 use super::metrics::menu::*;
-use super::menu_common;
+use super::menu_common::{self, Chord, Feed};
 use super::metrics::{BUTTON_DEFAULT, ICON_SMALL};
 use super::tooltip::{self, Line, Spec};
 
@@ -253,10 +253,8 @@ pub struct AppMenu {
     pending: Option<(Box<dyn Action>, u64)>,
     /// 예약 세대. 메뉴를 열거나 바꾸거나 닫을 때마다 올린다.
     generation: u64,
-    /// 메뉴가 열린 채 받은 chord 의 앞 키들(항목 단축키 해석용, 리뷰 1회차 ③).
-    pending_input: Vec<Keystroke>,
-    /// chord 대기 시간 초과 표지. 새 접두를 기다릴 때마다 올린다.
-    chord_token: u64,
+    /// 메뉴가 열린 채 받은 chord 의 앞 키들과 대기 시간 초과 표지(항목 단축키 해석용, 리뷰 1회차 ③).
+    chord: Chord,
     /// 메뉴를 열기 직전 포커스의 컨텍스트 스택(항목 단축키 해석용, 리뷰 2회차 ⓑ).
     prev_stack: Vec<KeyContext>,
     _intercept: Option<Subscription>,
@@ -292,8 +290,7 @@ impl AppMenu {
             bar_bounds: None,
             pending: None,
             generation: 0,
-            pending_input: Vec::new(),
-            chord_token: 0,
+            chord: Chord::default(),
             prev_stack: Vec::new(),
             last_logged: String::new(),
             _blur: Some(blur),
@@ -478,7 +475,7 @@ impl AppMenu {
     /// 단축키 실행 예약을 지우고 세대를 올린다(이미 걸린 50ms 타이머는 세대가 달라 아무것도 하지 않는다).
     fn cancel_pending(&mut self) {
         self.pending = None;
-        self.pending_input.clear();
+        self.chord.clear();
         self.generation += 1;
     }
 
@@ -531,39 +528,26 @@ impl AppMenu {
             .position(|e| matches!(e, Entry::Item { action, .. } if *action == name))
     }
 
-    /// 입력을 메뉴를 열기 직전 포커스의 컨텍스트 스택으로 푼다(gpui `Keymap::bindings_for_input`: 깊이·순서·해제·가려짐,
-    /// I-702~I-704). (이기는 바인딩의 액션 이름, 더 긴 바인딩이 이어질 수 있는가).
-    fn resolve(&self, input: &[Keystroke], cx: &App) -> (Option<&'static str>, bool) {
-        let keymap = cx.key_bindings();
-        let keymap = keymap.borrow();
-        let (bindings, pending) = keymap.bindings_for_input(input, &self.prev_stack);
-        (bindings.first().map(|b| b.action().name()), pending)
-    }
-
-    /// gpui 의 접두 확정과 같다: 기다리던 키들 가운데 가장 긴 앞부분이 바인딩으로 풀리면 그것을 실행 대상으로 본다.
-    /// 그 액션이 열린 메뉴의 항목이면 예약한다.
+    /// gpui 의 접두 확정과 같다: 기다리던 키들 가운데 가장 긴 앞부분이 바인딩으로 풀리면 그것을 실행 대상으로 본다
+    /// (메뉴를 열기 직전 포커스의 컨텍스트 스택, I-702~I-704). 그 액션이 열린 메뉴의 항목이면 예약한다.
     fn replay_prefix(&mut self, prefix: &[Keystroke], window: &mut Window, cx: &mut Context<Self>) {
-        for len in (1..=prefix.len()).rev() {
-            let (first, _) = self.resolve(&prefix[..len], cx);
-            if let Some(name) = first {
-                if let Some(index) = self.item_index(name) {
-                    self.schedule_item(index, window, cx);
-                }
-                return;
-            }
+        if let Some(name) = menu_common::prefix_action(&self.prev_stack, prefix, cx)
+            && let Some(index) = self.item_index(name)
+        {
+            self.schedule_item(index, window, cx);
         }
     }
 
     /// chord 앞부분을 기다리기 시작한다. gpui 와 같은 시간(1초, gpui-pre `window.rs` `PENDING_INPUT_TIMEOUT`)이
     /// 지나도록 다음 키가 없으면 기다리던 키들로 확정한다.
     fn start_chord_timeout(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        self.chord_token += 1;
-        let token = self.chord_token;
+        let token = self.chord.wait();
         cx.spawn_in(window, async move |this, cx| {
             cx.background_executor().timer(CHORD_TIMEOUT).await;
             let _ = this.update_in(cx, |this, window, cx| {
-                if this.chord_token == token && this.open.is_some() && !this.pending_input.is_empty() {
-                    let prefix = std::mem::take(&mut this.pending_input);
+                if this.open.is_some()
+                    && let Some(prefix) = this.chord.take_expired(token)
+                {
                     if this.dev(cx) {
                         println!("[dev] menu-chord-timeout keys={} t_ms={}", prefix.len(), now_ms());
                     }
@@ -587,42 +571,31 @@ impl AppMenu {
         if self.open.is_none() {
             return false;
         }
-        if self.pending_input.is_empty() {
-            let keymap = cx.key_bindings();
-            let keymap = keymap.borrow();
-            let (bindings, _) =
-                keymap.bindings_for_input(std::slice::from_ref(&event.keystroke), &event.context_stack);
-            if let Some(first) = bindings.first() {
-                let name = first.action().name();
-                if name.starts_with("menu::") || name == "app_menu::Toggle" {
-                    return false;
+        if self
+            .chord
+            .is_list_key(event, cx, |name| name.starts_with("menu::") || name == "app_menu::Toggle")
+        {
+            return false;
+        }
+        match self.chord.feed(&event.keystroke, &self.prev_stack, cx) {
+            Feed::Wait => {
+                self.start_chord_timeout(window, cx);
+                true
+            }
+            Feed::Action { name, chord } => {
+                if let Some(index) = self.item_index(name) {
+                    self.schedule_item(index, window, cx);
+                    return true;
                 }
+                // 메뉴 항목이 아닌 동작. chord 였으면 앞 키를 이미 소비했으니 이번 키도 소비해 반쪽 입력을 남기지 않는다.
+                chord
             }
-        }
-        let mut input = self.pending_input.clone();
-        input.push(event.keystroke.clone());
-        let (first, pending) = self.resolve(&input, cx);
-        if pending {
-            self.pending_input = input;
-            self.start_chord_timeout(window, cx);
-            return true;
-        }
-        if let Some(name) = first {
-            let chord = input.len() > 1;
-            self.pending_input.clear();
-            if let Some(index) = self.item_index(name) {
-                self.schedule_item(index, window, cx);
-                return true;
+            Feed::Replay(prefix) => {
+                self.replay_prefix(&prefix, window, cx);
+                self.intercept(event, window, cx)
             }
-            // 메뉴 항목이 아닌 동작. chord 였으면 앞 키를 이미 소비했으니 이번 키도 소비해 반쪽 입력을 남기지 않는다.
-            return chord;
+            Feed::Pass => false,
         }
-        if !self.pending_input.is_empty() {
-            let prefix = std::mem::take(&mut self.pending_input);
-            self.replay_prefix(&prefix, window, cx);
-            return self.intercept(event, window, cx);
-        }
-        false
     }
 
     fn on_mouse_down_out(&mut self, event: &MouseDownEvent, window: &mut Window, cx: &mut Context<Self>) {
