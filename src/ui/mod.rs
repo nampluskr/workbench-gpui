@@ -10,7 +10,7 @@ mod keymap;
 mod layout;
 mod layout_probe;
 mod menu_common;
-mod metrics;
+pub(crate) mod metrics;
 mod pane;
 mod panel_delete;
 mod panel_edit;
@@ -77,6 +77,8 @@ struct Workbench {
     split: Entity<gpui_kit::component::ResizableState>,
     /// 프로젝트 패널 파일 클립보드(I-037, Phase 4).
     file_clipboard: Option<panel_ops::FileClipboard>,
+    /// Bumped on every copy/cut and every cut-paste start; a finished cut paste restores failed entries only if it is still the latest.
+    clip_gen: u64,
     /// 열린 프로젝트 패널 우클릭 메뉴(R-22).
     panel_menu: Option<panel_menu::OpenPanelMenu>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
@@ -370,7 +372,7 @@ impl Workbench {
             let mut seq = 0u32;
             loop {
                 cx.background_executor()
-                    .timer(Duration::from_millis(300))
+                    .timer(metrics::timing::LAYOUT_DUMP_POLL)
                     .await;
                 let mut doc = None;
                 let Ok(text) = this.update_in(cx, |this, window, cx| {
@@ -669,6 +671,7 @@ pub fn run(dev: DevOptions) {
                         sidebar_prev_focus: None,
                         split: cx.new(|_| gpui_kit::component::ResizableState::default()),
                         file_clipboard: None,
+                        clip_gen: 0,
                         panel_menu: None,
                         pending_press: None,
                         deleting: false,
@@ -736,7 +739,7 @@ pub fn run(dev: DevOptions) {
                 // App 을 빌린 상태(cx.update 안)에서 부르지 않는다 (G-125 이벤트 루프 충돌 확인).
                 cx.spawn(async move |cx| {
                     cx.background_executor()
-                        .timer(Duration::from_millis(800))
+                        .timer(metrics::timing::DEV_CHECKS_DELAY)
                         .await;
                     crate::dev::run_checks(&dev);
                 })

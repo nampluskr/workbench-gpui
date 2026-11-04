@@ -18,7 +18,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc;
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use gpui_kit::*;
 use notify::Watcher as _;
@@ -29,12 +29,9 @@ use crate::fsops::ident::{self, DirId};
 use crate::fsops::watch::{self as fw, Batch, Change, Kind, Pending, SelfOps};
 use crate::state::path;
 
-/// 감시 확인 주기(판단).
-const TICK: Duration = Duration::from_millis(100);
+use crate::ui::metrics::timing::{WATCH_TICK as TICK, WATCH_TICK_LATE as TICK_LATE};
 /// 등록 폴더 존재 확인은 이 틱마다(1초, 판단).
 const EXIST_EVERY: u32 = 10;
-/// 틱 간격이 이보다 길면 dev 출력에 남긴다.
-const TICK_LATE: Duration = Duration::from_millis(250);
 
 /// 감시 스레드가 받은 시각(Instant, Unix ms)을 함께 보낸다. 묶기는 받은 시각으로 잰다.
 pub(super) enum Msg {
@@ -271,7 +268,7 @@ impl Workbench {
             self.watch_refresh_all("settle", window, cx);
         }
         self.watch.ticks = self.watch.ticks.wrapping_add(1);
-        if self.watch.ticks % EXIST_EVERY == 0 {
+        if self.watch.ticks.is_multiple_of(EXIST_EVERY) {
             self.request_exist("poll", window, cx);
         }
         // 활성 폴더가 바뀐 모든 경로를 한곳에서 맞춘다(폴더 전환·해제·사라짐·다시 생김).

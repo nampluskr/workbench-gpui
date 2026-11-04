@@ -50,7 +50,7 @@ pub fn dir_id(path: &Path) -> Option<DirId> {
     let mut info = ByHandleFileInformation::default();
     // SAFETY: 핸들은 `file` 이 살아 있는 동안 유효하고, info 는 Win32 BY_HANDLE_FILE_INFORMATION 과 같은 배치다.
     let ok = unsafe { GetFileInformationByHandle(file.as_raw_handle(), &mut info) };
-    (ok != 0).then(|| (info.volume_serial, ((info.index_high as u64) << 32) | info.index_low as u64))
+    (ok != 0).then_some((info.volume_serial, ((info.index_high as u64) << 32) | info.index_low as u64))
 }
 
 /// `\\?\C:\a` → `C:\a`, `\\?\UNC\srv\s` → `\\srv\s`. 그 밖은 그대로.

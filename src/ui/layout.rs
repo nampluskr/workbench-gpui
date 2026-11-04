@@ -140,6 +140,7 @@ fn icon_with_probe(
 /// - L-27 양 끝 영역: gap 4, 좌우 padding 6, 아래 테두리, 시작 영역 오른쪽·끝 영역 왼쪽 테두리.
 /// - L-62 시작 영역 ← →, L-71~L-73 끝 영역 + · 분할 · 최대화 (Small 14).
 /// - L-63 활성 탭은 아래 테두리가 없어 내용과 이어진다. 탭은 자리 표시 하나(활성)다.
+///
 /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
 pub struct TabView {
     pub title: SharedString,
@@ -392,7 +393,7 @@ fn measure_placeholder() -> Div {
 
 /// 상태 표시줄 프로젝트 패널 토글의 툴팁(L-253, L-254, L-266). 패널이 열려 있고 활성이면 `Close Left Dock`
 /// + Dock 토글 키, 닫혀 있으면 `Project Panel` + 패널 포커스 토글 키. 왼쪽 Dock 의 패널은 프로젝트 패널 하나라
-/// Dock 이 열려 있으면 활성이다.
+///   Dock 이 열려 있으면 활성이다.
 fn project_panel_toggle_tooltip(dock_open: bool) -> Spec {
     if dock_open {
         Spec::one(
