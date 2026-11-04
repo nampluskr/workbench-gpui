@@ -215,12 +215,20 @@ impl Workbench {
         let all: Vec<_> = self.folders.workspaces.values().cloned().collect();
         for ws in all {
             let is_active = Some(ws.entity_id()) == active;
-            ws.update(cx, |ws, cx| {
-                ws.pane.rename_path(from, to);
+            let reread = ws.update(cx, |ws, cx| {
+                let reread = ws.group.rename_path(from, to);
                 if !is_active && (from.starts_with(&ws.tree.root) || to.starts_with(&ws.tree.root)) {
                     ws.tree.refresh(cx);
                 }
+                reread
             });
+            // A read dropped by the rename (P4-3-R1) is queued again; the next reload run (the watcher sees this rename)
+            // reads it at the new path.
+            for p in reread {
+                if !self.watch.reload_queue.iter().any(|(w, q)| w.entity_id() == ws.entity_id() && *q == p) {
+                    self.watch.reload_queue.push((ws.clone(), p));
+                }
+            }
         }
         if keymap::dev_enabled(cx) {
             println!("[dev] move-applied from={} to={}", from.display(), to.display());

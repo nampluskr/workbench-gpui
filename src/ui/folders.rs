@@ -31,7 +31,7 @@ const TITLE_MAX_CHARS: usize = 40;
 pub struct FolderWorkspace {
     pub folder_id: String,
     pub tree: super::project_panel::ProjectTree,
-    pub pane: super::pane::Pane,
+    pub group: super::pane_group::PaneGroup,
 }
 
 impl FolderWorkspace {
@@ -40,7 +40,7 @@ impl FolderWorkspace {
         Self {
             folder_id: folder.id.clone(),
             tree: super::project_panel::ProjectTree::new(PathBuf::from(&folder.path), root_name, cx),
-            pane: super::pane::Pane::default(),
+            group: super::pane_group::PaneGroup::default(),
         }
     }
 }
@@ -433,9 +433,9 @@ impl Workbench {
         // R-13: 엔티티째 버리므로 그 폴더의 탭도 닫힌다.
         if let Some(ws) = self.folders.workspaces.remove(&removed.id) {
             // Reload jobs may still hold the entity; drop their pending reads explicitly (P1-3-R1).
-            ws.update(cx, |ws, _| ws.pane.close());
+            ws.update(cx, |ws, _| ws.group.docs.close());
             if self.dev(cx) {
-                println!("[dev] folder-tabs-closed id={} count={}", removed.id, ws.read(cx).pane.tabs.len());
+                println!("[dev] folder-tabs-closed id={} count={}", removed.id, ws.read(cx).group.tab_count());
             }
         }
         self.folders.missing.remove(&removed.id);

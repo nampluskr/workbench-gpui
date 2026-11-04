@@ -179,7 +179,7 @@ impl Workbench {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) -> usize {
-        let paths: Vec<PathBuf> = ws.read(cx).pane.tabs.iter().filter(|t| pick(&t.path)).map(|t| t.path.clone()).collect();
+        let paths: Vec<PathBuf> = ws.read(cx).group.paths().into_iter().filter(|p| pick(p)).collect();
         let n = paths.len();
         for p in paths {
             if !self.watch.reload_queue.iter().any(|(w, q)| w.entity_id() == ws.entity_id() && *q == p) {
@@ -202,8 +202,8 @@ impl Workbench {
             .into_iter()
             .filter_map(|(ws, path)| {
                 let (token, old_hash) = ws.update(cx, |ws, _| {
-                    let ix = ws.pane.find(&path)?;
-                    Some((ws.pane.start_read(ix), ws.pane.tabs[ix].disk_hash))
+                    let ix = ws.group.docs.find(&path)?;
+                    Some((ws.group.docs.start_read(ix), ws.group.docs.docs[ix].disk_hash))
                 })?;
                 Some(ReloadItem { token, old_hash, path, ws })
             })
@@ -252,25 +252,27 @@ impl Workbench {
                 ReadResult::Missing => ReadOutcome::Missing,
                 ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
-            // None: dropped. Some(None): accepted, buffer already matches. Some(Some(editor)): fill it.
+            // None: dropped. Some(None): accepted, buffer already matches. Some(Some(path)): fill every view at the doc's
+            // path now (a rename may have changed it, P4-3-R1).
             let apply = item.ws.update(cx, |ws, cx| {
-                let ix = ws.pane.tabs.iter().position(|t| t.pending == Some(item.token));
-                let before = ix.map(|i| ws.pane.tabs[i].marks());
-                let apply = match ws.pane.finish_read(item.token, outcome) {
+                let docs = &mut ws.group.docs;
+                let ix = docs.docs.iter().position(|t| t.pending == Some(item.token));
+                let before = ix.map(|i| docs.docs[i].marks());
+                let apply = match docs.finish_read(item.token, outcome) {
                     ReadApply::Dropped => None,
                     ReadApply::Kept => Some(None),
-                    ReadApply::Fill(editor) => Some(Some(editor.clone())),
+                    ReadApply::Fill(now) => Some(Some(now)),
                 };
                 // Conflict / deleted / modified changed without a fill: the tab bar must redraw (P3-4a-R1).
-                if ix.map(|i| ws.pane.tabs[i].marks()) != before {
+                if ix.map(|i| docs.docs[i].marks()) != before {
                     cx.notify();
                 }
                 apply
             });
             let Some(fill) = apply else {
                 // A dirty tab is not filled; log the state the read left it in (P3-4a).
-                let pane = &item.ws.read(cx).pane;
-                if dev && let Some(t) = pane.find(&item.path).map(|i| &pane.tabs[i]).filter(|t| t.dirty) {
+                let docs = &item.ws.read(cx).group.docs;
+                if dev && let Some(t) = docs.get(&item.path).filter(|t| t.dirty) {
                     let state = if t.deleted { "deleted" } else if t.has_conflict() { "conflict" } else { "dirty" };
                     println!("[dev] tab-reload folder={folder_id} path={} result={state}", item.path.display());
                 }
@@ -285,8 +287,8 @@ impl Workbench {
                     }
                 }
                 ReadResult::Changed(h, text, _, _) => {
-                    let Some(editor) = fill else { continue };
-                    editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
+                    let Some(now) = fill else { continue };
+                    item.ws.update(cx, |ws, cx| ws.group.fill(&now, &text, window, cx));
                     if dev {
                         println!(
                             "[dev] tab-reload folder={folder_id} path={} result=reloaded len={} fnv={h:016x} t_ms={}",
@@ -310,7 +312,7 @@ impl Workbench {
     pub(super) fn sync_tab_real(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         let Some(w) = &self.watch.current else { return };
         let Some(ws) = self.active_ws() else { return };
-        let tabs: Vec<PathBuf> = ws.read(cx).pane.tabs.iter().map(|t| t.path.clone()).collect();
+        let tabs: Vec<PathBuf> = ws.read(cx).group.paths();
         let sig = tab_sig(&w.folder_id, &w.root, &tabs);
         if sig == self.watch.real_sig || self.watch.real_job.running {
             return;

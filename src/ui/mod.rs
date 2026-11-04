@@ -7,11 +7,16 @@ mod context_menu;
 mod editor_poc;
 mod folders;
 mod keymap;
+mod markdown_preview;
 mod layout;
 mod layout_probe;
 mod menu_common;
 pub(crate) mod metrics;
 mod pane;
+mod pane_group;
+mod pane_view;
+mod tab_drag;
+mod tab_input;
 mod panel_delete;
 mod panel_edit;
 mod panel_menu;
@@ -29,7 +34,6 @@ mod tooltip;
 mod watch;
 mod watch_io;
 
-use std::rc::Rc;
 use std::time::Duration;
 
 use gpui_kit::component::{
@@ -83,6 +87,12 @@ struct Workbench {
     clip_gen: u64,
     /// 열린 프로젝트 패널 우클릭 메뉴(R-22).
     panel_menu: Option<panel_menu::OpenPanelMenu>,
+    /// 열린 탭 바 분할 팝업(I-706, P4-3b).
+    split_menu: Option<pane_view::OpenMenu>,
+    /// 열린 탭 우클릭 메뉴(Pin / Unpin, P4-23b-R1).
+    tab_menu: Option<pane_view::OpenMenu>,
+    /// Where a tab being dragged would land over a pane body (I-714, P4-4).
+    drop_hint: Option<tab_drag::DropHint>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
     pending_press: Option<std::path::PathBuf>,
     /// 휴지통·삭제 확인창이 떠 있다(겹쳐 띄우지 않는다).
@@ -127,7 +137,7 @@ impl Workbench {
     fn active_editor_focused(&self, window: &Window, cx: &App) -> bool {
         self.active_ws().is_some_and(|ws| {
             ws.read(cx)
-                .pane
+                .group
                 .active_tab()
                 .is_some_and(|t| t.editor.focus_handle(cx).is_focused(window))
         })
@@ -236,42 +246,13 @@ impl Workbench {
     fn body(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement + use<> {
         let project_panel = self.render_project_panel(window, cx);
         let editing = self.panel_editing(cx);
-        // Phase 4 최소 탭(R-27): 활성 폴더의 탭 목록과 활성 탭 편집기(보기 전용, D-18).
-        let (tabs, active_editor) = match self.active_ws() {
-            Some(ws) => {
-                let pane = &ws.read(cx).pane;
-                let tabs: Vec<layout::TabView> = pane
-                    .tabs
-                    .iter()
-                    .enumerate()
-                    .map(|(i, t)| layout::TabView {
-                        title: t.title().into(),
-                        preview: t.preview,
-                        active: pane.active == Some(i),
-                        dirty: t.modified(),
-                        conflict: t.has_conflict(),
-                        deleted: t.deleted,
-                        close: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.close_tab_at(i, window, cx))),
-                    })
-                    .collect();
-                (tabs, pane.active_tab().map(|t| (t.editor.clone(), !t.loaded)))
-            }
-            None => (Vec::new(), None),
-        };
+        // P4-3b: every pane of the active folder (tab bar and body each), or the zoomed one alone.
+        let tree = self.pane_tree(window, cx);
         let theme = cx.theme();
         let handle = to_px(DOCK_HANDLE_WIDTH, window);
         // Dock 폭과 핸들 위치 모두 유효 폭 기준이다.
         let dock_width = self.effective_dock_width(window);
 
-        let item: AnyElement = match (&self.editor_poc, active_editor) {
-            (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
-            (None, Some((editor, readonly))) => div()
-                .size_full()
-                .bg(theme.background)
-                .child(pane::editor_view(&editor, readonly))
-                .into_any_element(),
-            (None, None) => div().size_full().bg(theme.background).into_any_element(),
-        };
 
         // 프로젝트 패널 자리의 키 컨텍스트: `ProjectPanel` 과 `menu` 를 함께 가진다(I-002, I-030 "ProjectPanel + menu").
         // 인라인 입력 중이면 `editing`, 아니면 `not_editing`(P-022, I-033).
@@ -350,13 +331,12 @@ impl Workbench {
             .children(dock)
             .child(
                 v_flex()
+                    .key_context(crate::keymap::builtin::PANE_CONTEXT)
                     .track_focus(&self.center_focus)
-                    .on_children_prepainted(probe(&["tab-bar", "active-item"]))
                     .flex_1()
                     .min_w_0()
                     .h_full()
-                    .child(layout::tab_bar(&tabs, cx))
-                    .child(div().flex_1().min_h_0().child(item)),
+                    .child(tree),
             )
             .when(self.dock_open, |body| {
                 body.child(
@@ -410,7 +390,7 @@ impl Workbench {
                         let y = ws.read(cx).tree.state.read(cx).scroll_handle().0.borrow().base_handle.offset().y;
                         out.push_str(&format!(" tree_scroll_y={:.1}", f32::from(y)));
                         // R-27·D-18: 활성 탭 편집기 내용(길이·FNV-1a). 보기 전용이면 글자를 쳐도 바뀌지 않는다.
-                        if let Some(tab) = ws.read(cx).pane.active_tab() {
+                        if let Some(tab) = ws.read(cx).group.active_tab() {
                             let text = tab.editor.read(cx).text().to_string();
                             let fnv = text.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3));
                             out.push_str(&format!(" active_text_len={} active_text_fnv={fnv:016x}", text.len()));
@@ -594,12 +574,26 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_close_active_item))
+            .on_action(cx.listener(Self::on_toggle_pin_tab))
+            .on_action(cx.listener(Self::on_open_preview))
+            .on_action(cx.listener(Self::on_open_preview_to_the_side))
+            .on_action(cx.listener(Self::on_split_right))
+            .on_action(cx.listener(Self::on_split_left))
+            .on_action(cx.listener(Self::on_split_up))
+            .on_action(cx.listener(Self::on_split_down))
+            .on_action(cx.listener(Self::on_toggle_zoom))
+            .on_action(cx.listener(Self::on_activate_pane_left))
+            .on_action(cx.listener(Self::on_activate_pane_right))
+            .on_action(cx.listener(Self::on_activate_pane_up))
+            .on_action(cx.listener(Self::on_activate_pane_down))
             .on_action(cx.listener(Self::on_minimize))
             .on_action(cx.listener(Self::on_zoom))
             .size_full()
             .child(content)
             .children(context_menu)
-            .children(self.panel_menu.as_ref().map(|m| m.menu.clone()));
+            .children(self.panel_menu.as_ref().map(|m| m.menu.clone()))
+            .children(self.split_menu.as_ref().map(|m| m.menu.clone()))
+            .children(self.tab_menu.as_ref().map(|m| m.menu.clone()));
 
         client_decorations(window, border, root)
     }
@@ -693,6 +687,9 @@ pub fn run(dev: DevOptions) {
                         file_clipboard: None,
                         clip_gen: 0,
                         panel_menu: None,
+                        split_menu: None,
+                        tab_menu: None,
+                        drop_hint: None,
                         pending_press: None,
                         deleting: false,
                         prompt: tab_close::Prompt::default(),

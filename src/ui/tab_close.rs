@@ -18,6 +18,7 @@ use super::folders::FolderWorkspace;
 use super::keymap;
 use super::metrics;
 use super::pane::{CloseState, SaveStart, buffer_hash, disk_differs, read_text, save_failed, text_hash};
+use super::pane_group::PaneId;
 use super::task_dialog::{self, Choice};
 use crate::text_io::{self, Format};
 
@@ -210,15 +211,19 @@ pub async fn save_tab(
         Go { token: u64, bytes: Vec<u8>, editor: Entity<gpui_kit::component::input::EditorState>, base: u64, saved_hash: u64 },
     }
     let start = cx.update(|window, cx| {
-        let Some(ix) = ws.read(cx).pane.find(path) else { return Start::Nothing };
-        let tab = &ws.read(cx).pane.tabs[ix];
+        // Every view of the file holds the same text (P4-3), so any one gives the buffer.
+        let group = &ws.read(cx).group;
+        let (Some(ix), Some(editor)) = (group.docs.find(path), group.views(path).next().cloned()) else {
+            return Start::Nothing;
+        };
+        let tab = &group.docs.docs[ix];
         if !tab.modified() {
             return Start::Nothing;
         }
-        let (editor, base) = (tab.editor.clone(), tab.disk_hash);
+        let base = tab.disk_hash;
         let text = editor.read(cx).value();
         let saved_hash = buffer_hash(&text);
-        match ws.update(cx, |ws, _| ws.pane.begin_save(ix, &text)) {
+        match ws.update(cx, |ws, _| ws.group.docs.begin_save(ix, &text)) {
             SaveStart::Write(token, bytes) => Start::Go { token, bytes, editor, base, saved_hash },
             // Dirty but not writable: a save is already running (the caller retries) or CP949 would lose text.
             SaveStart::Refused(e) => {
@@ -237,7 +242,7 @@ pub async fn save_tab(
     // Release the in-flight mark without writing (a read started before may be stale, so finish_save drops it).
     let release = |cx: &mut AsyncWindowContext| {
         let _ = cx.update(|_, cx| ws.update(cx, |ws, cx| {
-            ws.pane.finish_save(token, false, 0, 0);
+            ws.group.docs.finish_save(token, false, 0, 0);
             cx.notify();
         }));
     };
@@ -263,10 +268,10 @@ pub async fn save_tab(
             GuardAction::Discard => {
                 let _ = cx.update(|window, cx| {
                     ws.update(cx, |ws, cx| {
-                        ws.pane.finish_save(token, false, 0, 0);
-                        if let (Some(ix), Disk::Read { text, hash, format, raw }) = (ws.pane.find(path), &disk) {
-                            ws.pane.discard_edits(ix, *hash, *format, *raw);
-                            editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
+                        ws.group.docs.finish_save(token, false, 0, 0);
+                        if let (Some(ix), Disk::Read { text, hash, format, raw }) = (ws.group.docs.find(path), &disk) {
+                            ws.group.docs.discard_edits(ix, *hash, *format, *raw);
+                            ws.group.fill(path, text, window, cx);
                         }
                         cx.notify();
                     })
@@ -283,9 +288,11 @@ pub async fn save_tab(
         .spawn(async move { text_io::write_file(&target, &bytes).map_err(|e| e.to_string()) })
         .await;
     let _ = cx.update(|window, cx| {
-        let buffer_now = buffer_hash(&editor.read(cx).value());
+        // A view still open now (the one read at the start may have closed since, and then is no longer kept equal).
+        let now = ws.read(cx).group.views(path).next().cloned().unwrap_or(editor);
+        let buffer_now = buffer_hash(&now.read(cx).value());
         ws.update(cx, |ws, cx| {
-            ws.pane.finish_save(token, result.is_ok(), saved_hash, buffer_now);
+            ws.group.docs.finish_save(token, result.is_ok(), saved_hash, buffer_now);
             cx.notify();
         });
         if keymap::dev_enabled(cx) {
@@ -304,8 +311,9 @@ const SAVE_WAIT: std::time::Duration = std::time::Duration::from_millis(25);
 /// What a closing flow does once nothing is left to keep (or the user gave it up).
 #[derive(Clone)]
 pub enum Then {
-    /// Close this one tab.
-    Drop(Entity<FolderWorkspace>, PathBuf),
+    /// Close this one tab (the file's view in that pane).
+    /// The bool is a Markdown preview tab (L-69): the same path as the editor tab beside it.
+    Drop(Entity<FolderWorkspace>, PaneId, PathBuf, bool),
     /// Close the window / quit; covers every tab of every folder.
     Exit(Exit),
 }
@@ -313,11 +321,11 @@ pub enum Then {
 impl Then {
     fn run(&self, this: &mut super::Workbench, window: &mut Window, cx: &mut Context<super::Workbench>) {
         match self {
-            Then::Drop(ws, path) => {
+            Then::Drop(ws, pane, path, markdown) => {
                 if this.prompt == Prompt::Asking {
                     this.prompt = Prompt::Idle;
                 }
-                this.drop_tab(ws, path, window, cx);
+                this.drop_tab(ws, *pane, path, *markdown, window, cx);
             }
             Then::Exit(exit) => {
                 this.prompt = Prompt::Leaving;
@@ -367,9 +375,9 @@ async fn settle(
                                 batch.cancelled.set(true);
                                 break;
                             }
-                            // E-085 "Close": the user gave this tab up.
+                            // E-085 "Close": the user gave this file up.
                             End::Closed => {
-                                let _ = this.update_in(cx, |this, window, cx| this.drop_tab(ws, path, window, cx));
+                                let _ = this.update_in(cx, |this, window, cx| this.drop_file(ws, path, window, cx));
                             }
                             End::Saved | End::Discarded => {}
                         }
@@ -501,10 +509,10 @@ fn open_states(open: &[Open]) -> Vec<CloseState> {
     open.iter().map(|o| if o.waiting { CloseState::Wait } else { CloseState::Ask }).collect()
 }
 
-/// Removes the tab `path` (no question).
-pub fn remove_tab(ws: &mut FolderWorkspace, path: &Path, cx: &mut Context<FolderWorkspace>) {
-    if let Some(ix) = ws.pane.find(path) {
-        ws.pane.close_tab(ix);
+/// Removes the view of `path` in pane `pane` (no question); the file goes with its last view.
+pub fn remove_tab(ws: &mut FolderWorkspace, pane: PaneId, path: &Path, markdown: bool, cx: &mut Context<FolderWorkspace>) {
+    if let Some(ix) = ws.group.panes.get(&pane).and_then(|p| if markdown { p.find_preview(path) } else { p.find(path) }) {
+        ws.group.close_view(pane, ix);
         cx.notify();
     }
 }
@@ -518,23 +526,36 @@ impl super::Workbench {
         cx: &mut Context<Self>,
     ) {
         keymap::log_handled(action, self.focus_name(window, cx), cx);
-        let Some(ix) = self.active_ws().and_then(|ws| ws.read(cx).pane.active) else { return };
-        self.close_tab_at(ix, window, cx);
+        let Some((pane, ix)) = self.active_ws().and_then(|ws| {
+            let g = &ws.read(cx).group;
+            g.active_pane().active.map(|ix| (g.active, ix))
+        }) else {
+            return;
+        };
+        self.close_tab_at(pane, ix, window, cx);
     }
 
-    /// Closes tab `ix` of the active folder; a tab with a save running or unsaved state goes through `resolve`.
-    pub(super) fn close_tab_at(&mut self, ix: usize, window: &mut Window, cx: &mut Context<Self>) {
+    /// Closes tab `ix` of pane `pane` of the active folder; the last view of a file with a save running or unsaved
+    /// state goes through `resolve`. Another view keeps the file, so closing this one asks nothing (P4-3). A pinned
+    /// tab stays: Ctrl-W, Ctrl-F4, a middle click and the tab button all end here (I-066, I-735 `close_pinned = false`);
+    /// closing the folder or the window does not use this path.
+    pub(super) fn close_tab_at(&mut self, pane: PaneId, ix: usize, window: &mut Window, cx: &mut Context<Self>) {
         let Some(ws) = self.active_ws() else { return };
-        let Some(path) = ws.read(cx).pane.tabs.get(ix).map(|t| t.path.clone()) else { return };
-        match ws.read(cx).pane.close_state(&path) {
+        let group = &ws.read(cx).group;
+        let Some(p) = group.panes.get(&pane) else { return };
+        if p.close_protected(ix) {
+            return;
+        }
+        let Some((path, markdown)) = p.tabs.get(ix).map(|t| (t.path.clone(), t.markdown)) else { return };
+        match group.close_state(&path) {
             CloseState::Gone => {}
-            CloseState::Clean => self.drop_tab(&ws, &path, window, cx),
+            CloseState::Clean => self.drop_tab(&ws, pane, &path, markdown, window, cx),
             CloseState::Wait | CloseState::Ask => {
                 if self.prompt != Prompt::Idle {
                     return;
                 }
                 self.prompt = Prompt::Asking;
-                let then = Then::Drop(ws, path);
+                let then = Then::Drop(ws, pane, path, markdown);
                 cx.spawn_in(window, async move |this, cx| {
                     let go = resolve(then, &this, cx).await;
                     let _ = this.update(cx, |this, _| {
@@ -547,8 +568,18 @@ impl super::Workbench {
     }
 
     /// Removes the tab and gives the keyboard back to the pane (the closed editor may have had it).
-    pub(super) fn drop_tab(&mut self, ws: &Entity<FolderWorkspace>, path: &Path, window: &mut Window, cx: &mut Context<Self>) {
-        ws.update(cx, |ws, cx| remove_tab(ws, path, cx));
+    pub(super) fn drop_tab(&mut self, ws: &Entity<FolderWorkspace>, pane: PaneId, path: &Path, markdown: bool, window: &mut Window, cx: &mut Context<Self>) {
+        ws.update(cx, |ws, cx| remove_tab(ws, pane, path, markdown, cx));
+        self.center_focus.focus(window, cx);
+        cx.notify();
+    }
+
+    /// Removes every view of `path` (E-085 "Close": the file was given up).
+    pub(super) fn drop_file(&mut self, ws: &Entity<FolderWorkspace>, path: &Path, window: &mut Window, cx: &mut Context<Self>) {
+        ws.update(cx, |ws, cx| {
+            ws.group.close_path(path);
+            cx.notify();
+        });
         self.center_focus.focus(window, cx);
         cx.notify();
     }
@@ -560,7 +591,7 @@ impl super::Workbench {
         let mut out = Vec::new();
         let mut look = |ws: &Entity<FolderWorkspace>, path: &Path| {
             let w = ws.read(cx);
-            let waiting = match w.pane.close_state(path) {
+            let waiting = match w.group.docs.close_state(path) {
                 CloseState::Gone | CloseState::Clean => return,
                 CloseState::Wait => true,
                 CloseState::Ask => false,
@@ -570,11 +601,11 @@ impl super::Workbench {
             out.push(Open { item: Dirty { ws: ws.clone(), path: path.to_path_buf(), name }, waiting });
         };
         match then {
-            Then::Drop(ws, path) => look(ws, path),
+            Then::Drop(ws, _, path, _) => look(ws, path),
             Then::Exit(_) => {
                 for folder in &self.folders.state.folders {
                     let Some(ws) = self.folders.workspaces.get(&folder.id) else { continue };
-                    let paths: Vec<PathBuf> = ws.read(cx).pane.tabs.iter().map(|t| t.path.clone()).collect();
+                    let paths: Vec<PathBuf> = ws.read(cx).group.paths();
                     for path in paths {
                         look(ws, &path);
                     }

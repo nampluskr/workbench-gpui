@@ -21,6 +21,18 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("workspace::CloseWindow", false),
     ("workspace::Save", false),
     ("pane::CloseActiveItem", false),
+    ("pane::TogglePinTab", false),
+    ("markdown::OpenPreview", false),
+    ("markdown::OpenPreviewToTheSide", false),
+    ("pane::SplitRight", false),
+    ("pane::SplitLeft", false),
+    ("pane::SplitUp", false),
+    ("pane::SplitDown", false),
+    ("workspace::ToggleZoom", false),
+    ("workspace::ActivatePaneLeft", false),
+    ("workspace::ActivatePaneRight", false),
+    ("workspace::ActivatePaneUp", false),
+    ("workspace::ActivatePaneDown", false),
     ("zed::Quit", false),
     ("zed::Minimize", false),
     ("zed::Zoom", false),
@@ -71,6 +83,20 @@ mod tests {
         for b in builtin::BUILTIN {
             assert!(is_known_action(b.action), "{}", b.action);
         }
+    }
+
+    /// P4-23b-R1 (I-731, I-065): pin and split keys apply inside the Pane context only; the Workspace chords stay.
+    #[test]
+    fn pane_keys_are_pane_context_only() {
+        let context = |keys: &str| builtin::BUILTIN.iter().find(|b| b.keys == keys).map(|b| b.context);
+        for keys in ["ctrl-k shift-enter", "ctrl-\\", "ctrl-k up", "ctrl-k down", "ctrl-k left", "ctrl-k right"] {
+            assert_eq!(context(keys), Some(builtin::PANE_CONTEXT), "{keys}");
+        }
+        assert_eq!(context("ctrl-k ctrl-o"), Some(builtin::WORKSPACE_CONTEXT));
+        assert_eq!(context("shift-escape"), Some(builtin::WORKSPACE_CONTEXT));
+        assert_eq!(context("ctrl-k ctrl-left"), Some(builtin::WORKSPACE_CONTEXT));
+        let project_panel = builtin::BUILTIN.iter().find(|b| b.keys == "ctrl-k ctrl-shift-c").map(|b| b.context);
+        assert_eq!(project_panel, Some(builtin::PROJECT_PANEL_CONTEXT));
     }
 
     #[test]

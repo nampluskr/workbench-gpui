@@ -450,13 +450,17 @@ impl Workbench {
         let Some(ws) = self.active_ws() else { return ("none", 0, 0) };
         let batch = &ready.batch;
         let mut tree = "none";
+        // Paths whose read in flight the rename dropped (P4-3-R1): read again below.
+        let mut reread = Vec::new();
         if batch.touches_tree(root) || !ready.pairs.is_empty() {
-            ws.update(cx, |ws, cx| {
+            reread = ws.update(cx, |ws, cx| {
+                let mut reread = Vec::new();
                 for (from, to) in &ready.pairs {
                     ws.tree.follow_rename(from, to);
-                    ws.pane.rename_path(from, to);
+                    reread.extend(ws.group.rename_path(from, to));
                 }
                 ws.tree.refresh(cx);
+                reread
             });
             tree = "refreshed";
         }
@@ -464,7 +468,7 @@ impl Workbench {
         let real = self.watch.current.as_ref().map(|w| w.tab_real.clone()).unwrap_or_default();
         let queued = self.request_reload(
             &ws,
-            |p| batch.names(p) || real.get(p).is_some_and(|r| batch.names(r)),
+            |p| batch.names(p) || real.get(p).is_some_and(|r| batch.names(r)) || reread.iter().any(|r| r == p),
             window,
             cx,
         );

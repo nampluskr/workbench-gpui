@@ -72,9 +72,9 @@ impl Workbench {
         let line = format!(
             "folder={} active={} count={} list={}",
             ws.folder_id,
-            ws.pane.active.map(|a| a.to_string()).unwrap_or_else(|| "none".into()),
-            ws.pane.tabs.len(),
-            ws.pane.describe()
+            ws.group.active_pane().active.map(|a| a.to_string()).unwrap_or_else(|| "none".into()),
+            ws.group.active_pane().tabs.len(),
+            ws.group.active_pane().describe()
         );
         LAST_TABS.with(|last| {
             if *last.borrow() != line {
@@ -299,7 +299,7 @@ impl Workbench {
         // 지금 활성 탭 편집기에 포커스가 있으면(예: 입력칸 밖 편집기를 눌러 확정한 경우) 바뀐 활성 탭으로 포커스를 옮긴다.
         // 그러지 않으면 화면에서 사라진 편집기에 포커스가 남아 키가 아무 데도 가지 않는다.
         let focus_editor = focus_editor || self.active_editor_focused(window, cx);
-        let (ix, created) = ws.update(cx, |ws, cx| ws.pane.open(path, preview, window, cx));
+        let (ix, created) = ws.update(cx, |ws, cx| ws.group.open(path, preview, window, cx));
         if keymap::dev_enabled(cx) {
             println!(
                 "[dev] open-file path={} preview={preview} focus_editor={focus_editor} via={via} index={ix} created={created}",
@@ -308,7 +308,7 @@ impl Workbench {
         }
         self.reveal(path, cx);
         if focus_editor {
-            let handle = ws.read(cx).pane.tabs.get(ix).map(|t| t.editor.focus_handle(cx));
+            let handle = ws.read(cx).group.active_pane().tabs.get(ix).map(|t| t.editor.focus_handle(cx));
             if let Some(h) = handle {
                 h.focus(window, cx);
             }
