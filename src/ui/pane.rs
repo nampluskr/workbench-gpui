@@ -10,11 +10,15 @@
 //!   only the latest started read applies, and a closed pane (folder removed) applies nothing.
 
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 
+use gpui_kit::base::Scrollbar;
+use gpui_kit::base::input::EditorScrollbarContext;
 use gpui_kit::component::input::EditorState;
 use gpui_kit::*;
 
 use super::folders::FolderWorkspace;
+use super::metrics;
 
 /// `E` is the editor handle; generic only so tab bookkeeping is testable without a window.
 pub struct Tab<E = Entity<EditorState>> {
@@ -55,6 +59,15 @@ impl<E> Default for Pane<E> {
 /// 내용 해시: UTF-8 바이트의 FNV-1a 64(dev 출력 `fnv=` 와 같은 값).
 pub fn text_hash(text: &str) -> u64 {
     text.bytes().fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3))
+}
+
+/// Tab editor scrollbar: gpui-base's own scrollbar on the editor's scroll handle, track width from the spec
+/// (P2-5, D-10 item 6). Axis follows the editor (vertical with soft wrap, both without), like gpui-base's default.
+fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App) -> AnyElement {
+    Scrollbar::new(&context)
+        .axis(context.axis())
+        .styles(|s| s.track(|t| t.width(metrics::EDITOR_SCROLLBAR_WIDTH)))
+        .into_any_element()
 }
 
 /// 파일 내용(UTF-8 로 읽고, 깨진 바이트는 대체 문자로 둔다. 판단: 인코딩 감지는 PoC 6단계).
@@ -163,7 +176,11 @@ impl Pane {
             self.active = Some(i);
             return (i, false);
         }
-        let editor = cx.new(|cx| EditorState::new(window, cx));
+        let editor = cx.new(|cx| {
+            let mut state = EditorState::new(window, cx);
+            state.set_scrollbar_renderer(Some(Rc::new(editor_scrollbar)));
+            state
+        });
         let (tab, token) = self.pending_tab(path, preview, editor);
         let ix = self.place(tab);
         let path = path.to_path_buf();
@@ -183,7 +200,17 @@ impl Pane {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{Pane, Path, text_hash};
+    use super::{Pane, Path, metrics, text_hash};
+
+    /// V2: the tab editor scrollbar track width is the spec value (P2-5 item 6).
+    #[test]
+    fn editor_scrollbar_width_is_spec() {
+        let id = "scrollbar[\"width.editor\"]";
+        let width = f32::from(metrics::EDITOR_SCROLLBAR_WIDTH);
+        metrics::spec::assert_spec(id, "default", width);
+        // Exact too: the ±1 tolerance would also pass gpui-base's 16 (D-3 fixes in-tolerance gaps).
+        assert_eq!(metrics::spec::lookup(id).unwrap().value, f64::from(width));
+    }
 
     fn open(pane: &mut Pane<()>, path: &str, preview: bool) -> u64 {
         let (tab, token) = pane.pending_tab(Path::new(path), preview, ());
