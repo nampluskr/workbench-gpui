@@ -1,0 +1,7 @@
+cases: base, override, null, unknown, jsonc, broken, order, startup, reload
+failures: 2
+foreign key lines (warning): 0
+cleanup errors: 0
+user keymap: before=<absent> after=<absent> restored=True
+  - base: 키 ctrl-n: 기대 project_panel::NewFile in ProjectPanel, 실제 <no key line> (context=)
+  - broken: capture broken-notification 실패: 캡처 중 창 상태가 바뀌었다. before={"rect":{"x":1713,"y":23,"width":1538,"height":1081},"windowRect":{"x":1768,"y":23,"width":1552,"height":1088},"clientRect":{"x":1776,"y":23,"width":1536,"height":1080},"dpi":96,"scale":1.0,"maximized":false} after={"rect":{"x":2091,"y":25,"width":1538,"height":1081},"windowRect":{"x":2084,"y":25,"width":1552,"height":1088},"clientRect":{"x":2092,"y":25,"width":1536,"height":1080},"dpi":96,"scale":1.0,"maximized":false}

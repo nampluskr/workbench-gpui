@@ -1,0 +1,16 @@
+== S1 vs P0
+boxes A=57 B=57 common=57 diffs=0
+== S1 vs phase2
+boxes A=57 B=57 common=57 diffs=0
+== S5 vs P0
+boxes A=250 B=249 common=249 diffs=2
+only-A:tooltip-box
+tree-label-03.w 129->67
+== S5 vs phase2
+boxes A=249 B=249 common=249 diffs=0
+== S6 vs P0
+boxes A=262 B=262 common=262 diffs=1
+tree-label-03.w 129->67
+== S6 vs phase2
+boxes A=262 B=262 common=262 diffs=0
+boxes A=58 B=58 common=58 diffs=0

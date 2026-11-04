@@ -1,0 +1,29 @@
+S1 full vs P0:
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S1 full vs phase2:
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 titlebar 0,0,1920,32 vs P0:
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 menu 362,11,245,65 vs P0:
+[31;1mpng-diff.ps1: [31;1m'Rect' ¸Å°³ º¯¼ö¿¡¼­ ÀÎ¼ö º¯È¯À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù. °ª "362,11,245,65"À»(¸¦) Çü½Ä "System.Int32[]"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "°ª "362,11,245,65"À»(¸¦) Çü½Ä "System.Int32"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "The input string '362,11,245,65' was not in a correct format.""[0m
+S5 menu vs phase2:
+[31;1mpng-diff.ps1: [31;1m'Rect' ¸Å°³ º¯¼ö¿¡¼­ ÀÎ¼ö º¯È¯À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù. °ª "362,11,245,65"À»(¸¦) Çü½Ä "System.Int32[]"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "°ª "362,11,245,65"À»(¸¦) Çü½Ä "System.Int32"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "The input string '362,11,245,65' was not in a correct format.""[0m
+S6 menu 478,134,302,393 vs P0:
+[31;1mpng-diff.ps1: [31;1m'Rect' ¸Å°³ º¯¼ö¿¡¼­ ÀÎ¼ö º¯È¯À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù. °ª "478,134,302,393"À»(¸¦) Çü½Ä "System.Int32[]"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "°ª "478,134,302,393"À»(¸¦) Çü½Ä "System.Int32"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "The input string '478,134,302,393' was not in a correct format.""[0m
+S6 menu vs phase2:
+[31;1mpng-diff.ps1: [31;1m'Rect' ¸Å°³ º¯¼ö¿¡¼­ ÀÎ¼ö º¯È¯À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù. °ª "478,134,302,393"À»(¸¦) Çü½Ä "System.Int32[]"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "°ª "478,134,302,393"À»(¸¦) Çü½Ä "System.Int32"(À¸)·Î º¯È¯ÇÒ ¼ö ¾ø½À´Ï´Ù. ¿À·ù: "The input string '478,134,302,393' was not in a correct format.""[0m
+missing full vs phase2 (post-P2) and vs P2 pre-change:
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 menu popup 362,11,245,65 vs P0
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 menu popup vs phase2
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S6 ctx menu 478,134,302,393 vs P0
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S6 ctx menu vs phase2
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S5 whole except tree list (0,0,422,1032) vs P0
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0
+S6 left of tree (0,0,422,1032) vs P0
+diffpx=0 bbox=(99999,99999)-(-1,-1) maxchan=0

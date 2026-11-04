@@ -1,0 +1,656 @@
+{
+  "startedAt": "2026-11-04T09:15:25.2015789+09:00",
+  "keymapPath": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+  "cases": {
+    "tooltip": {
+      "pid": 15284,
+      "hwnd": "0x6F0CA0",
+      "tooltips": [
+        {
+          "id": "app-menu-button",
+          "delayMs": 511,
+          "mouseX": 400.0,
+          "mouseY": 8.0,
+          "rows": "Open Application Menu|<none>",
+          "line": "[dev] tooltip-shown id=app-menu-button t_ms=1793751330981 mouse=400.00,8.00 rows=Open Application Menu|<none>",
+          "box": null,
+          "screenshot": "r7-app-menu-button.png",
+          "flipX": false,
+          "flipY": false
+        }
+      ]
+    },
+    "menu": {
+      "pid": 27288,
+      "hwnd": "0x640AD2"
+    },
+    "reload": {
+      "pid": 16888,
+      "hwnd": "0x72095A"
+    },
+    "pending": {
+      "pid": 5568,
+      "hwnd": "0x3A0B3E",
+      "lines": []
+    },
+    "shadow": {
+      "pid": 29044,
+      "hwnd": "0x570748"
+    },
+    "prevctx": {
+      "pid": 38760,
+      "hwnd": "0x750CA0"
+    },
+    "shadowpp": {
+      "pid": 40076,
+      "hwnd": "0x14D0AFC"
+    },
+    "rapid": {
+      "pid": 18164,
+      "hwnd": "0x2F07B6",
+      "lines": [
+        "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793751424436",
+        "[dev] menu-shortcut action=project_panel::ToggleFocus t_ms=1793751424447",
+        "[dev] menu-exec action=project_panel::ToggleFocus via=shortcut t_ms=1793751424509"
+      ]
+    },
+    "chord": {
+      "pid": 33752,
+      "hwnd": "0x1F0802"
+    },
+    "quit": {
+      "pid": 31676,
+      "hwnd": "0xCF0AF6"
+    },
+    "closewin": {
+      "pid": 15488,
+      "hwnd": "0xD00AF6"
+    }
+  },
+  "failures": [
+    "tooltip: L-208 app-menu-button 툴팁 상자 경계: 기대 tooltip-box, 실제 <없음>",
+    "tooltip: L-226·L-227·D-16 title-folder-name 툴팁: 기대 뜬다, 실제 안 뜸",
+    "tooltip: L-230 sidebar-btn-folder-add 툴팁: 기대 뜬다, 실제 안 뜸",
+    "tooltip: L-232 sidebar-btn-toggle 툴팁: 기대 뜬다, 실제 안 뜸",
+    "tooltip: neutral: (1038,557) 아래 창이 대상 창이 아니다. 입력을 보내지 않고 중단한다",
+    "menu: capture r8-menu-3 실패: 캡처 중 창 상태가 바뀌었다. before={\"rect\":{\"x\":2159,\"y\":69,\"width\":1538,\"height\":1081},\"windowRect\":{\"x\":2152,\"y\":69,\"width\":1552,\"height\":1088},\"clientRect\":{\"x\":2160,\"y\":69,\"width\":1536,\"height\":1080},\"dpi\":96,\"scale\":1.0,\"maximized\":false} after={\"rect\":{\"x\":2578,\"y\":52,\"width\":1538,\"height\":1081},\"windowRect\":{\"x\":2571,\"y\":52,\"width\":1552,\"height\":1088},\"clientRect\":{\"x\":2579,\"y\":52,\"width\":1536,\"height\":1080},\"dpi\":96,\"scale\":1.0,\"maximized\":false}",
+    "reload: R-4 바꾸기 전 툴팁: 기대 Close Left Dock|Ctrl-B, 실제 ",
+    "reload: R-4 바꾼 뒤 메뉴 View 단축키: 기대 Toggle Left Dock|Alt-B, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+    "reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Toggle Left Dock': 화면 Ctrl-B, 키맵 적용 결과 Alt-B",
+    "reload: 키 escape: 대상 창이 전면이 아니다. 입력을 보내지 않고 중단한다",
+    "pending: I-520 D-032 ① Ctrl-B 로 예약됨: 기대 menu-shortcut action=workspace::ToggleLeftDock, 실제 ",
+    "pending: I-520 D-032 ① 50ms 안에 Left → File 로 전환: 기대 menu-open index=1, 실제 ",
+    "shadow: I-704 L-223 D-032 ② Close Left Dock 툴팁 단축키: 기대 Close Left Dock|<none>, 실제 "
+  ],
+  "errors": [],
+  "checks": [
+    {
+      "case": "tooltip",
+      "id": "L-225",
+      "what": "app-menu-button 줄 수",
+      "expect": "1",
+      "got": "1",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793751330981 mouse=400.00,8.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-225",
+      "what": "app-menu-button 문구",
+      "expect": "Open Application Menu",
+      "got": "Open Application Menu",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793751330981 mouse=400.00,8.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-206",
+      "what": "app-menu-button 지연 ms",
+      "expect": "500~750",
+      "got": "511",
+      "ok": true,
+      "evidence": "[dev] tooltip-shown id=app-menu-button t_ms=1793751330981 mouse=400.00,8.00 rows=Open Application Menu|<none>"
+    },
+    {
+      "case": "tooltip",
+      "id": "L-208",
+      "what": "app-menu-button 툴팁 상자 경계",
+      "expect": "tooltip-box",
+      "got": "<없음>",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-226·L-227·D-16",
+      "what": "title-folder-name 툴팁",
+      "expect": "뜬다",
+      "got": "안 뜸",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-230",
+      "what": "sidebar-btn-folder-add 툴팁",
+      "expect": "뜬다",
+      "got": "안 뜸",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "tooltip",
+      "id": "L-232",
+      "what": "sidebar-btn-toggle 툴팁",
+      "expect": "뜬다",
+      "got": "안 뜸",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-302",
+      "what": "☰ 클릭 → 첫 메뉴",
+      "expect": "index=0",
+      "got": "index=0",
+      "ok": true,
+      "evidence": "[dev] menu-open index=0 name=workbench-gpui t_ms=1793751355708"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "workbench-gpui 항목·구분선",
+      "expect": "Quit workbench-gpui|Ctrl-Q",
+      "got": "Quit workbench-gpui|Ctrl-Q",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 1",
+      "expect": "index=1",
+      "got": "index=1",
+      "ok": true,
+      "evidence": "[dev] menu-open index=1 name=File t_ms=1793751357338"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "File 항목·구분선",
+      "expect": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+      "got": "Open Folder...|Ctrl-K Ctrl-O\t---\tClose Window|Ctrl-Shift-W",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 2",
+      "expect": "index=2",
+      "got": "index=2",
+      "ok": true,
+      "evidence": "[dev] menu-open index=2 name=View t_ms=1793751359002"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "View 항목·구분선",
+      "expect": "Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "got": "Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "menu",
+      "id": "I-303",
+      "what": "이름 hover → 메뉴 3",
+      "expect": "index=3",
+      "got": "index=3",
+      "ok": true,
+      "evidence": "[dev] menu-open index=3 name=Window t_ms=1793751360740"
+    },
+    {
+      "case": "menu",
+      "id": "R-8 D-13 I-306",
+      "what": "Window 항목·구분선",
+      "expect": "Minimize|<none>\tZoom|<none>",
+      "got": "Minimize|<none>\tZoom|<none>",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾸기 전 메뉴 View 단축키",
+      "expect": "Toggle Left Dock|Ctrl-B",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾸기 전 툴팁",
+      "expect": "Close Left Dock|Ctrl-B",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "저장 뒤 다시 읽기",
+      "expect": "display-end seq=2",
+      "got": "1",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "reload",
+      "id": "R-4",
+      "what": "바꾼 뒤 메뉴 View 단축키",
+      "expect": "Toggle Left Dock|Alt-B",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": false,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "Ctrl-B 로 예약됨",
+      "expect": "menu-shortcut action=workspace::ToggleLeftDock",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "50ms 안에 Left → File 로 전환",
+      "expect": "menu-open index=1",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "전환 뒤 예약 실행 없음",
+      "expect": "없음",
+      "got": "",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "pending",
+      "id": "I-520 D-032 ①",
+      "what": "앱이 살아 있음(Close Window 오실행 없음)",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "shadow",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "View 의 Toggle Left Dock 단축키",
+      "expect": "Toggle Left Dock|<none>",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "shadow",
+      "id": "I-704 L-223 D-032 ②",
+      "what": "Close Left Dock 툴팁 단축키",
+      "expect": "Close Left Dock|<none>",
+      "got": "",
+      "ok": false,
+      "evidence": ""
+    },
+    {
+      "case": "prevctx",
+      "id": "I-307 D-032 ③",
+      "what": "View 단축키(패널 컨텍스트 기준)",
+      "expect": "Toggle Left Dock|Ctrl-Y / Project Panel|Down",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Down",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-Y\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Down"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-517 D-032 ③",
+      "what": "Down 은 메뉴 목록 키 우선(선택 이동)",
+      "expect": "menu-selected index=0, 실행 없음",
+      "got": "[dev] menu-selected index=0 / exec=0",
+      "ok": true,
+      "evidence": "[dev] menu-selected index=0"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-520 D-032 ③",
+      "what": "Ctrl-Y → 항목 예약",
+      "expect": "menu-shortcut action=workspace::ToggleLeftDock",
+      "got": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793751409304",
+      "ok": true,
+      "evidence": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793751409304"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-520 D-032 ③",
+      "what": "Ctrl-Y → 50ms 뒤 실행",
+      "expect": "menu-exec action=workspace::ToggleLeftDock via=shortcut",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793751409365",
+      "ok": true,
+      "evidence": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793751409365"
+    },
+    {
+      "case": "prevctx",
+      "id": "I-309 D-032 ③",
+      "what": "실행 때 원래 포커스(project_panel)",
+      "expect": "focus=project_panel",
+      "got": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=project_panel",
+      "ok": true,
+      "evidence": "[dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=project_panel"
+    },
+    {
+      "case": "shadowpp",
+      "id": "I-704 L-223 D-033 ②",
+      "what": "View 의 Toggle Left Dock 단축키(패널에서 가려짐)",
+      "expect": "Toggle Left Dock|<none>",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|<none>\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-Shift-E"
+    },
+    {
+      "case": "rapid",
+      "id": "I-520 D-033 ⓐ",
+      "what": "두 번 예약됨",
+      "expect": "2",
+      "got": "2",
+      "ok": true,
+      "evidence": "[dev] menu-shortcut action=workspace::ToggleLeftDock t_ms=1793751424436 / [dev] menu-shortcut action=project_panel::ToggleFocus t_ms=1793751424447"
+    },
+    {
+      "case": "rapid",
+      "id": "I-520 D-033 ⓐ",
+      "what": "마지막 예약만 실행",
+      "expect": "menu-exec action=project_panel::ToggleFocus via=shortcut (1번)",
+      "got": "[dev] menu-exec action=project_panel::ToggleFocus via=shortcut t_ms=1793751424509",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "chord",
+      "id": "I-307 D-033 ⓑ",
+      "what": "View 단축키(패널 컨텍스트)",
+      "expect": "Toggle Left Dock|Ctrl-K / Project Panel|Ctrl-K Ctrl-Y",
+      "got": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-K Ctrl-Y",
+      "ok": true,
+      "evidence": "[dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-K\tToggle Folder Sidebar|Ctrl-Alt-J\tFocus Folder Sidebar|Ctrl-Alt-;\t---\tProject Panel|Ctrl-K Ctrl-Y"
+    },
+    {
+      "case": "chord",
+      "id": "I-520 D-033 ⓑ",
+      "what": "⑴ Ctrl-K Ctrl-Y → Project Panel 만 실행",
+      "expect": "menu-exec action=project_panel::ToggleFocus via=shortcut (1번)",
+      "got": "[dev] menu-exec action=project_panel::ToggleFocus via=shortcut t_ms=1793751434341",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "chord",
+      "id": "I-520 D-033 ⓑ",
+      "what": "⑵ Ctrl-K 직후(0.4초)에는 아직 실행 안 함(접두 대기)",
+      "expect": "0",
+      "got": "0",
+      "ok": true,
+      "evidence": ""
+    },
+    {
+      "case": "chord",
+      "id": "I-520 D-033 ⓑ",
+      "what": "⑵ Ctrl-K 만 → 시간 초과 뒤 Toggle Left Dock 실행",
+      "expect": "menu-exec action=workspace::ToggleLeftDock via=shortcut, 900ms 이상",
+      "got": "[dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793751439691 (dt=1106)",
+      "ok": true,
+      "evidence": "[dev] key keystroke=ctrl-shift-e action=project_panel::ToggleFocus context=Root > Workspace"
+    },
+    {
+      "case": "quit",
+      "id": "I-341",
+      "what": "Quit workbench-gpui 실행 → 앱 끝남",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": "[dev] menu-render index=0 name=workbench-gpui selected=0 rows=Quit workbench-gpui|Ctrl-Q"
+    },
+    {
+      "case": "closewin",
+      "id": "I-358",
+      "what": "Ctrl-Shift-W → 창 닫힘(앱 끝남)",
+      "expect": "True",
+      "got": "True",
+      "ok": true,
+      "evidence": ""
+    }
+  ],
+  "shortcutRows": [
+    {
+      "case": "tooltip",
+      "where": "툴팁 app-menu-button",
+      "label": "Open Application Menu",
+      "action": "",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음 (F10, 표시 안 함 L-225)",
+      "ok": true,
+      "evidence": "r7-app-menu-button.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 workbench-gpui",
+      "label": "Quit workbench-gpui",
+      "action": "zed::Quit",
+      "shown": "Ctrl-Q",
+      "computed": "Ctrl-Q",
+      "original": "Ctrl+Q",
+      "ok": true,
+      "evidence": "r8-menu-0.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 File",
+      "label": "Open Folder...",
+      "action": "workspace::Open",
+      "shown": "Ctrl-K Ctrl-O",
+      "computed": "Ctrl-K Ctrl-O",
+      "original": "Ctrl+K Ctrl+O",
+      "ok": true,
+      "evidence": "r8-menu-1.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 File",
+      "label": "Close Window",
+      "action": "workspace::CloseWindow",
+      "shown": "Ctrl-Shift-W",
+      "computed": "Ctrl-Shift-W",
+      "original": "Ctrl+Shift+W",
+      "ok": true,
+      "evidence": "r8-menu-1.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 View",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Ctrl-B",
+      "computed": "Ctrl-B",
+      "original": "Ctrl+B",
+      "ok": true,
+      "evidence": "r8-menu-2.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 View",
+      "label": "Toggle Folder Sidebar",
+      "action": "multi_workspace::ToggleWorkspaceSidebar",
+      "shown": "Ctrl-Alt-J",
+      "computed": "Ctrl-Alt-J",
+      "original": "Ctrl+Alt+J",
+      "ok": true,
+      "evidence": "r8-menu-2.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 View",
+      "label": "Focus Folder Sidebar",
+      "action": "multi_workspace::FocusWorkspaceSidebar",
+      "shown": "Ctrl-Alt-;",
+      "computed": "Ctrl-Alt-;",
+      "original": "Ctrl+Alt+;",
+      "ok": true,
+      "evidence": "r8-menu-2.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 View",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "Ctrl+Shift+E",
+      "ok": true,
+      "evidence": "r8-menu-2.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 Window",
+      "label": "Minimize",
+      "action": "zed::Minimize",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음",
+      "ok": true,
+      "evidence": "r8-menu-3.png"
+    },
+    {
+      "case": "menu",
+      "where": "메뉴 Window",
+      "label": "Zoom",
+      "action": "zed::Zoom",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "없음 (F11 은 다른 액션)",
+      "ok": true,
+      "evidence": "r8-menu-3.png"
+    },
+    {
+      "case": "reload",
+      "where": "메뉴 View (keymap.json 바꾼 뒤)",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "Ctrl-B",
+      "computed": "Alt-B",
+      "original": "사용자 keymap.json",
+      "ok": false,
+      "evidence": "r4-menu-after.png"
+    },
+    {
+      "case": "reload",
+      "where": "메뉴 View (keymap.json 바꾼 뒤)",
+      "label": "Toggle Folder Sidebar",
+      "action": "multi_workspace::ToggleWorkspaceSidebar",
+      "shown": "Ctrl-Alt-J",
+      "computed": "Ctrl-Alt-J",
+      "original": "사용자 keymap.json",
+      "ok": true,
+      "evidence": "r4-menu-after.png"
+    },
+    {
+      "case": "reload",
+      "where": "메뉴 View (keymap.json 바꾼 뒤)",
+      "label": "Focus Folder Sidebar",
+      "action": "multi_workspace::FocusWorkspaceSidebar",
+      "shown": "Ctrl-Alt-;",
+      "computed": "Ctrl-Alt-;",
+      "original": "사용자 keymap.json",
+      "ok": true,
+      "evidence": "r4-menu-after.png"
+    },
+    {
+      "case": "reload",
+      "where": "메뉴 View (keymap.json 바꾼 뒤)",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "사용자 keymap.json",
+      "ok": true,
+      "evidence": "r4-menu-after.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Toggle Left Dock",
+      "action": "workspace::ToggleLeftDock",
+      "shown": "<none>",
+      "computed": "<none>",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Toggle Folder Sidebar",
+      "action": "multi_workspace::ToggleWorkspaceSidebar",
+      "shown": "Ctrl-Alt-J",
+      "computed": "Ctrl-Alt-J",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Focus Folder Sidebar",
+      "action": "multi_workspace::FocusWorkspaceSidebar",
+      "shown": "Ctrl-Alt-;",
+      "computed": "Ctrl-Alt-;",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    },
+    {
+      "case": "shadow",
+      "where": "메뉴 View (ctrl-b 를 Minimize 로 덮음)",
+      "label": "Project Panel",
+      "action": "project_panel::ToggleFocus",
+      "shown": "Ctrl-Shift-E",
+      "computed": "Ctrl-Shift-E",
+      "original": "가려짐 → 없음",
+      "ok": true,
+      "evidence": "shadow-menu.png"
+    }
+  ],
+  "userKeymap": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\keymap.json",
+    "existedBefore": false,
+    "hashBefore": "<absent>",
+    "existsAfter": false,
+    "hashAfter": "<absent>",
+    "restored": true,
+    "backupPath": null
+  },
+  "userState": {
+    "path": "C:\\Users\\nampl\\AppData\\Roaming\\workbench-gpui\\state.json",
+    "hashBefore": "<absent>",
+    "hashAfter": "<absent>",
+    "unchanged": true
+  },
+  "finishedAt": "2026-11-04T09:17:31.4817465+09:00",
+  "passed": false
+}

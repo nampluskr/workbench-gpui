@@ -1,0 +1,1 @@
+[ { "context": "ProjectPanel", "bindings": { "ctrl-k": "workspace::ToggleLeftDock", "ctrl-k ctrl-y": "project_panel::ToggleFocus" } } ]

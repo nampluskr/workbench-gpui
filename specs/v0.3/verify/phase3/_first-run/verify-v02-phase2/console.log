@@ -1,0 +1,18 @@
+cases: tooltip, menu, reload, pending, shadow, prevctx, shadowpp, rapid, chord, quit, closewin
+checks: 39, failed: 9
+shortcut rows: 18, mismatched: 1
+failures: 13
+user keymap: before=<absent> after=<absent> restored=True
+  - tooltip: L-208 app-menu-button 툴팁 상자 경계: 기대 tooltip-box, 실제 <없음>
+  - tooltip: L-226·L-227·D-16 title-folder-name 툴팁: 기대 뜬다, 실제 안 뜸
+  - tooltip: L-230 sidebar-btn-folder-add 툴팁: 기대 뜬다, 실제 안 뜸
+  - tooltip: L-232 sidebar-btn-toggle 툴팁: 기대 뜬다, 실제 안 뜸
+  - tooltip: neutral: (1038,557) 아래 창이 대상 창이 아니다. 입력을 보내지 않고 중단한다
+  - menu: capture r8-menu-3 실패: 캡처 중 창 상태가 바뀌었다. before={"rect":{"x":2159,"y":69,"width":1538,"height":1081},"windowRect":{"x":2152,"y":69,"width":1552,"height":1088},"clientRect":{"x":2160,"y":69,"width":1536,"height":1080},"dpi":96,"scale":1.0,"maximized":false} after={"rect":{"x":2578,"y":52,"width":1538,"height":1081},"windowRect":{"x":2571,"y":52,"width":1552,"height":1088},"clientRect":{"x":2579,"y":52,"width":1536,"height":1080},"dpi":96,"scale":1.0,"maximized":false}
+  - reload: R-4 바꾸기 전 툴팁: 기대 Close Left Dock|Ctrl-B, 실제 
+  - reload: R-4 바꾼 뒤 메뉴 View 단축키: 기대 Toggle Left Dock|Alt-B, 실제 [dev] menu-render index=2 name=View selected=none rows=Toggle Left Dock|Ctrl-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E
+  - reload: R-5 메뉴 View (keymap.json 바꾼 뒤) 'Toggle Left Dock': 화면 Ctrl-B, 키맵 적용 결과 Alt-B
+  - reload: 키 escape: 대상 창이 전면이 아니다. 입력을 보내지 않고 중단한다
+  - pending: I-520 D-032 ① Ctrl-B 로 예약됨: 기대 menu-shortcut action=workspace::ToggleLeftDock, 실제 
+  - pending: I-520 D-032 ① 50ms 안에 Left → File 로 전환: 기대 menu-open index=1, 실제 
+  - shadow: I-704 L-223 D-032 ② Close Left Dock 툴팁 단축키: 기대 Close Left Dock|<none>, 실제 

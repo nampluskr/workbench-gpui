@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "windows": [
+    {
+      "folders": [
+        {
+          "id": "da7a5fa9-656e-477c-a9bb-375d976fa6d2",
+          "path": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-cc12086913134b9db2e7f40f9f54fd9e\\alpha",
+          "added_at": "2026-11-04T00:17:46Z"
+        },
+        {
+          "id": "0cdcbfdc-f410-4552-9281-21c6a075ecb7",
+          "path": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-cc12086913134b9db2e7f40f9f54fd9e\\beta",
+          "added_at": "2026-11-04T00:17:46Z"
+        },
+        {
+          "id": "e820ce7a-0cf0-46f8-9600-7e7a505fb724",
+          "path": "D:\\projects\\workbench-gpui\\target\\phase3-folders\\run-cc12086913134b9db2e7f40f9f54fd9e\\gamma",
+          "added_at": "2026-11-04T00:17:48Z"
+        }
+      ],
+      "active_folder_id": "da7a5fa9-656e-477c-a9bb-375d976fa6d2"
+    }
+  ]
+}

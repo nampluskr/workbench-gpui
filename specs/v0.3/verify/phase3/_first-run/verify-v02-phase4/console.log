@@ -1,0 +1,6 @@
+cases: layout, keys, inline, trash, clip, menu, reveal, readonly, tooltip, a332, a334, menukeys
+checks: 207, failed: 1
+failures: 2
+user files restored: True
+  - menukeys: I-520·I-556 루트 메뉴에서 Ctrl+Right → Expand All: 기대 exec item=Expand All, src\util 펼침, 실제  / .;deep;deep\l1;deep\l1\l2;docs;docs\guides;many;ops;ops\sub;src;src\util
+  - menukeys: row notes.txt: (435,202) 아래 창이 대상 창이 아니다. 입력을 보내지 않고 중단한다

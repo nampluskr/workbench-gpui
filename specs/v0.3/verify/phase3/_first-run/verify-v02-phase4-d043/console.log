@@ -1,0 +1,5 @@
+cases: d043-rename, d043-ctrlclick, d043-crossmove, d043-dialog, d043-junction, d043-loop
+checks: 11, failed: 0
+failures: 1
+user files restored: True
+  - d043-crossmove: 키 ctrl-v: 대상 창이 전면이 아니다. 입력을 보내지 않고 중단한다

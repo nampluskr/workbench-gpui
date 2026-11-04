@@ -1,0 +1,4 @@
+cases: layout, keys, inline, trash, clip, menu, reveal, readonly, tooltip, a332, a334, menukeys
+checks: 208, failed: 0
+failures: 0
+user files restored: True
