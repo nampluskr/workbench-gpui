@@ -25,6 +25,9 @@ const BODY_FONT_SIZE: Pixels = px(16.);
 const BODY_LINE_HEIGHT: f32 = 1.5;
 /// `paragraph_gap` (L-103).
 const PARAGRAPH_GAP: f32 = 16.;
+/// Not set, a component limit (P4-E-F1-R1, H-25): the h1/h2 bottom line and padding of L-105. gpui-component 0.8.1's
+/// `TextViewStyle` turns a heading style into a text size only (`compat.rs` `resolve_component_style`); the border and
+/// padding hook (`gpui_base::TextViewStyle::with_heading`) is not reachable through the component `TextView`.
 /// `h1.font_size` … `h6.font_size` (L-104).
 const HEADING_SIZES: [f32; 6] = [28., 22.4, 19.2, 16., 14., 13.6];
 /// `blockquote.padding_left` / `border_left` (L-106).
@@ -143,51 +146,6 @@ fn with_frontmatter(view: TextView) -> TextView {
     })
 }
 
-/// L-105 heading rule: `h1.padding_bottom` / `h2.padding_bottom` and the 1px `border_bottom` of both.
-const H1_PADDING_BOTTOM: Pixels = px(8.);
-const H2_PADDING_BOTTOM: Pixels = px(4.);
-const HEADING_RULE: Pixels = px(1.);
-
-/// The level (1 or 2) of a one-line ATX heading source (`# ` / `## `), the headings that get a bottom line (L-105).
-fn rule_level(source: &str) -> Option<u8> {
-    let source = source.trim_end();
-    if source.contains('\n') {
-        return None;
-    }
-    if source.starts_with("# ") {
-        Some(1)
-    } else if source.starts_with("## ") {
-        Some(2)
-    } else {
-        None
-    }
-}
-
-/// L-105: h1 and h2 get padding below and a 1px line (`border_variant`). The component has no heading hook, so each
-/// one-line `#` / `##` heading becomes a custom block that draws the heading with a nested `TextView` (same style) inside
-/// a box with the line.
-// shortcut: the line takes the theme `border` colour (no `border_variant` token in gpui-kit); setext headings
-// (`Title` over `===`) and the heading's own space above are the component's, not ruled.
-fn with_heading_rules(view: TextView, style: TextViewStyle) -> TextView {
-    view.markdown_block_parser(|node, cx| {
-        let source = cx.node_source(node)?;
-        let level = rule_level(source)?;
-        Some(MarkdownNode::new("heading-rule", level).text(source.trim_end().to_owned()).markdown(source.to_owned()))
-    })
-    .markdown_block_renderer("heading-rule", move |node, _window, cx| {
-        let Some(level) = node.data::<u8>().copied() else { return div().into_any_element() };
-        let border = cx.theme().border;
-        let source = node.as_text().to_owned();
-        let id = SharedString::from(format!("md-heading-{}", source.len() * 31 + source.bytes().map(usize::from).sum::<usize>()));
-        div()
-            .pb(if level == 1 { H1_PADDING_BOTTOM } else { H2_PADDING_BOTTOM })
-            .border_b(HEADING_RULE)
-            .border_color(border)
-            .child(TextView::markdown(id, source).style(style.clone()).selectable(true).scrollable(false))
-            .into_any_element()
-    })
-}
-
 /// The preview body (L-101~L-111): `text` rendered, a column of at most 800px centred in the pane with 16px around it,
 /// on the editor background.
 pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
@@ -216,14 +174,14 @@ pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
         .text_size(BODY_FONT_SIZE)
         .line_height(relative(BODY_LINE_HEIGHT))
         .child(
-            div().mx_auto().max_w(MAX_WIDTH).child(with_heading_rules(with_frontmatter(
+            div().mx_auto().max_w(MAX_WIDTH).child(with_frontmatter(
                 TextView::markdown(("markdown-text", pane as usize), text)
-                    .style(style.clone())
+                    .style(style)
                     .blockquote_style(quote)
                     .markdown_extensions(MarkdownExtensions::default().frontmatter())
                     .selectable(true)
                     .scrollable(false),
-            ), style)),
+            )),
         )
 }
 
@@ -289,7 +247,7 @@ pub fn file_name(path: &Path) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{Frontmatter, H1_PADDING_BOTTOM, H2_PADDING_BOTTOM, HEADING_RULE, classify, rule_level, BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
+    use super::{Frontmatter, classify, BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
     use crate::ui::metrics::spec::assert_spec;
     use std::path::Path;
 
@@ -306,10 +264,6 @@ mod tests {
         for (i, size) in HEADING_SIZES.iter().enumerate() {
             s(&format!("h{}.font_size", i + 1), *size);
         }
-        s("h1.padding_bottom", px(H1_PADDING_BOTTOM));
-        s("h1.border_bottom", px(HEADING_RULE));
-        s("h2.padding_bottom", px(H2_PADDING_BOTTOM));
-        s("h2.border_bottom", px(HEADING_RULE));
         s("blockquote.padding_left", px(QUOTE_PADDING_LEFT));
         s("blockquote.border_left", px(QUOTE_BORDER_LEFT));
         s("table.border_outer", px(TABLE_BORDER));
@@ -333,16 +287,6 @@ mod tests {
         assert_eq!(rows, [("title".into(), "Hello".into()), ("제목".into(), "값".into()), ("tags".into(), "a: b".into())]);
         for bad in ["title: hi\n# comment", "title: hi\n\nb: c", "title: hi\n  more", "title:", ": value", "just text", ""] {
             assert_eq!(frontmatter_rows(bad), None, "{bad:?}");
-        }
-    }
-
-    /// L-105: only one-line # and ## headings get the line (not ###, not text starting with #, not several lines).
-    #[test]
-    fn rule_level_is_h1_and_h2_atx_only() {
-        assert_eq!(rule_level("# One"), Some(1));
-        assert_eq!(rule_level("## Two  "), Some(2));
-        for no in ["### Three", "#NoSpace", "text # x", "# a\n# b", ""] {
-            assert_eq!(rule_level(no), None, "{no:?}");
         }
     }
 
