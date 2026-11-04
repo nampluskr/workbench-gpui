@@ -132,10 +132,21 @@ pub fn copy_entry(src: &Path, dst: &Path) -> io::Result<CopyReport> {
         let mut ancestors = Vec::new();
         copy_dir(src, dst, &mut ancestors, &mut report)?;
     } else {
-        report.bytes += fs::copy(src, dst)?;
+        report.bytes += copy_file(src, dst)?;
         report.files += 1;
     }
     Ok(report)
+}
+
+/// Single point for copying file contents: the destination is created exclusively (`create_new`),
+/// so an existing file is never overwritten (AlreadyExists). Unlike `fs::copy`, attributes and
+/// timestamps are not carried over. A half-written destination that we created is removed on failure.
+fn copy_file(src: &Path, dst: &Path) -> io::Result<u64> {
+    let mut from = fs::File::open(src)?;
+    let mut to = fs::OpenOptions::new().write(true).create_new(true).open(dst)?;
+    io::copy(&mut from, &mut to).inspect_err(|_| {
+        let _ = fs::remove_file(dst);
+    })
 }
 
 fn copy_dir(src: &Path, dst: &Path, ancestors: &mut Vec<PathBuf>, report: &mut CopyReport) -> io::Result<()> {
@@ -159,7 +170,7 @@ fn copy_dir(src: &Path, dst: &Path, ancestors: &mut Vec<PathBuf>, report: &mut C
         if fs::metadata(&path)?.is_dir() {
             copy_dir(&path, &to, ancestors, report)?;
         } else {
-            report.bytes += fs::copy(&path, &to)?;
+            report.bytes += copy_file(&path, &to)?;
             report.files += 1;
         }
     }
@@ -262,6 +273,19 @@ mod tests {
         assert!(create_file(&dir.join("n1").join("n2").join("z.rs")).is_err());
         delete(&dir.join("n1")).unwrap();
         assert!(!dir.join("n1").exists());
+        fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn copy_keeps_existing_destination() {
+        let dir = std::env::temp_dir().join(format!("wg-d1-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(dir.join("a.txt"), b"new").unwrap();
+        fs::write(dir.join("b.txt"), b"old").unwrap();
+        let e = copy_entry(&dir.join("a.txt"), &dir.join("b.txt")).unwrap_err();
+        assert_eq!(e.kind(), io::ErrorKind::AlreadyExists);
+        assert_eq!(fs::read(dir.join("b.txt")).unwrap(), b"old");
         fs::remove_dir_all(&dir).unwrap();
     }
 }
