@@ -1,0 +1,5 @@
+cases: empty, add, items, scroll, switch, title, remove, order, order-restart, keys, menus, state, state-restart, broken, tmp, dialog, quitsave, quitnochange, closesave, xclosesave, savefail, sigma, version
+checks: 122, failed: 1
+failures: 1
+user files restored: True
+  - menus: R-8 9.2 File 메뉴: 기대 Open Folder...|Ctrl-K Ctrl-O, ---, Close Window|Ctrl-Shift-W, 실제 [dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W

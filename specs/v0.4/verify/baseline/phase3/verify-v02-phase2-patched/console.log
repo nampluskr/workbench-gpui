@@ -1,0 +1,6 @@
+cases: tooltip, menu, reload, pending, shadow, prevctx, shadowpp, rapid, chord, quit, closewin
+checks: 89, failed: 0
+shortcut rows: 24, mismatched: 0
+failures: 1
+user keymap: before=<absent> after=<absent> restored=True
+  - menu: null 배열로 인덱싱할 수 없습니다.

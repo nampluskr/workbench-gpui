@@ -150,8 +150,8 @@ R-12 · R-13 · R-14 · R-15 · D-7
 | Phase 0 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-0` | 기준선 v0.3과 같음(585/2), 스펙 14줄·모호 4, 최종 판정 REWORK 1 → R1 PASS |
 | Phase 1 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-1` | AUDIT 3·4·Duration·clippy 0, R-15 변화 0(흔들림 3, H-10), 테스트 78, 최종 확인 REWORK 2 → R2 PASS |
 | Phase 2 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-2` | 사이드바 폭 300(phase3 587/0), 에디터 글꼴·줄 높이·스크롤바·열 선택, R-8 2/8(6건 사용자 결정 H-14), check-layout 자동 검사, 최종 확인 R2 PASS |
-| Phase 3 | doing | 2026-11-04 | | `v0.4-phase-3` | P3-1·P3-2 선행(H-12) |
-| Phase 4 | todo | | | `v0.4-phase-4` | |
+| Phase 3 | done | 2026-11-04 | 2026-11-04 | `v0.4-phase-3` | 탭 편집·저장·인코딩 왕복·닫기 질문·충돌/지워짐 표시, R-15 회귀 0, V3 불일치 0, 최종 확인 R2 PASS(P3-F1) |
+| Phase 4 | doing | 2026-11-04 | | `v0.4-phase-4` | P4-1·P4-3 선행(H-19·H-22) |
 
 - 상태: todo | doing | review | done
 - 이 표는 `lead`가 Phase 시작과 종료 때 갱신한다.

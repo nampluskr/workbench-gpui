@@ -83,3 +83,33 @@
 - 요청: reviewer P3-12-R1 REWORK — LF/CRLF가 섞인 파일을 편집 없이 저장해도 첫 줄 끝으로 통일된다(D-6 "줄 끝을 그대로" 위반).
 - 판단: 수정하지 않은(dirty 아닌) 버퍼는 저장 명령에서 쓰기를 하지 않는다. 그러면 편집하지 않은 혼합 파일 바이트는 그대로다. 편집한 혼합 파일은 감지한 주된 줄 끝 하나로 통일한다(Zed가 버퍼를 한 줄 끝으로 다루는 것과 같다). 사용자 확인 목록에 올린다.
 - 결과: P3-12-R2 카드.
+
+### H-16 · 2026-11-04 · lead (Phase 3 탭 닫기·충돌 표시 범위, 위임 H-4)
+- 판단: P3-3(impl-ui)은 탭 닫기에 필요한 최소 함수를 `src/ui/pane.rs`(impl-editor 소유)에 더할 수 있다. P3-4는 둘로 나눈다 — P3-4a(impl-editor): dirty 버퍼의 디스크 변경·삭제를 감지해 탭 상태(충돌·지워짐)로 두는 로직(`pane.rs`·`watch_io.rs`). P3-4b(impl-ui): 그 상태를 탭에 그리는 표시(E-086 점 Warning 색, E-087 지워진 파일). 두 담당이 `pane.rs`를 같이 고칠 수 있어 병합 때 lead가 충돌을 푼다.
+
+### H-17 · 2026-11-04 · impl-ui → lead (P3-3 판단 항목, 위임 H-4)
+- 요청: (1) 종료(Ctrl-Q) 때 저장 질문 vs A-25.8·I-118의 "묻지 않고 미저장 내용 복원". (2) 대화창 기본 버튼. (3) 대화창 표시 실패 때 처리. (4) 탭 dirty 점(L-65)이 아직 그려지지 않음.
+- 판단: (1) 복원은 PoC 8단계로 v0.4 범위 밖이라 지금은 묻는 쪽(데이터 보존)으로 둔다. 복원을 만들 때 다시 정한다 — 스펙 불일치 목록·사용자 확인 목록. (2) 기본 버튼 Cancel 유지(v0.2 D-12 방식, 안전). (3) 표시 실패 때 Cancel 유지(데이터 보존). (4) P3-4b에서 dirty 점·충돌·지워짐 표시를 함께 그린다.
+
+### H-18 · 2026-11-04 · lead (충돌 판정 기준, 위임 H-4)
+- 요청: reviewer P3-4a REWORK 2 — 정규화 텍스트 해시로는 디스크의 인코딩·BOM·줄 끝 변경을 충돌로 보지 못한다. mtime/버전 추적 또는 lead의 명시 결정 필요.
+- 판단: 마지막으로 읽거나 저장한 파일의 원본 바이트 해시(디스크 기준)를 탭에 두고, 디스크 원본 바이트 해시가 그것과 다르면 "디스크 변경"으로 본다. mtime은 쓰지 않는다(같은 내용으로 덮어쓰기는 변경이 아님 — Zed와 다를 수 있어 사용자 확인 목록). 정규화 텍스트 해시는 D-046의 불필요한 `set_value` 방지에만 쓴다. 자기 저장은 완료 때 기준 해시를 갱신한다.
+- 결과: P3-4a-R1.
+
+### H-19 · 2026-11-04 · lead (Phase 4 모델 카드 선행, 위임 H-4)
+- 판단: Phase 3는 마무리 측정(P3-E)만 남았다. impl-editor는 비어 있으니 Phase 4의 P4-1(미리보기 탭·핀 모델)을 work/editor에서 먼저 시작한다. Phase 3 종료(R-15·V3·최종 확인) 전에는 병합하지 않는다(H-12와 같다).
+
+### H-20 · 2026-11-04 · impl-editor → lead (P4-3 범위, 위임 H-4)
+- 요청: P4-3 `[BLOCKED]` — workspace의 단일 `pane` 필드를 Pane 트리로 바꾸면 `tab_close.rs`(15곳)·`watch_io.rs`(9)·`panel_nav.rs`(5)·`folders.rs`(2)·`panel_ops.rs`(1)·`watch.rs`(1)의 호출부가 바뀐다(impl-ui 소유). 크기 조절(I-726·I-727)·확대(I-730·I-737)를 넣을지.
+- 판단: 이 카드에 한해 위 6개 파일의 `.pane` 호출부 교체만 impl-editor 범위로 지정한다(H-7·H-13과 같다). 그리기(`layout.rs`의 탭 바 여러 개·분할선)와 키 등록(`keymap/`, I-731)은 impl-ui 카드 P4-3b로 나눈다. 사용자 결정 "분할: Zed 원문 전부"(I-706~I-739)에 따라 크기 조절·확대도 넣는다 — 모델 상태(flex 비율, 확대된 pane)는 P4-3, 드래그·그리기는 P4-3b.
+
+### H-21 · 2026-11-04 · lead (R-15 공백: phase2 메뉴 스크립트, 위임 H-4)
+- 요청: Phase 3 R-15에서 v0.2 phase2 스크립트가 File 메뉴의 새 행 `Close Editor`(P3-3, 의도한 변경)를 원래 표(`$orig`)에서 찾다 중단해, 뒤의 메뉴 항목 48개와 reload·pending·shadow·prevctx·shadowpp·rapid·chord·quit·closewin 사례가 평가되지 않았다.
+- 판단: `tools/verify-v02-phase2.ps1`(v0.2 원본)은 고치지 않는다. `specs/v0.4/verify/scripts/verify-v04-phase2.ps1`에 사본을 두고, 의도한 변경 하나(File 메뉴 `Close Editor|Ctrl-F4` 행과 그 `$orig` 항목)만 반영한다. 다른 기대값은 바꾸지 않는다. 바꾼 줄은 diff로 남긴다. 이 사본으로 phase2를 다시 돌려 나머지 항목을 R-1과 대조한다. Phase 4 이후 R-15에도 이 사본을 쓴다.
+
+### H-22 · 2026-11-04 · lead (Phase 4 UI 카드 선행, 위임 H-4)
+- 판단: P4-1·P4-3(work/editor)이 리뷰 PASS다. work/editor를 work/ui에 병합하고 impl-ui가 P4-2(미리보기·핀 탭 표시와 키·닫기 연결)·P4-3b(여러 pane 그리기·분할선·크기 조절 드래그·확대·분할 키 I-731)를 시작한다. master 병합은 Phase 3 종료 뒤에 work/editor → work/ui 순서로 한다(H-12·H-19와 같다).
+
+### H-23 · 2026-11-04 · lead (Phase 3 최종 확인 REWORK 수정 브랜치, 위임 H-4)
+- 요청: reviewer Phase 3 최종 확인 REWORK 2건(데이터 보존) — 저장 중 rename/move 뒤 다른 경로에 쓴 결과로 탭을 clean 처리, 삭제된 비어 있지 않은 미리보기 탭을 다음 미리보기 열기가 질문 없이 버림.
+- 판단: work/editor·work/ui에는 Phase 4 커밋이 이미 있다(H-19·H-22). Phase 3를 master 기준으로 닫기 위해 editor worktree에서 master `37be418`로 `work/p3fix` 브랜치를 만들어 impl-editor가 두 건을 고친다. 이 카드에 한해 `src/ui/panel_ops.rs`·`folders.rs`의 rename/move 경로도 impl-editor 범위(H-7과 같다). 수정 → reviewer → master 병합·태그 `v0.4-phase-3` → work/editor·work/ui에 master를 병합(충돌은 담당자가 푼다).

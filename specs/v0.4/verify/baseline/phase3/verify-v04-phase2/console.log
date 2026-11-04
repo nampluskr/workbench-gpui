@@ -1,0 +1,5 @@
+cases: tooltip, menu, reload, pending, shadow, prevctx, shadowpp, rapid, chord, quit, closewin
+checks: 137, failed: 0
+shortcut rows: 32, mismatched: 0
+failures: 0
+user keymap: before=<absent> after=<absent> restored=True

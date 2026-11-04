@@ -1,0 +1,4 @@
+cases: d046-own, d046-defer, d046-replace, d046-moved, d046-junction, d046-io
+checks: 23, failed: 0
+failures: 0
+user files restored: True

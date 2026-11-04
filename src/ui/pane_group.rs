@@ -366,7 +366,14 @@ impl<E> PaneGroup<E> {
 
     /// Opens `path` in pane `pane` (I-061~I-063): an open tab is activated (a non-preview open promotes it); else a
     /// new view is placed, replacing the pane's preview tab (I-062). A file new to the workspace gets a doc and a read.
+    /// A preview that is the last view of a file with something to keep (modified, e.g. a deleted non-empty buffer
+    /// E-087, or saving) is not replaced but promoted (phase3-final Must fix 2); another view keeps the file anyway.
     pub fn open_in(&mut self, pane: PaneId, path: &Path, preview: bool, make: impl FnOnce() -> E) -> Option<Opened> {
+        let keep = preview
+            && self.panes.get(&pane)?.tabs.iter().find(|t| t.preview).is_some_and(|t| {
+                self.views(&t.path).nth(1).is_none()
+                    && self.docs.get(&t.path).is_some_and(|d| d.modified() || d.saving.is_some())
+            });
         let p = self.panes.get_mut(&pane)?;
         self.active = pane;
         if let Some(i) = p.find(path) {
@@ -376,7 +383,7 @@ impl<E> PaneGroup<E> {
             p.active = Some(i);
             return Some(Opened { ix: i, created: false, read: None });
         }
-        let (ix, replaced) = p.place(Tab { path: path.to_path_buf(), preview, editor: make() });
+        let (ix, replaced) = p.place(Tab { path: path.to_path_buf(), preview, editor: make() }, keep);
         if let Some(old) = replaced {
             self.forget_if_unseen(&old.path);
         }
@@ -1233,6 +1240,49 @@ mod tests {
         assert_eq!((shift(3, cut), shift(6, cut), shift(8, cut)), (3, 6, 12));
         let cut = splice("abcdef", "abXf").unwrap();
         assert_eq!((shift(3, cut), shift(6, cut)), (3, 4), "inside the change goes to its end");
+    }
+
+    /// phase3-final Must fix 2 in the pane tree: a preview whose non-empty file was deleted is promoted, not replaced, by
+    /// the next preview open; an empty deleted preview, a clean preview, and a kept file's other view are replaced.
+    #[test]
+    fn deleted_nonempty_preview_is_kept() {
+        use super::ReadOutcome;
+        let read = |g: &mut G, text: &str| {
+            let t = g.docs.docs.last().unwrap().pending.unwrap();
+            g.docs.finish_read(t, ReadOutcome::Changed(super::text_hash(text), None, 1));
+        };
+        let missing = |g: &mut G, path: &str| {
+            let ix = g.docs.find(Path::new(path)).unwrap();
+            let t = g.docs.start_read(ix);
+            g.docs.finish_read(t, ReadOutcome::Missing);
+        };
+        let mut g = G::default();
+        open(&mut g, "a", true);
+        read(&mut g, "A");
+        missing(&mut g, "a");
+        open(&mut g, "b", true);
+        let tabs: Vec<_> = g.panes[&0].tabs.iter().map(|t| (t.title(), t.preview)).collect();
+        assert_eq!(tabs, [("a".to_string(), false), ("b".to_string(), true)]);
+        assert!(g.docs.get(Path::new("a")).is_some_and(|d| d.deleted && d.modified()));
+
+        let mut g = G::default();
+        open(&mut g, "e", true);
+        read(&mut g, "");
+        missing(&mut g, "e");
+        open(&mut g, "c", true);
+        assert_eq!(names(&g, 0), ["c"], "empty deleted preview is replaced");
+        open(&mut g, "d", true);
+        assert_eq!(names(&g, 0), ["d"], "clean preview is replaced");
+
+        // The file shown in another pane too: this preview view can go, the other view keeps the buffer.
+        let mut g = G::default();
+        open(&mut g, "a", true);
+        read(&mut g, "A");
+        missing(&mut g, "a");
+        let r = g.split(Right, SplitMode::Clone, |t| t.editor + 1).unwrap();
+        g.activate(0);
+        open(&mut g, "b", true);
+        assert_eq!((names(&g, 0), names(&g, r)), (vec!["b".into()], vec!["a".into()]));
     }
 
     /// The splice between two views' texts covers only the changed bytes, on char boundaries.

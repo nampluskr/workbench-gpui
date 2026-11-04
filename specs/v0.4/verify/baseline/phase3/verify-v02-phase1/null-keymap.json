@@ -1,0 +1,4 @@
+[
+  { "context": "Workspace", "bindings": { "ctrl-b": null } },
+  { "context": "ProjectPanel", "bindings": { "delete": null } }
+]
