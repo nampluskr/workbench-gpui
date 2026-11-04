@@ -66,23 +66,83 @@ pub fn encode(text: &str, encoding: TextEncoding) -> Result<Vec<u8>, String> {
     })
 }
 
+/// Line ending of a file. The editor holds `\n` only; saves write this back (P3-12-R1).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LineEnding {
+    Lf,
+    Crlf,
+}
+
+/// How a file is written back: encoding and line ending.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Format {
+    pub encoding: TextEncoding,
+    pub line_ending: LineEnding,
+}
+
+/// File bytes → editor text (line endings as `\n`) and the file's format. The line ending is the first one in
+/// the file; a file with none is LF.
+// spec: none (app value) — detection by the first line ending and LF for a file without one are judgements
+// (01-zed has no line-ending rule). A mixed file is written back with the detected ending.
+pub fn decode_text(bytes: &[u8]) -> Result<(String, Format), String> {
+    let (raw, encoding) = decode(bytes)?;
+    let line_ending = match raw.find('\n') {
+        Some(i) if raw[..i].ends_with('\r') => LineEnding::Crlf,
+        _ => LineEnding::Lf,
+    };
+    Ok((to_lf(raw), Format { encoding, line_ending }))
+}
+
+/// `\r\n` → `\n`, the editor's representation (reads, reloads and hashes all use it).
+pub fn to_lf(text: String) -> String {
+    if text.contains("\r\n") { text.replace("\r\n", "\n") } else { text }
+}
+
+/// Editor text → file bytes in `format`: every line break, typed or pasted (a pasted `\r\n` stays in the editor),
+/// becomes the file's line ending.
+pub fn encode_text(text: &str, format: Format) -> Result<Vec<u8>, String> {
+    let text = to_lf(text.to_owned());
+    match format.line_ending {
+        LineEnding::Lf => encode(&text, format.encoding),
+        LineEnding::Crlf => encode(&text.replace('\n', "\r\n"), format.encoding),
+    }
+}
 /// Writes `bytes` to `path` without leaving a half-written file: a temp file next to it (same volume), flushed,
-/// then swapped in with `state::win::replace_file` (ReplaceFileW keeps the target's attributes). On failure the
-/// temp file is removed and the original stays.
+/// then swapped in with `state::win::replace_file` (ReplaceFileW keeps the target's attributes).
 pub fn write_file(path: &Path, bytes: &[u8]) -> std::io::Result<()> {
+    write_file_with(path, bytes, crate::state::win::replace_file)
+}
+
+/// `write_file` with the swap step as an argument, so its failures can be tested.
+/// - Temp write fails: the temp file is removed; the target was never touched.
+/// - Swap fails and the target is still there: the temp file is removed; the original stays.
+/// - Swap fails and the target is gone (ReplaceFileW without a backup may leave it so, e.g.
+///   ERROR_UNABLE_TO_MOVE_REPLACEMENT 1176): the temp file is the only complete copy, so it is kept and the error
+///   names it.
+fn write_file_with(
+    path: &Path,
+    bytes: &[u8],
+    replace: impl FnOnce(&Path, &Path) -> std::io::Result<()>,
+) -> std::io::Result<()> {
     let name = path.file_name().ok_or_else(|| std::io::Error::other("no file name"))?;
     let tmp = path.with_file_name(format!("{}.{}.tmp", name.to_string_lossy(), crate::state::win::new_uuid()));
-    let result = (|| {
+    let written = (|| {
         let mut f = std::fs::File::create_new(&tmp)?;
         std::io::Write::write_all(&mut f, bytes)?;
-        f.sync_all()?;
-        drop(f);
-        crate::state::win::replace_file(&tmp, path)
+        f.sync_all()
     })();
-    if result.is_err() {
+    if let Err(e) = written {
         let _ = std::fs::remove_file(&tmp);
+        return Err(e);
     }
-    result
+    match replace(&tmp, path) {
+        Ok(()) => Ok(()),
+        Err(e) if path.exists() => {
+            let _ = std::fs::remove_file(&tmp);
+            Err(e)
+        }
+        Err(e) => Err(std::io::Error::new(e.kind(), format!("{e}; the saved text is kept in {}", tmp.display()))),
+    }
 }
 
 fn decode_utf16(bytes: &[u8], big_endian: bool) -> Result<String, String> {
@@ -306,6 +366,96 @@ mod tests {
             let err = encode(text, TextEncoding::Cp949).unwrap_err();
             assert!(err.contains(code), "{err}");
         }
+    }
+
+    /// Editor text uses `\n`; saving writes the file's ending for every line, typed ones included.
+    #[test]
+    fn crlf_file_with_new_line_saves_crlf() {
+        let (text, format) = decode_text(b"a\r\nb").unwrap();
+        assert_eq!((text.as_str(), format.line_ending), ("a\nb", LineEnding::Crlf));
+        // Enter at the end of "b" inserts "\n" in the editor.
+        assert_eq!(encode_text(&format!("{text}\nc"), format).unwrap(), b"a\r\nb\r\nc");
+        // Untouched text writes the same bytes.
+        assert_eq!(encode_text(&text, format).unwrap(), b"a\r\nb");
+        // A pasted "\r\n" is not doubled, and in an LF file it becomes LF.
+        assert_eq!(encode_text("a\r\nb\nc", format).unwrap(), b"a\r\nb\r\nc");
+        let lf = Format { line_ending: LineEnding::Lf, ..format };
+        assert_eq!(encode_text("a\r\nb\nc", lf).unwrap(), b"a\nb\nc");
+    }
+
+    #[test]
+    fn lf_file_and_file_without_line_end_stay_lf() {
+        let (text, format) = decode_text(b"a\nb").unwrap();
+        assert_eq!(encode_text(&format!("{text}\nc"), format).unwrap(), b"a\nb\nc");
+        let (_, format) = decode_text(b"one line").unwrap();
+        assert_eq!(format.line_ending, LineEnding::Lf);
+    }
+
+    /// CRLF + encoding together: UTF-16 LE and CP949 keep both on a round trip with an added line.
+    #[test]
+    fn crlf_with_encodings_round_trip_with_new_line() {
+        for encoding in [TextEncoding::Utf16Le, TextEncoding::Cp949, TextEncoding::Utf8Bom] {
+            let bytes = encode("첫째\r\n둘째", encoding).unwrap();
+            let (text, format) = decode_text(&bytes).unwrap();
+            assert_eq!(format, Format { encoding, line_ending: LineEnding::Crlf });
+            assert_eq!(encode_text(&text, format).unwrap(), bytes, "{}", encoding.name());
+            let added = encode_text(&format!("{text}\n셋째"), format).unwrap();
+            assert_eq!(added, encode("첫째\r\n둘째\r\n셋째", encoding).unwrap(), "{}", encoding.name());
+        }
+    }
+
+    fn temp_dir() -> std::path::PathBuf {
+        let dir = std::env::temp_dir().join(format!("wg-text-io-{}", crate::state::win::new_uuid()));
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    fn names(dir: &Path) -> Vec<String> {
+        std::fs::read_dir(dir).unwrap().map(|e| e.unwrap().file_name().to_string_lossy().into_owned()).collect()
+    }
+
+    /// Temp write fails (folder missing): nothing is swapped and no temp file is left.
+    #[test]
+    fn temp_write_failure_leaves_nothing() {
+        let dir = temp_dir();
+        let path = dir.join("missing").join("a.txt");
+        let err = write_file_with(&path, b"new", |_, _| panic!("must not swap")).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::NotFound);
+        assert!(names(&dir).is_empty());
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// Swap fails with the target still there: the original stays and the temp file is removed.
+    #[test]
+    fn swap_failure_keeps_original_and_removes_temp() {
+        let dir = temp_dir();
+        let path = dir.join("a.txt");
+        std::fs::write(&path, b"old").unwrap();
+        let err = write_file_with(&path, b"new", |_, _| Err(std::io::Error::other("swap failed"))).unwrap_err();
+        assert!(err.to_string().contains("swap failed"));
+        assert_eq!(std::fs::read(&path).unwrap(), b"old");
+        assert_eq!(names(&dir), ["a.txt"]);
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// Partial swap failure (target gone, like ReplaceFileW 1176): the temp file is kept with the new text and the
+    /// error names it.
+    #[test]
+    fn partial_swap_failure_keeps_temp_and_names_it() {
+        let dir = temp_dir();
+        let path = dir.join("a.txt");
+        std::fs::write(&path, b"old").unwrap();
+        let err = write_file_with(&path, b"new", |_, target| {
+            std::fs::remove_file(target).unwrap();
+            Err(std::io::Error::from_raw_os_error(1176))
+        })
+        .unwrap_err();
+        assert!(!path.exists());
+        let kept = names(&dir);
+        assert_eq!(kept.len(), 1, "{kept:?}");
+        assert!(err.to_string().contains(&kept[0]), "{err}");
+        assert_eq!(std::fs::read(dir.join(&kept[0])).unwrap(), b"new");
+        std::fs::remove_dir_all(&dir).unwrap();
     }
 
     #[test]

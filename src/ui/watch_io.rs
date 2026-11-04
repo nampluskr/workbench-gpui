@@ -17,17 +17,18 @@ use notify::Watcher as _;
 use super::Workbench;
 use super::folders::FolderWorkspace;
 use super::keymap;
-use super::pane::{ReadOutcome, read_text, text_hash};
-use crate::text_io::TextEncoding;
+use super::pane::{ReadApply, ReadOutcome, read_text, text_hash};
+use crate::text_io::Format;
 use super::watch::{ExtraWatch, Msg, epoch_ms, kind_of, same_path};
 use crate::fsops::ident::{self, DirId};
 use crate::fsops::ops;
 use crate::fsops::watch::Change;
 
-/// 탭 하나 다시 읽은 결과. Encoding is the detected one (`None`: undecodable, shown lossy and read-only, P3-2).
+/// 탭 하나 다시 읽은 결과. Format is the detected one (`None`: undecodable, shown lossy and read-only, P3-2);
+/// text uses LF line endings (the editor representation).
 enum ReadResult {
-    Same(Option<TextEncoding>),
-    Changed(String, u64, Option<TextEncoding>),
+    Same(Option<Format>),
+    Changed(String, u64, Option<Format>),
     Unreadable,
 }
 
@@ -219,9 +220,9 @@ impl Workbench {
                             crate::dev::slow_io(&p);
                             // Same decoding as the first read, so a reload never turns UTF-16/CP949 into lossy UTF-8.
                             match read_text(&p) {
-                                Some((text, encoding)) => {
+                                Some((text, format)) => {
                                     let h = text_hash(&text);
-                                    if h == old { ReadResult::Same(encoding) } else { ReadResult::Changed(text, h, encoding) }
+                                    if h == old { ReadResult::Same(format) } else { ReadResult::Changed(text, h, format) }
                                 }
                                 None => ReadResult::Unreadable,
                             }
@@ -246,8 +247,13 @@ impl Workbench {
                 ReadResult::Changed(_, h, e) => ReadOutcome::Changed(*h, *e),
                 ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
-            let editor = item.ws.update(cx, |ws, _| ws.pane.finish_read(item.token, outcome).cloned());
-            let Some(editor) = editor else { continue };
+            // None: dropped. Some(None): accepted, buffer already matches. Some(Some(editor)): fill it.
+            let apply = item.ws.update(cx, |ws, _| match ws.pane.finish_read(item.token, outcome) {
+                ReadApply::Dropped => None,
+                ReadApply::Kept => Some(None),
+                ReadApply::Fill(editor) => Some(Some(editor.clone())),
+            });
+            let Some(fill) = apply else { continue };
             match result {
                 ReadResult::Same(_) => {}
                 ReadResult::Unreadable => {
@@ -256,6 +262,7 @@ impl Workbench {
                     }
                 }
                 ReadResult::Changed(text, h, _) => {
+                    let Some(editor) = fill else { continue };
                     editor.update(cx, |e, cx| e.set_value(text.as_str(), window, cx));
                     if dev {
                         println!(
