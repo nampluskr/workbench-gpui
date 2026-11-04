@@ -138,13 +138,15 @@ pub fn copy_entry(src: &Path, dst: &Path) -> io::Result<CopyReport> {
     Ok(report)
 }
 
-/// Single point for copying file contents: the destination is created exclusively (`create_new`),
-/// so an existing file is never overwritten (AlreadyExists). Unlike `fs::copy`, attributes and
-/// timestamps are not carried over. A half-written destination that we created is removed on failure.
+/// Single point for copying file contents. The destination name is first claimed exclusively
+/// (`create_new`, so an existing file is never overwritten: AlreadyExists), then `fs::copy` fills that
+/// empty file, keeping what the platform copy keeps (NTFS streams, attributes, modified time).
+/// If the copy fails, the file we claimed is removed.
+// shortcut: between claiming the name and fs::copy another program could write into the empty file and
+// get overwritten; close it with a handle-based copy (CopyFile2 on the open handle) if that race matters.
 fn copy_file(src: &Path, dst: &Path) -> io::Result<u64> {
-    let mut from = fs::File::open(src)?;
-    let mut to = fs::OpenOptions::new().write(true).create_new(true).open(dst)?;
-    io::copy(&mut from, &mut to).inspect_err(|_| {
+    fs::OpenOptions::new().write(true).create_new(true).open(dst)?;
+    fs::copy(src, dst).inspect_err(|_| {
         let _ = fs::remove_file(dst);
     })
 }
@@ -323,6 +325,22 @@ mod tests {
         let e = copy_entry(&dir.join("a.txt"), &dir.join("b.txt")).unwrap_err();
         assert_eq!(e.kind(), io::ErrorKind::AlreadyExists);
         assert_eq!(fs::read(dir.join("b.txt")).unwrap(), b"old");
+        fs::remove_dir_all(&dir).unwrap();
+    }
+
+    #[test]
+    fn copy_keeps_streams_and_mtime() {
+        let dir = std::env::temp_dir().join(format!("wg-ads-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&dir);
+        fs::create_dir_all(&dir).unwrap();
+        let a = dir.join("a.txt");
+        fs::write(&a, b"body").unwrap();
+        fs::write(dir.join("a.txt:notes"), b"note").unwrap();
+        fs::File::options().write(true).open(&a).unwrap().set_modified(std::time::UNIX_EPOCH + std::time::Duration::from_secs(1_000_000_000)).unwrap();
+        copy_entry(&a, &dir.join("b.txt")).unwrap();
+        assert_eq!(fs::read(dir.join("b.txt")).unwrap(), b"body");
+        assert_eq!(fs::read(dir.join("b.txt:notes")).unwrap(), b"note");
+        assert_eq!(fs::metadata(&a).unwrap().modified().unwrap(), fs::metadata(dir.join("b.txt")).unwrap().modified().unwrap());
         fs::remove_dir_all(&dir).unwrap();
     }
 }
