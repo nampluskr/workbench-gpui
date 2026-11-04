@@ -29,6 +29,7 @@ use crate::fsops::watch::Change;
 enum ReadResult {
     Same(Option<Format>),
     Changed(String, u64, Option<Format>),
+    Missing,
     Unreadable,
 }
 
@@ -224,6 +225,8 @@ impl Workbench {
                                     let h = text_hash(&text);
                                     if h == old { ReadResult::Same(format) } else { ReadResult::Changed(text, h, format) }
                                 }
+                                // Only a confirmed absence is a deletion (E-087); other failures (locks) are not.
+                                None if matches!(p.try_exists(), Ok(false)) => ReadResult::Missing,
                                 None => ReadResult::Unreadable,
                             }
                         })
@@ -241,10 +244,11 @@ impl Workbench {
         for (item, result) in items.into_iter().zip(results) {
             let folder_id = item.ws.read(cx).folder_id.clone();
             // Apply only if this is still the tab's latest read and the folder is not removed.
-            // Dirty tabs keep their buffer (P3-1).
+            // Dirty tabs keep their buffer and get the conflict / deleted state instead (P3-1, P3-4a).
             let outcome = match &result {
                 ReadResult::Same(e) => ReadOutcome::Same(*e),
                 ReadResult::Changed(_, h, e) => ReadOutcome::Changed(*h, *e),
+                ReadResult::Missing => ReadOutcome::Missing,
                 ReadResult::Unreadable => ReadOutcome::Unreadable,
             };
             // None: dropped. Some(None): accepted, buffer already matches. Some(Some(editor)): fill it.
@@ -253,12 +257,21 @@ impl Workbench {
                 ReadApply::Kept => Some(None),
                 ReadApply::Fill(editor) => Some(Some(editor.clone())),
             });
-            let Some(fill) = apply else { continue };
+            let Some(fill) = apply else {
+                // A dirty tab is not filled; log the state the read left it in (P3-4a).
+                let pane = &item.ws.read(cx).pane;
+                if dev && let Some(t) = pane.find(&item.path).map(|i| &pane.tabs[i]).filter(|t| t.dirty) {
+                    let state = if t.deleted { "deleted" } else if t.has_conflict() { "conflict" } else { "dirty" };
+                    println!("[dev] tab-reload folder={folder_id} path={} result={state}", item.path.display());
+                }
+                continue;
+            };
             match result {
                 ReadResult::Same(_) => {}
-                ReadResult::Unreadable => {
+                ReadResult::Unreadable | ReadResult::Missing => {
                     if dev {
-                        println!("[dev] tab-reload folder={folder_id} path={} result=unreadable", item.path.display());
+                        let r = if matches!(result, ReadResult::Missing) { "deleted" } else { "unreadable" };
+                        println!("[dev] tab-reload folder={folder_id} path={} result={r}", item.path.display());
                     }
                 }
                 ReadResult::Changed(text, h, _) => {

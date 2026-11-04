@@ -6,7 +6,8 @@
 //! - 새 탭은 활성 탭 바로 뒤에 넣는다(판단: Zed 의 새 항목 자리).
 //! - Tabs are editable (v0.4 D-6, P3-1; D-18 lifted). A tab is dirty when its buffer differs from the content last
 //!   read from disk (`hash`). An edit promotes a preview tab to a normal tab (I-063). The editor stays read-only
-//!   until the first read lands, so typing cannot race the load. Dirty buffers are not reloaded (P3-4 marks them).
+//!   until the first read lands, so typing cannot race the load. Dirty buffers are not reloaded; a disk change marks
+//!   them as conflicts and a removed file marks any tab deleted (P3-4a, E-086, E-087; `Tab::has_conflict`, `deleted`).
 //! - Reads detect the encoding (`text_io`, P3-2) and saves write it back unchanged (BOM, UTF-16, CP949; line endings
 //!   stay in the text). An undecodable file is shown lossily and stays read-only, so a save cannot corrupt it.
 //! - First open reads the file on the background executor; the tab exists at once and gets its text when
@@ -45,6 +46,10 @@ pub struct Tab<E = Entity<EditorState>> {
     pub format: Option<Format>,
     /// Token of the save in flight; a second save waits until it finishes. Reads do not apply while it runs.
     pub saving: Option<u64>,
+    /// A reload saw disk content other than `hash` while the buffer was dirty (E-086). Read with `has_conflict`.
+    pub disk_changed: bool,
+    /// A reload found the file gone (E-087). Cleared when a read finds it again or a save recreates it.
+    pub deleted: bool,
 }
 
 /// How a finished read ended (first read or watch reload), with the detected format (`None`: undecodable).
@@ -54,13 +59,16 @@ pub enum ReadOutcome {
     Same(Option<Format>),
     /// New disk content with this hash.
     Changed(u64, Option<Format>),
+    /// The file no longer exists (E-087).
+    Missing,
     Unreadable,
 }
 
 /// What `finish_read` decided.
 #[derive(Debug, PartialEq)]
 pub enum ReadApply<'a, E> {
-    /// Not the tab's latest read, the tab is dirty or saving, or the pane is closed: ignore the result.
+    /// Not the tab's latest read, the tab is saving, or the pane is closed: ignore the result. Also a dirty tab: its
+    /// buffer is left alone, only its conflict / deleted state is recorded.
     Dropped,
     /// Accepted, the buffer already matches (same hash or unreadable): leave the editor alone (`set_value` would
     /// reset selection, scroll and undo).
@@ -87,6 +95,17 @@ impl<E> Tab<E> {
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_else(|| self.path.display().to_string())
+    }
+
+    /// Modified for the tab dot and saving: edited, or deleted on disk with a non-empty buffer (E-087). A clean
+    /// buffer equals `hash`, so its emptiness is `hash == text_hash("")`.
+    pub fn modified(&self) -> bool {
+        self.dirty || (self.deleted && self.hash != text_hash(""))
+    }
+
+    /// Conflict (E-086, Warning dot): unsaved edits and the disk changed since the last read or save.
+    pub fn has_conflict(&self) -> bool {
+        self.dirty && self.disk_changed
     }
 }
 
@@ -213,6 +232,8 @@ impl<E> Pane<E> {
             loaded: false,
             format: None,
             saving: None,
+            disk_changed: false,
+            deleted: false,
         };
         (tab, token)
     }
@@ -245,7 +266,8 @@ impl<E> Pane<E> {
     }
 
     /// Decides a finished read. It applies only if it is still the tab's latest read; a replaced, removed or closed
-    /// tab drops it, a dirty tab keeps its buffer (no reload over edits, P3-1; P3-4 adds the conflict mark), and so
+    /// tab drops it. A dirty tab keeps its buffer (no reload over edits, P3-1) and records the disk state instead:
+    /// changed content is a conflict (E-086), a missing file is deleted (E-087, any tab). A tab being saved drops it, and so
     /// does a tab being saved. A save also invalidates reads started before it finished (`finish_save`), so a read
     /// from before or during a save never lands after it. Content cannot change between start and accept: only the
     /// latest token applies, and edits make the tab dirty.
@@ -257,9 +279,21 @@ impl<E> Pane<E> {
             return ReadApply::Dropped;
         };
         tab.pending = None;
-        if tab.dirty || tab.saving.is_some() {
+        if tab.saving.is_some() {
             return ReadApply::Dropped;
         }
+        // Disk state first (E-086, E-087); an unreadable file (e.g. locked) tells nothing, so it changes nothing.
+        match outcome {
+            ReadOutcome::Missing => tab.deleted = true,
+            ReadOutcome::Same(_) => (tab.deleted, tab.disk_changed) = (false, false),
+            ReadOutcome::Changed(h, _) => (tab.deleted, tab.disk_changed) = (false, h != tab.hash),
+            ReadOutcome::Unreadable => {}
+        }
+        if tab.dirty {
+            // Edits stay; the format stays the one the buffer was read with.
+            return ReadApply::Dropped;
+        }
+        tab.disk_changed = false;
         match outcome {
             ReadOutcome::Changed(h, format) => {
                 tab.format = format;
@@ -276,15 +310,18 @@ impl<E> Pane<E> {
                 tab.loaded = format.is_some();
                 ReadApply::Kept
             }
-            ReadOutcome::Unreadable => ReadApply::Kept,
+            // A deleted file's buffer stays as it was (E-087).
+            ReadOutcome::Missing | ReadOutcome::Unreadable => ReadApply::Kept,
         }
     }
 
     /// Starts saving tab `ix` whose buffer is `text`: encodes it with the tab's encoding and line ending (P3-2, D-6).
-    /// A tab that is not dirty is not written (H-15), so an unedited file keeps its exact bytes.
+    /// A tab that is not modified is not written (H-15), so an unedited file keeps its exact bytes. A deleted file with
+    /// a non-empty buffer is modified, so saving recreates it (E-085, E-087); saving over a conflict overwrites (E-084;
+    /// the confirmation dialog is P3-3's).
     pub fn begin_save(&mut self, ix: usize, text: &str) -> SaveStart {
         let tab = &self.tabs[ix];
-        let (true, true, Some(format), None) = (tab.loaded, tab.dirty, tab.format, tab.saving) else {
+        let (true, true, Some(format), None) = (tab.loaded, tab.modified(), tab.format, tab.saving) else {
             return SaveStart::Skip;
         };
         match text_io::encode_text(text, format) {
@@ -310,6 +347,8 @@ impl<E> Pane<E> {
         if ok {
             tab.hash = saved_hash;
             tab.dirty = buffer_hash != saved_hash;
+            // The disk now holds what was saved: no conflict, and a deleted file exists again.
+            (tab.disk_changed, tab.deleted) = (false, false);
         }
         true
     }
@@ -319,6 +358,8 @@ impl<E> Pane<E> {
     pub fn on_edit(&mut self, ix: usize, buffer_hash: u64) {
         let tab = &mut self.tabs[ix];
         tab.dirty = buffer_hash != tab.hash;
+        // shortcut: undoing back to `hash` during a conflict leaves the old text (not dirty, no reload) until the next
+        // disk event; request a reload here if that matters.
         tab.preview = false;
     }
 
@@ -639,6 +680,78 @@ mod tests {
         assert!(!pane.finish_read(reload, ReadOutcome::Changed(text_hash("B"), UTF8)).accepted());
         let t = &pane.tabs[0];
         assert_eq!((t.hash, t.dirty, t.pending), (text_hash("A"), true, None));
+    }
+
+    fn loaded(pane: &mut Pane<()>, text: &str) {
+        let first = open(pane, "a.txt", false);
+        pane.finish_read(first, ReadOutcome::Changed(text_hash(text), UTF8));
+    }
+
+    fn reload(pane: &mut Pane<()>, outcome: ReadOutcome) -> bool {
+        let token = pane.start_read(0);
+        matches!(pane.finish_read(token, outcome), ReadApply::Fill(_))
+    }
+
+    /// P3-4a (E-086): a dirty buffer whose file changed is a conflict and keeps its text; the disk returning to the
+    /// read content clears it; a save clears it.
+    #[test]
+    fn disk_change_on_dirty_tab_is_conflict_until_saved() {
+        let mut pane = Pane::<()>::default();
+        loaded(&mut pane, "A");
+        pane.on_edit(0, text_hash("A edited"));
+        assert!(!reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8)), "buffer kept");
+        assert!(pane.tabs[0].has_conflict() && pane.tabs[0].modified());
+        assert!(!reload(&mut pane, ReadOutcome::Same(UTF8)));
+        assert!(!pane.tabs[0].has_conflict(), "disk back to the read content");
+        reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8));
+        // Locked file: says nothing about the disk, the conflict stays.
+        reload(&mut pane, ReadOutcome::Unreadable);
+        assert!(pane.tabs[0].has_conflict());
+        let SaveStart::Write(token, _) = pane.begin_save(0, "A edited") else { panic!("conflict saves (overwrite)") };
+        pane.finish_save(token, true, text_hash("A edited"), text_hash("A edited"));
+        assert!(!pane.tabs[0].has_conflict() && !pane.tabs[0].modified());
+    }
+
+    /// P3-4a (E-086): a clean tab still reloads on a disk change and never shows a conflict.
+    #[test]
+    fn disk_change_on_clean_tab_reloads() {
+        let mut pane = Pane::<()>::default();
+        loaded(&mut pane, "A");
+        assert!(reload(&mut pane, ReadOutcome::Changed(text_hash("B"), UTF8)));
+        let t = &pane.tabs[0];
+        assert_eq!((t.hash, t.has_conflict(), t.disk_changed), (text_hash("B"), false, false));
+    }
+
+    /// P3-4a (E-087, E-085): a removed file marks the tab deleted and keeps the buffer; non-empty means modified, so
+    /// a save writes it (recreates the file) and clears deleted. A file that comes back clears it too.
+    #[test]
+    fn deleted_file_is_marked_and_save_recreates() {
+        let mut pane = Pane::<()>::default();
+        loaded(&mut pane, "A");
+        assert!(!reload(&mut pane, ReadOutcome::Missing), "buffer kept");
+        let t = &pane.tabs[0];
+        assert!(t.deleted && t.modified() && !t.dirty && !t.has_conflict());
+        let SaveStart::Write(token, bytes) = pane.begin_save(0, "A") else { panic!("deleted non-empty tab saves") };
+        assert_eq!(bytes, b"A");
+        pane.finish_save(token, true, text_hash("A"), text_hash("A"));
+        assert!(!pane.tabs[0].deleted && !pane.tabs[0].modified());
+        // Deleted then restored with the same content: not deleted, not modified.
+        reload(&mut pane, ReadOutcome::Missing);
+        reload(&mut pane, ReadOutcome::Same(UTF8));
+        assert!(!pane.tabs[0].deleted && !pane.tabs[0].modified());
+    }
+
+    /// P3-4a (E-087): an empty deleted buffer is not modified (nothing to save); a dirty one is deleted and modified.
+    #[test]
+    fn deleted_empty_and_dirty_tabs() {
+        let mut pane = Pane::<()>::default();
+        loaded(&mut pane, "");
+        reload(&mut pane, ReadOutcome::Missing);
+        assert!(pane.tabs[0].deleted && !pane.tabs[0].modified());
+        assert_eq!(pane.begin_save(0, ""), SaveStart::Skip);
+        pane.on_edit(0, text_hash("x"));
+        reload(&mut pane, ReadOutcome::Missing);
+        assert!(pane.tabs[0].deleted && pane.tabs[0].modified() && !pane.tabs[0].has_conflict());
     }
 
     /// P3-1: an unreadable first read leaves the tab not loaded (read-only), so nothing typed can replace the file.
