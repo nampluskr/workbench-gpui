@@ -1,0 +1,73 @@
+verify-v02-phase2 | tooltip#4 | L-208·L-209 | 403.00 -> 328.00
+verify-v02-phase2 | tooltip#9 | L-208·L-209 | 488.00 -> 413.00
+verify-v02-phase2 | tooltip#14 | L-208·L-209 | 368.00 -> 293.00
+verify-v02-phase2 | tooltip#25 | L-208·L-209 | 641.00 -> 566.00
+verify-v02-phase2 | tooltip#30 | L-208·L-209 | 667.00 -> 592.00
+verify-v02-phase2 | tooltip#50 | L-208·L-209 | 399.00 -> 324.00
+verify-v02-phase2 | menu#4 | R-8 D-13 I-306 | Open Folder...|Ctrl-K Ctrl-O	---	Close Window|Ctrl-Shift-W -> Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+verify-v02-phase2 | menu#5 | I-303 | index=2 -> (missing)
+verify-v02-phase2 | menu#6 | R-8 D-13 I-306 | Toggle Left Dock|Ctrl-B	Toggle Folder Sidebar|Ctrl-Alt-J	Focus Folder Sidebar|Ctrl-Alt-;	---	Project Panel|Ctrl-Shift-E -> (missing)
+verify-v02-phase2 | menu#7 | I-303 | index=3 -> (missing)
+verify-v02-phase2 | menu#8 | R-8 D-13 I-306 | Minimize|<none>	Zoom|<none> -> (missing)
+verify-v02-phase2 | menu#9 | I-321 | 4.00 -> (missing)
+verify-v02-phase2 | menu#10 | I-313 | 236.00 -> (missing)
+verify-v02-phase2 | menu#11 | I-314 | 518.00 -> (missing)
+verify-v02-phase2 | menu#12 | I-314 | 27.00 -> (missing)
+verify-v02-phase2 | menu#13 | I-315 | 5.00 -> (missing)
+verify-v02-phase2 | menu#14 | I-315 | 5.00 -> (missing)
+verify-v02-phase2 | menu#15 | I-316 | 5.00 -> (missing)
+verify-v02-phase2 | menu#16 | I-317 | 23.00 -> (missing)
+verify-v02-phase2 | menu#17 | I-318 | 1.00 -> (missing)
+verify-v02-phase2 | menu#18 | I-318 | 6.00 -> (missing)
+verify-v02-phase2 | menu#19 | I-318 | 6.00 -> (missing)
+verify-v02-phase2 | menu#20 | I-303 | index=3 -> (missing)
+verify-v02-phase2 | menu#21 | I-303 | index=0 -> (missing)
+verify-v02-phase2 | menu#22 | I-303 | index=3 -> (missing)
+verify-v02-phase2 | menu#23 | I-303 | index=2 -> (missing)
+verify-v02-phase2 | menu#24 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#25 | I-517·I-518 | index=1 -> (missing)
+verify-v02-phase2 | menu#26 | I-517·I-518 | index=2 -> (missing)
+verify-v02-phase2 | menu#27 | I-517·I-518 | index=4 -> (missing)
+verify-v02-phase2 | menu#28 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#29 | I-517·I-518 | index=4 -> (missing)
+verify-v02-phase2 | menu#30 | I-517·I-518 | index=2 -> (missing)
+verify-v02-phase2 | menu#31 | I-517·I-518 | index=4 -> (missing)
+verify-v02-phase2 | menu#32 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#33 | I-517·I-518 | index=1 -> (missing)
+verify-v02-phase2 | menu#34 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#35 | I-517·I-518 | index=1 -> (missing)
+verify-v02-phase2 | menu#36 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#37 | I-517·I-518 | index=4 -> (missing)
+verify-v02-phase2 | menu#38 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#39 | I-517·I-518 | index=4 -> (missing)
+verify-v02-phase2 | menu#40 | I-517·I-518 | index=0 -> (missing)
+verify-v02-phase2 | menu#41 | I-519 | [dev] menu-close reason=cancel t_ms=1793770736505 -> (missing)
+verify-v02-phase2 | menu#42 | I-309 | [dev] key keystroke=ctrl-c action=none context=Root > Workspace -> (missing)
+verify-v02-phase2 | menu#43 | I-517 | [dev] menu-close reason=cancel t_ms=1793770737834 -> (missing)
+verify-v02-phase2 | menu#44 | I-310 | [dev] menu-open index=0 name=workbench-gpui t_ms=1793770738154 -> (missing)
+verify-v02-phase2 | menu#45 | I-310 | [dev] menu-close reason=toggle t_ms=1793770738445 -> (missing)
+verify-v02-phase2 | menu#46 | R-8 | [dev] menu-exec action=workspace::ToggleLeftDock via=enter t_ms=1793770740033 -> (missing)
+verify-v02-phase2 | menu#47 | I-309 | [dev] action-handled name=workspace::ToggleLeftDock by=workbench focus=center -> (missing)
+verify-v02-phase2 | menu#48 | I-520 | 56 -> (missing)
+verify-v02-phase2 | menu#49 | I-520 | [dev] menu-exec action=workspace::ToggleLeftDock via=shortcut t_ms=1793770742501 -> (missing)
+verify-v02-phase2 | menu#50 | I-519 | [dev] menu-close reason=click-outside t_ms=1793770744188 -> (missing)
+verify-v02-phase2 | menu#51 | I-446 | True -> (missing)
+verify-v02-phase2 | menu#52 | I-445 | True -> (missing)
+verify-v02-phase3 | add#4 | R-8 | [dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O	---	Close Window|Ctrl-Shift-W -> [dev] menu-render index=1 name=File selected=0 rows=Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+verify-v02-phase3 | items#5 | A-11.3 | 374 -> 299
+verify-v02-phase3 | scroll#2 | A-16.7 | [dev] sidebar-scroll offset_y=-23 -> [dev] sidebar-scroll offset_y=-234
+verify-v02-phase3 | menus#1 | R-8 9.2 | [dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O	---	Close Window|Ctrl-Shift-W -> [dev] menu-render index=1 name=File selected=none rows=Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+verify-v02-phase3 | state#2 | R-28 | 375 -> 300
+verify-v02-phase3 | state#4 | R-28 A-22 | 494 -> 419
+verify-v02-phase3 | state-restart#1 | R-28 | 617 -> 419
+verify-v02-phase4 | menu#12 | I-042·I-502 | 377.0,217.0 -> 302.0,217.0
+verify-v02-phase4 | menu#13 | I-042·I-502 | 377.0,217.0 -> 302.0,217.0
+verify-v02-phase4 | readonly#1 | R-27 | len=33 -> len=31
+verify-v02-phase4 | readonly#3 | D-18·R-27 | len=33 fnv=c45e16dbc6dd544f, 디스크 같음=True -> len=40 fnv=1cd7c3303d70c90d, 디스크 같음=True
+verify-v02-phase5 | tab#2 | R-24·E-086·G-115 | ok=True, app_ms=218, seen_ms=394, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-35ab25e5d1df43f2b2194b5ff1afa5ca\proj\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793771551413 -> ok=False, app_ms=190, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-03cb0f99e68d489abe35ae54d7fe67cb\proj\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793788052227
+verify-v02-phase5 | tab#3 | R-24 | [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-35ab25e5d1df43f2b2194b5ff1afa5ca\proj\README.md result=reloaded len=40 fnv=f3333c130cb7fa10 t_ms=1793771551413 -> [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-03cb0f99e68d489abe35ae54d7fe67cb\proj\README.md result=reloaded len=38 fnv=facef83d0e9eaa58 t_ms=1793788052227
+verify-v02-phase5 | tab#6 | R-24·G-115 | ok=True, app_ms=271, seen_ms=312, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-35ab25e5d1df43f2b2194b5ff1afa5ca\proj\README.md result=reloaded len=56 fnv=f44fa1bf2ed7155c t_ms=1793771554014 -> ok=False, app_ms=191, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-03cb0f99e68d489abe35ae54d7fe67cb\proj\README.md result=reloaded len=54 fnv=97899cbe95ed7094 t_ms=1793788060366
+verify-v02-phase5 | tab#9 | D-18·E-087 | active=1 notes.txt|normal / README.md|preview, fnv=f44fa1bf2ed7155c -> active=1 notes.txt|normal / README.md|preview, fnv=97899cbe95ed7094
+verify-v02-phase5 | tab#10 | R-24·G-115 | ok=True, app_ms=162, seen_ms=244, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-35ab25e5d1df43f2b2194b5ff1afa5ca\proj\README.md result=reloaded len=34 fnv=eeb42a408f255ae4 t_ms=1793771555542 -> ok=False, app_ms=254, seen_ms=, [dev] tab-reload folder=00000000-0000-4000-8000-000000000000 path=D:\projects\workbench-gpui\target\phase5-folders\run-03cb0f99e68d489abe35ae54d7fe67cb\proj\README.md result=reloaded len=32 fnv=79dfa0fcb8242014 t_ms=1793788067845
+verify-v02-phase5 | flood#2 | R-24 | ok=True, app_ms=587, seen_ms=618, [dev] watch-applied events=1815 own=0 external=1815 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=509 t_ms=1793771609000 -> ok=True, app_ms=549, seen_ms=638, [dev] watch-applied events=1806 own=0 external=1806 lost=false tree=refreshed renames=0 own_renames=0 reloaded=0 wait_ms=471 t_ms=1793788128398
+verify-v02-phase5 | flood#3 | R-24(묶기) | 반영 1번, 이벤트 1815 -> 반영 1번, 이벤트 1806

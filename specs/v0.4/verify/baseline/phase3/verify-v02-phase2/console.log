@@ -1,0 +1,7 @@
+cases: tooltip, menu, reload, pending, shadow, prevctx, shadowpp, rapid, chord, quit, closewin
+checks: 89, failed: 1
+shortcut rows: 24, mismatched: 0
+failures: 2
+user keymap: before=<absent> after=<absent> restored=True
+  - menu: R-8 D-13 I-306 File 항목·구분선: 기대 Open Folder...|Ctrl-K Ctrl-O	---	Close Window|Ctrl-Shift-W, 실제 Open Folder...|Ctrl-K Ctrl-O	---	Close Editor|Ctrl-F4	Close Window|Ctrl-Shift-W
+  - menu: null 배열로 인덱싱할 수 없습니다.

@@ -1,0 +1,8 @@
+cases: base, override, null, unknown, jsonc, broken, order, startup, reload
+failures: 3
+foreign key lines (warning): 0
+cleanup errors: 0
+user keymap: before=<absent> after=<absent> restored=True
+  - base: R-1 표 밖의 내장 바인딩: ctrl-s [Workspace] workspace::Save
+  - base: R-1 표 밖의 내장 바인딩: ctrl-w [Workspace] pane::CloseActiveItem
+  - base: R-1 표 밖의 내장 바인딩: ctrl-f4 [Workspace] pane::CloseActiveItem
