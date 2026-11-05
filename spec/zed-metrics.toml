@@ -300,6 +300,10 @@ src = "04-APP-SPEC 7.1절 A-30.2"
 "shortcut.padding_x" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-222" }
 "shortcut.padding_y" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-222" }
 "shortcut.chord_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.7절 L-222" }
+"multi.row_gap" = { value = 4, unit = "px", cond = "default", src = "02-INTERACTION 8.2절 L-232" }
+"multi.separator_padding_top" = { value = 4, unit = "px", cond = "default", src = "02-INTERACTION 8.2절 L-232" }
+"multi.separator_border_width" = { value = 1, unit = "px", cond = "default", src = "02-INTERACTION 8.2절 L-232" }
+"multi.title_shortcut_gap" = { value = 8, unit = "px", cond = "default", src = "02-INTERACTION 8.2절 L-232" }
 
 # ==============================================================================
 # 10. 메뉴 (Menu: App Menu & Context Menu)
