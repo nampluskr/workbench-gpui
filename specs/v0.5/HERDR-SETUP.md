@@ -57,13 +57,12 @@ claude --model opus --effort high      # 기존 세션
 claude --model opus --effort medium
 # gpui-coder
 codex     # 옵션 없이 띄운다. 세션 안에서 /model → GPT-6.1-Sol → Medium → s(세션 한정). v0.3 H-3
-# gpui-checker — 적용 목표 (미리 허용 설정을 이 세션에만 적용, 5.6)
+# gpui-checker — 현재 실행 명령 (2026-11-06, 미리 허용 설정을 이 세션에만 적용, 5.6)
 agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\checker-settings.json
-# gpui-checker — 현재 실행 명령 (2026-11-06, --settings 없음, 미리 허용 미적용)
-agy --model gemini-3.8-flash-high
 ```
 
-- checker의 `--settings` 재실행은 아직 하지 못했다. leader 세션 자동 모드가 `[Self-Modification]`으로 거부했고 우회하지 않았다(leader 2026-11-06, W-06). 다시 띄우는 일은 사용자 또는 사용자가 허락한 세션이 한다. 그전까지는 5.6의 대체 방식이 기본이다.
+- checker는 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달 2026-11-06)으로 leader가 위 명령으로 다시 띄웠다. 이번에는 거부되지 않았다(leader 2026-11-06, W-08).
+- 허용 목록은 읽히지만 승인 창은 여전히 뜬다. 그래서 5.6의 대체 방식이 계속 기본이다(5.6 현재 상태).
 
 - leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).
@@ -177,8 +176,9 @@ agy --model gemini-3.8-flash-high
   - deny는 두지 않는다. tauri 시험(core-leader 2026-11-06)에서 deny를 함께 두면 허용 명령도 승인 창이 떴고, allow만 두면 승인 없이 돌았다.
   - 화면을 다루는 스크립트(`capture.ps1`, `verify-*.ps1`, `tools/measure/`)는 허용되어 있어도 `[SCREEN-OK]`를 받은 뒤에만 실행한다(5.4).
   - 대체 방식(core-leader 2026-11-06): 허용이 동작하지 않거나 설정을 쓸 수 없으면, checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남긴다. checker는 그 파일을 읽어 판정한다.
-  - 현재 상태(leader 2026-11-06, W-06): 설정 파일은 레포에 있지만 지금 checker 세션에는 적용되지 않았다. leader가 checker를 `--settings`로 다시 띄우려 하자 leader 세션 자동 모드가 `[Self-Modification]`으로 거부했고, core-leader 지시대로 우회하지 않았다. 지금 gpui-checker(wD:pF)는 `agy --model gemini-3.8-flash-high`(`--settings` 없음)로 떠 있다.
-  - `--settings`로 다시 띄우는 일은 사용자 또는 사용자가 허락한 세션이 한다. **그전까지는 대체 방식이 기본이다**: checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남기며, checker는 그 파일을 읽어 판정한다.
+  - 지난 상태(leader 2026-11-06, W-06): leader가 checker를 `--settings`로 다시 띄우려 하자 leader 세션 자동 모드가 `[Self-Modification]`으로 거부했고, core-leader 지시대로 우회하지 않았다.
+  - 현재 상태(leader 2026-11-06, W-08): 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달)으로 leader가 gpui-checker(wD:pF)를 `--settings`로 다시 띄웠고(2.1), 거부되지 않았다. agy 로그(`C:\Users\nampl\.gemini\antigravity-cli\log\cli-20261106_231823.log`)에 `CLI settings initialized: permissions=&{Allow:[command(git diff) ... ] Deny:[] Ask:[]}, toolPermission=request-review`로 허용 목록이 읽혔다. 그런데 checker가 `git diff --stat`을 실행하자 승인 창이 떴다(leader가 1회 승인). 원인은 확인하지 못했다. 같은 로그에 `ApplyProjectPermissionGrants: no grants for project "CLI Project", cleared project permissions` 줄이 있다.
+  - **대체 방식이 계속 기본이다**: checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남기며, checker는 그 파일을 읽어 판정한다. 목록에 없는 명령이나 승인 창이 뜬 명령은 leader가 위 위임대로 판단한다.
   - 대체 방식 시험(C-03, 2026-11-06): leader가 `git diff --stat` 출력을 `C:\Users\nampl\AppData\Local\Temp\v05-C-03-git-diff-stat.txt`로 남겼고, checker가 그 파일을 승인 창 없이 읽어 바뀐 파일 3개를 맞게 보고했다.
 
 ---

@@ -28,3 +28,18 @@
 ## BLOCKED
 - 원인: checker를 `--settings`로 다시 띄우는 명령이 leader 세션 자동 모드에서 `[Self-Modification]`으로 거부됨(우회하지 않음).
 - 필요한 것: 사용자가 위 "사용자가 할 일"대로 checker를 다시 띄우거나, leader 세션에 이 명령 허용 규칙을 넣는 것. 그전까지 대체 방식으로 진행 가능하므로 Phase 2 진행은 막히지 않는다.
+
+---
+
+## 덧붙임 (2026-11-06, 사용자 직접 승인 뒤 재시험)
+
+[BLOCKED] 유지 — 설정은 적용됐으나 승인 창이 계속 뜬다.
+
+- 승인: 사용자 원문 "checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다."(core-leader 전달).
+- 재실행: `herdr agent start gpui-checker --kind agy --pane wD:pF -- --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\checker-settings.json` — 이번에는 자동 모드가 거부하지 않았다. gpui-checker는 지금 이 명령으로 떠 있다.
+- 설정 적용 확인: agy 로그 `C:\Users\nampl\.gemini\antigravity-cli\log\cli-20261106_231823.log`에 `CLI settings initialized: permissions=&{Allow:[command(git diff) command(git log) ... ] Deny:[] Ask:[]}, toolPermission=request-review`. 즉 allow 목록이 읽혔고 deny는 비어 있다.
+- 시험: checker에게 `git diff --stat` 하나만 시킴 → **승인 창이 떴다**("Requesting permission for: git diff --stat"). leader가 1회 승인했고 결과(바뀐 파일 2개)는 맞았다.
+- 원인: 확인하지 못했다. 같은 로그에 `ApplyProjectPermissionGrants: no grants for project "CLI Project", cleared project permissions` 줄이 있다. tauri 로그(`cli-20261106_231903.log`)도 같은 형태(Deny:[])다. 원인을 더 파지 않았다.
+- 조치: 대체 방식(leader·coder가 실행하고 `%TEMP%\v05-<카드ID>-*.txt`, checker는 파일로 판정)을 끝내지 않고 계속 기본으로 쓴다. ORDER-02 리뷰(C-04)도 이 방식으로 했다. HERDR-SETUP 2.1·5.6에 반영(W-08).
+- 필요한 것: agy 허용 매칭이 왜 안 되는지 core-leader 쪽 확인(예: tauri 갈래에서 실제로 승인 없이 돈 명령의 정확한 모양). 그전까지 진행은 막히지 않는다.
+- 커밋: 이 덧붙임과 같은 커밋.

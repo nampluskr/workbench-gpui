@@ -76,6 +76,15 @@
   - 검증: 다섯 문서에 확정 상태 줄이 하나씩 있음을 grep으로 확인(각 1건). `git log -1 d707513`이 Phase 1 커밋(ORDER-01-R2·R3)임을 확인.
   - 특이사항: 없음.
 
+- **W-08 R3 재시험 결과 기록** (2026-11-06)
+  - 무엇을 했나: core ORDER-01-R3 재시험 결과를 `HERDR-SETUP.md` 2.1·5.6에 적었다. 카드 `specs/v0.5/cards/W-08.md`.
+  - 결과:
+    - 재시험(leader 2026-11-06): 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달)으로 leader가 gpui-checker(wD:pF)를 `--settings D:\projects\workbench-gpui\.agents\checker-settings.json`으로 다시 띄웠다. 거부되지 않았다.
+    - agy 로그 `C:\Users\nampl\.gemini\antigravity-cli\log\cli-20261106_231823.log`에 허용 목록이 읽혔다(`CLI settings initialized: permissions=&{Allow:[command(git diff) ... ] ...}, toolPermission=request-review`). 그런데 checker의 `git diff --stat`에 승인 창이 떴다(leader 1회 승인). 원인 미확인. 같은 로그에 `ApplyProjectPermissionGrants: no grants for project "CLI Project", cleared project permissions` 줄이 있다.
+    - `HERDR-SETUP.md`: 2.1의 checker 현재 실행 명령을 `--settings` 명령 하나로 바꾸고 재실행 경위와 "허용 목록은 읽히지만 승인 창이 뜬다"를 적음. 5.6에 W-06 상태를 지난 상태로 두고 W-08 현재 상태, 대체 방식이 계속 기본, 목록에 없거나 승인 창이 뜬 명령은 leader가 위임으로 판단한다는 것을 적음.
+  - 검증: 문서만 바꿨다(V0). 재시험 결과는 카드에 적힌 leader 기록을 옮겼고 writer가 다시 시험하지 않았다.
+  - 특이사항: 미리 허용이 승인 창을 없애지 못한 원인이 남았다. Phase 1 종료 판정의 "checker `--settings` 재실행" 남은 일은 끝났다.
+
 ## 사용자 요청 작업
 
 없음.
