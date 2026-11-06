@@ -85,6 +85,41 @@
   - 검증: 문서만 바꿨다(V0). 재시험 결과는 카드에 적힌 leader 기록을 옮겼고 writer가 다시 시험하지 않았다.
   - 특이사항: 미리 허용이 승인 창을 없애지 못한 원인이 남았다. Phase 1 종료 판정의 "checker `--settings` 재실행" 남은 일은 끝났다.
 
+- **W-09 checker 허용 목록 동작 반영** (2026-11-06)
+  - 무엇을 했나: core ORDER-01-R3 덧붙임(core-leader NOTICE)의 결과를 `HERDR-SETUP.md` 2.1·5.6에 적었다. 카드 `specs/v0.5/cards/W-09.md`.
+  - 결과:
+    - 사실(leader 2026-11-06): core-leader가 사용자 요청으로 `.agents/checker-settings.json` allow에 정확한 명령(`git diff --stat`, `git status --short`, `git log --oneline -5`, 빌드·clippy 변형)을 더했다(core D-7 예외, 사용자 요청). leader가 checker를 `--settings`로 다시 띄워 `git diff --stat`을 시켰더니 승인 창 없이 돌았다. 앞부분 일치가 아니라 정확한 명령 모양이 맞아야 하는 것으로 보인다. C-05 실측 중 목록 밖 명령(`Get-ChildItem`, `Get-Process`, `pwsh -NoProfile -Command ...`, `Start-Process`, `Remove-Item` 등)은 승인 창이 떴고 leader가 위임으로 판단했다.
+    - `HERDR-SETUP.md`: 2.1 checker는 `--settings` 적용, 허용 목록 동작, 대체 방식 끝. 5.6 형식 줄을 정확한 명령 모양으로 고치고, 허용 목록 나열을 지우고 `.agents/checker-settings.json`을 기준으로 가리킴(더할 명령은 leader가 core-leader에게 알림). W-08 상태를 지난 상태로 두고 W-09 현재 상태를 더함. 대체 방식 시험(C-03)은 지난 방식으로 표시.
+  - 검증: 문서만 바꿨다(V0). 시험 결과는 카드에 적힌 leader 기록을 옮겼고 writer가 다시 시험하지 않았다.
+  - 특이사항: W-08의 "원인 미확인"은 정확한 명령 모양 일치로 설명되는 것으로 보이나 확인된 원인은 아니다(카드 표현 "보인다"를 그대로 둠).
+
+### Phase 2 — 창
+
+- **K-01 시작 창 1440×852, 작업 영역 가운데** (2026-11-06, coder)
+  - 무엇을 했나: R-6(I-6) 구현. `src/ui/metrics.rs`에 `WINDOW_INITIAL_SIZE`(1440×852, 출처 core v0.5 ITEMS I-6)를 두고, `src/ui/mod.rs` `run`에서 주 디스플레이의 작업 영역(`visible_bounds`) 중심에 `Bounds::centered_at`으로 고정 크기 windowed bounds를 정한다. 최소 크기 360×240(`WINDOW_MIN_SIZE`)과 타이틀 바 설정은 그대로. 카드 `specs/v0.5/cards/K-01.md`.
+  - 결과:
+    - gpui 소스로 확인: `visible_bounds`는 Windows `rcWork`(작업 표시줄 제외) 기준, 지정한 size는 클라이언트 크기(`calculate_window_rect`가 비클라이언트 영역을 더함).
+    - `Bounds::centered`는 작업 영역보다 큰 창을 줄이므로 쓰지 않았다.
+    - 앱에 창 크기·위치 저장/복원 코드는 없다.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test initial_window_uses_work_area_center_and_fixed_client_size`(1 passed), `cargo clippy --all-targets -- -D warnings` 통과(`cards/K-01.report.md`).
+  - 특이사항: 작업 영역이 1440×852보다 작으면 창 일부가 영역 밖으로 나갈 수 있다(고정 크기 유지 결과).
+
+- **C-04 K-01 코드 리뷰** (2026-11-06, checker)
+  - 무엇을 했나: K-01 diff와 leader가 남긴 테스트·clippy 출력을 읽어 정확성·경계 조건·범위·ponytail 규칙을 점검했다. 카드 `specs/v0.5/cards/C-04.md`.
+  - 결과: PASS, 지적 없음. 클라이언트 기준·작업 영역 가운데·최소 크기·크기 미기억 모두 충족. `primary_display().expect(...)`는 AGENTS 5장 규칙에 맞음.
+  - 검증: V1, 명령 실행 없이 파일로 판정(`cards/C-04.report.md`).
+  - 특이사항: 없음.
+
+- **C-05 시작 창 V3 실측** (2026-11-06, checker)
+  - 무엇을 했나: AGENTS 3A.4 절차로 R-6을 실측했다. 조건: 주 모니터 1920×1080, 100%, 작업 영역 1920×1032. `tools/measure/window-rect.ps1`(Win32 `GetWindowRect`·`GetClientRect`·`ClientToScreen`·`SPI_GETWORKAREA`·`SetWindowPos`)을 새로 만들었다. 카드 `specs/v0.5/cards/C-05.md`.
+  - 결과: 4/4 PASS(`verify/reviews/measure-ORDER-02.md`).
+    - 첫 실행 클라이언트 1440×852.
+    - 창 바깥 사각형(1456×860) 중심 (960, 516) = 작업 영역 중심, 차이 0.
+    - 100×100 축소 시도 → 클라이언트 360×240.
+    - 1600×900으로 바꾸고 다시 실행 → 1440×852, 작업 영역 가운데.
+  - 검증: V3. 앱 데이터는 `session.ps1`로 복원(`restored=true`), 종료 뒤 `workbench-gpui` 프로세스 0건.
+  - 특이사항(core-leader 판정 대상): 클라이언트 중심은 작업 영역 중심보다 위로 4px(dy −4)다. DWM 보이지 않는 테두리가 좌·우·아래에만 있어서다. 창 바깥 사각형 중심은 일치한다.
+
 ## 사용자 요청 작업
 
 없음.

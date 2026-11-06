@@ -46,7 +46,7 @@ use crate::dev::DevOptions;
 use layout_probe::probe;
 use metrics::{
     DOCK_DEFAULT_WIDTH, DOCK_HANDLE_WIDTH, SIDEBAR_DEFAULT_WIDTH, SIDEBAR_MAX_WIDTH,
-    SIDEBAR_MIN_WIDTH, WINDOW_MIN_SIZE, WINDOW_ROUNDING,
+    SIDEBAR_MIN_WIDTH, WINDOW_INITIAL_SIZE, WINDOW_MIN_SIZE, WINDOW_ROUNDING,
 };
 use rem::to_px;
 
@@ -639,9 +639,14 @@ fn client_decorations(window: &Window, border: Hsla, content: impl IntoElement) 
     }
 }
 
-fn window_options() -> WindowOptions {
+fn window_options(work_area: Bounds<Pixels>) -> WindowOptions {
     // TitleBar::window_options(): appears_transparent = true 로 OS 타이틀 바를 숨긴다.
     WindowOptions {
+        // Keep I-6's fixed size even when the work area is smaller.
+        window_bounds: Some(WindowBounds::Windowed(Bounds::centered_at(
+            work_area.center(),
+            WINDOW_INITIAL_SIZE,
+        ))),
         titlebar: Some(TitlebarOptions {
             title: Some(APP_TITLE.into()),
             ..TitleBar::title_bar_options()
@@ -664,7 +669,11 @@ pub fn run(dev: DevOptions) {
             let poc_options = dev.editor_poc.then(|| dev.clone());
             let layout_dump = dev.layout;
             let pick_file = dev.pick_folder_file.clone();
-            let (window_handle, _) = gpui_kit::open_window(window_options(), cx, |window, cx| {
+            let work_area = cx
+                .primary_display()
+                .expect("failed to find primary display")
+                .visible_bounds();
+            let (window_handle, _) = gpui_kit::open_window(window_options(work_area), cx, |window, cx| {
                 let editor_poc = poc_options
                     .map(|options| cx.new(|cx| editor_poc::EditorPoc::new(options, window, cx)));
                 let (folders, loaded) = folders::FolderList::load(pick_file);
@@ -772,4 +781,28 @@ pub fn run(dev: DevOptions) {
                 .detach();
             }
         });
+}
+
+#[cfg(test)]
+mod window_tests {
+    use super::{WINDOW_INITIAL_SIZE, WINDOW_MIN_SIZE, window_options};
+    use gpui_kit::{Bounds, WindowBounds, point, px, size};
+
+    #[test]
+    fn initial_window_uses_work_area_center_and_fixed_client_size() {
+        for work_area in [
+            Bounds::new(point(px(0.), px(0.)), size(px(1920.), px(1040.))),
+            Bounds::new(point(px(-1920.), px(40.)), size(px(1920.), px(1040.))),
+            Bounds::new(point(px(40.), px(0.)), size(px(1240.), px(720.))),
+        ] {
+            let options = window_options(work_area);
+            let Some(WindowBounds::Windowed(bounds)) = options.window_bounds else {
+                panic!("expected a windowed startup");
+            };
+            assert_eq!(bounds.size, WINDOW_INITIAL_SIZE);
+            assert_eq!(bounds.center(), work_area.center());
+            assert_eq!(options.window_min_size, Some(WINDOW_MIN_SIZE));
+            assert!(options.titlebar.unwrap().appears_transparent);
+        }
+    }
 }

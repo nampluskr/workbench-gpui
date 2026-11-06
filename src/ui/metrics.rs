@@ -27,6 +27,11 @@ pub const WINDOW_MIN_SIZE: Size<Pixels> = Size {
     width: px(360.),
     height: px(240.),
 };
+/// Initial client size: core v0.5 ITEMS I-6.
+pub const WINDOW_INITIAL_SIZE: Size<Pixels> = Size {
+    width: px(1440.),
+    height: px(852.),
+};
 
 // ---- 공통 (rem 헬퍼) ----
 
