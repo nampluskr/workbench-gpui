@@ -16,9 +16,9 @@ thread_local! {
 impl Workbench {
     /// 활성 폴더의 Workspace(경로 없음 상태면 None).
     pub(super) fn active_ws(&self) -> Option<Entity<FolderWorkspace>> {
-        let folder = self.folders.active_folder()?;
+        let Some(folder) = self.folders.active_folder() else { return self.settings_workspace.clone() };
         if self.folders.missing.contains(&folder.id) {
-            return None;
+            return self.settings_workspace.clone();
         }
         self.folders.workspaces.get(&folder.id).cloned()
     }

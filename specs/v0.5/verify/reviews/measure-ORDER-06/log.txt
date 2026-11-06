@@ -1,0 +1,121 @@
+2026-11-07 08:07:51.267 === ORDER-06 V3 Capture Script Started (Only=App, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06) ===
+2026-11-07 08:07:51.584 --- Starting workbench-gpui measurements ---
+2026-11-07 08:07:51.592 Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07 08:07:52.984 App launched via session.ps1: PID=23796, fixtureDir='D:\projects\workbench-gpui\target\measure-30a01ddd5428456e944ee6858fc0409d'
+2026-11-07 08:07:54.900 Window handle HWND=0x19C0CC6
+2026-11-07 08:07:57.073 Resize: {
+2026-11-07 08:07:57.075 Resize:   "hwnd": "0x19C0CC6",
+2026-11-07 08:07:57.076 Resize:   "desktop": "Default",
+2026-11-07 08:07:57.078 Resize:   "title": "",
+2026-11-07 08:07:57.079 Resize:   "className": "workbench-gpui",
+2026-11-07 08:07:57.081 Resize:   "workArea_SPI": {
+2026-11-07 08:07:57.082 Resize:     "left": 0,
+2026-11-07 08:07:57.083 Resize:     "top": 0,
+2026-11-07 08:07:57.085 Resize:     "right": 1920,
+2026-11-07 08:07:57.086 Resize:     "bottom": 1032,
+2026-11-07 08:07:57.087 Resize:     "width": 1920,
+2026-11-07 08:07:57.089 Resize:     "height": 1032
+2026-11-07 08:07:57.090 Resize:   },
+2026-11-07 08:07:57.092 Resize:   "workArea_Monitor": {
+2026-11-07 08:07:57.094 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 08:07:57.095 Resize:     "left": 0,
+2026-11-07 08:07:57.097 Resize:     "top": 0,
+2026-11-07 08:07:57.098 Resize:     "right": 1920,
+2026-11-07 08:07:57.100 Resize:     "bottom": 1032,
+2026-11-07 08:07:57.101 Resize:     "width": 1920,
+2026-11-07 08:07:57.102 Resize:     "height": 1032
+2026-11-07 08:07:57.104 Resize:   },
+2026-11-07 08:07:57.105 Resize:   "workAreaCenter": {
+2026-11-07 08:07:57.106 Resize:     "x": 960.0,
+2026-11-07 08:07:57.108 Resize:     "y": 516.0
+2026-11-07 08:07:57.109 Resize:   },
+2026-11-07 08:07:57.110 Resize:   "windowRect": {
+2026-11-07 08:07:57.112 Resize:     "left": 232,
+2026-11-07 08:07:57.114 Resize:     "top": 90,
+2026-11-07 08:07:57.115 Resize:     "right": 1688,
+2026-11-07 08:07:57.116 Resize:     "bottom": 950,
+2026-11-07 08:07:57.117 Resize:     "width": 1456,
+2026-11-07 08:07:57.119 Resize:     "height": 860
+2026-11-07 08:07:57.120 Resize:   },
+2026-11-07 08:07:57.121 Resize:   "windowCenter": {
+2026-11-07 08:07:57.123 Resize:     "x": 960.0,
+2026-11-07 08:07:57.130 Resize:     "y": 520.0
+2026-11-07 08:07:57.132 Resize:   },
+2026-11-07 08:07:57.134 Resize:   "windowCenterDiff": {
+2026-11-07 08:07:57.135 Resize:     "dx": 0.0,
+2026-11-07 08:07:57.137 Resize:     "dy": 4.0
+2026-11-07 08:07:57.138 Resize:   },
+2026-11-07 08:07:57.139 Resize:   "clientRect": {
+2026-11-07 08:07:57.140 Resize:     "width": 1440,
+2026-11-07 08:07:57.142 Resize:     "height": 852
+2026-11-07 08:07:57.143 Resize:   },
+2026-11-07 08:07:57.145 Resize:   "clientToScreen": {
+2026-11-07 08:07:57.146 Resize:     "x": 240,
+2026-11-07 08:07:57.148 Resize:     "y": 90
+2026-11-07 08:07:57.149 Resize:   },
+2026-11-07 08:07:57.150 Resize:   "clientScreenRect": {
+2026-11-07 08:07:57.151 Resize:     "left": 240,
+2026-11-07 08:07:57.153 Resize:     "top": 90,
+2026-11-07 08:07:57.154 Resize:     "right": 1680,
+2026-11-07 08:07:57.155 Resize:     "bottom": 942,
+2026-11-07 08:07:57.157 Resize:     "width": 1440,
+2026-11-07 08:07:57.158 Resize:     "height": 852
+2026-11-07 08:07:57.159 Resize:   },
+2026-11-07 08:07:57.161 Resize:   "clientCenter": {
+2026-11-07 08:07:57.162 Resize:     "x": 960.0,
+2026-11-07 08:07:57.164 Resize:     "y": 516.0
+2026-11-07 08:07:57.165 Resize:   },
+2026-11-07 08:07:57.166 Resize:   "clientCenterDiff": {
+2026-11-07 08:07:57.167 Resize:     "dx": 0.0,
+2026-11-07 08:07:57.169 Resize:     "dy": 0.0
+2026-11-07 08:07:57.170 Resize:   },
+2026-11-07 08:07:57.171 Resize:   "capture": {
+2026-11-07 08:07:57.172 Resize:     "ok": false,
+2026-11-07 08:07:57.173 Resize:     "path": ""
+2026-11-07 08:07:57.175 Resize:   }
+2026-11-07 08:07:57.176 Resize: }
+2026-11-07 08:07:57.801 Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07 08:07:58.013 Foreground check for 'App started': target=0x19C0CC6, foreground=0x19C0CC6
+2026-11-07 08:07:58.055 Project tree not visible. Opening project tree / left dock...
+2026-11-07 08:07:58.086 Clicking 'project-empty-open'...
+2026-11-07 08:07:58.677 Step 'project-tree-open' confirmed in layout snapshot (seq=2)
+2026-11-07 08:07:58.686 [app] Step 'app-menu-bar-open' (App menu bar open (≡), menu item gaps (I-321), and folder name absence) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 08:07:58.688 [app] Step 'app-menu-dropdowns' (Capture each app menu dropdown and confirm folder name restoration on close) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 08:07:58.690 [app] Step 'app-user-menu' (App "v" user menu, inactive items safe click, Panel Layout submenu) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 08:07:58.691 ==========================================================================
+2026-11-07 08:07:58.692 [app] Running step 'app-menu-help-licenses': Help > View Dependency Licenses window open, verify bundled licenses, and close
+2026-11-07 08:07:58.693 ==========================================================================
+2026-11-07 08:07:58.904 Foreground check for 'app-menu-help-licenses': target=0x19C0CC6, foreground=0x19C0CC6
+2026-11-07 08:07:58.963 Opening menu bar via app-menu-button at (559,106)...
+2026-11-07 08:07:59.605 Hovering over Help menu at (880,106)...
+2026-11-07 08:08:00.040 Clicking 'View Dependency Licenses' (menu-row-00) at (957,134)...
+2026-11-07 08:08:01.981 Dependency Licenses window opened: HWND=0x10E0846, Title=''
+2026-11-07 08:08:02.192 Foreground check for 'Capture app-license-window': target=0x10E0846, foreground=0x10E0846
+2026-11-07 08:08:03.841 Capture 'app-license-window' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-license-window.png (exit=0)
+2026-11-07 08:08:03.846 SAFETY: Closing Dependency Licenses window via WM_CLOSE PostMessage...
+2026-11-07 08:08:04.660 SAFETY CONFIRMED: External browser URL menu items were NOT clicked.
+2026-11-07 08:08:04.661 [app] Step 'app-menu-help-licenses' finished successfully.
+2026-11-07 08:08:04.663 [app] Step 'app-menu-actions-rep' (Representative menu actions execution (Save, Undo/Redo, Split, Preview)) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 08:08:04.664 ==========================================================================
+2026-11-07 08:08:04.671 [app] Running step 'app-tab-cycle': Tab cycling via Ctrl-PageDown and Ctrl-PageUp with >= 2 tabs
+2026-11-07 08:08:04.672 ==========================================================================
+2026-11-07 08:08:04.890 Foreground check for 'app-tab-cycle': target=0x19C0CC6, foreground=0x19C0CC6
+2026-11-07 08:08:04.925 Double-clicking first file in tree (660,162)...
+2026-11-07 08:08:06.074 Double-clicking second file in tree (660,188)...
+2026-11-07 08:08:12.352 ERROR: Step 'two-tabs-open' failed expectation: Both tab-00 and tab-01 must be present for tab cycle test
+2026-11-07 08:08:12.562 Foreground check for 'Capture error-two-tabs-open': target=0x19C0CC6, foreground=0x19C0CC6
+2026-11-07 08:08:14.139 Capture 'error-two-tabs-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\error-two-tabs-open.png (exit=0)
+2026-11-07 08:08:14.154 ERROR in [app] step 'app-tab-cycle': Step 'two-tabs-open' assertion failed: Both tab-00 and tab-01 must be present for tab cycle test
+2026-11-07 08:08:14.156 [app] Step 'B-app-pane-zoom' (App pane zoom state (minimize.svg via Shift-Escape)) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 08:08:14.157 Cleaning up workbench-gpui process (PID=23796)...
+2026-11-07 08:08:14.269 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 08:08:15.493 Session Stop: {
+2026-11-07 08:08:15.495 Session Stop:   "files": {
+2026-11-07 08:08:15.497 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 08:08:15.498 Session Stop:   },
+2026-11-07 08:08:15.500 Session Stop:   "restored": true,
+2026-11-07 08:08:15.501 Session Stop:   "fixtureRemoved": true,
+2026-11-07 08:08:15.502 Session Stop:   "exeUnchanged": true
+2026-11-07 08:08:15.504 Session Stop: }
+2026-11-07 08:08:15.505 === ORDER-06 V3 Capture Script Finished ===
+2026-11-07 08:08:15.521 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\summary.json ===

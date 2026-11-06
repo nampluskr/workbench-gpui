@@ -10,6 +10,20 @@ use gpui_kit::{Pixels, Rems, Size, px};
 
 use super::rem::rems_from_px;
 
+pub mod settings_window {
+    use gpui_kit::{Length, Pixels, WindowBounds, px};
+    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
+    pub const WINDOW_BOUNDS: Option<WindowBounds> = None;
+    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
+    pub const SIDEBAR_WIDTH: Length = Length::Auto;
+    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
+    pub const CONTROL_WIDTH: Length = Length::Auto;
+    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
+    pub const PADDING: Pixels = px(0.);
+    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
+    pub const GAP: Pixels = px(0.);
+}
+
 // ---- 타이틀 바·창 버튼 (px 예외, SPEC R-15 이후 변경) ----
 
 /// L-21 타이틀 바 높이 (Windows 32 고정). A-32.1.

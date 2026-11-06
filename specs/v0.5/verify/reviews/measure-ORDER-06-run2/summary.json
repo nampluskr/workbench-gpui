@@ -1,0 +1,241 @@
+{
+  "app": {
+    "app-menu-bar-open": "PASS",
+    "app-menu-dropdowns": "PASS",
+    "app-user-menu": "PASS",
+    "app-menu-help-licenses": "FAIL: Dependency Licenses window HWND was not detected!",
+    "app-menu-actions-rep": "PASS",
+    "app-tab-cycle": "FAIL: Step 'two-tabs-open' assertion failed: Both tab-00 and tab-01 must be present for tab cycle test",
+    "B-app-pane-zoom": "PASS"
+  },
+  "zed": {
+    "prerequisite": "PASS",
+    "zed-v-menu": "PASS",
+    "zed-v-panel-layout": "PASS",
+    "zed-v-settings": "FAIL: 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.",
+    "zed-v-keymap": "FAIL: 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.",
+    "zed-v-themes": "FAIL: 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.",
+    "zed-v-icon-themes": "FAIL: 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.",
+    "zed-v-extensions": "FAIL: 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.",
+    "B-zed-pane-zoom": "PASS",
+    "config_integrity": "PASS: Config files intact"
+  },
+  "zed_analysis": {},
+  "config_hashes": {
+    "before": {
+      "settings.json": {
+        "Exists": true,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\settings.json",
+        "Sha256": "C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2",
+        "Length": 1031
+      },
+      "keymap.json": {
+        "Exists": false,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\keymap.json",
+        "Sha256": "ABSENT",
+        "Length": 0
+      }
+    },
+    "after": {
+      "settings.json": {
+        "Exists": true,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\settings.json",
+        "Sha256": "C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2",
+        "Length": 1031
+      },
+      "keymap.json": {
+        "Exists": false,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\keymap.json",
+        "Sha256": "ABSENT",
+        "Length": 0
+      }
+    },
+    "intact": true
+  },
+  "crops": {
+    "menu-name-0": {
+      "icon": "menu-name-0",
+      "probe": "menu-name-0",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 100.0,
+        "x": 308.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 548
+      },
+      "cropRect": {
+        "right": 654,
+        "bottom": 123,
+        "height": 34,
+        "left": 542,
+        "top": 89,
+        "width": 112
+      }
+    },
+    "menu-name-1": {
+      "icon": "menu-name-1",
+      "probe": "menu-name-1",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 32.0,
+        "x": 412.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 652
+      },
+      "cropRect": {
+        "right": 690,
+        "bottom": 123,
+        "height": 34,
+        "left": 646,
+        "top": 89,
+        "width": 44
+      }
+    },
+    "menu-name-2": {
+      "icon": "menu-name-2",
+      "probe": "menu-name-2",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 34.0,
+        "x": 448.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 688
+      },
+      "cropRect": {
+        "right": 728,
+        "bottom": 123,
+        "height": 34,
+        "left": 682,
+        "top": 89,
+        "width": 46
+      }
+    },
+    "menu-name-3": {
+      "icon": "menu-name-3",
+      "probe": "menu-name-3",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 39.0,
+        "x": 486.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 726
+      },
+      "cropRect": {
+        "right": 771,
+        "bottom": 123,
+        "height": 34,
+        "left": 720,
+        "top": 89,
+        "width": 51
+      }
+    },
+    "menu-name-4": {
+      "icon": "menu-name-4",
+      "probe": "menu-name-4",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 28.0,
+        "x": 529.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 769
+      },
+      "cropRect": {
+        "right": 803,
+        "bottom": 123,
+        "height": 34,
+        "left": 763,
+        "top": 89,
+        "width": 40
+      }
+    },
+    "menu-name-5": {
+      "icon": "menu-name-5",
+      "probe": "menu-name-5",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 56.0,
+        "x": 561.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 801
+      },
+      "cropRect": {
+        "right": 863,
+        "bottom": 123,
+        "height": 34,
+        "left": 795,
+        "top": 89,
+        "width": 68
+      }
+    },
+    "menu-name-6": {
+      "icon": "menu-name-6",
+      "probe": "menu-name-6",
+      "clientBounds": {
+        "y": 5.0,
+        "w": 38.0,
+        "x": 621.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 95,
+        "x": 861
+      },
+      "cropRect": {
+        "right": 905,
+        "bottom": 123,
+        "height": 34,
+        "left": 855,
+        "top": 89,
+        "width": 50
+      }
+    },
+    "minimize": {
+      "icon": "minimize",
+      "probe": "tab-btn-zoom",
+      "clientBounds": {
+        "y": 37.0,
+        "w": 22.0,
+        "x": 1412.0,
+        "h": 22.0
+      },
+      "screenCoords": {
+        "y": 127,
+        "x": 1652
+      },
+      "cropRect": {
+        "right": 1680,
+        "bottom": 155,
+        "height": 34,
+        "left": 1646,
+        "top": 121,
+        "width": 34
+      }
+    }
+  },
+  "gaps": {
+    "menu-name-0_to_menu-name-1": 4.0,
+    "menu-name-1_to_menu-name-2": 4.0,
+    "menu-name-2_to_menu-name-3": 4.0,
+    "menu-name-3_to_menu-name-4": 4.0,
+    "menu-name-4_to_menu-name-5": 4.0,
+    "menu-name-5_to_menu-name-6": 4.0
+  }
+}

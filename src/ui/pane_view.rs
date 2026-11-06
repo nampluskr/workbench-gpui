@@ -294,7 +294,7 @@ impl Workbench {
                     .bg(theme.background)
                     // The editor handled the press itself (selection, IME); the pane handler above is for the rest.
                     .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
-                    .child(editor_view(&t.editor, readonly, editor_bordered(group.zoomed == Some(id)), sides))
+                    .child(editor_view(&t.editor, readonly, editor_bordered(group.zoomed == Some(id)), sides, cx))
                     .into_any_element()
             }
             (None, None) => div().size_full().bg(theme.background).into_any_element(),

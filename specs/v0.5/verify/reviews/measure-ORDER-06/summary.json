@@ -1,0 +1,16 @@
+{
+  "app": {
+    "app-menu-bar-open": "SKIPPED",
+    "app-menu-dropdowns": "SKIPPED",
+    "app-user-menu": "SKIPPED",
+    "app-menu-help-licenses": "PASS",
+    "app-menu-actions-rep": "SKIPPED",
+    "app-tab-cycle": "FAIL: Step 'two-tabs-open' assertion failed: Both tab-00 and tab-01 must be present for tab cycle test",
+    "B-app-pane-zoom": "SKIPPED"
+  },
+  "zed": {},
+  "zed_analysis": {},
+  "config_hashes": {},
+  "crops": {},
+  "gaps": {}
+}

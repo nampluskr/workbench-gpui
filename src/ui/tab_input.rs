@@ -30,7 +30,36 @@ pub fn pin_menu_label(pinned: bool) -> &'static str {
     if pinned { "Unpin Tab" } else { "Pin Tab" }
 }
 
+fn cycle_tab_index(active: Option<usize>, count: usize, forward: bool) -> Option<usize> {
+    let active = active.filter(|&i| count > 1 && i < count)?;
+    Some(if forward {
+        if active + 1 == count { 0 } else { active + 1 }
+    } else if active == 0 {
+        count - 1
+    } else {
+        active - 1
+    })
+}
+
 impl Workbench {
+    fn cycle_tab(&mut self, forward: bool, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(ws) = self.active_ws() else { return };
+        let group = &ws.read(cx).group;
+        let pane = group.active_pane();
+        if let Some(index) = cycle_tab_index(pane.active, pane.tabs.len(), forward) {
+            self.on_tab_press(group.active, index, TabPress::Activate, window, cx);
+        }
+    }
+
+    pub(super) fn on_activate_previous_item(&mut self, action: &pane_actions::ActivatePreviousItem, window: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
+        self.cycle_tab(false, window, cx);
+    }
+
+    pub(super) fn on_activate_next_item(&mut self, action: &pane_actions::ActivateNextItem, window: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(action, self.focus_name(window, cx), cx);
+        self.cycle_tab(true, window, cx);
+    }
 
     /// Keyboard focus to the active pane's active editor, else the center area.
     pub(super) fn focus_active_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) {
@@ -123,6 +152,19 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     use super::{FocusTarget, focus_target, pin_menu_label};
+
+    #[test]
+    fn k10_cycles_tabs_in_both_directions() {
+        assert_eq!(super::cycle_tab_index(Some(2), 3, true), Some(0));
+        assert_eq!(super::cycle_tab_index(Some(0), 3, false), Some(2));
+        assert_eq!(super::cycle_tab_index(Some(1), 3, true), Some(2));
+        assert_eq!(super::cycle_tab_index(Some(1), 3, false), Some(0));
+        for forward in [false, true] {
+            assert_eq!(super::cycle_tab_index(Some(0), 1, forward), None);
+            assert_eq!(super::cycle_tab_index(None, 0, forward), None);
+            assert_eq!(super::cycle_tab_index(Some(3), 3, forward), None);
+        }
+    }
 
     /// A press outside the editor body hands the keyboard to the pane: its editor, or the center area when the pane
     /// is empty or shows a preview (no editor to focus), so typing, Save and Close share one target.

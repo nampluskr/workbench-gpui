@@ -1,0 +1,10 @@
+2026-11-07 07:32:47.737 === ORDER-06 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06) ===
+2026-11-07 07:32:48.404 --- Starting workbench-gpui measurements ---
+2026-11-07 07:32:48.421 Backing up app session...
+2026-11-07 07:32:49.709 Session Start: {
+2026-11-07 07:32:49.712 Session Start:   "exe": "D:\\projects\\workbench-gpui\\target\\debug\\workbench-gpui.exe",
+2026-11-07 07:32:49.715 Session Start:   "started": "2026-11-07T07:32:49.6912919+09:00",
+2026-11-07 07:32:49.719 Session Start:   "exeHash": "E4275650B2806ED0ED3DCEB87DF347FDB5B31F427D7E0B205A6215481CB617BE",
+2026-11-07 07:32:49.722 Session Start:   "fixture": "D:\\projects\\workbench-gpui\\target\\measure-5fd566078d3f4965872f2d2c20605bc8",
+2026-11-07 07:32:49.725 Session Start:   "pid": 41764
+2026-11-07 07:32:49.727 Session Start: }

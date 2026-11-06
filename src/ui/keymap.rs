@@ -42,6 +42,7 @@ pub mod workspace {
             CloseWindow,
             Save,
             ToggleZoom,
+            UseClassicLayout,
             ActivatePaneLeft,
             ActivatePaneRight,
             ActivatePaneUp,
@@ -51,7 +52,7 @@ pub mod workspace {
 }
 
 pub mod pane {
-    gpui_kit::actions!(pane, [CloseActiveItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown]);
+    gpui_kit::actions!(pane, [CloseActiveItem, ActivatePreviousItem, ActivateNextItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown]);
 }
 
 pub mod markdown {
@@ -59,7 +60,7 @@ pub mod markdown {
 }
 
 pub mod zed {
-    gpui_kit::actions!(zed, [Quit, Minimize, Zoom]);
+    gpui_kit::actions!(zed, [Quit, Minimize, Zoom, OpenSettings]);
 }
 
 pub mod multi_workspace {
@@ -500,7 +501,7 @@ pub fn watch(window: &mut Window, cx: &mut App) {
             && event
                 .paths
                 .iter()
-                .any(|p| p.file_name().is_some_and(|n| n.eq_ignore_ascii_case(KEYMAP_FILE)))
+                .any(|p| p.file_name().is_some_and(|n| n.eq_ignore_ascii_case(KEYMAP_FILE) || n.eq_ignore_ascii_case("settings.json")))
         {
             let _ = tx.send(());
         }
@@ -536,7 +537,7 @@ pub fn watch(window: &mut Window, cx: &mut App) {
                         break;
                     }
                 }
-                if cx.update(load).is_err() {
+                if cx.update(|window, cx| { load(window, cx); super::settings::reload(cx); }).is_err() {
                     break;
                 }
             }

@@ -39,6 +39,18 @@ pub const APP_NAME: &str = "workbench-gpui";
 /// v0.2 에서 동작하는 액션(D-13, D-031 ④). Phase 3 에서 `workspace::Open`,
 /// `multi_workspace::ToggleWorkspaceSidebar`, `multi_workspace::FocusWorkspaceSidebar` 를 더했다.
 const AVAILABLE: &[&str] = &[
+    "app_menu::EditorLayout",
+    "pane::ActivatePreviousItem",
+    "pane::ActivateNextItem",
+    "workspace::Save",
+    "input::Undo",
+    "input::Redo",
+    "markdown::OpenPreview",
+    "markdown::OpenPreviewToTheSide",
+    "zed::OpenLicenses",
+    "help::FileBugReport",
+    "help::RequestFeature",
+    "help::Repository",
     "zed::Quit",
     "pane::CloseActiveItem",
     "workspace::CloseWindow",
@@ -116,8 +128,8 @@ fn definition() -> Vec<(String, Vec<Entry>)> {
         (
             "Edit".into(),
             vec![
-                item("Undo", "editor::Undo"),
-                item("Redo", "editor::Redo"),
+                item("Undo", "input::Undo"),
+                item("Redo", "input::Redo"),
                 S,
                 item("Cut", "editor::Cut"),
                 item("Copy", "editor::Copy"),
@@ -162,10 +174,7 @@ fn definition() -> Vec<(String, Vec<Entry>)> {
                 item("Toggle All Docks", "workspace::ToggleAllDocks"),
                 item("Toggle Folder Sidebar", "multi_workspace::ToggleWorkspaceSidebar"),
                 item("Focus Folder Sidebar", "multi_workspace::FocusWorkspaceSidebar"),
-                item("Split Up", "pane::SplitUp"),
-                item("Split Down", "pane::SplitDown"),
-                item("Split Left", "pane::SplitLeft"),
-                item("Split Right", "pane::SplitRight"),
+                item("Editor Layout", "app_menu::EditorLayout"),
                 item("Maximize Pane", "workspace::ToggleZoom"),
                 S,
                 item("Project Panel", "project_panel::ToggleFocus"),
@@ -196,7 +205,14 @@ fn definition() -> Vec<(String, Vec<Entry>)> {
         ),
         (
             "Help".into(),
-            vec![item("View Dependency Licenses", "zed::OpenLicenses")],
+            vec![
+                item("View Dependency Licenses", "zed::OpenLicenses"),
+                S,
+                item("File Bug Report...", "help::FileBugReport"),
+                item("Request Feature...", "help::RequestFeature"),
+                S,
+                item("workbench-gpui Repository", "help::Repository"),
+            ],
         ),
     ]
 }
@@ -236,7 +252,182 @@ const NAME_PROBES: [&str; 8] = [
     "menu-name-6", "menu-name-7",
 ];
 
+fn help_url(action: &str) -> Option<&'static str> {
+    match action {
+        "help::FileBugReport" | "help::RequestFeature" => Some("https://github.com/nampluskr/workbench-gpui/issues/new"),
+        "help::Repository" => Some("https://github.com/nampluskr/workbench-gpui"),
+        _ => None,
+    }
+}
+
+const LICENSES: &[(&str, &str)] = &[
+    ("IBM Plex Sans", include_str!("../../resources/fonts/ibm-plex-sans/license.txt")),
+    ("Lilex", include_str!("../../resources/fonts/lilex/OFL.txt")),
+    ("Zed icons — Lucide", include_str!("../../resources/zed-icons/LICENSES")),
+    ("Zed Apache license", include_str!("../../resources/zed-icons/LICENSE-APACHE")),
+    ("Zed GPL license", include_str!("../../resources/zed-icons/LICENSE-GPL")),
+];
+
+struct Licenses;
+
+impl Render for Licenses {
+    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let mut list = v_flex().id("dependency-licenses").size_full().overflow_y_scroll()
+            .bg(cx.theme().background).text_color(cx.theme().foreground);
+        for (name, text) in LICENSES {
+            list = list.child(div().child(*name)).child(div().child(*text));
+        }
+        list
+    }
+}
+
+const USER_ITEMS: &[(&str, &str)] = &[
+    ("Settings", "Ctrl-,"),
+    ("Keymap", "Ctrl-K Ctrl-S"),
+    ("Themes…", "Ctrl-K Ctrl-T"),
+    ("Icon Themes…", ""),
+    ("Extensions", "Ctrl-Shift-X"),
+];
+const PANEL_LAYOUTS: &[&str] = &["Classic"];
+const EDITOR_LAYOUT: &[(&str, &str)] = &[
+    ("Split Up", "pane::SplitUp"), ("Split Down", "pane::SplitDown"),
+    ("Split Left", "pane::SplitLeft"), ("Split Right", "pane::SplitRight"),
+];
+
+pub struct UserMenu {
+    selected: usize,
+    submenu_bounds: Option<Bounds<Pixels>>,
+    classic: bool,
+    open: bool,
+    panel: bool,
+    focus: FocusHandle,
+    previous: Option<FocusHandle>,
+    button_bounds: Option<Bounds<Pixels>>,
+    _blur: Subscription,
+}
+
+impl UserMenu {
+    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let focus = cx.focus_handle();
+        let blur = cx.on_blur(&focus, window, |this, _, cx| {
+            this.open = false;
+            this.panel = false;
+            this.previous = None;
+            cx.notify();
+        });
+        Self { selected: 0, submenu_bounds: None, classic: true, open: false, panel: false, focus, previous: None, button_bounds: None, _blur: blur }
+    }
+
+    pub fn set_classic(&mut self, classic: bool, cx: &mut Context<Self>) {
+        if self.classic != classic { self.classic = classic; cx.notify(); }
+    }
+
+    fn close(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.submenu_bounds = None;
+        self.open = false;
+        self.panel = false;
+        if let Some(focus) = self.previous.take() {
+            focus.focus(window, cx);
+        }
+        cx.notify();
+    }
+}
+
+impl Render for UserMenu {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let muted = cx.theme().muted_foreground;
+        let hover = cx.theme().secondary_hover;
+        let weak = cx.entity().downgrade();
+        let mut root = div()
+            .on_children_prepainted(move |bounds, _, cx| {
+                let _ = weak.update(cx, |this, _| this.button_bounds = bounds.first().copied());
+            }).id("user-menu").relative().child(
+            div().id("user-menu-button").flex().items_center().justify_center()
+                .size(BUTTON_DEFAULT).text_color(muted).hover(move |s| s.bg(hover))
+                .on_click(cx.listener(|this, _, window, cx| {
+                    if this.open { this.close(window, cx); } else {
+                        this.previous = window.focused(cx);
+                        this.selected = 0;
+                        this.open = true;
+                        this.focus.focus(window, cx);
+                        cx.notify();
+                    }
+                }))
+                .child(super::zed_icons::icon("chevron_down").size(ICON_SMALL)),
+        );
+        if self.open {
+            let mut list = menu_common::list(v_flex(), "user-menu-list", window.viewport_size().height * MAX_HEIGHT_RATIO);
+            for (i, (label, shortcut)) in USER_ITEMS.iter().enumerate() {
+                list = list.child(menu_common::row(("user-menu-item", i)).text_color(if i == 0 { cx.theme().foreground } else { muted })
+                    .when(i == 0 && self.selected == 0, |row| row.bg(hover))
+                    .when(i == 0, |row| row.on_click(cx.listener(|this, _, window, cx| {
+                        this.close(window, cx);
+                        window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx);
+                    })))
+                    .child(*label).child(menu_common::shortcut_cell().child(*shortcut)));
+            }
+            list = list.child(menu_common::separator(cx.theme().border)).child(
+                menu_common::row("panel-layout").relative().when(self.selected == 1, |row| row.bg(hover))
+                    .on_hover(cx.listener(|this, hovered: &bool, _, cx| {
+                        if *hovered { this.selected = 1; this.panel = true; cx.notify(); }
+                    }))
+                    .on_click(cx.listener(|this, _, _, cx| { this.panel = !this.panel; cx.notify(); }))
+                    .child("Panel Layout")
+                    .child(super::zed_icons::icon("chevron_right").size(ICON_SMALL))
+                    .when(self.panel, |row| {
+                        let mut children = v_flex();
+                        for (i, label) in PANEL_LAYOUTS.iter().enumerate() {
+                            children = children.child(menu_common::row(("panel-layout-item", i))
+                                .on_click(cx.listener(|this, _, window, cx| {
+                                    this.close(window, cx);
+                                    window.dispatch_action(Box::new(super::keymap::workspace::UseClassicLayout), cx);
+                                }))
+                                .child(if self.classic { "✓" } else { "" }).child(*label));
+                        }
+                        if !self.classic {
+                            children = children.child(menu_common::row("custom-layout").text_color(muted).child("✓").child("Custom"));
+                        }
+                        let weak = cx.entity().downgrade();
+                        row.child(div().absolute().left_full().top_0().child(deferred(anchored()
+                            .snap_to_window_with_margin(WINDOW_MARGIN)
+                            .child(div().on_children_prepainted(move |bounds, _, cx| {
+                                let _ = weak.update(cx, |this, _| this.submenu_bounds = bounds.first().copied());
+                            }).child(menu_common::popup_surface(div(), cx).child(children)))).with_priority(2)))
+                    }),
+            );
+            let surface = div().key_context(crate::keymap::builtin::MENU_CONTEXT).track_focus(&self.focus)
+                .on_action(cx.listener(|this, _: &menu_actions::Cancel, w, cx| this.close(w, cx)))
+                .on_action(cx.listener(|this, _: &menu_actions::Confirm, window, cx| {
+                    if this.panel {
+                        this.close(window, cx);
+                        window.dispatch_action(Box::new(super::keymap::workspace::UseClassicLayout), cx);
+                    } else if this.selected == 0 {
+                        this.close(window, cx);
+                        window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx);
+                    } else { this.panel = true; cx.notify(); }
+                }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectNext, _, cx| { this.selected = 1 - this.selected; this.panel = false; cx.notify(); }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectPrevious, _, cx| { this.selected = 1 - this.selected; this.panel = false; cx.notify(); }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectChild, _, cx| { if this.selected == 1 { this.panel = true; cx.notify(); } }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectParent, _, cx| { this.panel = false; cx.notify(); }))
+                .on_mouse_down_out(cx.listener(|this, event: &MouseDownEvent, w, cx| {
+                    if !this.button_bounds.is_some_and(|bounds| bounds.contains(&event.position))
+                        && !(this.panel && this.submenu_bounds.is_some_and(|bounds| bounds.contains(&event.position))) {
+                        this.close(w, cx);
+                    }
+                }));
+            root = root.child(div().absolute().top_full().right_0().child(
+                deferred(anchored().snap_to_window_with_margin(WINDOW_MARGIN)
+                    .child(menu_common::popup_surface(surface, cx).child(list))).with_priority(1),
+            ));
+        }
+        root
+    }
+}
+
 pub struct AppMenu {
+    submenu_bounds: Option<Bounds<Pixels>>,
+    layout_selected: Option<usize>,
     menus: Vec<(String, Vec<Entry>)>,
     focus: FocusHandle,
     /// 열린 메뉴 번호. None 이면 닫힘.
@@ -263,6 +454,9 @@ pub struct AppMenu {
 }
 
 impl AppMenu {
+    pub fn is_open(&self) -> bool {
+        self.open.is_some()
+    }
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let focus = cx.focus_handle();
         let blur = cx.on_blur(&focus, window, |this, window, cx| {
@@ -281,6 +475,8 @@ impl AppMenu {
             }
         });
         Self {
+            submenu_bounds: None,
+            layout_selected: None,
             menus: visible_menus(),
             focus,
             open: None,
@@ -311,6 +507,8 @@ impl AppMenu {
     }
 
     fn open_menu(&mut self, index: usize, window: &mut Window, cx: &mut Context<Self>) {
+        self.layout_selected = None;
+        self.submenu_bounds = None;
         if self.menus.is_empty() {
             return;
         }
@@ -338,6 +536,8 @@ impl AppMenu {
 
     /// 닫는다. `restore` 면 원래 포커스로 돌린다(I-309).
     fn close(&mut self, reason: &str, restore: bool, window: &mut Window, cx: &mut Context<Self>) {
+        self.submenu_bounds = None;
+        self.layout_selected = None;
         if self.open.is_none() {
             return;
         }
@@ -373,6 +573,8 @@ impl AppMenu {
     }
 
     fn select(&mut self, index: Option<usize>, cx: &mut Context<Self>) {
+        self.submenu_bounds = None;
+        self.layout_selected = None;
         self.selected = index;
         if self.dev(cx) {
             println!(
@@ -384,6 +586,11 @@ impl AppMenu {
     }
 
     fn step(&mut self, forward: bool, cx: &mut Context<Self>) {
+        if let Some(index) = self.layout_selected {
+            self.layout_selected = Some((index + if forward { 1 } else { EDITOR_LAYOUT.len() - 1 }) % EDITOR_LAYOUT.len());
+            cx.notify();
+            return;
+        }
         let items = self.item_indices();
         if items.is_empty() {
             return;
@@ -429,10 +636,17 @@ impl AppMenu {
     }
 
     fn on_cancel(&mut self, _: &menu_actions::Cancel, window: &mut Window, cx: &mut Context<Self>) {
+        if self.layout_selected.take().is_some() { cx.notify(); return; }
         self.close("cancel", true, window, cx);
     }
 
     fn on_confirm(&mut self, _: &menu_actions::Confirm, window: &mut Window, cx: &mut Context<Self>) {
+        if let Some(index) = self.layout_selected {
+            let action = EDITOR_LAYOUT[index].1;
+            self.close("execute", true, window, cx);
+            if let Ok(action) = cx.build_action(action, None) { window.dispatch_action(action, cx); }
+            return;
+        }
         if let Some(i) = self.selected {
             self.execute(i, "enter", window, cx);
         }
@@ -440,6 +654,11 @@ impl AppMenu {
 
     /// Right: 다음 메뉴, Left: 이전 메뉴. 끝에서 반대편으로 순환한다(I-303, I-310).
     fn on_next_menu(&mut self, _: &menu_actions::SelectChild, window: &mut Window, cx: &mut Context<Self>) {
+        if self.selected.is_some_and(|i| matches!(self.entries().get(i), Some(Entry::Item { action: "app_menu::EditorLayout", .. }))) {
+            self.layout_selected = Some(0);
+            cx.notify();
+            return;
+        }
         if let Some(i) = self.open {
             self.open_menu((i + 1) % self.menus.len(), window, cx);
         }
@@ -451,6 +670,7 @@ impl AppMenu {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
+        if self.layout_selected.take().is_some() { cx.notify(); return; }
         if let Some(i) = self.open {
             let n = self.menus.len();
             self.open_menu((i + n - 1) % n, window, cx);
@@ -462,9 +682,27 @@ impl AppMenu {
         let Some(Entry::Item { action, .. }) = self.entries().get(index).cloned() else {
             return;
         };
+        if action == "app_menu::EditorLayout" {
+            self.selected = Some(index);
+            self.layout_selected = Some(0);
+            cx.notify();
+            return;
+        }
         self.close("execute", true, window, cx);
         if self.dev(cx) {
             println!("[dev] menu-exec action={action} via={via} t_ms={}", now_ms());
+        }
+        if let Some(url) = help_url(action) {
+            cx.open_url(url);
+            return;
+        }
+        if action == "zed::OpenLicenses" {
+            if let Err(error) = gpui_kit::open_window(WindowOptions::default(), cx, |_, cx| {
+                cx.new(|_| Licenses)
+            }) {
+                eprintln!("failed to open dependency licenses: {error}");
+            }
+            return;
         }
         if let Ok(action) = cx.build_action(action, None) {
             window.dispatch_action(action, cx);
@@ -582,6 +820,11 @@ impl AppMenu {
                 true
             }
             Feed::Action { name, chord } => {
+                if EDITOR_LAYOUT.iter().any(|(_, action)| *action == name) {
+                    self.close("execute", true, window, cx);
+                    if let Ok(action) = cx.build_action(name, None) { window.dispatch_action(action, cx); }
+                    return true;
+                }
                 if let Some(index) = self.item_index(name) {
                     self.schedule_item(index, window, cx);
                     return true;
@@ -598,6 +841,9 @@ impl AppMenu {
     }
 
     fn on_mouse_down_out(&mut self, event: &MouseDownEvent, window: &mut Window, cx: &mut Context<Self>) {
+        if self.submenu_bounds.is_some_and(|bounds| bounds.contains(&event.position)) {
+            return;
+        }
         if self
             .bar_bounds
             .is_some_and(|b| b.contains(&event.position))
@@ -656,6 +902,7 @@ impl AppMenu {
                     let selected = self.selected == Some(i);
                     list = list.child(
                         menu_common::row(("app-menu-row", i))
+                            .relative()
                             .when(selected, |row| row.bg(selected_bg))
                             .on_hover(cx.listener(move |this, hovered: &bool, _, cx| {
                                 if *hovered && this.selected != Some(i) {
@@ -670,6 +917,34 @@ impl AppMenu {
                                 row.child(
                                     menu_common::shortcut_cell().text_color(muted).child(s),
                                 )
+                            })
+                            .when(*action == "app_menu::EditorLayout", |row| {
+                                row.child(super::zed_icons::icon("chevron_right").size(ICON_SMALL))
+                                    .when(selected, |row| {
+                                        let mut children = v_flex();
+                                        for (index, (label, action)) in EDITOR_LAYOUT.iter().enumerate() {
+                                            let action = *action;
+                                            let shortcut = keymap::shortcut_for_name(action, prev_focus.as_ref(), window, cx);
+                                            children = children.child(menu_common::row(("editor-layout", index))
+                                                .when(self.layout_selected == Some(index), |row| row.bg(selected_bg))
+                                                .on_hover(cx.listener(move |this, hovered: &bool, _, cx| {
+                                                    if *hovered { this.layout_selected = Some(index); cx.notify(); }
+                                                }))
+                                                .on_click(cx.listener(move |this, _, window, cx| {
+                                                    this.close("execute", true, window, cx);
+                                                    if let Ok(action) = cx.build_action(action, None) { window.dispatch_action(action, cx); }
+                                                    cx.stop_propagation();
+                                                }))
+                                                .child(*label)
+                                                .when_some(shortcut, |row, shortcut| row.child(menu_common::shortcut_cell().text_color(muted).child(shortcut))));
+                                        }
+                                        let weak = cx.entity().downgrade();
+                                        row.child(div().absolute().left_full().top_0().child(deferred(anchored()
+                                            .snap_to_window_with_margin(WINDOW_MARGIN)
+                                            .child(div().on_children_prepainted(move |bounds, _, cx| {
+                                                let _ = weak.update(cx, |this, _| this.submenu_bounds = bounds.first().copied());
+                                            }).child(menu_common::popup_surface(div(), cx).child(children)))).with_priority(2)))
+                                    })
                             }),
                     );
                 }
@@ -802,34 +1077,61 @@ mod tests {
     }
 
     #[test]
-    fn phase3_menus_follow_9_2_order() {
+    fn k09_menus_follow_zed_order_with_available_actions() {
         let menus = visible_menus();
         let names: Vec<_> = menus.iter().map(|(n, _)| n.as_str()).collect();
-        assert_eq!(names, ["workbench-gpui", "File", "View", "Window"]);
+        assert_eq!(names, ["workbench-gpui", "File", "Edit", "View", "Go", "Window", "Help"]);
         assert_eq!(labels(&menus[0].1), ["Quit workbench-gpui"]);
-        assert_eq!(labels(&menus[1].1), ["Open Folder...", "---", "Close Editor", "Close Window"]);
+        assert_eq!(labels(&menus[1].1), ["Open Folder...", "---", "Save", "---", "Close Editor", "Close Window"]);
+        assert_eq!(labels(&menus[2].1), ["Undo", "Redo"]);
         assert_eq!(
-            labels(&menus[2].1),
+            labels(&menus[3].1),
             [
                 "Toggle Left Dock",
                 "Toggle Folder Sidebar",
                 "Focus Folder Sidebar",
-                "Split Up",
-                "Split Down",
-                "Split Left",
-                "Split Right",
+                "Editor Layout",
                 "Maximize Pane",
                 "---",
-                "Project Panel"
+                "Project Panel",
+                "Open Markdown Preview",
+                "Open Markdown Preview to the Side"
             ]
         );
-        assert_eq!(labels(&menus[3].1), ["Minimize", "Zoom"]);
+        assert_eq!(labels(&menus[4].1), ["Previous Tab", "Next Tab"]);
+        assert_eq!(labels(&menus[5].1), ["Minimize", "Zoom"]);
+        assert_eq!(labels(&menus[6].1), ["View Dependency Licenses", "---", "File Bug Report...", "Request Feature...", "---", "workbench-gpui Repository"]);
     }
 
     #[test]
     fn definition_matches_9_2_tree() {
         // 9.2절 그림의 항목 수(구분선 포함)와 같다.
         let counts: Vec<_> = definition().iter().map(|(_, e)| e.len()).collect();
-        assert_eq!(counts, [13, 15, 12, 15, 18, 9, 2, 1]);
+        assert_eq!(counts, [13, 15, 12, 15, 15, 9, 2, 6]);
+    }
+
+    #[test]
+    fn k09_help_targets_and_bundled_licenses() {
+        assert_eq!(super::help_url("help::FileBugReport"), Some("https://github.com/nampluskr/workbench-gpui/issues/new"));
+        assert_eq!(super::help_url("help::RequestFeature"), super::help_url("help::FileBugReport"));
+        assert_eq!(super::help_url("help::Repository"), Some("https://github.com/nampluskr/workbench-gpui"));
+        assert_eq!(super::help_url("workspace::Save"), None);
+        assert_eq!(super::LICENSES.len(), 5);
+        assert!(super::LICENSES.iter().all(|(_, text)| text.contains("License") || text.contains("LICENSE")));
+        assert_eq!(super::PANEL_LAYOUTS, ["Classic"]);
+        assert_eq!(super::EDITOR_LAYOUT, [("Split Up", "pane::SplitUp"), ("Split Down", "pane::SplitDown"), ("Split Left", "pane::SplitLeft"), ("Split Right", "pane::SplitRight")]);
+        assert_eq!(super::USER_ITEMS.iter().map(|(name, _)| *name).collect::<Vec<_>>(), ["Settings", "Keymap", "Themes…", "Icon Themes…", "Extensions"]);
+    }
+
+    #[test]
+    fn k09_editor_menu_uses_existing_input_actions() {
+        use gpui_kit::Action as _;
+        use gpui_kit::component::input::{Redo, Undo};
+        assert!(super::AVAILABLE.contains(&Undo.name()));
+        assert!(super::AVAILABLE.contains(&Redo.name()));
+        let menus = visible_menus();
+        for action in [Undo.name(), Redo.name(), "workspace::Save", "markdown::OpenPreview", "markdown::OpenPreviewToTheSide"] {
+            assert!(menus.iter().flat_map(|(_, entries)| entries).any(|entry| matches!(entry, Entry::Item { action: name, .. } if *name == action)));
+        }
     }
 }

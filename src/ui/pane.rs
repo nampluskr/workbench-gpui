@@ -229,7 +229,7 @@ pub struct DividerSides {
 /// selection (virtual columns, wrapped rows). Deferred: gpui takes the listener list out while dispatching.
 /// `readonly` while the first read is pending (`!Tab::loaded`). The legacy `bordered` and divider-side refinements
 /// are overridden by I-7: pane/tab/divider frames own every boundary; the input has no border or corner radius.
-pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool, sides: DividerSides) -> impl IntoElement {
+pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool, sides: DividerSides, cx: &App) -> impl IntoElement {
     div()
         .size_full()
         .capture_any_mouse_down(|event, window, cx| {
@@ -254,7 +254,7 @@ pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool,
                 // I-7: pane/tab/divider frames own the boundary, not the input control.
                 .border_0()
                 .rounded_none()
-                .text_size(metrics::BUFFER_FONT_SIZE)
+                .text_size(super::settings::buffer_size(cx))
                 .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
                 .h_full(),
         )

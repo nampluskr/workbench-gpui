@@ -69,6 +69,7 @@ pub const BUILTIN: &[Builtin] = &[
     b("left", "menu", "menu::SelectParent", "I-517"),
     // 전역(컨텍스트 없음, 빈 문자열). 02 9.2절 키 열(A-18.11)의 ☰ 메뉴 항목 키 (D-2 이후 변경, D-031 ③).
     b("ctrl-q", "", "zed::Quit", "I-341"),
+    b("ctrl-,", "", "zed::OpenSettings", "K-11, core ORDER-06-R1"),
     b("ctrl-shift-w", "", "workspace::CloseWindow", "I-358"),
     // 창·작업 영역 (I-022~I-024, I-310, A-13.1, A-17.1·A-17.2·A-17.6~A-17.8).
     b("ctrl-b", "Workspace", "workspace::ToggleLeftDock", "I-022, A-17.7"),
@@ -83,6 +84,8 @@ pub const BUILTIN: &[Builtin] = &[
     // Pin and split (P4-2, P4-3b). Zed binds them in the Pane / Editor contexts; the editor and the tab bar sit inside Workspace here.
     // Pane context only: the sidebar, the project panel and its name input are outside it (P4-23b-R1).
     b("ctrl-k shift-enter", "Pane", "pane::TogglePinTab", "I-065"),
+    b("ctrl-pageup", "Pane", "pane::ActivatePreviousItem", "K-10, core ORDER-06"),
+    b("ctrl-pagedown", "Pane", "pane::ActivateNextItem", "K-10, core ORDER-06"),
     // Zed binds these in Editor / MarkdownPreview with a `.md` condition; the handler does nothing for other files.
     b("ctrl-shift-v", "Pane", "markdown::OpenPreview", "I-044, I-045"),
     b("ctrl-k v", "Pane", "markdown::OpenPreviewToTheSide", "I-044"),

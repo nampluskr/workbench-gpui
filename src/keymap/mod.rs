@@ -20,7 +20,11 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("workspace::CopyRelativePath", false),
     ("workspace::CloseWindow", false),
     ("workspace::Save", false),
+    ("workspace::UseClassicLayout", false),
+    ("zed::OpenSettings", false),
     ("pane::CloseActiveItem", false),
+    ("pane::ActivatePreviousItem", false),
+    ("pane::ActivateNextItem", false),
     ("pane::TogglePinTab", false),
     ("markdown::OpenPreview", false),
     ("markdown::OpenPreviewToTheSide", false),
@@ -83,6 +87,26 @@ mod tests {
         for b in builtin::BUILTIN {
             assert!(is_known_action(b.action), "{}", b.action);
         }
+    }
+
+    #[test]
+    fn k10_tab_cycle_keys_match_tauri() {
+        for (keys, action) in [
+            ("ctrl-pageup", "pane::ActivatePreviousItem"),
+            ("ctrl-pagedown", "pane::ActivateNextItem"),
+        ] {
+            let binding = builtin::BUILTIN.iter().find(|binding| binding.keys == keys).unwrap();
+            assert_eq!((binding.context, binding.action), (builtin::PANE_CONTEXT, action));
+            assert!(is_known_action(action));
+        }
+    }
+
+    #[test]
+    fn k11_settings_and_layout_actions_registered() {
+        let binding = builtin::BUILTIN.iter().find(|binding| binding.keys == "ctrl-,").unwrap();
+        assert_eq!((binding.context, binding.action), ("", "zed::OpenSettings"));
+        assert!(is_known_action(binding.action));
+        assert!(is_known_action("workspace::UseClassicLayout"));
     }
 
     /// P4-23b-R1 (I-731, I-065): pin and split keys apply inside the Pane context only; the Workspace chords stay.

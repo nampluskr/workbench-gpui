@@ -9,6 +9,7 @@
 
 use gpui_kit::component::{ActiveTheme as _, h_flex};
 use gpui_kit::*;
+use gpui_kit::prelude::FluentBuilder as _;
 
 use super::layout_probe::probe;
 use super::metrics::{
@@ -81,7 +82,7 @@ impl WindowButton {
 /// L-87 왼쪽 묶음: [☰ 메뉴] → [폴더 이름]. 폴더 이름 버튼은 이름 표시와 툴팁만 둔다(D-16).
 /// 폴더 이름은 활성 폴더 이름(40자 말줄임, L-88, A-13.9), 폴더가 없으면 `Open Recent Project`(Muted, L-227). 툴팁 `Recent Projects`(L-226).
 /// 툴팁의 액션 `projects::OpenRecent` 는 v0.2 에 없어 단축키 없이 제목만 보인다(R-7, L-223).
-fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl IntoElement {
+fn left_group(app_menu: AnyView, folder_name: Option<String>, menu_open: bool, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     let hover_bg = theme.secondary_hover;
     h_flex()
@@ -92,7 +93,7 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
         .pl(TITLE_BAR_PADDING_LEFT)
         .gap(super::metrics::TITLE_BAR_LEFT_GROUP_GAP)
         .child(app_menu)
-        .child(
+        .when(!menu_open, |group| group.child(
             div()
                 .id("title-folder-name")
                 .flex()
@@ -107,13 +108,15 @@ fn left_group(app_menu: AnyView, folder_name: Option<String>, cx: &App) -> impl 
                     super::tooltip::Line::action("Recent Projects", "projects::OpenRecent"),
                 )))
                 .child(folder_name.unwrap_or_else(|| "Open Recent Project".into())),
-        )
+        ))
 }
 
 /// 타이틀 바: [왼쪽 묶음] + [Drag 영역 (flex_1)] + [최소화][최대화|복원][닫기] (L-83 오른쪽 끝, L-87).
 pub fn title_bar(
     glyph_font: SharedString,
     app_menu: AnyView,
+    user_menu: AnyView,
+    menu_open: bool,
     folder_name: Option<String>,
     window: &Window,
     cx: &App,
@@ -133,12 +136,12 @@ pub fn title_bar(
     };
 
     h_flex()
-        .on_children_prepainted(probe(&["title-left", "title-bar-drag", "window-controls"]))
+        .on_children_prepainted(probe(&["title-left", "title-bar-drag", "user-menu", "window-controls"]))
         .id("title-bar")
         .flex_shrink_0()
         .w_full()
         .h(TITLE_BAR_HEIGHT)
-        .child(left_group(app_menu, folder_name, cx))
+        .child(left_group(app_menu, folder_name, menu_open, cx))
         .child(
             h_flex()
                 .id("title-bar-drag")
@@ -146,6 +149,7 @@ pub fn title_bar(
                 .h_full()
                 .window_control_area(WindowControlArea::Drag),
         )
+        .child(user_menu)
         .child(
             h_flex()
                 .on_children_prepainted(probe(&[

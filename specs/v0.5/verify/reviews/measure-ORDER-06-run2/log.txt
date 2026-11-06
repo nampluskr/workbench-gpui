@@ -1,0 +1,350 @@
+2026-11-07 07:54:22.734 === ORDER-06 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06) ===
+2026-11-07 07:54:23.419 --- Starting workbench-gpui measurements ---
+2026-11-07 07:54:23.426 Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07 07:54:24.842 App launched via session.ps1: PID=34552, fixtureDir='D:\projects\workbench-gpui\target\measure-548f4549120a44b8916fe48a67e3180a'
+2026-11-07 07:54:26.728 Window handle HWND=0x700996
+2026-11-07 07:54:28.993 Resize: {
+2026-11-07 07:54:28.995 Resize:   "hwnd": "0x700996",
+2026-11-07 07:54:28.996 Resize:   "desktop": "Default",
+2026-11-07 07:54:28.998 Resize:   "title": "",
+2026-11-07 07:54:29.000 Resize:   "className": "workbench-gpui",
+2026-11-07 07:54:29.001 Resize:   "workArea_SPI": {
+2026-11-07 07:54:29.003 Resize:     "left": 0,
+2026-11-07 07:54:29.004 Resize:     "top": 0,
+2026-11-07 07:54:29.005 Resize:     "right": 1920,
+2026-11-07 07:54:29.006 Resize:     "bottom": 1032,
+2026-11-07 07:54:29.007 Resize:     "width": 1920,
+2026-11-07 07:54:29.009 Resize:     "height": 1032
+2026-11-07 07:54:29.010 Resize:   },
+2026-11-07 07:54:29.011 Resize:   "workArea_Monitor": {
+2026-11-07 07:54:29.012 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 07:54:29.014 Resize:     "left": 0,
+2026-11-07 07:54:29.015 Resize:     "top": 0,
+2026-11-07 07:54:29.017 Resize:     "right": 1920,
+2026-11-07 07:54:29.018 Resize:     "bottom": 1032,
+2026-11-07 07:54:29.020 Resize:     "width": 1920,
+2026-11-07 07:54:29.021 Resize:     "height": 1032
+2026-11-07 07:54:29.022 Resize:   },
+2026-11-07 07:54:29.023 Resize:   "workAreaCenter": {
+2026-11-07 07:54:29.025 Resize:     "x": 960.0,
+2026-11-07 07:54:29.026 Resize:     "y": 516.0
+2026-11-07 07:54:29.027 Resize:   },
+2026-11-07 07:54:29.029 Resize:   "windowRect": {
+2026-11-07 07:54:29.030 Resize:     "left": 232,
+2026-11-07 07:54:29.032 Resize:     "top": 90,
+2026-11-07 07:54:29.037 Resize:     "right": 1688,
+2026-11-07 07:54:29.039 Resize:     "bottom": 950,
+2026-11-07 07:54:29.040 Resize:     "width": 1456,
+2026-11-07 07:54:29.042 Resize:     "height": 860
+2026-11-07 07:54:29.043 Resize:   },
+2026-11-07 07:54:29.045 Resize:   "windowCenter": {
+2026-11-07 07:54:29.046 Resize:     "x": 960.0,
+2026-11-07 07:54:29.047 Resize:     "y": 520.0
+2026-11-07 07:54:29.048 Resize:   },
+2026-11-07 07:54:29.050 Resize:   "windowCenterDiff": {
+2026-11-07 07:54:29.051 Resize:     "dx": 0.0,
+2026-11-07 07:54:29.052 Resize:     "dy": 4.0
+2026-11-07 07:54:29.054 Resize:   },
+2026-11-07 07:54:29.055 Resize:   "clientRect": {
+2026-11-07 07:54:29.057 Resize:     "width": 1440,
+2026-11-07 07:54:29.059 Resize:     "height": 852
+2026-11-07 07:54:29.065 Resize:   },
+2026-11-07 07:54:29.067 Resize:   "clientToScreen": {
+2026-11-07 07:54:29.068 Resize:     "x": 240,
+2026-11-07 07:54:29.069 Resize:     "y": 90
+2026-11-07 07:54:29.071 Resize:   },
+2026-11-07 07:54:29.072 Resize:   "clientScreenRect": {
+2026-11-07 07:54:29.073 Resize:     "left": 240,
+2026-11-07 07:54:29.074 Resize:     "top": 90,
+2026-11-07 07:54:29.076 Resize:     "right": 1680,
+2026-11-07 07:54:29.077 Resize:     "bottom": 942,
+2026-11-07 07:54:29.078 Resize:     "width": 1440,
+2026-11-07 07:54:29.079 Resize:     "height": 852
+2026-11-07 07:54:29.080 Resize:   },
+2026-11-07 07:54:29.081 Resize:   "clientCenter": {
+2026-11-07 07:54:29.083 Resize:     "x": 960.0,
+2026-11-07 07:54:29.084 Resize:     "y": 516.0
+2026-11-07 07:54:29.085 Resize:   },
+2026-11-07 07:54:29.087 Resize:   "clientCenterDiff": {
+2026-11-07 07:54:29.088 Resize:     "dx": 0.0,
+2026-11-07 07:54:29.089 Resize:     "dy": 0.0
+2026-11-07 07:54:29.090 Resize:   },
+2026-11-07 07:54:29.092 Resize:   "capture": {
+2026-11-07 07:54:29.093 Resize:     "ok": false,
+2026-11-07 07:54:29.094 Resize:     "path": ""
+2026-11-07 07:54:29.095 Resize:   }
+2026-11-07 07:54:29.097 Resize: }
+2026-11-07 07:54:29.718 Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07 07:54:30.254 Foreground check for 'App started': target=0x700996, foreground=0x10A0846
+2026-11-07 07:54:30.256 Warning: Foreground window (17434694) != target (7342486) during App started
+2026-11-07 07:54:30.298 Project tree not visible. Opening project tree / left dock...
+2026-11-07 07:54:30.322 Clicking 'project-empty-open'...
+2026-11-07 07:54:30.900 Step 'project-tree-open' confirmed in layout snapshot (seq=2)
+2026-11-07 07:54:30.915 ==========================================================================
+2026-11-07 07:54:30.916 [app] Running step 'app-menu-bar-open': App menu bar open (≡), menu item gaps (I-321), and folder name absence
+2026-11-07 07:54:30.918 ==========================================================================
+2026-11-07 07:54:31.132 Foreground check for 'app-menu-bar-open': target=0x700996, foreground=0x700996
+2026-11-07 07:54:31.144 Markdown file not active in editor. Ensuring markdown file is open...
+2026-11-07 07:54:31.418 Double-clicking markdown file row at (660,214)...
+2026-11-07 07:54:32.586 Step 'markdown-file-open' confirmed in layout snapshot (seq=4)
+2026-11-07 07:54:32.611 Before opening menu: title-folder-name present = True
+2026-11-07 07:54:32.638 Clicking app-menu-button at (559,106)...
+2026-11-07 07:54:33.400 Step 'menu-bar-open' confirmed in layout snapshot (seq=5)
+2026-11-07 07:54:33.402 While menu bar is open: title-folder-name present = False (expected: False)
+2026-11-07 07:54:33.433 [CROP] menu-name-0 (menu-name-0): client=(308,5,100,22), screen=(548,95), crop=[542,89,654,123] (112x34)
+2026-11-07 07:54:33.450 [CROP] menu-name-1 (menu-name-1): client=(412,5,32,22), screen=(652,95), crop=[646,89,690,123] (44x34)
+2026-11-07 07:54:33.453 [CROP] menu-name-2 (menu-name-2): client=(448,5,34,22), screen=(688,95), crop=[682,89,728,123] (46x34)
+2026-11-07 07:54:33.457 [CROP] menu-name-3 (menu-name-3): client=(486,5,39,22), screen=(726,95), crop=[720,89,771,123] (51x34)
+2026-11-07 07:54:33.460 [CROP] menu-name-4 (menu-name-4): client=(529,5,28,22), screen=(769,95), crop=[763,89,803,123] (40x34)
+2026-11-07 07:54:33.463 [CROP] menu-name-5 (menu-name-5): client=(561,5,56,22), screen=(801,95), crop=[795,89,863,123] (68x34)
+2026-11-07 07:54:33.465 [CROP] menu-name-6 (menu-name-6): client=(621,5,38,22), screen=(861,95), crop=[855,89,905,123] (50x34)
+2026-11-07 07:54:33.468 Found 7 menu name boxes in bar
+2026-11-07 07:54:33.476 Menu item gap [menu-name-0 -> menu-name-1]: 4 px (I-321 target: 4.0)
+2026-11-07 07:54:33.478 Menu item gap [menu-name-1 -> menu-name-2]: 4 px (I-321 target: 4.0)
+2026-11-07 07:54:33.479 Menu item gap [menu-name-2 -> menu-name-3]: 4 px (I-321 target: 4.0)
+2026-11-07 07:54:33.480 Menu item gap [menu-name-3 -> menu-name-4]: 4 px (I-321 target: 4.0)
+2026-11-07 07:54:33.482 Menu item gap [menu-name-4 -> menu-name-5]: 4 px (I-321 target: 4.0)
+2026-11-07 07:54:33.483 Menu item gap [menu-name-5 -> menu-name-6]: 4 px (I-321 target: 4.0)
+2026-11-07 07:54:33.694 Foreground check for 'Capture app-menu-bar-open': target=0x700996, foreground=0x700996
+2026-11-07 07:54:35.282 Capture 'app-menu-bar-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-menu-bar-open.png (exit=0)
+2026-11-07 07:54:35.286 [app] Step 'app-menu-bar-open' finished successfully.
+2026-11-07 07:54:35.287 ==========================================================================
+2026-11-07 07:54:35.288 [app] Running step 'app-menu-dropdowns': Capture each app menu dropdown and confirm folder name restoration on close
+2026-11-07 07:54:35.289 ==========================================================================
+2026-11-07 07:54:35.499 Foreground check for 'app-menu-dropdowns': target=0x700996, foreground=0x700996
+2026-11-07 07:54:35.509 Clicking menu item 'workbench-gpui' (menu-name-0) at (598,106)...
+2026-11-07 07:54:36.382 Foreground check for 'Capture app-menu-00-workbench-gpui': target=0x700996, foreground=0x700996
+2026-11-07 07:54:38.144 Capture 'app-menu-00-workbench-gpui' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-menu-00-workbench-gpui.png (exit=0)
+2026-11-07 07:54:38.181 Warning: coord for menu-name-1 not found
+2026-11-07 07:54:38.207 Warning: coord for menu-name-2 not found
+2026-11-07 07:54:38.232 Warning: coord for menu-name-3 not found
+2026-11-07 07:54:38.251 Warning: coord for menu-name-4 not found
+2026-11-07 07:54:38.272 Warning: coord for menu-name-5 not found
+2026-11-07 07:54:38.298 Warning: coord for menu-name-6 not found
+2026-11-07 07:54:38.299 Dismissing app menu bar with Esc twice...
+2026-11-07 07:54:39.154 Step 'menu-bar-closed' confirmed in layout snapshot (seq=8)
+2026-11-07 07:54:39.155 Confirmed: title-folder-name successfully restored after menu closed.
+2026-11-07 07:54:39.361 Foreground check for 'Capture app-menu-bar-closed': target=0x700996, foreground=0x700996
+2026-11-07 07:54:40.905 Capture 'app-menu-bar-closed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-menu-bar-closed.png (exit=0)
+2026-11-07 07:54:40.906 [app] Step 'app-menu-dropdowns' finished successfully.
+2026-11-07 07:54:40.907 ==========================================================================
+2026-11-07 07:54:40.908 [app] Running step 'app-user-menu': App "v" user menu, inactive items safe click, Panel Layout submenu
+2026-11-07 07:54:40.909 ==========================================================================
+2026-11-07 07:54:41.120 Foreground check for 'app-user-menu': target=0x700996, foreground=0x700996
+2026-11-07 07:54:41.140 Clicking app 'v' user-menu button at (1561,106)...
+2026-11-07 07:54:42.081 Foreground check for 'Capture app-user-menu': target=0x700996, foreground=0x700996
+2026-11-07 07:54:43.730 Capture 'app-user-menu' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-user-menu.png (exit=0)
+2026-11-07 07:54:43.732 Clicking inactive Settings item in user-menu (must be safe no-op)...
+2026-11-07 07:54:44.247 Confirmed: Inactive item click was completely safe (no crash).
+2026-11-07 07:54:44.877 Navigating to Panel Layout submenu (Down 6 times, Right 1 time)...
+2026-11-07 07:54:46.770 Foreground check for 'Capture app-user-menu-panel-layout': target=0x700996, foreground=0x700996
+2026-11-07 07:54:48.322 Capture 'app-user-menu-panel-layout' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-user-menu-panel-layout.png (exit=0)
+2026-11-07 07:54:48.324 Dismissing user-menu with Esc...
+2026-11-07 07:54:49.074 [app] Step 'app-user-menu' finished successfully.
+2026-11-07 07:54:49.076 ==========================================================================
+2026-11-07 07:54:49.077 [app] Running step 'app-menu-help-licenses': Help > View Dependency Licenses window open, verify bundled licenses, and close
+2026-11-07 07:54:49.078 ==========================================================================
+2026-11-07 07:54:49.295 Foreground check for 'app-menu-help-licenses': target=0x700996, foreground=0x700996
+2026-11-07 07:54:50.608 Selecting 'View Dependency Licenses' (Down 1, Enter)...
+2026-11-07 07:54:52.414 ERROR in [app] step 'app-menu-help-licenses': Dependency Licenses window HWND was not detected!
+2026-11-07 07:54:52.415 ==========================================================================
+2026-11-07 07:54:52.416 [app] Running step 'app-menu-actions-rep': Representative menu actions execution (Save, Undo/Redo, Split, Preview)
+2026-11-07 07:54:52.417 ==========================================================================
+2026-11-07 07:54:52.634 Foreground check for 'app-menu-actions-rep': target=0x700996, foreground=0x700996
+2026-11-07 07:54:52.635 Testing Save action (Ctrl-S)...
+2026-11-07 07:54:53.163 Save action triggered successfully.
+2026-11-07 07:54:53.165 Testing Undo (Ctrl-Z) and Redo (Ctrl-Y)...
+2026-11-07 07:54:53.812 Undo/Redo actions triggered safely.
+2026-11-07 07:54:53.818 Testing Split Right (Ctrl-\)...
+2026-11-07 07:54:54.772 Foreground check for 'Capture app-action-split-right': target=0x700996, foreground=0x700996
+2026-11-07 07:54:56.629 Capture 'app-action-split-right' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-action-split-right.png (exit=0)
+2026-11-07 07:54:56.631 Testing Open Markdown Preview to the Side (Ctrl-K V)...
+2026-11-07 07:54:58.039 Foreground check for 'Capture app-action-preview-side': target=0x700996, foreground=0x700996
+2026-11-07 07:54:59.802 Capture 'app-action-preview-side' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-action-preview-side.png (exit=0)
+2026-11-07 07:54:59.804 Cleaning up preview tab and split pane (Ctrl-W twice)...
+2026-11-07 07:55:00.866 [app] Step 'app-menu-actions-rep' finished successfully.
+2026-11-07 07:55:00.868 ==========================================================================
+2026-11-07 07:55:00.868 [app] Running step 'app-tab-cycle': Tab cycling via Ctrl-PageDown and Ctrl-PageUp with >= 2 tabs
+2026-11-07 07:55:00.869 ==========================================================================
+2026-11-07 07:55:01.085 Foreground check for 'app-tab-cycle': target=0x700996, foreground=0x700996
+2026-11-07 07:55:01.108 Markdown file not active in editor. Ensuring markdown file is open...
+2026-11-07 07:55:01.375 Double-clicking markdown file row at (660,214)...
+2026-11-07 07:55:02.516 Step 'markdown-file-open' confirmed in layout snapshot (seq=17)
+2026-11-07 07:55:02.517 Opening Markdown Preview (Ctrl-Shift-V) to have 2 tabs...
+2026-11-07 07:55:08.732 ERROR: Step 'two-tabs-open' failed expectation: Both tab-00 and tab-01 must be present for tab cycle test
+2026-11-07 07:55:08.941 Foreground check for 'Capture error-two-tabs-open': target=0x700996, foreground=0x700996
+2026-11-07 07:55:10.572 Capture 'error-two-tabs-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\error-two-tabs-open.png (exit=0)
+2026-11-07 07:55:10.575 ERROR in [app] step 'app-tab-cycle': Step 'two-tabs-open' assertion failed: Both tab-00 and tab-01 must be present for tab cycle test
+2026-11-07 07:55:10.576 ==========================================================================
+2026-11-07 07:55:10.577 [app] Running step 'B-app-pane-zoom': App pane zoom state (minimize.svg via Shift-Escape)
+2026-11-07 07:55:10.578 ==========================================================================
+2026-11-07 07:55:10.808 Foreground check for 'B-app-pane-zoom': target=0x700996, foreground=0x700996
+2026-11-07 07:55:10.830 Markdown file not active in editor. Ensuring markdown file is open...
+2026-11-07 07:55:11.126 Double-clicking markdown file row at (660,214)...
+2026-11-07 07:55:12.330 Step 'markdown-file-open' confirmed in layout snapshot (seq=17)
+2026-11-07 07:55:12.332 Sending Shift-Escape (workspace::ToggleZoom, I-737) to enter zoomed state...
+2026-11-07 07:55:13.095 Step 'tabbar-zoomed' confirmed in layout snapshot (seq=17)
+2026-11-07 07:55:13.097 [CROP] minimize (tab-btn-zoom): client=(1412,37,22,22), screen=(1652,127), crop=[1646,121,1680,155] (34x34)
+2026-11-07 07:55:13.311 Foreground check for 'Capture app-tabbar-zoomed': target=0x700996, foreground=0x700996
+2026-11-07 07:55:14.966 Capture 'app-tabbar-zoomed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\app-tabbar-zoomed.png (exit=0)
+2026-11-07 07:55:14.968 Restoring unzoomed state via Shift-Escape...
+2026-11-07 07:55:15.499 [app] Step 'B-app-pane-zoom' finished successfully.
+2026-11-07 07:55:15.500 Cleaning up workbench-gpui process (PID=34552)...
+2026-11-07 07:55:18.583 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 07:55:19.816 Session Stop: {
+2026-11-07 07:55:19.818 Session Stop:   "fixtureRemoved": true,
+2026-11-07 07:55:19.819 Session Stop:   "restored": true,
+2026-11-07 07:55:19.820 Session Stop:   "files": {
+2026-11-07 07:55:19.822 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 07:55:19.823 Session Stop:   },
+2026-11-07 07:55:19.824 Session Stop:   "exeUnchanged": true
+2026-11-07 07:55:19.826 Session Stop: }
+2026-11-07 07:55:19.832 --- Starting Zed measurements ---
+2026-11-07 07:55:19.852 --- Zed Config Status (BEFORE) ---
+2026-11-07 07:55:19.856   settings.json: Exists=True, Sha256=C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2, Length=1031
+2026-11-07 07:55:19.857   keymap.json: Exists=False, Sha256=ABSENT, Length=0
+2026-11-07 07:55:19.870 Zed top-level HWNDs before launch: 0x15A0A7E
+2026-11-07 07:55:19.871 Launching Zed (new window only, -a forbidden): C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe -n "D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\order06-fixture\00-order06.md"
+2026-11-07 07:55:21.632 New Zed window found: HWND=0xC30C08
+2026-11-07 07:55:24.644 Resizing Zed to 1440x852 client...
+2026-11-07 07:55:26.525 Resize: {
+2026-11-07 07:55:26.526 Resize:   "hwnd": "0xC30C08",
+2026-11-07 07:55:26.527 Resize:   "desktop": "Default",
+2026-11-07 07:55:26.528 Resize:   "title": "",
+2026-11-07 07:55:26.529 Resize:   "className": "Zed",
+2026-11-07 07:55:26.530 Resize:   "workArea_SPI": {
+2026-11-07 07:55:26.530 Resize:     "left": 0,
+2026-11-07 07:55:26.531 Resize:     "top": 0,
+2026-11-07 07:55:26.532 Resize:     "right": 1920,
+2026-11-07 07:55:26.533 Resize:     "bottom": 1032,
+2026-11-07 07:55:26.534 Resize:     "width": 1920,
+2026-11-07 07:55:26.534 Resize:     "height": 1032
+2026-11-07 07:55:26.535 Resize:   },
+2026-11-07 07:55:26.536 Resize:   "workArea_Monitor": {
+2026-11-07 07:55:26.537 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 07:55:26.537 Resize:     "left": 0,
+2026-11-07 07:55:26.539 Resize:     "top": 0,
+2026-11-07 07:55:26.539 Resize:     "right": 1920,
+2026-11-07 07:55:26.540 Resize:     "bottom": 1032,
+2026-11-07 07:55:26.541 Resize:     "width": 1920,
+2026-11-07 07:55:26.542 Resize:     "height": 1032
+2026-11-07 07:55:26.543 Resize:   },
+2026-11-07 07:55:26.543 Resize:   "workAreaCenter": {
+2026-11-07 07:55:26.544 Resize:     "x": 960.0,
+2026-11-07 07:55:26.545 Resize:     "y": 516.0
+2026-11-07 07:55:26.546 Resize:   },
+2026-11-07 07:55:26.547 Resize:   "windowRect": {
+2026-11-07 07:55:26.547 Resize:     "left": 232,
+2026-11-07 07:55:26.548 Resize:     "top": 90,
+2026-11-07 07:55:26.549 Resize:     "right": 1688,
+2026-11-07 07:55:26.550 Resize:     "bottom": 950,
+2026-11-07 07:55:26.550 Resize:     "width": 1456,
+2026-11-07 07:55:26.551 Resize:     "height": 860
+2026-11-07 07:55:26.552 Resize:   },
+2026-11-07 07:55:26.553 Resize:   "windowCenter": {
+2026-11-07 07:55:26.560 Resize:     "x": 960.0,
+2026-11-07 07:55:26.561 Resize:     "y": 520.0
+2026-11-07 07:55:26.562 Resize:   },
+2026-11-07 07:55:26.563 Resize:   "windowCenterDiff": {
+2026-11-07 07:55:26.563 Resize:     "dx": 0.0,
+2026-11-07 07:55:26.564 Resize:     "dy": 4.0
+2026-11-07 07:55:26.565 Resize:   },
+2026-11-07 07:55:26.566 Resize:   "clientRect": {
+2026-11-07 07:55:26.566 Resize:     "width": 1440,
+2026-11-07 07:55:26.568 Resize:     "height": 852
+2026-11-07 07:55:26.568 Resize:   },
+2026-11-07 07:55:26.569 Resize:   "clientToScreen": {
+2026-11-07 07:55:26.570 Resize:     "x": 240,
+2026-11-07 07:55:26.571 Resize:     "y": 90
+2026-11-07 07:55:26.571 Resize:   },
+2026-11-07 07:55:26.572 Resize:   "clientScreenRect": {
+2026-11-07 07:55:26.573 Resize:     "left": 240,
+2026-11-07 07:55:26.574 Resize:     "top": 90,
+2026-11-07 07:55:26.575 Resize:     "right": 1680,
+2026-11-07 07:55:26.576 Resize:     "bottom": 942,
+2026-11-07 07:55:26.576 Resize:     "width": 1440,
+2026-11-07 07:55:26.577 Resize:     "height": 852
+2026-11-07 07:55:26.578 Resize:   },
+2026-11-07 07:55:26.578 Resize:   "clientCenter": {
+2026-11-07 07:55:26.579 Resize:     "x": 960.0,
+2026-11-07 07:55:26.580 Resize:     "y": 516.0
+2026-11-07 07:55:26.581 Resize:   },
+2026-11-07 07:55:26.582 Resize:   "clientCenterDiff": {
+2026-11-07 07:55:26.582 Resize:     "dx": 0.0,
+2026-11-07 07:55:26.583 Resize:     "dy": 0.0
+2026-11-07 07:55:26.584 Resize:   },
+2026-11-07 07:55:26.585 Resize:   "capture": {
+2026-11-07 07:55:26.585 Resize:     "ok": false,
+2026-11-07 07:55:26.586 Resize:     "path": ""
+2026-11-07 07:55:26.587 Resize:   }
+2026-11-07 07:55:26.588 Resize: }
+2026-11-07 07:55:27.206 Client size check (Zed): target=1440x852, actual=1440x852
+2026-11-07 07:55:28.224 Zed client origin=(240,90) size=1440x852
+2026-11-07 07:55:28.439 Foreground check for 'Zed ready': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:28.440 Zed 'v' button target coordinate: screen=(1555,106) (client=1315,16)
+2026-11-07 07:55:28.442 ==========================================================================
+2026-11-07 07:55:28.443 [zed] Running step 'zed-v-menu': Zed "v" Menu open and capture items/shortcuts
+2026-11-07 07:55:28.444 ==========================================================================
+2026-11-07 07:55:28.655 Foreground check for 'Zed 'v' Menu': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:28.657 Clicking 'v' button at (1555, 106)...
+2026-11-07 07:55:29.691 Foreground check for 'Capture zed-v-menu': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:31.297 Capture 'zed-v-menu' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\zed-v-menu.png (exit=0)
+2026-11-07 07:55:31.298 Dismissing 'v' menu with Esc...
+2026-11-07 07:55:31.795 [zed] Step 'zed-v-menu' finished successfully.
+2026-11-07 07:55:31.797 ==========================================================================
+2026-11-07 07:55:31.798 [zed] Running step 'zed-v-panel-layout': Zed Panel Layout submenu capture
+2026-11-07 07:55:31.799 ==========================================================================
+2026-11-07 07:55:32.011 Foreground check for 'Zed Panel Layout Submenu': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:32.013 Re-opening 'v' menu...
+2026-11-07 07:55:32.758 Navigating to 'Panel Layout' (Down 6 times, Right 1 time)...
+2026-11-07 07:55:34.919 Foreground check for 'Capture zed-v-panel-layout': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:36.482 Capture 'zed-v-panel-layout' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\zed-v-panel-layout.png (exit=0)
+2026-11-07 07:55:36.484 Closing submenu and menu with Esc twice (NO ITEM CLICKED to preserve layout)...
+2026-11-07 07:55:37.237 [zed] Step 'zed-v-panel-layout' finished successfully.
+2026-11-07 07:55:37.240 ==========================================================================
+2026-11-07 07:55:37.241 [zed] Running step 'zed-v-settings': Zed Settings (Ctrl-,) detection and capture
+2026-11-07 07:55:37.243 ==========================================================================
+2026-11-07 07:55:37.462 Foreground check for 'Zed Settings': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:37.472 Sending Ctrl-, (zed::OpenSettings)...
+2026-11-07 07:55:39.121 ERROR in [zed] step 'zed-v-settings': 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.
+2026-11-07 07:55:39.123 ==========================================================================
+2026-11-07 07:55:39.124 [zed] Running step 'zed-v-keymap': Zed Keymap (Ctrl-K Ctrl-S) detection and capture
+2026-11-07 07:55:39.125 ==========================================================================
+2026-11-07 07:55:39.333 Foreground check for 'Zed Keymap': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:39.343 Sending Ctrl-K Ctrl-S (zed::OpenKeymap)...
+2026-11-07 07:55:41.270 ERROR in [zed] step 'zed-v-keymap': 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.
+2026-11-07 07:55:41.271 ==========================================================================
+2026-11-07 07:55:41.272 [zed] Running step 'zed-v-themes': Zed Themes (Ctrl-K Ctrl-T) modal picker capture
+2026-11-07 07:55:41.273 ==========================================================================
+2026-11-07 07:55:41.477 Foreground check for 'Zed Themes': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:41.485 Sending Ctrl-K Ctrl-T (theme_selector::Toggle)...
+2026-11-07 07:55:43.400 ERROR in [zed] step 'zed-v-themes': 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.
+2026-11-07 07:55:43.402 ==========================================================================
+2026-11-07 07:55:43.404 [zed] Running step 'zed-v-icon-themes': Zed Icon Themes picker capture
+2026-11-07 07:55:43.406 ==========================================================================
+2026-11-07 07:55:43.615 Foreground check for 'Zed Icon Themes': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:43.621 Opening 'v' menu and navigating to 'Icon Themes...' (Down 4 times, Enter)...
+2026-11-07 07:55:46.772 ERROR in [zed] step 'zed-v-icon-themes': 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.
+2026-11-07 07:55:46.778 ==========================================================================
+2026-11-07 07:55:46.782 [zed] Running step 'zed-v-extensions': Zed Extensions (Ctrl-Shift-X) capture (NO INSTALL)
+2026-11-07 07:55:46.786 ==========================================================================
+2026-11-07 07:55:47.001 Foreground check for 'Zed Extensions': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:47.008 Sending Ctrl-Shift-X (zed::Extensions)...
+2026-11-07 07:55:49.650 ERROR in [zed] step 'zed-v-extensions': 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.
+2026-11-07 07:55:49.652 ==========================================================================
+2026-11-07 07:55:49.653 [zed] Running step 'B-zed-pane-zoom': Zed pane zoom state (minimize.svg via Shift-Escape)
+2026-11-07 07:55:49.654 ==========================================================================
+2026-11-07 07:55:49.857 Foreground check for 'Zed pane zoom': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:49.858 Sending Shift-Escape to toggle pane zoom in Zed...
+2026-11-07 07:55:50.810 Foreground check for 'Capture zed-tabbar-zoomed': target=0xC30C08, foreground=0xC30C08
+2026-11-07 07:55:52.385 Capture 'zed-tabbar-zoomed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\zed-tabbar-zoomed.png (exit=0)
+2026-11-07 07:55:52.386 Restoring Zed unzoomed state via Shift-Escape...
+2026-11-07 07:55:52.918 [zed] Step 'B-zed-pane-zoom' finished successfully.
+2026-11-07 07:55:52.920 Closing target Zed window only (HWND=0xC30C08) via WM_CLOSE PostMessage...
+2026-11-07 07:55:54.928 Target Zed window HWND=0xC30C08 successfully closed
+2026-11-07 07:55:54.931 --- Zed Config Status (AFTER) ---
+2026-11-07 07:55:54.932   settings.json: Exists=True, Sha256=C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2, Length=1031
+2026-11-07 07:55:54.933   keymap.json: Exists=False, Sha256=ABSENT, Length=0
+2026-11-07 07:55:54.937 CONFIRMED: Zed config files are completely unchanged (hashes match).
+2026-11-07 07:55:54.939 === ORDER-06 V3 Capture Script Finished ===
+2026-11-07 07:55:54.949 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\summary.json ===

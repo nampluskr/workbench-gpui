@@ -23,6 +23,7 @@
 | D-11 ITEMS가 SPEC 역할 | `SPEC.md` 판정 방법 |
 | D-12 core ITEMS가 갈래 지침보다 우선 | 루트 `INTENT.md`·`AGENTS.md`의 예외 표시, `AGENTS.md` 레포 규칙 "core ITEMS 우선", `SPEC.md` R-2·R-22, `PLAN.md` Phase 8 |
 | D-14 gpui-base 0.8.1 vendor로 줄 번호 열을 Zed와 같게 | 이 문서 D-4·D-5, `SPEC.md` R-13·R-14, `vendor/gpui-base/PATCHES.md` |
+| D-15 "v" 메뉴 화면은 Zed의 틀에 이 앱의 실제 내용만 | 이 문서 D-8·D-9, `SPEC.md` R-2 "2단계", `PLAN.md` Phase 6 |
 
 ---
 
@@ -168,6 +169,76 @@
 **배제한 대안**
 
 - **K-08처럼 `generic_minimize.svg` 등 SVG로 그린다** — Linux용이라 Windows Zed와 모양이 다르다.
+
+---
+
+## D-8. Settings는 `%APPDATA%\workbench-gpui\settings.json`의 키 4개를 Appearance 범주 행 4개로 보이고, 기본값은 지금 상수다
+
+**선택**
+
+- 파일: `%APPDATA%\workbench-gpui\settings.json`. 형식은 Zed settings.json(JSONC 허용), 키 이름은 Zed와 같다.
+- 키 4개: `theme`, `icon_theme`, `ui_font_size`, `buffer_font_size`. 파일이나 키가 없으면 지금 앱 상수가 기본값이다(UI 16, 버퍼 15).
+- 범주는 `Appearance` 하나, 행은 위 키마다 하나씩 4개다. 행 이름·설명은 Zed Settings UI 문구 그대로 쓴다.
+- 값을 바꾸면 바로 저장하고 바로 적용한다.
+- Settings 창 치수는 tauri가 Zed 캡처에서 재서 tauri SPEC에 적은 값을 읽어 쓴다(`SPEC.md` R-2).
+- Panel Layout `Classic`은 왼쪽 dock 열기와 dock 기본 폭 복원만 한다. 기본 폭은 두 갈래가 보고하고, 다르면 core가 정한다.
+
+**근거**
+
+- core D-15, core ORDER-06-R1 2.1·2.4.
+- core-leader 결정(Settings 공통안, 2026-11-07, 사용자 위임 core D-13). tauri 질문에 대한 답이며 두 갈래 공통이다(core `PROGRESS.md` 2026-11-07).
+- 이 앱이 지금 읽는 설정이 이 넷이다(ORDER-06-R1 2.1 "이 앱이 지금 읽는 설정 전부").
+- 구현과 Zed 문구 출처: `cards/K-11.report.md`(K-11-R1).
+
+**배제한 대안**
+
+- **Settings 창 치수를 재려고 Zed를 다시 연다** — Zed `Ctrl-,`가 사용자 Zed 프로세스 안에 창을 연다(ORDER-06 V3, `reports/ORDER-06-zed.md`). core-leader가 배제했다.
+- **Zed 범주 15개를 다 둔다** — 앱에 없는 설정이 들어간다. core D-15에 어긋난다.
+
+---
+
+## D-9. 메뉴 차이 다섯 가지를 두 갈래 같게 정한다
+
+**선택**
+
+1. 키가 묶인 메뉴 항목은 메뉴에 그 키를 보인다. File → Close Editor는 `Ctrl-W`를 보인다.
+2. 편집 단축키는 Zed `assets/keymaps/default-windows.json`(커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`)의 키를 그대로 쓴다. 키가 여럿이면 메뉴에는 첫 키를 보인다. Redo 차이(gpui `Ctrl-Y`, tauri `Ctrl-Shift-Z`)가 여기서 풀린다.
+3. 메뉴 막대 이름 간격은 글자 잉크 사이로 잰다. Zed 13~14px과 1px 이내로 맞춘다.
+4. "v" 버튼 치수는 tauri가 Zed 캡처로 재서 tauri SPEC에 적은 값을 gpui가 읽어 쓴다(`SPEC.md` R-2).
+5. Help → View Dependency Licenses는 앱에 들어간 자원 전부의 라이선스를 보인다.
+
+**근거**
+
+- core-leader 결정(두 갈래 메뉴 차이, 2026-11-07, 사용자 위임 core D-13, core `PROGRESS.md` 2026-11-07).
+- 차이 목록: `reports/ORDER-06.md` "두 갈래 메뉴 표 차이", `cards/W-21.report.md`.
+- 메뉴 이름 간격: gpui는 1단계에서 막대 gap 4px(I-321)만 쟀고, tauri는 잉크 간격 12~13px을 쟀다(tauri `reports/ORDER-06.md`).
+- 구현 카드: `cards/K-12.md`(1·2·3). "v" 버튼 치수(4)와 Licenses(5)의 구현 카드는 아직 없다.
+
+**배제한 대안**
+
+- **Close Editor 키를 메뉴에 보이지 않는다(1단계 tauri)** — 결정 1로 배제.
+- **Redo를 gpui-kit input 키맵의 `Ctrl-Y` 또는 tauri의 `Ctrl-Shift-Z`로 둔다** — 두 갈래가 달라진다. 결정 2로 Zed 키맵을 따른다.
+- **메뉴 이름 간격을 막대 gap 4px로만 판정한다** — 결정 3으로 배제.
+
+---
+
+## D-10. 측정 중 새로 생긴 창도 내가 연 것만 닫는다
+
+**선택**
+
+- 측정 스크립트는 자기가 띄운 PID와, 자기가 연 것이 확인된 창(HWND)만 닫는다.
+- "이번 실행에서 새로 생긴 창"이라도 내가 연 것이 아니면 닫지 않는다. 캡처만 하고, 닫을 창은 화면을 보고 하나씩 정한다.
+- 사용자 Zed 프로세스 안에 생긴 창은 닫지 않고 사람에게 알린다.
+
+**근거**
+
+- core ORDER-06-R1 4장 "새로 생긴 창도 내가 연 것만 닫기".
+- tauri 스크립트가 새로 생긴 Zed 창을 모두 닫게 되어 있어 사용자 Zed 알림 팝업 하나를 닫았다(tauri `reports/ORDER-06-zed.md` 특이사항).
+- gpui V3에서 Zed `Ctrl-,`가 사용자 Zed 프로세스 안에 Settings 창을 열었다. leader가 닫으려 했으나 자동 모드가 거부했다(`PROGRESS.md` Phase 6). C-22가 스크립트를 고쳐 새로 생긴 Zed 창(HWND)만 닫게 했다.
+
+**배제한 대안**
+
+- **이번 실행에서 새로 생긴 Zed 창을 모두 닫는다** — 사용자 창을 닫을 수 있다. 위 tauri 사례로 배제.
 
 ---
 

@@ -1,0 +1,14 @@
+2026-11-07 08:07:19.446 === ORDER-06 V3 Capture Script Started (Only=App, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06) ===
+2026-11-07 08:07:20.143 --- Starting workbench-gpui measurements ---
+2026-11-07 08:07:20.151 Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07 08:07:21.067 Cleaning up workbench-gpui process (PID=0)...
+2026-11-07 08:07:21.070 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 08:07:21.943 Session Stop: [31;1mGet-Content: [0mD:\projects\workbench-gpui\tools\measure\session.ps1:67[0m
+2026-11-07 08:07:21.945 Session Stop: [31;1m[0m[36;1mLine |[0m
+2026-11-07 08:07:21.947 Session Stop: [31;1m[0m[36;1m[36;1m  67 | [0m     $session=[36;1mGet-Content -Raw (Join-Path $Out 'session.json') |[0m Conve …[0m
+2026-11-07 08:07:21.949 Session Stop: [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~에서[0m
+2026-11-07 08:07:21.951 Session Stop: [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1m경로 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\session.json'이(가) 없으므로 찾을 수 없습니다.[0m
+2026-11-07 08:07:21.956 FATAL ERROR: session.json not found after session start
+2026-11-07 08:07:21.958 Run-AppMeasure에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order06-v3.snap.ps1: 줄 600
+<ScriptBlock>에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order06-v3.snap.ps1: 줄 1435
+2026-11-07 08:07:21.973 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06\summary.json ===

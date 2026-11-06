@@ -603,6 +603,9 @@ impl super::Workbench {
         match then {
             Then::Drop(ws, _, path, _) => look(ws, path),
             Then::Exit(_) => {
+                if let Some(ws) = &self.settings_workspace {
+                    for path in ws.read(cx).group.paths() { look(ws, &path); }
+                }
                 for folder in &self.folders.state.folders {
                     let Some(ws) = self.folders.workspaces.get(&folder.id) else { continue };
                     let paths: Vec<PathBuf> = ws.read(cx).group.paths();

@@ -26,6 +26,7 @@ mod panel_ops;
 mod panel_view;
 mod project_panel;
 mod rem;
+mod settings;
 mod shell;
 mod tab_close;
 mod task_dialog;
@@ -75,6 +76,8 @@ struct Workbench {
     center_focus: FocusHandle,
     /// ☰ 앱 메뉴 (Phase 2, R-8·R-9).
     app_menu: Entity<app_menu::AppMenu>,
+    user_menu: Entity<app_menu::UserMenu>,
+    settings_workspace: Option<Entity<folders::FolderWorkspace>>,
     /// 등록 폴더·활성·커서·state.json (Phase 3, R-10~R-16·R-28).
     folders: folders::FolderList,
     /// 사이드바가 열려 있는가(A-11.7: 처음에는 열려 있다). 저장하지 않는다(D-10 범위 밖).
@@ -451,6 +454,9 @@ impl Workbench {
 
 impl Render for Workbench {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        window.set_rem_size(settings::ui_size(cx));
+        let classic = settings::is_classic(self.dock_open, self.effective_dock_width(window), to_px(DOCK_DEFAULT_WIDTH, window));
+        self.user_menu.update(cx, |menu, cx| menu.set_classic(classic, cx));
         // 레이아웃 탐침의 프레임 번호(사라진 툴팁·메뉴 경계를 스냅숏에서 빼려고). 창 루트라 프레임마다 그린다.
         layout_probe::begin_frame();
         // dev: 포커스 자리나 창 활성 상태가 바뀌면 낸다(키 판정에서 포커스가 어디로 갔는지 추적).
@@ -492,6 +498,8 @@ impl Render for Workbench {
             .child(title_bar::title_bar(
                 self.glyph_font.clone(),
                 self.app_menu.clone().into(),
+                self.user_menu.clone().into(),
+                self.app_menu.read(cx).is_open(),
                 title,
                 window,
                 cx,
@@ -576,7 +584,11 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_quit))
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_save))
+            .on_action(cx.listener(Self::on_open_settings))
+            .on_action(cx.listener(Self::on_use_classic_layout))
             .on_action(cx.listener(Self::on_close_active_item))
+            .on_action(cx.listener(Self::on_activate_previous_item))
+            .on_action(cx.listener(Self::on_activate_next_item))
             .on_action(cx.listener(Self::on_toggle_pin_tab))
             .on_action(cx.listener(Self::on_open_preview))
             .on_action(cx.listener(Self::on_open_preview_to_the_side))
@@ -677,6 +689,7 @@ pub fn run(dev: DevOptions) {
             gpui_kit::init(cx);
             fonts::init(cx);
             theme::init(cx);
+            settings::init(cx);
             keymap::init(dev.keymap, cx);
             let glyph_font = title_bar::glyph_font(cx);
             let poc_options = dev.editor_poc.then(|| dev.clone());
@@ -696,6 +709,8 @@ pub fn run(dev: DevOptions) {
                     .map(|options| cx.new(|cx| editor_poc::EditorPoc::new(options, window, cx)));
                 let (folders, loaded) = folders::FolderList::load(pick_file);
                 cx.new(|cx| {
+                    let app_menu = cx.new(|cx| app_menu::AppMenu::new(window, cx));
+                    cx.observe(&app_menu, |_, _, cx| cx.notify()).detach();
                     let this = Workbench {
                         glyph_font,
                         editor_poc,
@@ -706,7 +721,9 @@ pub fn run(dev: DevOptions) {
                         sidebar_focus: cx.focus_handle(),
                         panel_focus: cx.focus_handle(),
                         center_focus: cx.focus_handle(),
-                        app_menu: cx.new(|cx| app_menu::AppMenu::new(window, cx)),
+                        app_menu,
+                        user_menu: cx.new(|cx| app_menu::UserMenu::new(window, cx)),
+                        settings_workspace: None,
                         folders,
                         sidebar_open: true,
                         sidebar_prev_focus: None,

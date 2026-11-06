@@ -444,6 +444,117 @@
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: 없음.
 
+- **C-20 ORDER-05 V3 판정** (2026-11-07, checker)
+  - 무엇을 했나: `measure-ORDER-05/`·`measure-ORDER-05-run1/` 캡처를 픽셀·Python 도구로 판정했다. 카드 `specs/v0.5/cards/C-20.md`, 보고 `cards/C-20.report.md`.
+  - 결과(`verify/reviews/measure-ORDER-05.md`): I-1 대응 22자리 중 21 PASS(창 제어 4자리는 Segoe Fluent 글리프 예외). 측정 불가 1 — pane 축소 `minimize.svg`: 스크립트가 확대 키로 Alt+Z를 보냈는데 이 앱은 Shift-Escape라 확대 상태에 들어가지 못했다. I-18(`file_tree.svg`·`folder_add.svg`) PASS. 복사본 없음(빈 칸, stderr 경고, 패닉 없음) PASS.
+  - 검증: V3(파일 판정).
+  - 특이사항: 없음.
+
+- **Phase 5 종료 판정** (2026-11-07)
+  - 무엇을 했나: core-leader가 ORDER-05 보고(`reports/ORDER-05.md`)와 I-6 재측정을 보고 Phase 5를 판정했다(core-leader 2026-11-07, 사용자 위임 core D-13).
+  - 결과: "ORDER-05 충족, I-6 재측정 정상. Phase 5 종료 판정: 충족(I-1·I-18 두 갈래, 같은 Zed 커밋·같은 대응 이름, 창 버튼은 Zed Windows와 같은 글리프)". Phase 5 커밋 `e9c9825`, push 완료.
+  - 검증: core-leader 판정(gpui-leader 전달, W-20).
+  - 특이사항: 남은 1자리(`minimize.svg`)는 Phase 6 화면 차례에서 다시 잰다.
+
+### Phase 6 — 타이틀 바 메뉴
+
+- **ORDER-06 받음** (2026-11-07)
+  - 무엇을 했나: core-leader의 ORDER-06(R-2·R-17, I-2·I-17) 1단계를 받았다.
+  - 결과: 추가 지시 — ORDER-05 측정 불가 1자리(pane 축소 `minimize.svg`, Shift-Escape로 확대 진입)를 ORDER-06 화면 차례에 다시 잰다.
+  - 검증: 해당 없음(지시 기록).
+  - 특이사항: 없음.
+
+- **W-20 Phase 5 종료, Phase 6 시작 기록** (2026-11-07)
+  - 무엇을 했나: PLAN 진행 현황 Phase 5를 done(커밋 `e9c9825`), Phase 6을 doing(ORDER-06 1단계)으로 바꾸고, 위 C-20·Phase 5 종료 판정·ORDER-06 추가 지시를 적었다. 카드 `specs/v0.5/cards/W-20.md`.
+  - 결과: `PLAN.md`, `PROGRESS.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+- **K-09 `≡` 메뉴·"v" 메뉴·폴더 이름 중복·Help 라이선스 창** (2026-11-07, coder)
+  - 무엇을 했나: `≡` 메뉴를 Zed 순서·구현 기능만으로 고치고(File Save, Edit Undo·Redo, Help 네 항목), 타이틀 바 오른쪽 최소화 버튼 앞에 "v" 메뉴(여섯 항목, Panel Layout 하위 메뉴 Classic·Agentic)를 넣었다. 카드 `specs/v0.5/cards/K-09.md`, 보고 `cards/K-09.report.md`.
+  - 결과: `src/ui/app_menu.rs`, `src/ui/mod.rs`, `src/ui/title_bar.rs` 수정. 메뉴 표는 SPEC R-17·R-2로 옮겼다(W-21).
+    - 폴더 이름 중복 원인: `title_bar::left_group`이 메뉴 열림과 상관없이 메뉴 뒤에 폴더 이름을 늘 더했다. 수정: AppMenu의 열림 상태를 관찰해 열려 있는 동안 폴더 이름을 빼고, 닫히면 되돌린다.
+    - Help → View Dependency Licenses: 글꼴(IBM Plex Sans, Lilex)과 Zed 아이콘(`LICENSES`·`LICENSE-APACHE`·`LICENSE-GPL`) 원문을 컴파일할 때 넣어 별도 읽기 전용 스크롤 창에 보인다. 편집기 탭·저장 경로를 만들지 않는다. 테마 라이선스는 Phase 7.
+    - "v" 메뉴 여섯 항목은 비활성(회색, 누르면 아무 일 없음), Panel Layout만 하위 메뉴를 연다.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test ui::app_menu::tests` 4 passed, `cargo clippy --all-targets -- -D warnings` 통과. checker C-22 리뷰 PASS.
+  - 특이사항: Go(이전·다음 탭)는 기능이 없어 `[BLOCKED]`로 남겼고 K-10에서 풀었다.
+
+- **K-10 탭 순환** (2026-11-07, coder)
+  - 무엇을 했나: core-leader 결정(2026-11-07, ORDER-06 Go 메뉴)대로 gpui에 탭 순환을 새로 만들었다. action은 Zed와 같은 `pane::ActivatePreviousItem`·`pane::ActivateNextItem`, 단축키는 tauri와 같은 Pane 컨텍스트 `Ctrl-PageUp`·`Ctrl-PageDown`. Go 메뉴를 View와 Window 사이에 넣었다. 카드 `cards/K-10.md`, 보고 `cards/K-09.report.md` `## K-10`.
+  - 결과: `src/ui/tab_input.rs`, `src/ui/keymap.rs`, `src/ui/mod.rs`, `src/keymap/builtin.rs`, `src/keymap/mod.rs`, `src/ui/app_menu.rs` 수정. 끝에서 처음으로·처음에서 끝으로 돈다. 탭 0·1개면 아무 일 없다.
+  - 검증: V1. `cargo test k10` 2 passed, `ui::app_menu::tests` 4 passed, `keymap::tests` 4 passed, clippy 통과. checker C-22 `## 6` 리뷰 PASS.
+  - 특이사항: Zed 기본 키맵의 RunModal 컨텍스트 `Ctrl-Tab`·`Ctrl-Shift-Tab` 바인딩은 넣지 않았다(tauri와 같게).
+
+- **C-21·C-22 ORDER-06 V3 스크립트** (2026-11-07, checker)
+  - 무엇을 했나: `tools/measure/order06-v3.ps1`을 만들었다. C-21은 Zed "v" 메뉴 확인과 pane 확대(`minimize.svg`, Shift-Escape) 재측정, C-22는 앱 메뉴 단계(메뉴 막대·드롭다운·"v" 메뉴·라이선스 창·대표 action·탭 순환)를 더하고 1차 실행 멈춤을 고쳤다. 보고 `cards/C-21.report.md`, `cards/C-22.report.md`.
+  - 결과: 1차 실행(07:32) 멈춤 원인 — `session.ps1 -Action Start` 출력을 파이프(`| ForEach-Object`)로 받았는데, 그 안에서 띄운 앱 프로세스가 출력 핸들을 물려받아 스크립트가 끝나도 파이프가 닫히지 않았다. 파이프를 빼고 `session.json`을 읽어 PID를 얻게 고쳤다. `-Exe` 인수 누락과 앱 이중 실행도 고쳤다(`verify/reviews/measure-ORDER-06-run1-hung/`).
+  - 검증: 문법 검사 0건, `-DryRunStdout` 정상.
+  - 특이사항: 없음.
+
+- **ORDER-06 V3 실행** (2026-11-07, leader 실행, checker 판정 C-22)
+  - 무엇을 했나: 화면 차례에서 `order06-v3.ps1`을 두 번 실행했다.
+  - 결과:
+    - 07:54 전체 실행(`verify/reviews/measure-ORDER-06-run2/summary.json`): 앱 — 메뉴 막대 열림(메뉴 7개, 이름 사이 gap 4.0px = I-321, 열렸을 때 폴더 이름 없음)·드롭다운 7개(닫으면 폴더 이름 복원)·"v" 메뉴와 Panel Layout·대표 action·pane 확대 PASS, 라이선스 창 FAIL(Help 위 hover로 열린 드롭다운을 클릭이 다시 닫음)·탭 순환 FAIL(두 번째 탭이 열리지 않음). Zed — "v" 메뉴·Panel Layout·pane 확대 PASS, Settings·Keymap·Themes·Icon Themes·Extensions 다섯 단계 FAIL(스크립트의 StrictMode `.Count` 오류). 사용자 Zed 설정 파일 해시 불변.
+    - C-22가 실패 원인을 고친 뒤 08:07 실패 단계만 다시 실행하려 했으나 `session.json`이 없어 중단(`measure-ORDER-06-run3-aborted/`).
+    - 08:08 앱 단계만 재실행(`verify/reviews/measure-ORDER-06/summary.json`): 라이선스 창 PASS(`app-license-window.png`, WM_CLOSE로 닫음, 브라우저 항목은 누르지 않음), 탭 순환 FAIL(트리에서 파일 두 개를 더블클릭해도 `tab-01` 없음, `error-two-tabs-open.png`). Zed 다섯 단계는 다시 돌리지 않았다.
+  - 검증: V3(일부).
+  - 특이사항: 탭 순환 화면 확인과 Zed 다섯 단계 캡처가 남았다. 탭 순환 동작 자체는 V1 테스트로 확인돼 있다(K-10).
+
+- **Zed Settings 창이 사용자 Zed 프로세스에 남음** (2026-11-07)
+  - 무엇을 했나: 07:54 실행의 `zed-v-settings` 단계에서 `Ctrl-,`를 보냈더니 Zed가 스크립트가 띄운 창이 아니라 사용자가 쓰던 Zed 프로세스 안에 'Zed — Settings' 창을 열었다. 단계가 `.Count` 오류로 멈춰 이 창이 닫히지 않고 남았다.
+  - 결과: Zed 사용자 설정 파일(`%APPDATA%\Zed\settings.json`) 해시는 실행 앞뒤로 같다(`C3D27B05…`), `keymap.json`은 없음 그대로. leader가 그 창을 닫으려 했으나 자동 모드가 거부했고 우회하지 않았다. core-leader에게 알렸다.
+  - 검증: summary.json의 설정 파일 해시 대조.
+  - 특이사항: C-22가 스크립트를 고쳐 새로 생긴 Zed 창(HWND)만 닫게 했다. 남은 창은 사람이 닫는다.
+
+- **core 결정: ORDER-06-R1, Settings 공통안** (2026-11-07, core-leader, 사용자 위임 core D-13)
+  - 무엇을 했나: core-leader가 ORDER-06 2단계 `ORDER-06-R1`(core D-15)과 Settings 공통안을 정했다.
+  - 결과:
+    - D-15: "v" 메뉴 화면은 Zed의 틀(여는 방식·배치·검색·컨트롤·단축키)에 이 앱의 실제 내용만 담는다. Settings는 별도 OS 창(User 범위), Keymap·Extensions는 편집 영역 새 탭, Extensions는 복사한 테마·아이콘 테마만(온라인 목록·설치 없음), Panel Layout은 Classic만(Agentic 뺌, 기본과 다르면 Custom 체크·비활성).
+    - R1 2.5: View의 Split Up/Down/Left/Right를 Zed처럼 `Editor Layout` 하위 메뉴로 옮긴다(tauri는 이미 이렇다).
+    - Settings 공통안: `%APPDATA%\workbench-gpui\settings.json`, Zed 형식(JSONC), 키 `theme`·`icon_theme`·`ui_font_size`(기본 16)·`buffer_font_size`(기본 15), 바꾸면 바로 저장·적용. 범주 `Appearance` 하나, 행 넷(Theme·Icon Theme·UI Font Size·Buffer Font Size), 이름·설명은 Zed Settings UI 문구 그대로.
+  - 검증: 해당 없음(결정 기록). gpui 카드 K-11로 넘겼다.
+  - 특이사항: K-11은 `[BLOCKED]`다. 카드가 Settings 창 치수·간격을 tauri SPEC 값으로 쓰라 했는데 아직 없다(`cards/K-11.report.md`, "tauri 값 대기"). dock 기본 폭은 `src/ui/metrics.rs` `DOCK_DEFAULT_WIDTH = rems_from_px(240.)`.
+
+- **W-21 메뉴 표 SPEC 반영, tauri 대조** (2026-11-07)
+  - 무엇을 했나: K-09·K-10 메뉴 표를 SPEC R-17에, "v" 메뉴 표를 R-2에 옮기고 tauri 표와 대조했다. 카드 `cards/W-21.md`, 보고 `cards/W-21.report.md`.
+  - 결과: `SPEC.md`, `PROGRESS.md` 수정. tauri와 다른 곳 — View 분할(gpui 직접 항목, tauri Editor Layout 하위 메뉴, K-11 몫), Close Editor 단축키 표시(gpui `Ctrl-W`/`Ctrl-F4`, tauri 없음), Redo 단축키(gpui `Ctrl-Y`, tauri `Ctrl-Shift-Z`).
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 맞추는 일은 leader가 coder 카드로 낸다.
+
+- **ORDER-06 1단계 충족 판정** (2026-11-07, core-leader)
+  - 무엇을 했나: core-leader가 gpui ORDER-06 1단계 보고(`reports/ORDER-06.md`)를 판정했다.
+  - 결과: 충족. 메뉴 막대 순서가 tauri와 같고 폴더 이름 중복을 고쳤다. "v" 버튼과 여섯 항목이 있고 동작 없는 항목은 비활성이다. Licenses 창이 있다. ORDER-05 pane 축소 아이콘 PASS로 ORDER-05 V3는 22/22다(core `PROGRESS.md`).
+  - 검증: 해당 없음(판정 기록).
+  - 특이사항: 탭 순환은 V1만 했고 화면 확인은 R1 V3에서 한다. 1단계 코드는 R1과 함께 커밋한다.
+
+- **core 결정: 두 갈래 메뉴 차이 다섯 가지** (2026-11-07, core-leader, 사용자 위임 core D-13)
+  - 무엇을 했나: 1단계 보고의 결정 요청(Close Editor 키 표시, Redo 키)과 참고 차이에 대한 결정을 받았다.
+  - 결과: DECISIONS D-9에 적었다 — 키가 묶인 메뉴 항목은 키 표시(Close Editor `Ctrl-W`), 편집 키는 Zed `default-windows.json` 그대로·메뉴엔 첫 키, 메뉴 이름 간격은 잉크 사이로 Zed 13~14px ±1, "v" 버튼 치수는 tauri SPEC 값, Licenses는 앱에 들어간 자원 전부. gpui 카드 K-12(1~3).
+  - 검증: 해당 없음(결정 기록).
+  - 특이사항: 없음.
+
+- **K-11·K-11-R1 Settings 창, settings.json, Panel Layout, Editor Layout** (2026-11-07, coder)
+  - 무엇을 했나: K-11은 Settings 창 치수가 tauri SPEC에 없어 `[BLOCKED]`로 멈췄다. leader가 K-11-R1로 치수 말고 나머지를 먼저 하게 했다(치수는 gpui-kit 기본값을 `metrics.rs` `settings_window` 한 곳에 모으고 pending 주석). 카드 `cards/K-11.md`·`cards/K-11-R1.md`, 보고 `cards/K-11.report.md`.
+  - 결과: `src/ui/settings.rs` 신규, `src/ui/metrics.rs`·`mod.rs`·`keymap.rs`·`pane.rs`·`pane_view.rs`·`panel_nav.rs`·`tab_close.rs`·`app_menu.rs`, `src/keymap/builtin.rs`·`mod.rs` 수정.
+    - `%APPDATA%\workbench-gpui\settings.json`(JSONC 읽기, 알 수 없는 키 보존, 원자 교체 저장, 저장 성공 뒤 적용, 파일 감시로 외부 저장 반영). 기본값 UI 16·버퍼 15.
+    - Settings 별도 창(`Ctrl-,`, 열려 있으면 앞으로), 검색·Appearance·User·`Edit in settings.json`·행 4개(Zed 문구, SPEC R-2 표).
+    - Panel Layout: Agentic 뺌, Classic(dock 열기·기본 폭 240px 복원), 기본과 다르면 Custom 체크·비활성.
+    - View → Editor Layout 하위 메뉴(Split Up/Down/Left/Right).
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test k11` 3 passed, `ui::app_menu::tests` 4 passed, `keymap::tests` 5 passed, clippy 통과.
+  - 특이사항: Settings 창 치수는 아직 기본값이다. tauri SPEC에 Zed 실측값이 생겨 SPEC R-2로 옮겼다(W-22). UI 저장은 JSONC 주석·서식을 유지하지 않는다. 실측 필요 목록은 보고에 있다(V3 대상).
+
+- **Codex 한도 알림과 core 결정** (2026-11-07)
+  - 무엇을 했나: gpui-coder의 Codex 5시간 한도가 16% 남았고 주간은 48%라 core-leader에게 알렸다.
+  - 결과: 결정(core-leader, core D-13) — 지금 한도로 계속한다. 바닥나면 `[BLOCKED]`로 알리고, 그때 사용자에게 쿠폰 사용을 알린다(core D-2). HERDR 구성(writer가 구현을 맡는 것)은 바꾸지 않는다. coder 카드는 작게 나누고 문서는 writer가 먼저 한다.
+  - 검증: 해당 없음(결정 기록).
+  - 특이사항: K-12를 작은 카드로 냈고, 이 결정으로 W-22를 coder 카드보다 먼저 했다.
+
+- **W-22 ORDER-06-R1 문서 정리** (2026-11-07)
+  - 무엇을 했나: DECISIONS에 core D-15 적용과 D-8(Settings 공통안)·D-9(메뉴 차이 다섯 가지)·D-10(새로 생긴 창도 내가 연 것만 닫는다)을 적고, SPEC R-2를 R1 범위의 화면별 항목 표로 고쳤다. tauri SPEC의 Settings 창·"v" 버튼 Zed 실측값을 출처와 함께 옮겼다. 카드 `cards/W-22.md`, 보고 `cards/W-22.report.md`.
+  - 결과: `DECISIONS.md`, `SPEC.md`, `PROGRESS.md` 수정. tauri와 다른 곳은 보고에 목록으로 적었다.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |
