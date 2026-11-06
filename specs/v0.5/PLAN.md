@@ -1,4 +1,4 @@
-> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 초안 (core-leader 판정 뒤 사용자 확정)
+> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 확정 (core-leader 판정, 사용자 위임 2026-11-06)
 >
 > workbench-gpui v0.5의 요구(R-1~R-23)를 어떤 Phase 순서로 만족시킬지 적는다. Phase는 workbench-core `specs/v0.5/PLAN.md`의 Phase 1~12와 같은 번호로 둔다. 요구는 `SPEC.md`에, 결정은 `DECISIONS.md`에, 에이전트 구성과 작업 방식은 `HERDR-SETUP.md`에, 실제 진행은 `PROGRESS.md`에 있다.
 
@@ -211,7 +211,7 @@ core PLAN의 순서를 그대로 따른다. 이유도 core PLAN "Phase 순서의
 
 | Phase | 상태 | 시작일 | 완료일 | 커밋 | 비고 |
 |---|---|---|---|---|---|
-| Phase 1 | doing | 2026-11-06 | - | - | 문서 초안(W-01) |
+| Phase 1 | done | 2026-11-06 | 2026-11-06 | `d707513` | 충족(R3 기준 2는 사용자 조치 대기, 대체 방식 적용) |
 | Phase 2 | todo | - | - | - | - |
 | Phase 3 | todo | - | - | - | - |
 | Phase 4 | todo | - | - | - | - |

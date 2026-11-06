@@ -1,4 +1,4 @@
-> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 초안 (core-leader 판정 뒤 사용자 확정)
+> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 확정 (core-leader 판정, 사용자 위임 2026-11-06)
 >
 > workbench-gpui v0.5가 만족해야 할 요구와 판정 방법을 담는다. 요구는 workbench-core `specs/v0.5/ITEMS.md`의 I-1~I-23을 옮긴 것이고, 판정 방법은 ITEMS의 "판정 방법"을 바꾸지 않고 옮겼다(core D-11). 목적은 `INTENT.md`에, 결정은 `DECISIONS.md`에, Phase 순서는 `PLAN.md`에 있다.
 

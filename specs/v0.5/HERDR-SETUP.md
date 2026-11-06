@@ -1,4 +1,4 @@
-> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 초안 (core-leader 판정 뒤 사용자 확정)
+> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 확정 (core-leader 판정, 사용자 위임 2026-11-06)
 >
 > workbench-gpui v0.5의 herdr 멀티 에이전트 구성, 레이아웃, 작업 프로토콜, 최초 지시 프롬프트, 정리 방법을 담는다. 구성은 workbench-core가 정했고(core D-2·D-4), ORDER-01 3.2·3.3을 그대로 옮겼다. 요구는 `SPEC.md`에, Phase는 `PLAN.md`에 있다. 지난 구성은 `specs/v0.4/HERDR-SETUP.md`이고 고치지 않는다.
 >

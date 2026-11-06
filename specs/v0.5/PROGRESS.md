@@ -64,6 +64,18 @@
   - 검증: 문서만 바꿨다(V0). 시험 결과는 카드에 적힌 leader 기록을 옮겼고 writer가 다시 시험하지 않았다.
   - 특이사항: 없음.
 
+- **Phase 1 종료 판정** (2026-11-06)
+  - 무엇을 했나: core-leader가 ORDER-01과 R1·R2·R3 보고를 보고 Phase 1을 판정했다(core-leader 2026-11-06, 사용자 위임 core D-13).
+  - 결과: 충족. ORDER-01-R3 완료 기준 2(checker `--settings` 적용)는 사용자 조치 대기이고, 그동안 대체 방식(`HERDR-SETUP.md` 5.6)을 적용한다. Phase 1 마지막 커밋 `d707513`.
+  - 검증: core-leader 판정(gpui-leader 전달, W-07).
+  - 특이사항: checker를 `--settings`로 다시 띄우는 일이 남았다(사용자 또는 사용자가 허락한 세션).
+
+- **W-07 v0.5 문서 확정 표시, Phase 1 종료 기록** (2026-11-06)
+  - 무엇을 했나: `specs/v0.5/`의 INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP 인용 블록 상태를 "확정 (core-leader 판정, 사용자 위임 2026-11-06)"으로 바꾸고, PLAN 진행 현황 표의 Phase 1을 done(커밋 `d707513`)으로 했다. 카드 `specs/v0.5/cards/W-07.md`.
+  - 결과: 다섯 문서 상태 줄만 바뀜. PROGRESS 상태 줄은 그대로. PLAN Phase 1 행: done, 2026-11-06~2026-11-06, `d707513`, "충족(R3 기준 2는 사용자 조치 대기, 대체 방식 적용)".
+  - 검증: 다섯 문서에 확정 상태 줄이 하나씩 있음을 grep으로 확인(각 1건). `git log -1 d707513`이 Phase 1 커밋(ORDER-01-R2·R3)임을 확인.
+  - 특이사항: 없음.
+
 ## 사용자 요청 작업
 
 없음.

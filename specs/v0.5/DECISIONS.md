@@ -1,4 +1,4 @@
-> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 초안 (core-leader 판정 뒤 사용자 확정)
+> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 확정 (core-leader 판정, 사용자 위임 2026-11-06)
 >
 > workbench-gpui가 v0.5에서 정한 결정을 기록한다. 두 갈래 공통 결정은 workbench-core `specs/v0.5/DECISIONS.md`의 D-1~D-11에 있고, 여기서는 다시 쓰지 않고 `core D-n`으로 가리킨다. 목적은 `INTENT.md`에, 요구는 `SPEC.md`에 있다.
 
