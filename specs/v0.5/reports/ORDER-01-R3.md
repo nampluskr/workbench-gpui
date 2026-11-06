@@ -43,3 +43,14 @@
 - 조치: 대체 방식(leader·coder가 실행하고 `%TEMP%\v05-<카드ID>-*.txt`, checker는 파일로 판정)을 끝내지 않고 계속 기본으로 쓴다. ORDER-02 리뷰(C-04)도 이 방식으로 했다. HERDR-SETUP 2.1·5.6에 반영(W-08).
 - 필요한 것: agy 허용 매칭이 왜 안 되는지 core-leader 쪽 확인(예: tauri 갈래에서 실제로 승인 없이 돈 명령의 정확한 모양). 그전까지 진행은 막히지 않는다.
 - 커밋: 이 덧붙임과 같은 커밋.
+
+---
+
+## 덧붙임 2 (2026-11-06, core-leader가 정확한 명령을 더한 뒤)
+
+[DONE] — `git diff --stat`이 승인 창 없이 돈다.
+
+- core-leader가 사용자 요청으로 `.agents/checker-settings.json` allow에 정확한 명령(`git diff --stat`, `git status --short`, `git log --oneline -5`, 빌드·clippy 변형 등, 52개)을 더했다. leader가 checker를 `--settings`로 다시 띄우고 `git diff --stat`을 시켰다 → **승인 창 없이** 실행, 결과 정확. 앞부분 일치가 아니라 정확한 명령 모양이 맞아야 하는 것으로 보인다.
+- 대체 방식(출력 파일)은 끝냈다. HERDR-SETUP 2.1·5.6 반영(W-09). 허용 목록 기준은 `.agents/checker-settings.json`.
+- 목록에 없어 승인 창이 뜬 명령(ORDER-02 V3 실측 C-05 중, leader가 위임으로 판단): `Get-ChildItem ...`, `Test-Path ...`, `Get-Item ...`, `Get-Content ...`, `Get-Process workbench-gpui -ErrorAction SilentlyContinue`, `Get-Process -Id <pid> ...`, `Get-Command pwsh ...`, `$PSVersionTable`, `pwsh --version`, `pwsh -NoProfile -Command "..."`(인라인 스크립트), `Start-Process -FilePath ...`, `Remove-Item -Path tools/measure/test-*.ps1 -Force ...`(checker 자신의 임시 스크립트 정리), 그리고 `pwsh -NoProfile -File tools/measure/session.ps1 -Action Start|Stop -Out ... -Exe ...`·`pwsh -NoProfile -File tools/measure/window-rect.ps1 -Action Measure|Resize|Close`·`pwsh -NoProfile -File tools/capture.ps1 -Out ...`(인자가 붙어 정확 일치가 안 됨, `window-rect.ps1`은 새 스크립트). 더할지는 core-leader가 정한다. 읽기 전용 PowerShell(`Get-*`, `Test-Path`)과 인자 붙은 `tools/measure/*.ps1`은 더하면 실측 때 승인이 크게 준다.
+- 커밋: 이 덧붙임과 같은 커밋.

@@ -62,7 +62,7 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
 ```
 
 - checker는 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달 2026-11-06)으로 leader가 위 명령으로 다시 띄웠다. 이번에는 거부되지 않았다(leader 2026-11-06, W-08).
-- 허용 목록은 읽히지만 승인 창은 여전히 뜬다. 그래서 5.6의 대체 방식이 계속 기본이다(5.6 현재 상태).
+- 허용 목록이 동작한다. 목록에 정확한 명령 모양으로 있는 명령은 승인 창 없이 돈다. 대체 방식(출력 파일)은 끝냈다. 목록 밖 명령은 승인 창이 뜨고 leader가 판단한다(5.6 현재 상태, leader 2026-11-06, W-09).
 
 - leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).
@@ -165,21 +165,16 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
 - 기록: leader가 처리한 판단은 출처를 달아 `specs/v0.5/PROGRESS.md`에 남긴다. 별도 HERDR-DECISIONS 문서는 두지 않는다(leader 2026-11-06 W-03).
 - 미리 허용 목록(checker, core ORDER-01-R3, 사용자 2026-11-06 "제안대로 진행해 주세요"): checker가 맡은 일의 명령은 승인 없이 돌게 한다. leader의 권한은 넓히지 않는다.
   - 위치: 레포 `.agents/checker-settings.json`. checker를 `agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\checker-settings.json`으로 띄워 그 세션에만 적용한다(`agy --help`, 2.1). agy 전역 설정(`C:\Users\nampl\.gemini\antigravity-cli\settings.json`)은 레포 밖이라 고치지 않는다(core D-7). 레포 안 프로젝트 설정 파일 위치는 agy 문서에 없다(leader 조사 2026-11-06).
-  - 형식: `{"permissions":{"allow":["command(<명령 앞부분>)", ...]}}`. 앞부분이 일치하는 명령을 허용한다(workbench-tauri `.agents/checker-settings.json`과 같은 형식).
-  - 허용 목록(그대로):
-    - `git diff`, `git log`, `git status`, `git show`
-    - `cargo build`, `cargo test`, `cargo clippy`
-    - `pwsh -NoProfile -File tools/apply-manifest.ps1`
-    - `pwsh -NoProfile -File tools/<이름>.ps1`: `capture.ps1`, `verify-ime.ps1`, `verify-phase1.ps1`, `verify-phase2.ps1`, `verify-phase3.ps1`, `verify-r5.ps1`, `verify-scale.ps1`, `verify-v02-phase1.ps1`, `verify-v02-phase2.ps1`, `verify-v02-phase3-guard.ps1`, `verify-v02-phase3.ps1`, `verify-v02-phase4-d043-clip.ps1`, `verify-v02-phase4-d043.ps1`, `verify-v02-phase4-d044.ps1`, `verify-v02-phase4.ps1`, `verify-v02-phase5-d046.ps1`, `verify-v02-phase5-d047.ps1`, `verify-v02-phase5.ps1`
-    - `pwsh -NoProfile -File tools/measure/<이름>.ps1`: `check-layout.ps1`, `compare.ps1`, `input.ps1`, `p0-pixels.ps1`, `p0-report.ps1`, `session.ps1`
+  - 형식: `{"permissions":{"allow":["command(<명령>)", ...]}}`(workbench-tauri `.agents/checker-settings.json`과 같은 형식). 앞부분 일치가 아니라 정확한 명령 모양이 맞아야 허용되는 것으로 보인다(leader 2026-11-06, W-09).
+  - 허용 목록: 기준은 `.agents/checker-settings.json`이다. 이 문서에 목록을 옮기지 않는다. 목록에 더할 명령은 leader가 core-leader에게 알린다. core-leader가 사용자 요청으로 정확한 명령(`git diff --stat`, `git status --short`, `git log --oneline -5`, 빌드·clippy 변형)을 더했다(core D-7 예외, 사용자 요청, 2026-11-06).
   - 넣지 않은 것: `tools/set-scale.ps1`(디스플레이 배율 변경은 화면 차례 core D-4로 leader가 따로 승인), `git commit`·`push`·`reset`·`checkout`·`switch`·`branch`·`rm`, 파일 삭제, `cargo add`·`remove`·`install`, 내려받기(`curl`, `Invoke-WebRequest`), python 실행. 목록에 없는 명령은 승인 창이 뜨고 leader가 위 위임대로 판단한다.
   - deny는 두지 않는다. tauri 시험(core-leader 2026-11-06)에서 deny를 함께 두면 허용 명령도 승인 창이 떴고, allow만 두면 승인 없이 돌았다.
   - 화면을 다루는 스크립트(`capture.ps1`, `verify-*.ps1`, `tools/measure/`)는 허용되어 있어도 `[SCREEN-OK]`를 받은 뒤에만 실행한다(5.4).
   - 대체 방식(core-leader 2026-11-06): 허용이 동작하지 않거나 설정을 쓸 수 없으면, checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남긴다. checker는 그 파일을 읽어 판정한다.
   - 지난 상태(leader 2026-11-06, W-06): leader가 checker를 `--settings`로 다시 띄우려 하자 leader 세션 자동 모드가 `[Self-Modification]`으로 거부했고, core-leader 지시대로 우회하지 않았다.
-  - 현재 상태(leader 2026-11-06, W-08): 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달)으로 leader가 gpui-checker(wD:pF)를 `--settings`로 다시 띄웠고(2.1), 거부되지 않았다. agy 로그(`C:\Users\nampl\.gemini\antigravity-cli\log\cli-20261106_231823.log`)에 `CLI settings initialized: permissions=&{Allow:[command(git diff) ... ] Deny:[] Ask:[]}, toolPermission=request-review`로 허용 목록이 읽혔다. 그런데 checker가 `git diff --stat`을 실행하자 승인 창이 떴다(leader가 1회 승인). 원인은 확인하지 못했다. 같은 로그에 `ApplyProjectPermissionGrants: no grants for project "CLI Project", cleared project permissions` 줄이 있다.
-  - **대체 방식이 계속 기본이다**: checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남기며, checker는 그 파일을 읽어 판정한다. 목록에 없는 명령이나 승인 창이 뜬 명령은 leader가 위 위임대로 판단한다.
-  - 대체 방식 시험(C-03, 2026-11-06): leader가 `git diff --stat` 출력을 `C:\Users\nampl\AppData\Local\Temp\v05-C-03-git-diff-stat.txt`로 남겼고, checker가 그 파일을 승인 창 없이 읽어 바뀐 파일 3개를 맞게 보고했다.
+  - 지난 상태(leader 2026-11-06, W-08): 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달)으로 leader가 gpui-checker(wD:pF)를 `--settings`로 다시 띄웠고(2.1), 거부되지 않았다. agy 로그(`C:\Users\nampl\.gemini\antigravity-cli\log\cli-20261106_231823.log`)에 `CLI settings initialized: permissions=&{Allow:[command(git diff) ... ] Deny:[] Ask:[]}, toolPermission=request-review`로 허용 목록이 읽혔다. 그런데 checker가 `git diff --stat`을 실행하자 승인 창이 떴다(leader가 1회 승인). 같은 로그에 `ApplyProjectPermissionGrants: no grants for project "CLI Project", cleared project permissions` 줄이 있다.
+  - 현재 상태(leader 2026-11-06, W-09): core-leader가 사용자 요청으로 허용 목록에 정확한 명령을 더한 뒤, leader가 checker를 `--settings`로 다시 띄워 `git diff --stat`을 시켰더니 승인 창 없이 돌았다. 허용 목록이 동작하므로 대체 방식(출력 파일)은 끝낸다. 단, 목록 밖 명령은 승인 창이 뜨고 leader가 위 위임대로 판단한다. 예: C-05 실측 중 `Get-ChildItem`, `Get-Process`, `pwsh -NoProfile -Command ...`, `Start-Process`, `Remove-Item` 등은 승인 창이 떴고 leader가 위임으로 판단했다.
+  - 대체 방식 시험(C-03, 2026-11-06, 지난 방식): leader가 `git diff --stat` 출력을 `C:\Users\nampl\AppData\Local\Temp\v05-C-03-git-diff-stat.txt`로 남겼고, checker가 그 파일을 승인 창 없이 읽어 바뀐 파일 3개를 맞게 보고했다.
 
 ---
 
