@@ -8,6 +8,7 @@
 - **Zed 코드 복사 금지** — Zed 앱 코드(GPL-3.0)는 동작 이해에만 참고하고 복사하지 않는다. gpui·gpui-kit(Apache-2.0)만 의존한다. (출처: 02-gpui 출발 문서 G-133, 사본 `docs/refs/02-gpui/README.md`)
 - **HERDR 문서** — HERDR 문서는 사용자 승인 뒤 writer가 쓰고 leader가 확인한다. `specs/{version}/HERDR-*.md`는 버전마다 따로 둔다. v0.1·v0.2의 `docs/HERDR-*.md`는 기록으로 두고 고치지 않는다.
 - **자기 워크스페이스만 쓴다** — 자기 워크스페이스만 쓴다. 다른 워크스페이스의 파일은 읽기만 한다. (출처: workbench-core v0.5 DECISIONS D-7)
+- **core ITEMS 우선** — workbench-core v0.5 `ITEMS.md`(I-1~I-23)가 이 레포 지침보다 우선한다. (출처: workbench-core v0.5 DECISIONS D-12)
 - **HERDR 구성은 구독·토큰 부담으로 정한다** — herdr 멀티 에이전트의 역할·모델·effort 는 구독 현황(구독 종류, 남은 한도·초기화 시점, 동시에 도는 다른 워크스페이스)을 사람에게 확인하고 구독별 토큰 부담을 따져 정한다. 근거와 부담은 HERDR-SETUP 의 근거·토큰 부담 절에 적고, 한도가 바뀌어 구성을 바꾸면 다시 승인받는다.
 
 ---
@@ -45,7 +46,7 @@ Rust + gpui(gpui-kit) 기반 Zed 재현 편집기의 에이전트 공통 지침�
   - v0.5: 사용자 테스트 항목 I-1~I-23(workbench-core `specs/v0.5/ITEMS.md`)을 core-leader의 지시 카드(ORDER-01~ORDER-12)에 따라 반영한다. 버전 문서는 초안(2026-11-06).
   - 현재 Phase는 `specs/v0.5/PLAN.md` 진행 현황 표를 본다.
 - 핵심 원칙
-  - Zed 실측값은 요구사항이다.
+  - Zed 실측값은 요구사항이다. 단, core v0.5 ITEMS I-6(창 크기·기억 안 함)은 예외(core D-12).
   - 기존 코드를 최대한 재사용하고 새 코드는 최소화한다(ponytail).
   - 검증은 스펙 기반으로 자동화한다.
   - v0.3 리팩토링은 동작을 바꾸지 않는다.
@@ -79,11 +80,11 @@ cargo run
 
 ## 3. Zed 실측값 규칙
 
-- 모든 크기·간격·색상·폰트·동작 타이밍은 `spec/zed-metrics.toml`의 항목 ID로 참조한다. 수치의 기준은 이 toml 하나다.
+- 모든 크기·간격·색상·폰트·동작 타이밍은 `spec/zed-metrics.toml`의 항목 ID로 참조한다. 수치의 기준은 이 toml 하나다. 단, core v0.5 ITEMS I-6·I-14에 적힌 값은 예외(core D-12).
 - 원문 실측 문서(`docs/refs/01-zed/`)는 `spec/INDEX.md`를 통해 필요한 절만 읽는다. 통째로 읽는 것은 `spec` 담당뿐이다.
 - 코드에 수치를 하드코딩하지 않는다. 기존 하드코딩은 리팩토링 대상이다(Phase 2).
 - v0.4에서는 Phase 2(P4·P5) 카드에서만 코드 값을 스펙 값으로 맞춘다. 허용 오차 안 불일치도 맞춘다(`specs/v0.4/DECISIONS.md` D-3). 그 밖의 카드에서 찾은 불일치는 고치지 않고 완료 보고에 적고, `leader`가 PROGRESS의 스펙 불일치 목록에 모은다.
-- 스펙에 없는 값이 필요하면 추정하지 말고 `leader`를 통해 `spec`에게 요청한다.
+- 스펙에 없는 값이 필요하면 추정하지 말고 `leader`를 통해 `spec`에게 요청한다. 단, core v0.5 ITEMS가 갈래에게 Zed 확인을 맡긴 값(I-2·I-5·I-9·I-12·I-14·I-15·I-16·I-23)은 예외(core D-12).
 - 실측값은 단순화·반올림·통합 대상이 아니다. 비슷한 두 값이라도 스펙 ID가 다르면 별개로 유지한다.
 - Zed 소스에서 값을 확인할 수는 있지만 코드는 복사하지 않는다. 값만 참고한다.
 

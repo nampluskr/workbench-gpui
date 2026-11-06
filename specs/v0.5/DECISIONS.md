@@ -21,6 +21,7 @@
 | D-9 Zed UI 아이콘 복사 | `SPEC.md` R-1·R-18, `PLAN.md` Phase 5 |
 | D-10 IBM Plex Sans·Lilex 커밋 | `SPEC.md` R-14, `PLAN.md` Phase 3 |
 | D-11 ITEMS가 SPEC 역할 | `SPEC.md` 판정 방법 |
+| D-12 core ITEMS가 갈래 지침보다 우선 | 루트 `INTENT.md`·`AGENTS.md`의 예외 표시, `AGENTS.md` 레포 규칙 "core ITEMS 우선", `SPEC.md` R-2·R-22, `PLAN.md` Phase 8 |
 
 ---
 
@@ -70,5 +71,4 @@
 - core D-10에서 넣을 글꼴 굵기·스타일 파일과 글꼴 버전. 정할 사람: leader(Phase 3 카드).
 - `spec/zed-metrics.toml`·`spec/INDEX.md`·`spec/ambiguous.md`의 소유자. v0.4의 `spec` 역할이 없어졌다. 정할 사람: leader.
 - v0.4의 대리 응답 위임(하위 에이전트 승인 프롬프트를 lead가 판단, `specs/v0.4/HERDR-SETUP.md` 6.5)을 v0.5에서도 잇는지와 기록 위치. 정할 사람: 사용자.
-- 루트 `INTENT.md` "다루지 않는 것"과 I-2·I-22의 충돌(`INTENT.md` 제외 범위). 정할 사람: 사용자.
 - worktree 두 개를 지울지(D-2). 정할 사람: 사용자.

@@ -24,7 +24,8 @@
 - workbench-gpui v0.4는 2026-11-05에 끝났다(태그 `v0.4`, `specs/v0.4/PROGRESS.md` "버전 종료"). 그래서 ORDER-01 3.0(v0.4 종료)은 이 레포에서 하지 않는다.
 - 세 레포(workbench-core, workbench-gpui, workbench-tauri)가 같은 버전 번호로 움직이도록 이번 버전을 v0.5로 한다(core INTENT 배경, ORDER-01 2장).
 - 이 버전부터 에이전트 구성이 v0.4의 여섯 서브 에이전트(`spec`·`reviewer`·`review`·`measure`·`impl-ui`·`impl-editor`)에서 writer·coder·checker 셋으로 바뀐다(core D-2).
-- 근거 문서: `D:\projects\workbench-core\specs\v0.5\INTENT.md`, `D:\projects\workbench-core\specs\v0.5\orders\ORDER-01.md`.
+- core ITEMS가 이 레포의 루트 `INTENT.md`·`AGENTS.md`와 그 밖의 지침보다 우선한다(사용자 2026-11-06, core D-12). 부딪치던 지침 문장에는 "단, core v0.5 ITEMS I-n은 예외(core D-12)"를 붙였다(W-02, ORDER-01-R1).
+- 근거 문서: `D:\projects\workbench-core\specs\v0.5\INTENT.md`, `D:\projects\workbench-core\specs\v0.5\orders\ORDER-01.md`, `D:\projects\workbench-core\specs\v0.5\orders\ORDER-01-R1.md`.
 
 ## 제외 범위
 
@@ -32,4 +33,4 @@
 - workbench-core와 workbench-tauri 레포의 파일을 쓰는 것. 읽기만 한다(core D-7).
 - 지난 버전 폴더(`specs/v0.1/`~`specs/v0.4/`), `docs/HERDR-*.md`, `docs/refs/`를 고치는 것.
 - Zed 앱 코드의 복사(레포 규칙 "Zed 코드 복사 금지"). Zed 테마·아이콘을 `.gitignore` 폴더에 복사해 쓰는 것(core D-8·D-9)과 글꼴 파일을 커밋하는 것(core D-10)은 이 제외에 들지 않는다.
-- 루트 `INTENT.md` "다루지 않는 것"과 core ITEMS가 부딪치는 부분은 미정이다(사용자 확인). 루트 INTENT는 "프로젝트 전체 검색, 설정 UI 화면", "온라인 확장 목록"을 다루지 않는다고 적었는데, I-2는 "v" 메뉴의 Settings·Extensions가 Zed와 같은 화면을 열기를, I-22는 상태 바에 Zed와 같은 검색·진단 버튼과 그 화면을 요구한다. 루트 INTENT "쓰지 않는 기능의 아이콘·메뉴·옵션은 넣지 않는다"와 I-22 진단 버튼(언어 서버 없음)도 같다.
+- 루트 `INTENT.md`의 "다루지 않는 것"(프로젝트 전체 검색, 설정 UI 화면, 화면을 추가하는 확장, 온라인 확장 목록)은 이번 버전에도 제외 범위다. 단, core ITEMS I-2·I-22가 요구하는 것은 예외로 이번 버전에서 한다(core D-12).

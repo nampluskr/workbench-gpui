@@ -17,14 +17,14 @@
 
 | 이 레포 Phase | core Phase | 지시 카드 | 그룹 | 요구(I-n) | 관련 결정 |
 |---|---|---|---|---|---|
-| Phase 1 — 갈래 준비 | Phase 1 | ORDER-01 | 없음 | 없음 | core D-1·D-2·D-3·D-4·D-7·D-11 |
+| Phase 1 — 갈래 준비 | Phase 1 | ORDER-01 | 없음 | 없음 | core D-1·D-2·D-3·D-4·D-7·D-11·D-12 |
 | Phase 2 — 창 | Phase 2 | ORDER-02 | G-5 | R-6(I-6) | 없음 |
 | Phase 3 — 편집 영역과 글꼴 | Phase 3 | ORDER-03 | G-6 | R-7·R-8·R-9·R-13·R-14(I-7·I-8·I-9·I-13·I-14) | core D-10 |
 | Phase 4 — 글자 표시 | Phase 4 | ORDER-04 | G-8 | R-20(I-20) | 없음 |
 | Phase 5 — 아이콘 모양 | Phase 5 | ORDER-05 | G-1 | R-1·R-18(I-1·I-18) | core D-9 |
-| Phase 6 — 타이틀 바 메뉴 | Phase 6 | ORDER-06 | G-2 | R-2·R-17(I-2·I-17) | 없음 |
+| Phase 6 — 타이틀 바 메뉴 | Phase 6 | ORDER-06 | G-2 | R-2·R-17(I-2·I-17) | core D-12 |
 | Phase 7 — 테마·아이콘 테마 | Phase 7 | ORDER-07 | G-3 | R-3·R-4(I-3·I-4) | core D-8 |
-| Phase 8 — 상태 바 | Phase 8 | ORDER-08 | G-4 | R-5·R-19·R-22(I-5·I-19·I-22) | 없음 |
+| Phase 8 — 상태 바 | Phase 8 | ORDER-08 | G-4 | R-5·R-19·R-22(I-5·I-19·I-22) | core D-12 |
 | Phase 9 — 탭 바와 편집 영역 상단 | Phase 9 | ORDER-09 | G-7 | R-10·R-11·R-12·R-16·R-23(I-10·I-11·I-12·I-16·I-23) | 없음 |
 | Phase 10 — 폴더 보기 패널 | Phase 10 | ORDER-10 | G-9 | R-21(I-21) | 없음 |
 | Phase 11 — 구문 강조 | Phase 11 | ORDER-11 | G-10 | R-15(I-15) | 없음 |
@@ -61,7 +61,7 @@ core PLAN의 순서를 그대로 따른다. 이유도 core PLAN "Phase 순서의
 
 **목적** — v0.5 작업을 받을 수 있게 이 레포의 v0.5 문서를 쓰고, herdr 에이전트를 core D-2 구성으로 꾸린다.
 
-**대응** — 요구 없음. core D-1·D-2·D-3·D-4·D-7·D-11, 이 레포 D-1·D-2. 지시 카드 ORDER-01.
+**대응** — 요구 없음. core D-1·D-2·D-3·D-4·D-7·D-11·D-12, 이 레포 D-1·D-2. 지시 카드 ORDER-01, ORDER-01-R1.
 
 **완료 조건**
 - `specs/v0.5/`에 `INTENT.md`·`DECISIONS.md`·`SPEC.md`·`PLAN.md`·`HERDR-SETUP.md`·`PROGRESS.md`가 있다.
@@ -124,7 +124,7 @@ core PLAN의 순서를 그대로 따른다. 이유도 core PLAN "Phase 순서의
 
 **목적** — "v" 메뉴를 만들어 동작하게 하고, `≡` 메뉴를 Zed 순서로 두 갈래 같게 맞춘다.
 
-**대응** — R-2·R-17. ORDER-06.
+**대응** — R-2·R-17, core D-12. ORDER-06.
 
 **완료 조건**
 - R-2의 Settings·Keymap·Extensions·Panel Layout이 Zed에서 여는 화면을 확인해 SPEC에 더했다.
@@ -151,10 +151,11 @@ core PLAN의 순서를 그대로 따른다. 이유도 core PLAN "Phase 순서의
 
 **목적** — 상태 바에 위치와 파일 형식을 보이고, 왼쪽 버튼의 구성과 켜짐 표시를 Zed와 같게 한다.
 
-**대응** — R-5·R-19·R-22. ORDER-08.
+**대응** — R-5·R-19·R-22, core D-12. ORDER-08.
 
 **완료 조건**
 - R-5, R-19, R-22의 판정 방법을 충족한다.
+- 진단(I-22)처럼 지금 기능이 없어 구현 범위가 큰 것은 빼지 않는다. 구현이 막히면 그때 `[BLOCKED]`로 이유를 남긴다(core D-12, ORDER-01-R1).
 - 열린 탭이 없을 때의 Zed 상태 바 표시(R-5)를 보고에 적고 SPEC에 더했다.
 
 ---

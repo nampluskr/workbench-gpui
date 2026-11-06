@@ -53,7 +53,7 @@ I-1, core D-9. 요청 원문 "UI에 적용된 아이콘의 모양이 zed(또는 
 - 메뉴만 두지 않고 각 항목이 Zed처럼 동작한다. 단축키도 Zed와 같다: Settings `Ctrl-,`, Keymap `Ctrl-K Ctrl-S`, Themes `Ctrl-K Ctrl-T`, Extensions `Ctrl-Shift-X`. Panel Layout은 하위 메뉴다(`refs/compare/I-2-zed.png`).
 - Themes는 R-4, Icon Themes는 R-3의 선택 화면을 연다.
 - Settings·Keymap·Extensions·Panel Layout이 Zed에서 무엇을 여는지: 미정(Zed에서 확인, Phase 6).
-- 루트 `INTENT.md` "다루지 않는 것"(설정 UI 화면, 온라인 확장 목록)과의 관계: 미정(사용자 확인, `INTENT.md` 제외 범위).
+- 이 요구는 루트 `INTENT.md` "다루지 않는 것"(설정 UI 화면, 화면을 추가하는 확장, 온라인 확장 목록)과 "쓰지 않는 기능의 아이콘·메뉴·옵션은 넣지 않는다"보다 우선한다(core D-12). 루트 INTENT 해당 줄에 예외를 표시했다.
 
 **판정 방법**
 
@@ -538,7 +538,8 @@ I-21. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
 
 - 버튼의 종류와 순서가 Zed와 같고, 각 버튼이 Zed와 같은 패널이나 화면을 연다.
 - 아이콘 모양은 R-18, 켜짐 표시는 R-19를 따른다.
-- 루트 `INTENT.md` "다루지 않는 것"(프로젝트 전체 검색)과 "쓰지 않는 기능의 아이콘·메뉴·옵션은 넣지 않는다"와의 관계: 미정(사용자 확인, `INTENT.md` 제외 범위).
+- 이 요구는 루트 `INTENT.md` "다루지 않는 것"(프로젝트 전체 검색)과 "쓰지 않는 기능의 아이콘·메뉴·옵션은 넣지 않는다"보다 우선한다(core D-12). 루트 INTENT 해당 줄에 예외를 표시했다.
+- 진단처럼 지금 기능이 없어 구현 범위가 큰 것도 빼지 않는다. 구현이 막히면 Phase 8 보고에 `[BLOCKED]`와 이유를 남긴다(core D-12, ORDER-01-R1 3장 5).
 
 **판정 방법**
 
