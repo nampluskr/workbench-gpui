@@ -1,0 +1,174 @@
+> 버전: v0.5 · 작성일: 2026-11-06 · 상태: 초안 (core-leader 판정 뒤 사용자 확정)
+>
+> workbench-gpui v0.5의 herdr 멀티 에이전트 구성, 레이아웃, 작업 프로토콜, 최초 지시 프롬프트, 정리 방법을 담는다. 구성은 workbench-core가 정했고(core D-2·D-4), ORDER-01 3.2·3.3을 그대로 옮겼다. 요구는 `SPEC.md`에, Phase는 `PLAN.md`에 있다. 지난 구성은 `specs/v0.4/HERDR-SETUP.md`이고 고치지 않는다.
+>
+> 이 문서는 사용자 승인 뒤 writer가 쓰고 leader가 확인한다(`AGENTS.md` 레포 규칙 "HERDR 문서").
+
+# HERDR-SETUP — workbench-gpui v0.5
+
+## 0. 근거
+
+- core D-2: 갈래 에이전트 환경은 core가 정하고, 갈래마다 leader와 서브 에이전트 셋(writer·coder·checker)으로 둔다(`D:\projects\workbench-core\specs\v0.5\DECISIONS.md`).
+- core D-4: 화면 차례는 `[SCREEN-REQ]`·`[SCREEN-OK]`·`[SCREEN-DONE]` 메시지로 주고받는다.
+- core D-1(화면을 다루는 확인은 한 번에 하나), D-3(공통 지시 카드와 파일 보고), D-7(자기 워크스페이스만 쓴다).
+- ORDER-01 3.2·3.3(`D:\projects\workbench-core\specs\v0.5\orders\ORDER-01.md`). 이 카드가 `AGENTS.md` 역할 절과 이 문서를 고치라는 사용자 지시다(사용자 2026-11-06, ORDER-01 3.1·5장).
+- leader 확인 사실(2026-11-06, W-01): pane·탭 배치, 실행 명령, 남은 worktree, 서브 에이전트 카드 위치.
+
+---
+
+## 1. 에이전트 구성
+
+| herdr 이름 | 하는 일 | 도구·모델 | 띄우는 때 |
+|---|---|---|---|
+| `gpui-leader` | 카드 지시, 판정, 커밋, core-leader와 화면 차례 조율(core D-4). 코드·문서는 쓰지 않는다 | Claude Code Opus 5.5 (기존 세션) | 상시 |
+| `gpui-writer` | v0.5 문서(INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP)와 PROGRESS | Claude Code Opus 5.5 medium | 문서 단계와 Phase 끝 |
+| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium | 구현 Phase 동안 |
+| `gpui-checker` | 카드 리뷰(정확성, 카드 검증 수준만큼 빌드·테스트), 화면 검증(V2·V3)과 측정. src는 고치지 않는다 | agy gemini-3.8-flash-high | 리뷰·검증 카드가 있을 때 |
+
+- herdr 에이전트 이름은 세션 안에서 유일해야 하므로 `gpui-` 접두사를 붙인다(`herdr agent rename`).
+- 리뷰 독립성: coder(Codex)와 writer(Claude)의 산출물은 checker(agy)가 검토한다.
+- Codex는 coder에만 쓴다. 두 갈래 coder가 같은 Codex 구독을 나눠 쓴다. 한도가 바닥나면 직접 쿠폰을 쓰지 않고 leader가 core-leader에게 `[BLOCKED]`로 알린다. 쿠폰은 core-leader가 사용자에게 알리고 쓴다.
+- 검증 수준(V0~V4)과 앱 실행 제한은 `AGENTS.md` 3A를 그대로 쓴다.
+- v0.4 구성에만 있던 에이전트(`spec`·`reviewer`·`review`·`measure`·`impl-ui`·`impl-editor`)는 두지 않는다. pane이 남아 있으면 닫는다(ORDER-01 3.2).
+
+---
+
+## 2. herdr 레이아웃
+
+```text
+workspace: workbench-gpui (wD)   D:\projects\workbench-gpui, 브랜치 master, worktree 없음
+├── tab: control (wD:t1)   gpui-leader   (wD:p1)
+├── tab: docs    (wD:t4)   gpui-writer   (wD:pD)
+├── tab: impl    (wD:t5)   gpui-coder    (wD:pE)
+└── tab: check   (wD:t6)   gpui-checker  (wD:pF)
+```
+
+- ID는 2026-11-06 leader 확인 값이다. 다시 띄우면 바뀔 수 있으므로 `herdr agent list`·`herdr tab list`로 확인하고 이름으로 부른다.
+- worktree는 두지 않는다(core D-2). v0.4의 `.worktrees\editor`(`work/editor`)와 `.worktrees\ui`(`work/ui`)가 남아 있다. v0.5는 쓰지 않고, 지울지는 미정이다(사용자가 정한다, `DECISIONS.md` D-2).
+
+### 2.1 실행 명령
+
+```powershell
+# gpui-leader
+claude --model opus --effort high      # 기존 세션. effort는 미정(아래)
+# gpui-writer
+claude --model opus --effort medium
+# gpui-coder
+codex     # 옵션 없이 띄운다. 세션 안에서 /model → GPT-6.1-Sol → Medium → s(세션 한정). v0.3 H-3
+# gpui-checker
+agy --model gemini-3.8-flash-high
+```
+
+- leader의 effort: core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다. 기존 세션의 effort 값은 미정(leader 확인).
+- Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).
+
+### 2.2 빌드·실측 환경
+
+`specs/v0.4/HERDR-SETUP.md` 3.4와 같다. 바뀌지 않았다.
+
+- Rust 1.99.1, Build Tools 2022, Windows SDK 10.0.26100.0, PowerShell 7, Python은 WinPython 전체 경로.
+- `CARGO_TARGET_DIR`은 `D:\projects\workbench-gpui\target` 하나다. 잠금 파일을 지우지 않는다.
+- 빌드할 때마다 `pwsh -NoProfile -File tools/apply-manifest.ps1`을 다시 실행한다.
+- `tools\verify-v02-*.ps1`은 항상 `-OutDir specs\v0.5\verify\...`를 넘긴다.
+- 화면: 주 모니터 1920x1080, 100%(DPI 96). Zed와 비교하는 판정은 창 1440×852, 화면 배율 100%, 같은 폴더·파일·테마에서 한다(core D-11).
+
+---
+
+## 3. 근거·토큰 부담
+
+레포 규칙 "HERDR 구성은 구독·토큰 부담으로 정한다"에 따라 둔다.
+
+- 구성 근거: core D-2 근거를 따른다. 서브 에이전트는 최소한으로 둔다(토큰 사용량과 컨텍스트 손실, 사용자 2026-11-06). 구독 현황은 core-leader가 사용자에게 확인했다(2026-11-06, core D-2): Claude 여유(Opus 5.5 medium 가능), Codex 여유(gpt-6.1-sol medium, 초기화 쿠폰 있음), agy 여유(gemini-3.8-flash-high, Argon 사용 불가).
+- 이 레포에서 따로 확인한 구독 한도 수치(남은 한도, 초기화 시점): 미정(사용자 확인).
+- 동시에 도는 다른 워크스페이스: workbench-core(core-leader), workbench-tauri(tauri-leader와 서브 에이전트 셋). 두 갈래 coder가 같은 Codex 구독을 나눠 쓴다(core D-2).
+
+| 구독 | 이 워크스페이스 | 부담 | 조정 |
+|---|---|---|---|
+| Claude | `gpui-leader` Opus | 미정(사용자 확인) | 판단 위주, 코드·문서를 쓰지 않는다 |
+| Claude | `gpui-writer` Opus medium | 미정(사용자 확인) | 문서 단계와 Phase 끝에만 띄운다 |
+| Codex | `gpui-coder` gpt-6.1-sol medium | 미정(사용자 확인) | tauri-coder와 나눠 쓴다. 바닥나면 core-leader에게 `[BLOCKED]` |
+| agy | `gpui-checker` gemini-3.8-flash-high | 미정(사용자 확인) | 리뷰·검증 카드가 있을 때만 띄운다 |
+
+- 한도가 바뀌어 구성을 바꾸면 다시 승인받는다(레포 규칙).
+
+---
+
+## 4. 파일 소유권
+
+| 경로 | 쓰는 이 | 비고 |
+|---|---|---|
+| `specs/v0.5/INTENT.md`, `DECISIONS.md`, `SPEC.md`, `PLAN.md` | `gpui-writer` | 상태 확정은 core-leader 판정 뒤 사용자가 정한다. PLAN 진행 현황 표 갱신자는 미정(leader) |
+| `specs/v0.5/HERDR-SETUP.md` | `gpui-writer` | 사용자 승인 뒤 쓰고 leader가 확인한다 |
+| `specs/v0.5/PROGRESS.md` | `gpui-writer` | core D-2 |
+| `specs/v0.5/cards/<ID>.md` | `gpui-leader` | 서브 에이전트 카드(`DECISIONS.md` D-1) |
+| `specs/v0.5/cards/<ID>.report.md` | 그 카드를 받은 에이전트 | 보고 |
+| `specs/v0.5/reports/ORDER-<n>.md` | `gpui-leader` | core-leader에게 보내는 보고(core D-3) |
+| `src/`, `resources/`, core D-8·D-9 복사 폴더(경로 미정), core D-10 글꼴 파일(경로 미정) | `gpui-coder` | 구현 전부(core D-2). `Cargo.toml`·`Cargo.lock`은 승인 없이 바꾸지 않는다 |
+| `specs/v0.5/verify/` | `gpui-checker` | 리뷰·측정 결과 |
+| `tools/measure/` | `gpui-checker` | 측정 스크립트. v0.4 `measure` 역할을 잇는다 |
+| `spec/zed-metrics.toml`, `spec/INDEX.md`, `spec/ambiguous.md` | 미정(leader) | v0.4 `spec` 역할이 없어졌다 |
+| 그 밖의 `tools/` | 미정(leader가 카드로 지정) | 없음 |
+
+- 커밋은 leader만 한다. push는 하지 않는다(ORDER-01 7장).
+- 아무도 고치지 않는 것: `specs/v0.1/`~`specs/v0.4/`, `docs/HERDR-*.md`, `docs/refs/`.
+- 다른 워크스페이스(workbench-core, workbench-tauri)의 파일은 읽기만 한다(core D-7).
+
+---
+
+## 5. 작업 프로토콜
+
+### 5.1 core → leader
+
+- core-leader가 `D:\projects\workbench-core\specs\v0.5\orders\ORDER-<n>.md` 경로를 herdr 프롬프트로 보낸다.
+- 카드 번호는 core Phase 번호와 같고 두 자리로 쓴다(`ORDER-01`~`ORDER-12`). 같은 Phase 안에서 다시 지시하면 `-R<n>`을 붙인다(예: `ORDER-03-R1`). 보고 파일도 카드와 같은 이름을 쓴다.
+
+### 5.2 leader → core
+
+- leader가 결과를 `specs/v0.5/reports/ORDER-<n>.md`에 쓰고, `herdr agent prompt core-leader "<보고 파일 절대 경로>"`로 경로만 보낸다.
+
+### 5.3 leader → 서브 에이전트
+
+- leader가 카드 하나만 읽고 일할 수 있게 `specs/v0.5/cards/<ID>.md`를 쓰고, 그 경로를 herdr 프롬프트로 보낸다(`DECISIONS.md` D-1).
+- 프롬프트 예: `너는 gpui-writer다. D:\projects\workbench-gpui\specs\v0.5\cards\W-01.md 를 읽고 그대로 진행하라. 끝나면 보고 파일 경로만 답하라.`
+- 받는 에이전트는 `specs/v0.5/cards/<ID>.report.md`에 `AGENTS.md` 8장 형식(`[DONE]`·`[MEASURED]`·`[BLOCKED]`)으로 보고하고, 답으로는 그 경로만 말한다.
+- 카드 ID 접두사(`W-01`처럼 받는 역할을 나타내는지): 미정(leader).
+
+### 5.4 화면 차례
+
+1. checker가 화면 검증(V2·V3, 배율 변경 포함)이 필요하면 자기 leader에게 알린다.
+2. leader가 `herdr agent prompt core-leader "[SCREEN-REQ] gpui <카드 ID>"`를 보낸다.
+3. core-leader가 `[SCREEN-OK] <카드 ID>`를 보낸 뒤에만 화면을 쓴다. 최대 30분 기다리고, 오지 않으면 `[BLOCKED]`로 보고한다. 그동안 화면이 필요 없는 작업은 계속한다.
+4. 끝나면 leader가 `herdr agent prompt core-leader "[SCREEN-DONE] gpui <카드 ID>"`를 보낸다.
+
+- 화면을 다루는 확인(자동 검증 스크립트, 디스플레이 배율 변경, 앱 창 포커스·입력·캡처)은 같은 갈래 안에서도 한 번에 하나만 한다(core D-1).
+- 사용자가 UI를 직접 확인하는 동안에는 core-leader가 `[SCREEN-OK]`를 보내지 않는다(core D-4).
+
+### 5.5 그 밖
+
+- 진행 상태는 PROGRESS에 두고 세션 기억에 기대지 않는다.
+- Git Bash에서 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다.
+- herdr가 '대기'로 표시해도 바로 입력을 보내지 않는다. 먼저 `herdr pane read`로 화면을 확인한다. agy는 백그라운드 작업이 남아 있어도 '대기'로 표시되므로, checker의 완료는 보고 파일로 판정한다.
+- 서브 에이전트의 승인·권한 프롬프트를 누가 처리하는지와 그 기록 위치: 미정(사용자, `DECISIONS.md` 미결 사항).
+
+---
+
+## 6. 최초 지시 프롬프트
+
+coder와 checker는 ORDER-01에서 띄우고 역할만 확인시킨다. 코드를 고치거나 앱을 실행하지 않고 다음 카드를 기다리게 한다(ORDER-01 3.2).
+
+```text
+너는 workbench-gpui v0.5의 <gpui-coder | gpui-checker>다. 루트 AGENTS.md와 specs/v0.5/HERDR-SETUP.md(1장 구성, 4장 소유권, 5장 프로토콜)를 읽어라.
+읽은 뒤 자기 역할을 한 줄로 확인하고, gpui-leader의 카드(specs/v0.5/cards/<ID>.md)를 기다려라. 카드 전에는 파일을 고치지 않고 앱을 실행하지 않는다.
+```
+
+- 작업 지시는 5.3의 카드 경로 프롬프트로 한다.
+- 실제로 보낸 프롬프트 문구: 미정(leader 기록).
+
+---
+
+## 7. 정리 방법
+
+- Phase가 바뀔 때 서브 에이전트의 컨텍스트를 비운다(core D-2). 할 일이 없는 서브 에이전트는 닫아도 된다.
+- 다만 ORDER-01 완료 시점에는 writer·coder·checker 셋 모두 떠 있어야 한다(ORDER-01 3.2·4장).
+- v0.4 에이전트 pane이 남아 있으면 닫는다. worktree는 지우지 않고 보고한다(ORDER-01 3.2).
+- 버전이 끝나면 다음 버전의 `specs/{새 버전}/HERDR-SETUP.md`를 새로 쓴다. 이 문서는 고치지 않는다.
