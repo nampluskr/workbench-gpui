@@ -81,10 +81,10 @@ cargo run
 ## 3. Zed 실측값 규칙
 
 - 모든 크기·간격·색상·폰트·동작 타이밍은 `spec/zed-metrics.toml`의 항목 ID로 참조한다. 수치의 기준은 이 toml 하나다. 단, core v0.5 ITEMS I-6·I-14에 적힌 값은 예외(core D-12).
-- 원문 실측 문서(`docs/refs/01-zed/`)는 `spec/INDEX.md`를 통해 필요한 절만 읽는다. 통째로 읽는 것은 `spec` 담당뿐이다.
+- 원문 실측 문서(`docs/refs/01-zed/`)는 `spec/INDEX.md`를 통해 필요한 절만 읽는다. 통째로 읽는 것은 스펙 기록 카드를 받은 `writer`뿐이다.
 - 코드에 수치를 하드코딩하지 않는다. 기존 하드코딩은 리팩토링 대상이다(Phase 2).
-- v0.4에서는 Phase 2(P4·P5) 카드에서만 코드 값을 스펙 값으로 맞춘다. 허용 오차 안 불일치도 맞춘다(`specs/v0.4/DECISIONS.md` D-3). 그 밖의 카드에서 찾은 불일치는 고치지 않고 완료 보고에 적고, `leader`가 PROGRESS의 스펙 불일치 목록에 모은다.
-- 스펙에 없는 값이 필요하면 추정하지 말고 `leader`를 통해 `spec`에게 요청한다. 단, core v0.5 ITEMS가 갈래에게 Zed 확인을 맡긴 값(I-2·I-5·I-9·I-12·I-14·I-15·I-16·I-23)은 예외(core D-12).
+- v0.5에서는 각 I-n의 구현 카드(core ORDER-02~11에 대응하는 Phase 카드)가 그 I-n이 다루는 화면·값만 스펙 값으로 맞춘다. 허용 오차 안 불일치도 맞춘다. 카드 범위 밖에서 찾은 불일치는 고치지 않고 완료 보고에 적고, `writer`가 PROGRESS의 스펙 불일치 목록에 모은다.
+- 스펙에 없는 값이 필요하면 추정하지 말고 `leader`에게 요청한다. `leader`는 `checker`에게 Zed 값 확인 카드를, `writer`에게 `spec/` 기록 카드를 낸다. 단, core v0.5 ITEMS가 갈래에게 Zed 확인을 맡긴 값(I-2·I-5·I-9·I-12·I-14·I-15·I-16·I-23)은 예외(core D-12).
 - 실측값은 단순화·반올림·통합 대상이 아니다. 비슷한 두 값이라도 스펙 ID가 다르면 별개로 유지한다.
 - Zed 소스에서 값을 확인할 수는 있지만 코드는 복사하지 않는다. 값만 참고한다.
 
@@ -154,7 +154,7 @@ cargo run
 
 ## 4. ponytail 규칙
 
-`spec` 역할은 이 장을 적용하지 않는다. 나머지 역할은 모든 코드 작업에 적용한다. 강도는 full이며 ultra는 쓰지 않는다.
+모든 역할은 모든 코드 작업에 적용한다. 강도는 full이며 ultra는 쓰지 않는다.
 설치 현황: Claude Code 플러그인 5.3.2, Codex 플러그인. agy에는 플러그인이 없으므로 이 장의 규칙을 그대로 따른다.
 
 ### 4.1 작성 전 확인 순서
@@ -216,8 +216,8 @@ cargo run
 
 - `specs/v0.5/HERDR-SETUP.md` 4장의 소유권 표를 따른다. 요점은 아래와 같다.
   - `leader`: 카드 `specs/v0.5/cards/<ID>.md`, 보고 `specs/v0.5/reports/ORDER-<n>.md`, 커밋.
-  - `writer`: `specs/v0.5/`의 INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP·PROGRESS.
-  - `coder`: `src/`와 구현에 필요한 파일(`resources/`, 복사 폴더, 글꼴 파일).
+  - `writer`: `specs/v0.5/`의 INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP·PROGRESS, `spec/`(`zed-metrics.toml`·`INDEX.md`·`ambiguous.md`, leader 카드로만 고친다).
+  - `coder`: `src/`와 구현에 필요한 파일(`resources/`, 복사 폴더, 글꼴 파일). `spec/`은 읽기만 한다.
   - `checker`: `specs/v0.5/verify/`, `tools/measure/`.
   - 카드를 받은 에이전트: 그 카드의 보고 `specs/v0.5/cards/<ID>.report.md`.
 - 소유하지 않은 파일은 수정하지 않는다. 필요하면 `leader`에게 요청한다.
@@ -252,6 +252,10 @@ v0.5 구성은 leader·writer·coder·checker 넷이다(workbench-core v0.5 DECI
 - HERDR 문서는 사용자 승인 뒤 쓰고 leader가 확인한다.
 - 요구와 결정은 사람이 정한다. 정해지지 않은 것은 지어내지 않고 "미정"으로 적고 보고에 남긴다.
 - SPEC의 판정 방법은 workbench-core ITEMS의 판정 방법을 바꾸지 않는다(core D-11).
+- `spec/`(`zed-metrics.toml`·`INDEX.md`·`ambiguous.md`)은 leader 카드로만 고친다. Zed 값은 checker의 확인 보고에서 가져와 기록한다(core-leader 사용자 위임 2026-11-06, core D-13, ORDER-01-R2 D).
+  - 항목마다 고유 ID, 값, 단위, 측정 출처(원문 파일·절·원문 항목 ID 또는 checker 보고), 측정 조건(DPI, 테마, 폰트)을 기록한다.
+  - 모호하거나 조건이 빠진 값은 채우지 않고 `spec/ambiguous.md`에 기록해 보고한다.
+  - 스펙 항목 ID는 한번 정하면 바꾸지 않는다. 변경이 필요하면 `leader`에게 보고한다.
 - src는 읽기만 한다. 앱·빌드를 실행하지 않는다. 커밋하지 않는다.
 
 ### 7.3 coder (Codex, gpt-6.1-sol medium)
@@ -259,6 +263,7 @@ v0.5 구성은 leader·writer·coder·checker 넷이다(workbench-core v0.5 DECI
 - 구현 전부를 맡는다(UI·에디터 코어를 나누지 않는다). worktree 없이 main checkout에서 일한다.
 - gpui-kit 컴포넌트가 있으면 먼저 검토한다. 크기나 동작이 기준선과 다르면 자체 구현을 유지한다.
 - 카드에 지정된 검증 수준(3A.1)만큼 빌드·테스트·clippy를 실행하고 8장 형식으로 보고한다.
+- `spec/`은 읽기만 한다. 스펙에 없는 값이 필요하면 `leader`에게 요청한다(3장).
 - 텍스트 레이아웃과 입력 처리 로직은 V1 이상으로 검증하고, 상호작용은 `#[gpui::test]` 입력 시뮬레이션으로 확인한다.
 - 앱을 띄워 화면을 다루는 확인을 하지 않는다(3A.2). 실측이 필요해 보이면 보고의 "실측 필요"에 적는다.
 - 커밋하지 않는다. `Cargo.toml`·`Cargo.lock`은 승인 없이 바꾸지 않는다.
@@ -273,6 +278,7 @@ v0.5 구성은 leader·writer·coder·checker 넷이다(workbench-core v0.5 DECI
   5. 정확성 리뷰(버그, 경계 조건, 동작 변경 여부, 오류 처리)를 코드 읽기로 한다.
   6. 커밋 직전에만 전체 테스트를 1회 실행한다(3A.5).
 - writer 문서의 검토도 맡는다(coder·writer 산출물의 독립 검토, core D-2).
+- Zed 값 확인 카드(원문 실측 문서 대조, Zed 화면 측정)를 받으면 결과를 보고 파일로 넘긴다. `spec/`에는 직접 쓰지 않고 writer가 기록한다(ORDER-01-R2 D).
 - 일반 리뷰에서는 앱을 띄워 확인하지 않는다. 담당자의 "실측 필요"·"사용자 확인 필요" 목록은 리뷰 결과에 그대로 옮겨 적는다.
 - V3 카드를 받으면 3A.4 절차로 UI 실측을 하고 `[MEASURED]`로 보고한다. 화면 검증(V2·V3, 배율 변경 포함)이 필요하면 먼저 leader에게 알리고, leader가 `[SCREEN-OK]`를 전한 뒤에만 화면을 쓴다.
 - 실행 환경에서 화면 캡처나 조작이 불가능하면 `[BLOCKED]`로 보고한다.

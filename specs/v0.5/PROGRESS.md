@@ -29,6 +29,41 @@
   - 검증: 문서만 바꿨다(V0). `specs/v0.5/`의 INTENT·DECISIONS·SPEC·PLAN에서 충돌 관련 "미정"이 남지 않았는지 grep으로 확인했다. 레포 규칙 "사람이 정하고 묻는다"·"지난 버전 폴더 불변"·"Zed 코드 복사 금지"는 바꾸지 않았다(git diff 확인).
   - 특이사항: 부딪치지 않는다고 본 경계 사례는 `cards/W-02.report.md`에 있다. checker 검토(ORDER-01-R1 3장 6)는 아직 하지 않았다.
 
+- **W-03 HERDR-SETUP: 승인 위임, 구독 현황, worktree 정리 반영** (2026-11-06)
+  - 무엇을 했나: ORDER-01-R2 A·B와 C의 사실을 `HERDR-SETUP.md`·`DECISIONS.md`에 반영하고, leader가 정한 미정 네 가지(카드 ID 접두사, leader effort, 최초 프롬프트 기록, PLAN 진행 현황 갱신자)를 채웠다. 카드 `specs/v0.5/cards/W-03.md`.
+  - 결과:
+    - `HERDR-SETUP.md`: 0장 근거에 ORDER-01-R2·core D-13 추가. 2장 worktree 줄을 "leader가 지웠다"로, 2.1 leader effort high. 3장 구독 현황을 core D-2 "여유"로 적고 수치 미정 줄과 표의 "부담 미정"을 정리("한도가 바뀌어 구성을 바꾸면 다시 승인받는다"는 그대로). 4장 PLAN 진행 현황 표는 writer 갱신·leader 확인. 5.3 카드 ID 접두사 `W-`·`C-`·`K-`. 5.6 승인 처리 절 새로 둠(위임, 예외 셋은 core-leader에게 묻기, 기록은 PROGRESS, 미리 허용 목록은 R3에서 채움). 6장 최초 프롬프트 기록. 7장 worktree 정리 사실.
+    - `DECISIONS.md`: D-2를 "쓰지 않고 지운다"로 고치고 근거에 ORDER-01-R2 C와 확인 결과를 더함. 미결 사항에서 대리 응답 위임·worktree 삭제 줄을 지움.
+    - `spec/` 소유와 AGENTS 3장 `spec` 역할 문장은 고치지 않았다(ORDER-01-R2 D, 승인 전).
+  - 검증: 문서만 바꿨다(V0). `git worktree list` → 본 트리 하나, `git branch` → `master`, `work/p3fix`(work/editor·work/ui 없음). HERDR-SETUP·DECISIONS의 "미정"을 grep으로 다시 보아 남은 것은 `spec/`·복사 폴더 경로·그 밖의 `tools/` 소유뿐임을 확인했다.
+  - 특이사항: 로컬 브랜치 `work/p3fix`가 남아 있다. 카드·ORDER-01-R2에 언급이 없어 문서에 적지 않고 보고했다.
+
+- **W-04 checker(agy) 명령 미리 허용 설정** (2026-11-06)
+  - 무엇을 했나: core ORDER-01-R3에 따라 checker가 맡은 일의 명령을 승인 없이 돌게 하는 설정 파일을 레포에 만들고, `HERDR-SETUP.md`에 위치·허용 목록·대체 방식을 적었다. 카드 `specs/v0.5/cards/W-04.md`.
+  - 결과:
+    - 새 파일 `.agents/checker-settings.json`: allow만(32개), deny 없음. git 읽기 4, cargo build·test·clippy, `apply-manifest.ps1`, `tools/`의 `capture.ps1`·`verify-*.ps1` 18개, `tools/measure/` 6개. `set-scale.ps1`은 넣지 않음.
+    - `HERDR-SETUP.md`: 2.1 checker 실행 명령에 `--settings D:\projects\workbench-gpui\.agents\checker-settings.json`, 5.6 "미리 허용 목록"을 채움(위치, 형식, 허용 목록, 넣지 않은 것, deny를 두지 않는 이유, 화면 차례, 대체 방식).
+  - 검증: 문서·설정 파일만 바꿨다(V0). 허용 목록에 금지 명령(`git commit` 등, `cargo add` 등, 삭제, 내려받기, python)이 없음을 눈으로 대조했다. `tools/`·`tools/measure/`의 실제 파일 이름과 목록을 `ls`로 대조했다. 파일 쓰기는 자동 모드에 거부되지 않았다. 허용이 실제로 동작하는지(checker `git diff --stat`)는 이 카드 범위 밖이라 하지 않았다.
+  - 특이사항: `verify-scale.ps1`은 배율을 바꾸지 않고 현재 배율을 확인만 한다(스크립트 머리말). 그래서 카드대로 허용 목록에 넣었다.
+
+- **W-05 spec/ 소유 안 반영** (2026-11-06)
+  - 무엇을 했나: core-leader가 승인한 `specs/v0.5/reports/ORDER-01-R2.md` "D. spec/ 소유 안"을 그대로 반영했다(core-leader 사용자 위임 2026-11-06, core D-13, ORDER-01-R2 D). 카드 `specs/v0.5/cards/W-05.md`.
+  - 결과:
+    - `AGENTS.md`: 3장 세 문장(원문 통째로 읽기, v0.5 값 맞춤 카드 범위, 스펙에 없는 값 요청 경로)을 안의 표대로 고침(core D-12 예외 문구는 그대로). 4장 첫 문장의 `spec` 역할 예외를 지움. 6장 writer에 `spec/` 소유, coder는 `spec/` 읽기만. 7.2 writer에 `spec/` 기록 규칙(ID 불변, 출처·조건, 모호 값은 `ambiguous.md`), 7.3 coder 읽기만, 7.4 checker Zed 값 확인.
+    - `spec/INDEX.md` 머리말 소유 줄만 고침. 그 밖의 `spec/` 내용은 그대로.
+    - `HERDR-SETUP.md` 4장 `spec/` 행의 "미정(leader)"을 `gpui-writer`로. `DECISIONS.md`에 갈래 결정 D-3을 두고 미결 사항의 `spec/` 소유 줄을 지움.
+  - 검증: 문서만 바꿨다(V0). AGENTS.md에 `` `spec` 담당``·``spec`에게``·"`spec` 역할" 문구가 남지 않았는지 grep으로 확인했다.
+  - 특이사항: 없음.
+
+- **W-06 R3 시험 결과를 HERDR-SETUP에 반영** (2026-11-06)
+  - 무엇을 했나: core ORDER-01-R3의 leader 시험 결과를 `HERDR-SETUP.md` 2.1·4장·5.6에 적었다. 카드 `specs/v0.5/cards/W-06.md`.
+  - 결과:
+    - 시험 결과(leader 2026-11-06): checker를 `--settings D:\projects\workbench-gpui\.agents\checker-settings.json`으로 다시 띄우려 하자 leader 세션 자동 모드가 `[Self-Modification]`으로 거부했다. 우회하지 않았다. 지금 gpui-checker(wD:pF)는 `--settings` 없이 떠 있어 미리 허용이 적용되지 않았다.
+    - 대체 방식 시험(출처 C-03): leader가 `git diff --stat` 출력을 `C:\Users\nampl\AppData\Local\Temp\v05-C-03-git-diff-stat.txt`로 남기고, checker가 그 파일을 승인 창 없이 읽어 바뀐 파일 3개를 맞게 보고했다.
+    - `HERDR-SETUP.md`: 2.1에 checker "적용 목표" 명령과 "현재 실행 명령"(`--settings` 없음)을 함께 두고 재실행은 사용자 또는 사용자가 허락한 세션이 한다고 적음. 5.6에 현재 상태, 대체 방식이 기본이라는 것, C-03 시험 결과를 더함. 4장에 `.agents/checker-settings.json` 행(소유 leader, 고칠 때 core-leader 승인).
+  - 검증: 문서만 바꿨다(V0). 시험 결과는 카드에 적힌 leader 기록을 옮겼고 writer가 다시 시험하지 않았다.
+  - 특이사항: 없음.
+
 ## 사용자 요청 작업
 
 없음.

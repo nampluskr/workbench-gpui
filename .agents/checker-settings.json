@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "command(git diff)",
+      "command(git log)",
+      "command(git status)",
+      "command(git show)",
+      "command(cargo build)",
+      "command(cargo test)",
+      "command(cargo clippy)",
+      "command(pwsh -NoProfile -File tools/apply-manifest.ps1)",
+      "command(pwsh -NoProfile -File tools/capture.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-ime.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-phase1.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-phase2.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-phase3.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-r5.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-scale.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase1.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase2.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase3-guard.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase3.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase4-d043-clip.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase4-d043.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase4-d044.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase4.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase5-d046.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase5-d047.ps1)",
+      "command(pwsh -NoProfile -File tools/verify-v02-phase5.ps1)",
+      "command(pwsh -NoProfile -File tools/measure/check-layout.ps1)",
+      "command(pwsh -NoProfile -File tools/measure/compare.ps1)",
+      "command(pwsh -NoProfile -File tools/measure/input.ps1)",
+      "command(pwsh -NoProfile -File tools/measure/p0-pixels.ps1)",
+      "command(pwsh -NoProfile -File tools/measure/p0-report.ps1)",
+      "command(pwsh -NoProfile -File tools/measure/session.ps1)"
+    ]
+  }
+}

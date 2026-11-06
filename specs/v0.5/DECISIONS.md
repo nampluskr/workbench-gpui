@@ -45,22 +45,46 @@
 
 ---
 
-## D-2. v0.4 worktree(`.worktrees\editor`, `.worktrees\ui`)는 v0.5에서 쓰지 않는다
+## D-2. v0.4 worktree(`.worktrees\editor`, `.worktrees\ui`)는 v0.5에서 쓰지 않고 지운다
 
 **선택**
 
 - v0.5는 main checkout(`D:\projects\workbench-gpui`, 브랜치 `master`) 하나에서 작업한다.
-- 남아 있는 worktree `.worktrees\editor`(`work/editor`)와 `.worktrees\ui`(`work/ui`)는 쓰지 않는다. 지울지는 미정(사용자가 정한다).
+- v0.4 worktree `.worktrees\editor`·`.worktrees\ui`와 로컬 브랜치 `work/editor`·`work/ui`는 지운다. 2026-11-06 leader가 master에 병합된 것을 확인한 뒤 지웠다. 원격 브랜치는 건드리지 않는다.
 
 **근거**
 
 - worktree는 두지 않는다. coder가 하나라 같은 checkout에서 겹치지 않는다(core D-2).
 - v0.4에서 쓰던 worktree가 남아 있으면 지우지 말고 보고한다. 지울지는 사람이 정한다(ORDER-01 3.2).
-- leader 확인 사실(2026-11-06, W-01 "확정 사실"). `git worktree list` 결과 두 worktree가 남아 있다(writer 2026-11-06).
+- 사용자가 지우기로 했다("미정 네 가지 제안대로 진행해 주세요", 2026-11-06, ORDER-01-R2 C). leader가 지운 사실(2026-11-06, W-03). writer 확인: `git worktree list`에 본 트리 하나만 있고 `git branch`에 `work/editor`·`work/ui`가 없다(2026-11-06).
 
 **배제한 대안**
 
 - **v0.4처럼 coder를 worktree에서 일하게 한다** — core D-2가 worktree를 두지 않기로 했다.
+- **worktree를 남겨 둔다** — 사용자가 지우기로 했다(ORDER-01-R2 C).
+
+---
+
+## D-3. `spec/`은 writer가 leader 카드로만 고치고, Zed 값 확인은 checker가 한다
+
+**선택**
+
+- `spec/zed-metrics.toml`·`spec/INDEX.md`·`spec/ambiguous.md`는 `writer`가 leader 카드로만 고친다.
+- Zed 값 확인(원문 실측 문서 대조, Zed 화면 측정)은 `checker`가 하고 결과를 보고 파일로 넘긴다. `writer`가 그 보고를 `spec/`에 기록한다.
+- `coder`는 `spec/`을 읽기만 한다.
+- 스펙 항목 ID는 한번 정하면 바꾸지 않는다(v0.4 `AGENTS.md` 7.3에서 이어짐).
+- v0.5에서는 각 I-n의 구현 카드가 그 I-n이 다루는 화면·값만 스펙 값으로 맞춘다. 카드 범위 밖에서 찾은 불일치는 고치지 않고 완료 보고에 적고, `writer`가 PROGRESS의 스펙 불일치 목록에 모은다. 모은 것은 Phase 12 사용자 일괄 확인 때 core-leader에게 올린다.
+- workbench-tauri가 스펙 ID가 필요하면 core-leader를 거쳐 gpui-leader 카드로 요청한다. tauri는 이 레포 `spec/`에 쓰지 않는다(core D-7).
+
+**근거**
+
+- gpui-leader 안(`specs/v0.5/reports/ORDER-01-R2.md` "D. spec/ 소유 안")을 core-leader가 승인했다(core-leader 사용자 위임 2026-11-06, core D-13, ORDER-01-R2 D).
+- core D-2에서 v0.4 `spec`(agy) 역할이 없어졌다. 문서 담당이 writer, 측정 담당이 checker다.
+- 지난 커밋에 workbench-tauri용 스펙 ID를 이 레포 `spec/`에 더한 것이 있다(4badee1, 39350b7, 8eb170e). core D-7 이후로는 tauri가 이 레포에 쓰지 않는다.
+
+**배제한 대안**
+
+- **v0.4처럼 `spec` 역할을 따로 둔다** — core D-2가 v0.4 구성을 잇지 않고 서브 에이전트를 writer·coder·checker 셋으로 줄였다.
 
 ---
 
@@ -69,6 +93,3 @@
 - SPEC 요구 번호를 core I-n과 같은 번호의 R-n으로 매기는 것(R-1 = I-1 … R-23 = I-23). writer 초안이다. 번호 체계는 갈래가 정한다(ORDER-01 3.1). 정할 사람: leader(사용자 확정).
 - core D-8·D-9의 복사본을 둘 `.gitignore` 폴더 경로, 복사 출처 Zed 커밋, 복사본이 없을 때 앱이 어떻게 보일지, 다시 채우는 방법. 정할 사람: leader(Phase 5·7 카드).
 - core D-10에서 넣을 글꼴 굵기·스타일 파일과 글꼴 버전. 정할 사람: leader(Phase 3 카드).
-- `spec/zed-metrics.toml`·`spec/INDEX.md`·`spec/ambiguous.md`의 소유자. v0.4의 `spec` 역할이 없어졌다. 정할 사람: leader.
-- v0.4의 대리 응답 위임(하위 에이전트 승인 프롬프트를 lead가 판단, `specs/v0.4/HERDR-SETUP.md` 6.5)을 v0.5에서도 잇는지와 기록 위치. 정할 사람: 사용자.
-- worktree 두 개를 지울지(D-2). 정할 사람: 사용자.

@@ -13,6 +13,8 @@
 - core D-1(화면을 다루는 확인은 한 번에 하나), D-3(공통 지시 카드와 파일 보고), D-7(자기 워크스페이스만 쓴다).
 - ORDER-01 3.2·3.3(`D:\projects\workbench-core\specs\v0.5\orders\ORDER-01.md`). 이 카드가 `AGENTS.md` 역할 절과 이 문서를 고치라는 사용자 지시다(사용자 2026-11-06, ORDER-01 3.1·5장).
 - leader 확인 사실(2026-11-06, W-01): pane·탭 배치, 실행 명령, 남은 worktree, 서브 에이전트 카드 위치.
+- ORDER-01-R2(`D:\projects\workbench-core\specs\v0.5\orders\ORDER-01-R2.md`): 승인 위임(5.6), 구독 현황(3장), v0.4 worktree 정리(2장). 사용자 "미정 네 가지 제안대로 진행해 주세요"(2026-11-06).
+- core D-13: 사용자 권한을 core-leader에게 위임한다. 갈래 leader가 사용자에게 물을 것은 core-leader에게 묻는다(사용자 2026-11-06).
 
 ---
 
@@ -44,22 +46,26 @@ workspace: workbench-gpui (wD)   D:\projects\workbench-gpui, 브랜치 master, w
 ```
 
 - ID는 2026-11-06 leader 확인 값이다. 다시 띄우면 바뀔 수 있으므로 `herdr agent list`·`herdr tab list`로 확인하고 이름으로 부른다.
-- worktree는 두지 않는다(core D-2). v0.4의 `.worktrees\editor`(`work/editor`)와 `.worktrees\ui`(`work/ui`)가 남아 있다. v0.5는 쓰지 않고, 지울지는 미정이다(사용자가 정한다, `DECISIONS.md` D-2).
+- worktree는 두지 않는다(core D-2). v0.4의 `.worktrees\editor`·`.worktrees\ui`와 로컬 브랜치 `work/editor`·`work/ui`는 master에 병합된 것을 확인한 뒤 2026-11-06 leader가 지웠다(ORDER-01-R2 C, `DECISIONS.md` D-2).
 
 ### 2.1 실행 명령
 
 ```powershell
 # gpui-leader
-claude --model opus --effort high      # 기존 세션. effort는 미정(아래)
+claude --model opus --effort high      # 기존 세션
 # gpui-writer
 claude --model opus --effort medium
 # gpui-coder
 codex     # 옵션 없이 띄운다. 세션 안에서 /model → GPT-6.1-Sol → Medium → s(세션 한정). v0.3 H-3
-# gpui-checker
+# gpui-checker — 적용 목표 (미리 허용 설정을 이 세션에만 적용, 5.6)
+agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\checker-settings.json
+# gpui-checker — 현재 실행 명령 (2026-11-06, --settings 없음, 미리 허용 미적용)
 agy --model gemini-3.8-flash-high
 ```
 
-- leader의 effort: core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다. 기존 세션의 effort 값은 미정(leader 확인).
+- checker의 `--settings` 재실행은 아직 하지 못했다. leader 세션 자동 모드가 `[Self-Modification]`으로 거부했고 우회하지 않았다(leader 2026-11-06, W-06). 다시 띄우는 일은 사용자 또는 사용자가 허락한 세션이 한다. 그전까지는 5.6의 대체 방식이 기본이다.
+
+- leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).
 
 ### 2.2 빌드·실측 환경
@@ -79,15 +85,15 @@ agy --model gemini-3.8-flash-high
 레포 규칙 "HERDR 구성은 구독·토큰 부담으로 정한다"에 따라 둔다.
 
 - 구성 근거: core D-2 근거를 따른다. 서브 에이전트는 최소한으로 둔다(토큰 사용량과 컨텍스트 손실, 사용자 2026-11-06). 구독 현황은 core-leader가 사용자에게 확인했다(2026-11-06, core D-2): Claude 여유(Opus 5.5 medium 가능), Codex 여유(gpt-6.1-sol medium, 초기화 쿠폰 있음), agy 여유(gemini-3.8-flash-high, Argon 사용 불가).
-- 이 레포에서 따로 확인한 구독 한도 수치(남은 한도, 초기화 시점): 미정(사용자 확인).
+- 구독 현황은 위 core D-2 근거의 "여유"로 적고, 남은 한도·초기화 시점 수치는 적지 않는다(사용자 2026-11-06, ORDER-01-R2 B).
 - 동시에 도는 다른 워크스페이스: workbench-core(core-leader), workbench-tauri(tauri-leader와 서브 에이전트 셋). 두 갈래 coder가 같은 Codex 구독을 나눠 쓴다(core D-2).
 
-| 구독 | 이 워크스페이스 | 부담 | 조정 |
+| 구독 | 구독 현황(core D-2) | 이 워크스페이스 | 조정 |
 |---|---|---|---|
-| Claude | `gpui-leader` Opus | 미정(사용자 확인) | 판단 위주, 코드·문서를 쓰지 않는다 |
-| Claude | `gpui-writer` Opus medium | 미정(사용자 확인) | 문서 단계와 Phase 끝에만 띄운다 |
-| Codex | `gpui-coder` gpt-6.1-sol medium | 미정(사용자 확인) | tauri-coder와 나눠 쓴다. 바닥나면 core-leader에게 `[BLOCKED]` |
-| agy | `gpui-checker` gemini-3.8-flash-high | 미정(사용자 확인) | 리뷰·검증 카드가 있을 때만 띄운다 |
+| Claude | 여유 | `gpui-leader` Opus high | 판단 위주, 코드·문서를 쓰지 않는다 |
+| Claude | 여유 | `gpui-writer` Opus medium | 문서 단계와 Phase 끝에만 띄운다 |
+| Codex | 여유, 초기화 쿠폰 있음 | `gpui-coder` gpt-6.1-sol medium | tauri-coder와 나눠 쓴다. 바닥나면 core-leader에게 `[BLOCKED]` |
+| agy | 여유(Argon 사용 불가) | `gpui-checker` gemini-3.8-flash-high | 리뷰·검증 카드가 있을 때만 띄운다 |
 
 - 한도가 바뀌어 구성을 바꾸면 다시 승인받는다(레포 규칙).
 
@@ -97,7 +103,7 @@ agy --model gemini-3.8-flash-high
 
 | 경로 | 쓰는 이 | 비고 |
 |---|---|---|
-| `specs/v0.5/INTENT.md`, `DECISIONS.md`, `SPEC.md`, `PLAN.md` | `gpui-writer` | 상태 확정은 core-leader 판정 뒤 사용자가 정한다. PLAN 진행 현황 표 갱신자는 미정(leader) |
+| `specs/v0.5/INTENT.md`, `DECISIONS.md`, `SPEC.md`, `PLAN.md` | `gpui-writer` | 상태 확정은 core-leader 판정 뒤 사용자가 정한다. PLAN 진행 현황 표는 writer가 갱신하고 leader가 확인한다(leader 2026-11-06 W-03) |
 | `specs/v0.5/HERDR-SETUP.md` | `gpui-writer` | 사용자 승인 뒤 쓰고 leader가 확인한다 |
 | `specs/v0.5/PROGRESS.md` | `gpui-writer` | core D-2 |
 | `specs/v0.5/cards/<ID>.md` | `gpui-leader` | 서브 에이전트 카드(`DECISIONS.md` D-1) |
@@ -106,7 +112,8 @@ agy --model gemini-3.8-flash-high
 | `src/`, `resources/`, core D-8·D-9 복사 폴더(경로 미정), core D-10 글꼴 파일(경로 미정) | `gpui-coder` | 구현 전부(core D-2). `Cargo.toml`·`Cargo.lock`은 승인 없이 바꾸지 않는다 |
 | `specs/v0.5/verify/` | `gpui-checker` | 리뷰·측정 결과 |
 | `tools/measure/` | `gpui-checker` | 측정 스크립트. v0.4 `measure` 역할을 잇는다 |
-| `spec/zed-metrics.toml`, `spec/INDEX.md`, `spec/ambiguous.md` | 미정(leader) | v0.4 `spec` 역할이 없어졌다 |
+| `.agents/checker-settings.json` | `gpui-leader` | checker 미리 허용 목록(5.6). 승인 범위를 바꾸는 파일이라 고칠 때 core-leader 승인을 받는다(leader 2026-11-06, W-06) |
+| `spec/zed-metrics.toml`, `spec/INDEX.md`, `spec/ambiguous.md` | `gpui-writer` | leader 카드로만 고친다. Zed 값 확인은 `gpui-checker`가 보고로 넘기고, `gpui-coder`는 읽기만 한다(core-leader 사용자 위임 2026-11-06, core D-13, ORDER-01-R2 D, `DECISIONS.md` D-3) |
 | 그 밖의 `tools/` | 미정(leader가 카드로 지정) | 없음 |
 
 - 커밋은 leader만 한다. push는 하지 않는다(ORDER-01 7장).
@@ -131,7 +138,7 @@ agy --model gemini-3.8-flash-high
 - leader가 카드 하나만 읽고 일할 수 있게 `specs/v0.5/cards/<ID>.md`를 쓰고, 그 경로를 herdr 프롬프트로 보낸다(`DECISIONS.md` D-1).
 - 프롬프트 예: `너는 gpui-writer다. D:\projects\workbench-gpui\specs\v0.5\cards\W-01.md 를 읽고 그대로 진행하라. 끝나면 보고 파일 경로만 답하라.`
 - 받는 에이전트는 `specs/v0.5/cards/<ID>.report.md`에 `AGENTS.md` 8장 형식(`[DONE]`·`[MEASURED]`·`[BLOCKED]`)으로 보고하고, 답으로는 그 경로만 말한다.
-- 카드 ID 접두사(`W-01`처럼 받는 역할을 나타내는지): 미정(leader).
+- 카드 ID 접두사는 받는 역할의 첫 글자다: `W-`(writer), `C-`(checker), `K-`(coder). 예: `W-01`(leader 2026-11-06 W-03).
 
 ### 5.4 화면 차례
 
@@ -148,7 +155,31 @@ agy --model gemini-3.8-flash-high
 - 진행 상태는 PROGRESS에 두고 세션 기억에 기대지 않는다.
 - Git Bash에서 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다.
 - herdr가 '대기'로 표시해도 바로 입력을 보내지 않는다. 먼저 `herdr pane read`로 화면을 확인한다. agy는 백그라운드 작업이 남아 있어도 '대기'로 표시되므로, checker의 완료는 보고 파일로 판정한다.
-- 서브 에이전트의 승인·권한 프롬프트를 누가 처리하는지와 그 기록 위치: 미정(사용자, `DECISIONS.md` 미결 사항).
+
+### 5.6 승인 처리
+
+- 서브 에이전트의 승인 요청(권한·도구 실행 프롬프트)은 leader가 대신 응답한다(사용자 2026-11-06, core ORDER-01-R2 A). leader는 `herdr pane read`로 내용을 보고 판단한다.
+- 위임에서 빠지는 것(leader가 core-leader에게 묻는다. core D-13, 사용자 권한 위임 2026-11-06):
+  - 의존성 추가·제거·버전 변경(`Cargo.toml`, `Cargo.lock`)
+  - HERDR 구성 변경(모델·effort·역할·pane)
+  - push
+- 기록: leader가 처리한 판단은 출처를 달아 `specs/v0.5/PROGRESS.md`에 남긴다. 별도 HERDR-DECISIONS 문서는 두지 않는다(leader 2026-11-06 W-03).
+- 미리 허용 목록(checker, core ORDER-01-R3, 사용자 2026-11-06 "제안대로 진행해 주세요"): checker가 맡은 일의 명령은 승인 없이 돌게 한다. leader의 권한은 넓히지 않는다.
+  - 위치: 레포 `.agents/checker-settings.json`. checker를 `agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\checker-settings.json`으로 띄워 그 세션에만 적용한다(`agy --help`, 2.1). agy 전역 설정(`C:\Users\nampl\.gemini\antigravity-cli\settings.json`)은 레포 밖이라 고치지 않는다(core D-7). 레포 안 프로젝트 설정 파일 위치는 agy 문서에 없다(leader 조사 2026-11-06).
+  - 형식: `{"permissions":{"allow":["command(<명령 앞부분>)", ...]}}`. 앞부분이 일치하는 명령을 허용한다(workbench-tauri `.agents/checker-settings.json`과 같은 형식).
+  - 허용 목록(그대로):
+    - `git diff`, `git log`, `git status`, `git show`
+    - `cargo build`, `cargo test`, `cargo clippy`
+    - `pwsh -NoProfile -File tools/apply-manifest.ps1`
+    - `pwsh -NoProfile -File tools/<이름>.ps1`: `capture.ps1`, `verify-ime.ps1`, `verify-phase1.ps1`, `verify-phase2.ps1`, `verify-phase3.ps1`, `verify-r5.ps1`, `verify-scale.ps1`, `verify-v02-phase1.ps1`, `verify-v02-phase2.ps1`, `verify-v02-phase3-guard.ps1`, `verify-v02-phase3.ps1`, `verify-v02-phase4-d043-clip.ps1`, `verify-v02-phase4-d043.ps1`, `verify-v02-phase4-d044.ps1`, `verify-v02-phase4.ps1`, `verify-v02-phase5-d046.ps1`, `verify-v02-phase5-d047.ps1`, `verify-v02-phase5.ps1`
+    - `pwsh -NoProfile -File tools/measure/<이름>.ps1`: `check-layout.ps1`, `compare.ps1`, `input.ps1`, `p0-pixels.ps1`, `p0-report.ps1`, `session.ps1`
+  - 넣지 않은 것: `tools/set-scale.ps1`(디스플레이 배율 변경은 화면 차례 core D-4로 leader가 따로 승인), `git commit`·`push`·`reset`·`checkout`·`switch`·`branch`·`rm`, 파일 삭제, `cargo add`·`remove`·`install`, 내려받기(`curl`, `Invoke-WebRequest`), python 실행. 목록에 없는 명령은 승인 창이 뜨고 leader가 위 위임대로 판단한다.
+  - deny는 두지 않는다. tauri 시험(core-leader 2026-11-06)에서 deny를 함께 두면 허용 명령도 승인 창이 떴고, allow만 두면 승인 없이 돌았다.
+  - 화면을 다루는 스크립트(`capture.ps1`, `verify-*.ps1`, `tools/measure/`)는 허용되어 있어도 `[SCREEN-OK]`를 받은 뒤에만 실행한다(5.4).
+  - 대체 방식(core-leader 2026-11-06): 허용이 동작하지 않거나 설정을 쓸 수 없으면, checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남긴다. checker는 그 파일을 읽어 판정한다.
+  - 현재 상태(leader 2026-11-06, W-06): 설정 파일은 레포에 있지만 지금 checker 세션에는 적용되지 않았다. leader가 checker를 `--settings`로 다시 띄우려 하자 leader 세션 자동 모드가 `[Self-Modification]`으로 거부했고, core-leader 지시대로 우회하지 않았다. 지금 gpui-checker(wD:pF)는 `agy --model gemini-3.8-flash-high`(`--settings` 없음)로 떠 있다.
+  - `--settings`로 다시 띄우는 일은 사용자 또는 사용자가 허락한 세션이 한다. **그전까지는 대체 방식이 기본이다**: checker가 실행할 명령은 coder 또는 leader가 실행하고 출력을 `%TEMP%\v05-<카드ID>-*.txt`로 남기며, checker는 그 파일을 읽어 판정한다.
+  - 대체 방식 시험(C-03, 2026-11-06): leader가 `git diff --stat` 출력을 `C:\Users\nampl\AppData\Local\Temp\v05-C-03-git-diff-stat.txt`로 남겼고, checker가 그 파일을 승인 창 없이 읽어 바뀐 파일 3개를 맞게 보고했다.
 
 ---
 
@@ -162,7 +193,7 @@ coder와 checker는 ORDER-01에서 띄우고 역할만 확인시킨다. 코드�
 ```
 
 - 작업 지시는 5.3의 카드 경로 프롬프트로 한다.
-- 실제로 보낸 프롬프트 문구: 미정(leader 기록).
+- 실제로 보낸 것: 역할 확인만 시키고 다음 카드를 기다리게 했다(ORDER-01 3.2). 위 문구는 그 취지의 예시다(leader 2026-11-06 W-03).
 
 ---
 
@@ -170,5 +201,5 @@ coder와 checker는 ORDER-01에서 띄우고 역할만 확인시킨다. 코드�
 
 - Phase가 바뀔 때 서브 에이전트의 컨텍스트를 비운다(core D-2). 할 일이 없는 서브 에이전트는 닫아도 된다.
 - 다만 ORDER-01 완료 시점에는 writer·coder·checker 셋 모두 떠 있어야 한다(ORDER-01 3.2·4장).
-- v0.4 에이전트 pane이 남아 있으면 닫는다. worktree는 지우지 않고 보고한다(ORDER-01 3.2).
+- v0.4 에이전트 pane이 남아 있으면 닫는다(ORDER-01 3.2). v0.4 worktree와 로컬 브랜치 `work/editor`·`work/ui`는 2026-11-06에 지웠다(ORDER-01-R2 C).
 - 버전이 끝나면 다음 버전의 `specs/{새 버전}/HERDR-SETUP.md`를 새로 쓴다. 이 문서는 고치지 않는다.
