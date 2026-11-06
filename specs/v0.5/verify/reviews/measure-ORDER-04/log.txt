@@ -1,0 +1,56 @@
+2026-11-07 05:34:23.687 === ORDER-04 V3 Capture Script Started (Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04) ===
+2026-11-07 05:34:24.048 Generating 5-digit fixture (10,050 lines) at 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\order04-5digit-fixture.md'...
+2026-11-07 05:34:24.099 5-digit fixture generation complete (lines=10,050, bytes=582922).
+2026-11-07 05:34:24.107 Calling session.ps1 -Action Start...
+2026-11-07 05:34:25.628 App launched PID=40584
+2026-11-07 05:34:25.645 Copied 5-digit fixture into session fixture folder: D:\projects\workbench-gpui\target\measure-df935e734bae45b288643320d9bdf088\01-order03-5digit.md
+2026-11-07 05:34:27.551 Main window located HWND=0x1FE0716
+2026-11-07 05:34:28.666 Clicking 'project-empty-open' button to load project tree...
+2026-11-07 05:34:30.491 === Step 'I20-tree': File Tree Compacted Folder Path (I-20) ===
+2026-11-07 05:34:30.731 Compacted folder tree row bounds: x=300, y=59, w=239, h=26 (crop target)
+2026-11-07 05:34:32.648 Capture 'app-I20-tree' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\app-I20-tree.png
+2026-11-07 05:34:32.652 [app] Step 'I20-tree' (File Tree Compacted Folder Path (I-20)) -> PASS
+2026-11-07 05:34:32.653 === Step 'I20-tooltip': File Tree Item Full Path Tooltip (I-20) ===
+2026-11-07 05:34:32.691 Hovering over compacted tree row at (478, 122) to trigger full path tooltip...
+2026-11-07 05:34:34.845 Capture 'app-I20-tooltip' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\app-I20-tooltip.png
+2026-11-07 05:34:35.162 [app] Step 'I20-tooltip' (File Tree Item Full Path Tooltip (I-20)) -> PASS
+2026-11-07 05:34:35.163 === Step 'I20-dialog-unsaved': Unsaved Tab Close TaskDialog (I-20) ===
+2026-11-07 05:34:35.190 Opening file for unsaved check at (478, 174)...
+2026-11-07 05:34:36.528 Typing space to set modified flag...
+2026-11-07 05:34:36.830 Sending Ctrl+W to trigger unsaved changes confirmation dialog...
+2026-11-07 05:34:37.586 Found TaskDialog HWND=0x1A90238
+2026-11-07 05:34:39.253 Capture 'app-I20-dialog-unsaved' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\app-I20-dialog-unsaved.png
+2026-11-07 05:34:39.254 Dismissing TaskDialog via Esc key (safe operation, no save/discard)...
+2026-11-07 05:34:40.623 [app] Step 'I20-dialog-unsaved' (Unsaved Tab Close TaskDialog (I-20)) -> PASS
+2026-11-07 05:34:40.625 === Step 'I20-dialog-delete': File Delete Confirmation TaskDialog (I-20) ===
+2026-11-07 05:34:40.659 Selecting 'file-001.txt' in tree at (478, 226)...
+2026-11-07 05:34:41.110 Sending Delete key to open delete confirmation dialog...
+2026-11-07 05:34:41.811 Found Delete TaskDialog HWND=0x1AA0238
+2026-11-07 05:34:43.413 Capture 'app-I20-dialog-delete' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\app-I20-dialog-delete.png
+2026-11-07 05:34:43.414 Immediately dismissing Delete TaskDialog via Esc key (safe operation, deletion cancelled)...
+2026-11-07 05:34:43.887 [app] Step 'I20-dialog-delete' (File Delete Confirmation TaskDialog (I-20)) -> PASS
+2026-11-07 05:34:43.888 === Step 'I20-title': Title Bar Folder Name Path (I-20) ===
+2026-11-07 05:34:44.118 Title folder name bounds: x=332, y=5, w=330, h=22 (crop target)
+2026-11-07 05:34:45.797 Capture 'app-I20-title' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\app-I20-title.png
+2026-11-07 05:34:45.798 [app] Step 'I20-title' (Title Bar Folder Name Path (I-20)) -> PASS
+2026-11-07 05:34:45.799 === Step 'S-9-5digit': Line Number 5-Digit Gutter Geometry (ORDER-03 Remeasure) ===
+2026-11-07 05:34:45.804 Opening 5-digit fixture '01-order03-5digit.md'...
+2026-11-07 05:34:47.024 Waiting for 5-digit document (657KB, 10,050 lines) to load into editor...
+2026-11-07 05:34:49.620 5-digit load poll (2.6s): WAIT rows=11 w=9
+2026-11-07 05:34:52.736 5-digit load poll (5.7s): OK rows=322 w=107
+2026-11-07 05:34:52.736 5-digit document successfully loaded! Performing final capture...
+2026-11-07 05:34:54.298 Capture 'app-S-9-gutter-5digit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\app-S-9-gutter-5digit.png
+2026-11-07 05:34:54.299 Closing 5-digit fixture tab via Ctrl+W...
+2026-11-07 05:34:54.832 [app] Step 'S-9-5digit' (Line Number 5-Digit Gutter Geometry (ORDER-03 Remeasure)) -> PASS
+2026-11-07 05:34:54.833 Cleaning up workbench-gpui process (PID=40584)...
+2026-11-07 05:34:54.942 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 05:34:56.040 Session Stop: {
+2026-11-07 05:34:56.040 Session Stop:   "files": {
+2026-11-07 05:34:56.041 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 05:34:56.042 Session Stop:   },
+2026-11-07 05:34:56.042 Session Stop:   "restored": true,
+2026-11-07 05:34:56.043 Session Stop:   "exeUnchanged": true,
+2026-11-07 05:34:56.044 Session Stop:   "fixtureRemoved": true
+2026-11-07 05:34:56.044 Session Stop: }
+2026-11-07 05:34:56.140 Summary written to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-04\summary.json'
+2026-11-07 05:34:56.141 === ORDER-04 V3 Capture Script Finished ===

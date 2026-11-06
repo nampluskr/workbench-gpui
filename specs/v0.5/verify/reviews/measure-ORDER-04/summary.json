@@ -1,0 +1,10 @@
+{
+  "app": {
+    "I20-tree": "PASS",
+    "I20-tooltip": "PASS",
+    "I20-dialog-unsaved": "PASS",
+    "I20-dialog-delete": "PASS",
+    "I20-title": "PASS",
+    "S-9-5digit": "PASS"
+  }
+}

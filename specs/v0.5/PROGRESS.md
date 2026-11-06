@@ -337,6 +337,47 @@
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: 없음.
 
+- **Phase 3 종료 판정** (2026-11-07)
+  - 무엇을 했나: core-leader가 ORDER-03 보고를 보고 Phase 3을 판정했다(core-leader 2026-11-07, 사용자 위임 core D-13).
+  - 결과: "ORDER-03 충족. Phase 3 종료 판정: 충족(I-7·I-8·I-9·I-13·I-14 두 갈래 모두)". Phase 3 커밋 `b82641d`, push 완료.
+  - 검증: core-leader 판정(gpui-leader 전달, W-16).
+  - 특이사항: 측정 불가 1건(5자리 줄 번호 열 66/101px)은 ORDER-04 지시로 Phase 4 화면 차례에서 다시 잰다(Phase 4 참고).
+
+- **W-16 Phase 3 종료, Phase 4 시작 기록** (2026-11-07)
+  - 무엇을 했나: PLAN 진행 현황 Phase 3을 done(커밋 `b82641d`), Phase 4를 doing(ORDER-04 받음 2026-11-07)으로 바꾸고, 위 Phase 3 종료 판정과 Phase 4의 재측정 지시를 적었다. 카드 `specs/v0.5/cards/W-16.md`.
+  - 결과: `PLAN.md`, `PROGRESS.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+### Phase 4 — 글자 표시
+
+- **ORDER-04 받음** (2026-11-07)
+  - 무엇을 했나: core-leader의 ORDER-04(R-20, I-20)를 받았다.
+  - 결과: 추가 지시 — ORDER-03 측정 불가 1건(5자리 줄 번호 열 66/101px, `verify/reviews/measure-ORDER-03.md` 5절)을 Phase 4 화면 차례에서 다시 잰다.
+  - 검증: 해당 없음(지시 기록).
+  - 특이사항: 없음.
+
+- **C-17 경로 표시 자리 조사와 측정 스크립트** (2026-11-07, checker)
+  - 무엇을 했나: 앱에서 경로·`\`가 보이는 자리를 모두 찾아 표로 만들고(`cards/C-17.report.md` 1절), `tools/measure/order03-v3.ps1`을 재사용해 `tools/measure/order04-v3.ps1`(I20-tree·I20-tooltip·I20-dialog-unsaved·I20-dialog-delete·I20-title·S-9-5digit)을 새로 썼다. 카드 `specs/v0.5/cards/C-17.md`.
+  - 결과: 앱이 그리는 자리 — 트리 압축 폴더(`branch \ nested`)·트리 툴팁(`D:\...\branch\nested`)은 I-20 판정 대상. 타이틀 바(마지막 폴더 이름)·상태 바·메뉴·탭 라벨(파일 이름)은 경로 구분자를 보이지 않는다. 탭 툴팁(I-11)·경로 줄(I-12)은 아직 없어 Phase 9에서 다시 본다. OS 네이티브 대화 상자(탭 닫기 미저장, 파일 삭제 확인, 폴더 선택 창)는 core-leader 결정대로 I-20 판정에서 빼고 'OS 표시'로 기록한다.
+  - 검증: V0(문법 검사, `-DryRunStdout` 좌표 확인, 화면 쓰지 않음).
+  - 특이사항: 없음.
+
+- **C-18 ORDER-04 V3 판정** (2026-11-07, leader 실행 05:34, checker 판정)
+  - 무엇을 했나: leader가 화면 차례 안에서 `order04-v3.ps1`을 1회 실행했고(`verify/reviews/measure-ORDER-04/`), checker가 픽셀·Python 도구로 판정했다. 카드 `specs/v0.5/cards/C-18.md`.
+  - 결과(`verify/reviews/measure-ORDER-04.md`, 크롭 `verify/reviews/measure-ORDER-04/crops/`):
+    - I-20: PASS. 트리 압축 폴더·트리 툴팁이 가로 획 없는 `\`로 보인다. 코드 변경 없음 — Phase 3 글꼴 변경(I-14, IBM Plex Sans·Lilex)으로 이미 풀렸다. 네이티브 대화 상자 2건(탭 닫기 미저장, 파일 삭제 확인)은 'OS 표시'로 기록했다.
+    - ORDER-03 남은 1건(5자리 줄 번호 열 66/101px): PASS. 10,050줄 문서 끝 29행에서 숫자 잉크 오른쪽 끝 65~66px, 본문 시작 101px.
+    - I-14 글꼴 유지: PASS.
+  - 검증: V3(파일 판정).
+  - 특이사항: 관찰 — 이번 실행의 앱 창 클라이언트는 1426×845(레이아웃 덤프 viewport, 첫 스냅숏부터)였다. 같은 빌드의 ORDER-03 실행들은 1440×852였다. 코드 변경이 없으므로 화면 설정(배율·모니터) 차이로 추정하나 확인하지 않았다. core-leader에게 알렸다.
+
+- **W-17 ORDER-04 기록** (2026-11-07)
+  - 무엇을 했나: 위 C-17·C-18을 적고, Phase 12 V4 목록에 I-20 OS 네이티브 대화 상자 항목을 더했다. PLAN 진행 현황 Phase 4를 review(core-leader 판정 대기)로 바꿨다. 카드 `specs/v0.5/cards/W-17.md`.
+  - 결과: `PROGRESS.md`, `PLAN.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |
@@ -348,6 +389,7 @@
 - (해소) R-13(I-13) 줄 번호 색: (A) 유지 결정이 core D-14로 대체돼 Zed One Light 값으로 맞췄다(K-07, C-15 PASS).
 - R-14(I-14) 글자 모양 인상: 영문(IBM Plex Sans·Lilex)·한글(Malgun Gothic)의 글자 모양, 굵기(미리보기 제목 600 포함), 렌더링 인상(K-03, C-10, C-15).
 - R-13(I-13) 현재 줄 강조 대비: 현재 줄 배경 `#ebebecbf`의 대비와 시각적 인상(K-04-R1, C-10).
+- R-20(I-20) OS 네이티브 대화 상자의 역슬래시 표시(OS 글꼴, 자리·캡처는 `verify/reviews/measure-ORDER-04.md`)(C-17, C-18).
 
 ## 사용자 요청 작업
 
