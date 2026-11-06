@@ -1,6 +1,6 @@
 #Requires -Version 7
 # shortcut: assumes primary monitor at 100% DPI (AGENTS 3A.4); box coordinates are used as screen pixels, add DPI/monitor offset handling if that changes.
-param([ValidateSet('Start','Snapshot','Stop')][string]$Action, [string]$State, [switch]$Capture, [switch]$Json, [string]$Out = 'D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure', [string]$Backup, [string]$Exe = 'D:projectsworkbench-gpui	argetdebugworkbench-gpui.exe')
+param([ValidateSet('Start','Snapshot','Stop')][string]$Action, [string]$State, [switch]$Capture, [switch]$Json, [string]$Out = 'D:\projects\workbench-gpui\specs\v0.3\verify\reviews\p0-measure', [string]$Backup, [string]$Exe = 'D:\projects\workbench-gpui\target\debug\workbench-gpui.exe', [string]$FixtureFile)
 $ErrorActionPreference = 'Stop'
 # Backup defaults to a sibling of -Out (_<leaf>-backup) so Start and Stop agree; pass -Backup to reuse an older location.
 if (-not $Backup) { $Backup = Join-Path (Split-Path $Out -Parent) ('_' + (Split-Path $Out -Leaf) + '-backup') }
@@ -32,6 +32,7 @@ if ($Action -eq 'Start') {
     'measure' | Set-Content (Join-Path $fixture '.measure-marker')
     foreach ($i in 1..80) { 'Measurement fixture' | Set-Content (Join-Path $fixture ('file-{0:D3}.txt' -f $i)) }
     'Nested fixture' | Set-Content (Join-Path $fixture 'branch\nested\nested.txt')
+    if ($FixtureFile -and (Test-Path -LiteralPath $FixtureFile)) { Copy-Item -LiteralPath $FixtureFile -Destination (Join-Path $fixture '00-order03.md') -Force }
     $pick = Join-Path $Out 'pick.txt'
     $fixture | Set-Content $pick -Encoding utf8
     $exe = $Exe
@@ -64,7 +65,7 @@ if ($Action -eq 'Start') {
     $lines[$start..$end]
 } else {
     $session=Get-Content -Raw (Join-Path $Out 'session.json') | ConvertFrom-Json
-    if (Get-Process workbench-gpui -ErrorAction SilentlyContinue) { throw 'Close the measurement app before restoring' }
+    if (Get-Process -Id $session.pid -ErrorAction SilentlyContinue) { throw 'Close the measurement app before restoring' }
     $before=Get-Content -Raw (Join-Path $Backup 'before.json') | ConvertFrom-Json -AsHashtable
     if (-not $before.existed) {
         # The app data folder did not exist before the session; remove what the app created.

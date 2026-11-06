@@ -212,8 +212,8 @@ core PLAN의 순서를 그대로 따른다. 이유도 core PLAN "Phase 순서의
 | Phase | 상태 | 시작일 | 완료일 | 커밋 | 비고 |
 |---|---|---|---|---|---|
 | Phase 1 | done | 2026-11-06 | 2026-11-06 | `d707513` | 충족(R3 기준 2는 사용자 조치 대기, 대체 방식 적용) |
-| Phase 2 | review | 2026-11-06 | - | - | core-leader 판정 대기(K-01 구현, C-04 리뷰 PASS, C-05 V3 실측 4/4 PASS). ORDER-02 기준 1 미충족(클라이언트 세로 −4px) → ORDER-02-R1: K-02·K-02-R1 보정, C-06 리뷰 PASS, C-07 V3 재실측 4/4 PASS(클라이언트 중심 차이 0/0) |
-| Phase 3 | todo | - | - | - | - |
+| Phase 2 | done | 2026-11-06 | 2026-11-07 | `dad12f0` | 충족(core-leader 2026-11-07, 사용자 위임 D-13: 두 갈래 클라이언트 원점 (240,90), 1440×852, 최소 360×240). ORDER-02 기준 1 미충족(클라이언트 세로 −4px) → ORDER-02-R1: K-02·K-02-R1 보정, C-06 리뷰 PASS, C-07 V3 재실측 4/4 PASS(클라이언트 중심 차이 0/0). push 완료(origin master `dad12f0`) |
+| Phase 3 | review | 2026-11-07 | - | - | core-leader 판정 대기. V3 통과 18/19, 측정 불가 1(5자리 줄 번호 열, 문서 로드 전 캡처), 불일치 0(`verify/reviews/measure-ORDER-03.md`) |
 | Phase 4 | todo | - | - | - | - |
 | Phase 5 | todo | - | - | - | - |
 | Phase 6 | todo | - | - | - | - |

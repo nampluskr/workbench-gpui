@@ -1,0 +1,348 @@
+2026-11-07 03:21:19.954 === ORDER-03 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03) ===
+2026-11-07 03:21:20.320 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 03:21:20.324 Generating 5-digit line fixture (10,050 lines) at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md...
+2026-11-07 03:21:20.372 5-digit fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md
+2026-11-07 03:21:20.389 Copied run5 valid capture app-S-1-body.png to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03
+2026-11-07 03:21:20.397 Copied run5 valid capture app-S-2-cursor-line.png to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03
+2026-11-07 03:21:20.401 Copied run5 valid capture app-S-2-cursor-softwrap.png to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03
+2026-11-07 03:21:20.407 Copied run5 valid capture app-S-3-single-pane.png to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03
+2026-11-07 03:21:20.424 --- Starting workbench-gpui measurement ---
+2026-11-07 03:21:20.428 Calling session.ps1 -Action Start...
+2026-11-07 03:21:21.855 App launched PID=1980
+2026-11-07 03:21:21.865 Copied 5-digit fixture to D:\projects\workbench-gpui\target\measure-1d7aa29e74e24090bd85eb831e5dc9f9\01-order03-5digit.md
+2026-11-07 03:21:23.782 Found main window HWND=0xA404CC
+2026-11-07 03:21:25.615 Resize: {
+2026-11-07 03:21:25.617 Resize:   "hwnd": "0xA404CC",
+2026-11-07 03:21:25.618 Resize:   "desktop": "Default",
+2026-11-07 03:21:25.619 Resize:   "title": "",
+2026-11-07 03:21:25.620 Resize:   "className": "workbench-gpui",
+2026-11-07 03:21:25.621 Resize:   "workArea_SPI": {
+2026-11-07 03:21:25.622 Resize:     "left": 0,
+2026-11-07 03:21:25.624 Resize:     "top": 0,
+2026-11-07 03:21:25.625 Resize:     "right": 1920,
+2026-11-07 03:21:25.626 Resize:     "bottom": 1032,
+2026-11-07 03:21:25.627 Resize:     "width": 1920,
+2026-11-07 03:21:25.628 Resize:     "height": 1032
+2026-11-07 03:21:25.629 Resize:   },
+2026-11-07 03:21:25.630 Resize:   "workArea_Monitor": {
+2026-11-07 03:21:25.631 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 03:21:25.632 Resize:     "left": 0,
+2026-11-07 03:21:25.633 Resize:     "top": 0,
+2026-11-07 03:21:25.634 Resize:     "right": 1920,
+2026-11-07 03:21:25.635 Resize:     "bottom": 1032,
+2026-11-07 03:21:25.636 Resize:     "width": 1920,
+2026-11-07 03:21:25.642 Resize:     "height": 1032
+2026-11-07 03:21:25.644 Resize:   },
+2026-11-07 03:21:25.645 Resize:   "workAreaCenter": {
+2026-11-07 03:21:25.646 Resize:     "x": 960.0,
+2026-11-07 03:21:25.647 Resize:     "y": 516.0
+2026-11-07 03:21:25.648 Resize:   },
+2026-11-07 03:21:25.649 Resize:   "windowRect": {
+2026-11-07 03:21:25.650 Resize:     "left": 232,
+2026-11-07 03:21:25.651 Resize:     "top": 90,
+2026-11-07 03:21:25.652 Resize:     "right": 1688,
+2026-11-07 03:21:25.653 Resize:     "bottom": 950,
+2026-11-07 03:21:25.654 Resize:     "width": 1456,
+2026-11-07 03:21:25.655 Resize:     "height": 860
+2026-11-07 03:21:25.656 Resize:   },
+2026-11-07 03:21:25.658 Resize:   "windowCenter": {
+2026-11-07 03:21:25.659 Resize:     "x": 960.0,
+2026-11-07 03:21:25.660 Resize:     "y": 520.0
+2026-11-07 03:21:25.662 Resize:   },
+2026-11-07 03:21:25.663 Resize:   "windowCenterDiff": {
+2026-11-07 03:21:25.663 Resize:     "dx": 0.0,
+2026-11-07 03:21:25.664 Resize:     "dy": 4.0
+2026-11-07 03:21:25.665 Resize:   },
+2026-11-07 03:21:25.666 Resize:   "clientRect": {
+2026-11-07 03:21:25.667 Resize:     "width": 1440,
+2026-11-07 03:21:25.668 Resize:     "height": 852
+2026-11-07 03:21:25.669 Resize:   },
+2026-11-07 03:21:25.670 Resize:   "clientToScreen": {
+2026-11-07 03:21:25.670 Resize:     "x": 240,
+2026-11-07 03:21:25.672 Resize:     "y": 90
+2026-11-07 03:21:25.672 Resize:   },
+2026-11-07 03:21:25.673 Resize:   "clientScreenRect": {
+2026-11-07 03:21:25.674 Resize:     "left": 240,
+2026-11-07 03:21:25.675 Resize:     "top": 90,
+2026-11-07 03:21:25.677 Resize:     "right": 1680,
+2026-11-07 03:21:25.677 Resize:     "bottom": 942,
+2026-11-07 03:21:25.678 Resize:     "width": 1440,
+2026-11-07 03:21:25.679 Resize:     "height": 852
+2026-11-07 03:21:25.680 Resize:   },
+2026-11-07 03:21:25.681 Resize:   "clientCenter": {
+2026-11-07 03:21:25.682 Resize:     "x": 960.0,
+2026-11-07 03:21:25.683 Resize:     "y": 516.0
+2026-11-07 03:21:25.684 Resize:   },
+2026-11-07 03:21:25.684 Resize:   "clientCenterDiff": {
+2026-11-07 03:21:25.685 Resize:     "dx": 0.0,
+2026-11-07 03:21:25.687 Resize:     "dy": 0.0
+2026-11-07 03:21:25.688 Resize:   },
+2026-11-07 03:21:25.690 Resize:   "capture": {
+2026-11-07 03:21:25.691 Resize:     "ok": false,
+2026-11-07 03:21:25.692 Resize:     "path": ""
+2026-11-07 03:21:25.693 Resize:   }
+2026-11-07 03:21:25.694 Resize: }
+2026-11-07 03:21:26.383 Client size check: target=1440x852, actual=1440x852
+2026-11-07 03:21:26.385 Client size 1440x852 verified successfully.
+2026-11-07 03:21:27.017 Foreground check for 'After resize': target=0xA404CC, foreground=0x23B0A28
+2026-11-07 03:21:27.018 Warning: Foreground window (37423656) != target (10749132) during After resize
+2026-11-07 03:21:27.019 Checking if project tree is already loaded or in empty state...
+2026-11-07 03:21:27.093 Found 'project-empty-open' button at (660, 202). Clicking to load project...
+2026-11-07 03:21:27.563 Step 'project-open' confirmed in layout snapshot (seq=3)
+2026-11-07 03:21:27.571 Moving mouse away to dismiss any active tooltip before finding/clicking file...
+2026-11-07 03:21:27.995 Tree row for '00-order03.md': index=3, box=tree-row-03 (basis: stdout [dev] tree rows parsing (line 585, label='00-order03.md'))
+2026-11-07 03:21:28.006 Double-clicking '00-order03.md' at screen coords (660, 214)...
+2026-11-07 03:21:28.567 Step 'file-open' confirmed in layout snapshot (seq=4)
+2026-11-07 03:21:28.584 Fixture file opened successfully in editor.
+2026-11-07 03:21:28.593 [app] Step 'S-1' (Editor Body Font & Line Height) -> SKIPPED (by -Skip, using preserved capture)
+2026-11-07 03:21:28.596 [app] Step 'S-2-cursor-line' (Cursor Line Highlight & Gutter Colors) -> SKIPPED (by -Skip, using preserved capture)
+2026-11-07 03:21:28.597 [app] Step 'S-2-cursor-softwrap' (Soft-Wrapped Long Line Cursor Highlight) -> SKIPPED (by -Skip, using preserved capture)
+2026-11-07 03:21:28.598 [app] Step 'S-3-single' (Single Pane State) -> SKIPPED (by -Skip, using preserved capture)
+2026-11-07 03:21:28.600 [app] === Step 'S-3-split': Pane Border & Split Right ===
+2026-11-07 03:21:28.606 Splitting pane right (via tab-btn-split menu or keyboard shortcut)...
+2026-11-07 03:21:28.627 Clicking tab-btn-split at (1637, 138) to open split menu...
+2026-11-07 03:21:29.193 Split menu opened (ctx-menu-box present). Finding 'Split Right' row (ctx-menu-row-0)...
+2026-11-07 03:21:29.214 Clicking 'Split Right' (ctx-menu-row-0) at (1571, 154)...
+2026-11-07 03:21:37.603 ERROR: Step 'S-3-split' failed expectation: tab-bar must appear at least twice (2 split panes)
+2026-11-07 03:21:37.927 Foreground check for 'Capture error-S-3-split': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:21:39.587 Capture 'error-S-3-split' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\error-S-3-split.png (exit=0)
+2026-11-07 03:21:39.597 [app] ERROR in step 'S-3-split': Step 'S-3-split' assertion failed: tab-bar must appear at least twice (2 split panes)
+2026-11-07 03:21:39.605 [app] === Step 'S-4': Korean Body Text ===
+2026-11-07 03:21:39.607 Navigating to Korean text section...
+2026-11-07 03:21:41.102 Step 'S-4-korean' confirmed in layout snapshot (seq=6)
+2026-11-07 03:21:41.424 Foreground check for 'Capture app-S-4-korean-body': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:21:43.016 Capture 'app-S-4-korean-body' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-4-korean-body.png (exit=0)
+2026-11-07 03:21:43.017 [app] Step 'S-4' (Korean Body Text) -> PASS
+2026-11-07 03:21:43.018 [app] === Step 'S-5': Markdown Preview ===
+2026-11-07 03:21:43.040 Clicking toolbar-btn-preview at (1661, 172)...
+2026-11-07 03:21:51.567 ERROR: Step 'S-5-preview' failed expectation: preview tab active (toolbar-btn-preview absent)
+2026-11-07 03:21:51.880 Foreground check for 'Capture error-S-5-preview': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:21:53.531 Capture 'error-S-5-preview' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\error-S-5-preview.png (exit=0)
+2026-11-07 03:21:53.533 [app] ERROR in step 'S-5': Step 'S-5-preview' assertion failed: preview tab active (toolbar-btn-preview absent)
+2026-11-07 03:21:53.534 [app] === Step 'S-6-menu': UI Shell Menu (F10) ===
+2026-11-07 03:21:53.537 Opening menu with F10...
+2026-11-07 03:21:53.963 Step 'S-6-menu-open' confirmed in layout snapshot (seq=8)
+2026-11-07 03:21:54.277 Foreground check for 'Capture app-S-6-menu-open': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:21:55.842 Capture 'app-S-6-menu-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-6-menu-open.png (exit=0)
+2026-11-07 03:21:56.273 Step 'S-6-menu-close' confirmed in layout snapshot (seq=9)
+2026-11-07 03:21:56.274 [app] Step 'S-6-menu' (UI Shell Menu (F10)) -> PASS
+2026-11-07 03:21:56.275 [app] === Step 'S-6-tooltip': Tooltip on Toolbar Button ===
+2026-11-07 03:21:56.297 Hovering over toolbar-btn-preview at (1211, 172) for tooltip...
+2026-11-07 03:21:57.332 Step 'S-6-tooltip' confirmed in layout snapshot (seq=10)
+2026-11-07 03:21:57.634 Foreground check for 'Capture app-S-6-tooltip': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:21:59.198 Capture 'app-S-6-tooltip' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-6-tooltip.png (exit=0)
+2026-11-07 03:21:59.612 [app] Step 'S-6-tooltip' (Tooltip on Toolbar Button) -> PASS
+2026-11-07 03:21:59.614 [app] === Step 'S-7': Markdown Soft-Wrap & No Horizontal Scrollbar ===
+2026-11-07 03:22:00.293 Step 'S-7-softwrap' confirmed in layout snapshot (seq=11)
+2026-11-07 03:22:00.606 Foreground check for 'Capture app-S-7-softwrap-no-hscroll': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:02.199 Capture 'app-S-7-softwrap-no-hscroll' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-7-softwrap-no-hscroll.png (exit=0)
+2026-11-07 03:22:02.201 [app] Step 'S-7' (Markdown Soft-Wrap & No Horizontal Scrollbar) -> PASS
+2026-11-07 03:22:02.202 [app] === Step 'S-8': Vertical Scrollbar Always Visible ===
+2026-11-07 03:22:04.525 Foreground check for 'Capture app-S-8-scrollbar-outside': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:06.102 Capture 'app-S-8-scrollbar-outside' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-8-scrollbar-outside.png (exit=0)
+2026-11-07 03:22:06.103 Wheeling down 3 ticks inside editor...
+2026-11-07 03:22:07.121 Foreground check for 'Capture app-S-8-scrollbar-scrolling': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:08.679 Capture 'app-S-8-scrollbar-scrolling' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-8-scrollbar-scrolling.png (exit=0)
+2026-11-07 03:22:08.681 Waiting 4.2 seconds to verify no fade out...
+2026-11-07 03:22:13.199 Foreground check for 'Capture app-S-8-scrollbar-after-4s': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:14.862 Capture 'app-S-8-scrollbar-after-4s' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-8-scrollbar-after-4s.png (exit=0)
+2026-11-07 03:22:14.863 [app] Step 'S-8' (Vertical Scrollbar Always Visible) -> PASS
+2026-11-07 03:22:14.865 [app] === Step 'S-9-4digit': Line Number 4-Digit Gutter Geometry ===
+2026-11-07 03:22:15.179 Foreground check for 'S-9 4-digit': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:15.877 Step 'S-9-4digit' confirmed in layout snapshot (seq=11)
+2026-11-07 03:22:15.878 Editor bounds for S-9 4-digit: x=990, y=65, w=450, h=756 (editor left x=990)
+2026-11-07 03:22:16.194 Foreground check for 'Capture app-S-9-gutter-4digit': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:17.732 Capture 'app-S-9-gutter-4digit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-9-gutter-4digit.png (exit=0)
+2026-11-07 03:22:17.733 [app] Step 'S-9-4digit' (Line Number 4-Digit Gutter Geometry) -> PASS
+2026-11-07 03:22:17.734 [app] === Step 'S-9-5digit': Line Number 5-Digit Gutter Geometry ===
+2026-11-07 03:22:17.741 Moving mouse away to dismiss any active tooltip before finding 5-digit fixture...
+2026-11-07 03:22:18.154 Opening 5-digit fixture from tree: find by name '01-order03-5digit.md'...
+2026-11-07 03:22:18.169 Tree row for '01-order03-5digit.md': index=4, box=tree-row-04 (basis: stdout [dev] tree rows parsing (line 802, label='01-order03-5digit.md'))
+2026-11-07 03:22:18.229 Double-clicking '01-order03-5digit.md' at screen coords (660, 240)...
+2026-11-07 03:22:19.280 Step 'S-9-5digit-open' confirmed in layout snapshot (seq=11)
+2026-11-07 03:22:19.281 Moving to end of 5-digit document (Ctrl+End)...
+2026-11-07 03:22:20.158 Editor bounds for S-9 5-digit: x=990, y=65, w=450, h=756 (editor left x=990)
+2026-11-07 03:22:20.475 Foreground check for 'Capture app-S-9-gutter-5digit': target=0xA404CC, foreground=0xA404CC
+2026-11-07 03:22:22.070 Capture 'app-S-9-gutter-5digit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-9-gutter-5digit.png (exit=0)
+2026-11-07 03:22:22.071 Closing 5-digit tab (Ctrl+W)...
+2026-11-07 03:22:22.606 [app] Step 'S-9-5digit' (Line Number 5-Digit Gutter Geometry) -> PASS
+2026-11-07 03:22:22.607 Cleaning up workbench-gpui process (PID=1980)...
+2026-11-07 03:22:25.694 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 03:22:26.817 Session Stop: {
+2026-11-07 03:22:26.818 Session Stop:   "files": {
+2026-11-07 03:22:26.819 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 03:22:26.820 Session Stop:   },
+2026-11-07 03:22:26.821 Session Stop:   "exeUnchanged": true,
+2026-11-07 03:22:26.822 Session Stop:   "fixtureRemoved": true,
+2026-11-07 03:22:26.823 Session Stop:   "restored": true
+2026-11-07 03:22:26.824 Session Stop: }
+2026-11-07 03:22:26.911 --- Starting Zed measurement ---
+2026-11-07 03:22:26.934 Zed top-level HWNDs before launch: 0x15A0A7E
+2026-11-07 03:22:26.936 Launching Zed (new window): C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe -n "D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md"
+2026-11-07 03:22:28.693 New Zed window found: HWND=0x4740074
+2026-11-07 03:22:31.696 Resizing Zed to 1440x852 client...
+2026-11-07 03:22:33.402 Zed resize: {
+2026-11-07 03:22:33.403 Zed resize:   "hwnd": "0x4740074",
+2026-11-07 03:22:33.404 Zed resize:   "desktop": "Default",
+2026-11-07 03:22:33.405 Zed resize:   "title": "",
+2026-11-07 03:22:33.405 Zed resize:   "className": "Zed",
+2026-11-07 03:22:33.406 Zed resize:   "workArea_SPI": {
+2026-11-07 03:22:33.407 Zed resize:     "left": 0,
+2026-11-07 03:22:33.408 Zed resize:     "top": 0,
+2026-11-07 03:22:33.408 Zed resize:     "right": 1920,
+2026-11-07 03:22:33.409 Zed resize:     "bottom": 1032,
+2026-11-07 03:22:33.410 Zed resize:     "width": 1920,
+2026-11-07 03:22:33.411 Zed resize:     "height": 1032
+2026-11-07 03:22:33.412 Zed resize:   },
+2026-11-07 03:22:33.412 Zed resize:   "workArea_Monitor": {
+2026-11-07 03:22:33.413 Zed resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 03:22:33.414 Zed resize:     "left": 0,
+2026-11-07 03:22:33.414 Zed resize:     "top": 0,
+2026-11-07 03:22:33.415 Zed resize:     "right": 1920,
+2026-11-07 03:22:33.416 Zed resize:     "bottom": 1032,
+2026-11-07 03:22:33.416 Zed resize:     "width": 1920,
+2026-11-07 03:22:33.417 Zed resize:     "height": 1032
+2026-11-07 03:22:33.418 Zed resize:   },
+2026-11-07 03:22:33.418 Zed resize:   "workAreaCenter": {
+2026-11-07 03:22:33.419 Zed resize:     "x": 960.0,
+2026-11-07 03:22:33.419 Zed resize:     "y": 516.0
+2026-11-07 03:22:33.420 Zed resize:   },
+2026-11-07 03:22:33.421 Zed resize:   "windowRect": {
+2026-11-07 03:22:33.421 Zed resize:     "left": 232,
+2026-11-07 03:22:33.422 Zed resize:     "top": 90,
+2026-11-07 03:22:33.423 Zed resize:     "right": 1688,
+2026-11-07 03:22:33.423 Zed resize:     "bottom": 950,
+2026-11-07 03:22:33.424 Zed resize:     "width": 1456,
+2026-11-07 03:22:33.427 Zed resize:     "height": 860
+2026-11-07 03:22:33.428 Zed resize:   },
+2026-11-07 03:22:33.429 Zed resize:   "windowCenter": {
+2026-11-07 03:22:33.429 Zed resize:     "x": 960.0,
+2026-11-07 03:22:33.430 Zed resize:     "y": 520.0
+2026-11-07 03:22:33.431 Zed resize:   },
+2026-11-07 03:22:33.431 Zed resize:   "windowCenterDiff": {
+2026-11-07 03:22:33.432 Zed resize:     "dx": 0.0,
+2026-11-07 03:22:33.433 Zed resize:     "dy": 4.0
+2026-11-07 03:22:33.434 Zed resize:   },
+2026-11-07 03:22:33.434 Zed resize:   "clientRect": {
+2026-11-07 03:22:33.435 Zed resize:     "width": 1440,
+2026-11-07 03:22:33.436 Zed resize:     "height": 852
+2026-11-07 03:22:33.436 Zed resize:   },
+2026-11-07 03:22:33.437 Zed resize:   "clientToScreen": {
+2026-11-07 03:22:33.438 Zed resize:     "x": 240,
+2026-11-07 03:22:33.438 Zed resize:     "y": 90
+2026-11-07 03:22:33.439 Zed resize:   },
+2026-11-07 03:22:33.440 Zed resize:   "clientScreenRect": {
+2026-11-07 03:22:33.440 Zed resize:     "left": 240,
+2026-11-07 03:22:33.441 Zed resize:     "top": 90,
+2026-11-07 03:22:33.441 Zed resize:     "right": 1680,
+2026-11-07 03:22:33.442 Zed resize:     "bottom": 942,
+2026-11-07 03:22:33.443 Zed resize:     "width": 1440,
+2026-11-07 03:22:33.443 Zed resize:     "height": 852
+2026-11-07 03:22:33.444 Zed resize:   },
+2026-11-07 03:22:33.445 Zed resize:   "clientCenter": {
+2026-11-07 03:22:33.445 Zed resize:     "x": 960.0,
+2026-11-07 03:22:33.446 Zed resize:     "y": 516.0
+2026-11-07 03:22:33.447 Zed resize:   },
+2026-11-07 03:22:33.448 Zed resize:   "clientCenterDiff": {
+2026-11-07 03:22:33.449 Zed resize:     "dx": 0.0,
+2026-11-07 03:22:33.450 Zed resize:     "dy": 0.0
+2026-11-07 03:22:33.450 Zed resize:   },
+2026-11-07 03:22:33.451 Zed resize:   "capture": {
+2026-11-07 03:22:33.452 Zed resize:     "ok": false,
+2026-11-07 03:22:33.453 Zed resize:     "path": ""
+2026-11-07 03:22:33.453 Zed resize:   }
+2026-11-07 03:22:33.454 Zed resize: }
+2026-11-07 03:22:35.582 Zed client origin=(240,90) size=1440x852
+2026-11-07 03:22:35.586 [zed] === Step 'S-1': Editor Body ===
+2026-11-07 03:22:35.900 Foreground check for 'Zed S-1': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:36.845 Foreground check for 'Capture zed-S-1-body': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:38.395 Capture 'zed-S-1-body' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-1-body.png (exit=0)
+2026-11-07 03:22:38.402 [zed] Step 'S-1' (Editor Body) -> PASS
+2026-11-07 03:22:38.403 [zed] === Step 'S-2-cursor-line': Cursor Line Highlight & Gutter Colors ===
+2026-11-07 03:22:38.722 Foreground check for 'Zed S-2': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:39.772 Editor left edge for Zed S-2: client x=0, screen x=240
+2026-11-07 03:22:40.080 Foreground check for 'Capture zed-S-2-cursor-line': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:41.627 Capture 'zed-S-2-cursor-line' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-2-cursor-line.png (exit=0)
+2026-11-07 03:22:41.628 [zed] Step 'S-2-cursor-line' (Cursor Line Highlight & Gutter Colors) -> PASS
+2026-11-07 03:22:41.629 [zed] === Step 'S-2-cursor-softwrap': Soft-Wrapped Long Line Cursor ===
+2026-11-07 03:22:41.631 Moving to soft-wrapped line in Zed...
+2026-11-07 03:22:43.824 Foreground check for 'Capture zed-S-2-cursor-softwrap': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:45.389 Capture 'zed-S-2-cursor-softwrap' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-2-cursor-softwrap.png (exit=0)
+2026-11-07 03:22:45.390 [zed] Step 'S-2-cursor-softwrap' (Soft-Wrapped Long Line Cursor) -> PASS
+2026-11-07 03:22:45.391 [zed] === Step 'S-3-single': Single Pane ===
+2026-11-07 03:22:45.695 Foreground check for 'Capture zed-S-3-single-pane': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:47.347 Capture 'zed-S-3-single-pane' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-3-single-pane.png (exit=0)
+2026-11-07 03:22:47.348 [zed] Step 'S-3-single' (Single Pane) -> PASS
+2026-11-07 03:22:47.349 [zed] === Step 'S-3-split': Pane Border & Split (Ctrl+\) ===
+2026-11-07 03:22:47.351 Splitting right in Zed (Ctrl+\)...
+2026-11-07 03:22:48.813 Foreground check for 'Capture zed-S-3-split-pane': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:50.455 Capture 'zed-S-3-split-pane' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-3-split-pane.png (exit=0)
+2026-11-07 03:22:51.210 [zed] Step 'S-3-split' (Pane Border & Split (Ctrl+\)) -> PASS
+2026-11-07 03:22:51.211 [zed] === Step 'S-4': Korean Body ===
+2026-11-07 03:22:53.086 Foreground check for 'Capture zed-S-4-korean-body': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:54.705 Capture 'zed-S-4-korean-body' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-4-korean-body.png (exit=0)
+2026-11-07 03:22:54.706 [zed] Step 'S-4' (Korean Body) -> PASS
+2026-11-07 03:22:54.707 [zed] === Step 'S-5': Markdown Preview (Ctrl+Shift+V) ===
+2026-11-07 03:22:57.235 Foreground check for 'Capture zed-S-5-markdown-preview': target=0x4740074, foreground=0x4740074
+2026-11-07 03:22:58.786 Capture 'zed-S-5-markdown-preview' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-5-markdown-preview.png (exit=0)
+2026-11-07 03:22:59.530 [zed] Step 'S-5' (Markdown Preview (Ctrl+Shift+V)) -> PASS
+2026-11-07 03:22:59.533 [zed] === Step 'S-8': Scrollbar Always Visible ===
+2026-11-07 03:23:01.867 Foreground check for 'Capture zed-S-8-scrollbar-outside': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:03.413 Capture 'zed-S-8-scrollbar-outside' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-8-scrollbar-outside.png (exit=0)
+2026-11-07 03:23:03.415 Wheeling inside Zed editor...
+2026-11-07 03:23:04.415 Foreground check for 'Capture zed-S-8-scrollbar-scrolling': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:05.962 Capture 'zed-S-8-scrollbar-scrolling' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-8-scrollbar-scrolling.png (exit=0)
+2026-11-07 03:23:05.964 Waiting 4.2s for Zed scrollbar after-4s check...
+2026-11-07 03:23:10.481 Foreground check for 'Capture zed-S-8-scrollbar-after-4s': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:12.023 Capture 'zed-S-8-scrollbar-after-4s' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-8-scrollbar-after-4s.png (exit=0)
+2026-11-07 03:23:12.024 [zed] Step 'S-8' (Scrollbar Always Visible) -> PASS
+2026-11-07 03:23:12.025 [zed] === Step 'S-9-4digit': Line Number 4-Digit Gutter Geometry ===
+2026-11-07 03:23:12.349 Foreground check for 'Zed S-9 4-digit': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:13.037 Editor left edge for Zed S-9 4-digit: client x=0, screen x=240
+2026-11-07 03:23:13.355 Foreground check for 'Capture zed-S-9-gutter-4digit': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:14.915 Capture 'zed-S-9-gutter-4digit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-9-gutter-4digit.png (exit=0)
+2026-11-07 03:23:14.917 [zed] Step 'S-9-4digit' (Line Number 4-Digit Gutter Geometry) -> PASS
+2026-11-07 03:23:14.918 [zed] === Step 'S-9-5digit': Line Number 5-Digit Gutter Geometry ===
+2026-11-07 03:23:14.920 Opening 5-digit fixture in Zed workspace via -a...
+2026-11-07 03:23:17.284 Foreground check for 'Zed S-9 5-digit': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:17.416 Moving to end of 5-digit document in Zed (Ctrl+End)...
+2026-11-07 03:23:18.175 Editor left edge for Zed S-9 5-digit: client x=0, screen x=240
+2026-11-07 03:23:18.490 Foreground check for 'Capture zed-S-9-gutter-5digit': target=0x4740074, foreground=0x4740074
+2026-11-07 03:23:20.064 Capture 'zed-S-9-gutter-5digit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\zed-S-9-gutter-5digit.png (exit=0)
+2026-11-07 03:23:20.065 Closing 5-digit tab in Zed (Ctrl+W)...
+2026-11-07 03:23:20.710 [zed] Step 'S-9-5digit' (Line Number 5-Digit Gutter Geometry) -> PASS
+2026-11-07 03:23:20.711 Closing target Zed window only (HWND=0x4740074) via WM_CLOSE PostMessage...
+2026-11-07 03:23:22.719 Target Zed window HWND=0x4740074 successfully closed (window no longer exists)
+2026-11-07 03:23:22.722 === ORDER-03 V3 Capture Script Finished ===
+2026-11-07 03:23:22.734 === Execution Summary ===
+2026-11-07 03:23:22.735 {
+  "app": {
+    "prerequisite": "PASS",
+    "S-1": "SKIPPED",
+    "S-2-cursor-line": "SKIPPED",
+    "S-2-cursor-softwrap": "SKIPPED",
+    "S-3-single": "SKIPPED",
+    "S-3-split": "FAIL: Step 'S-3-split' assertion failed: tab-bar must appear at least twice (2 split panes)",
+    "S-4": "PASS",
+    "S-5": "FAIL: Step 'S-5-preview' assertion failed: preview tab active (toolbar-btn-preview absent)",
+    "S-6-menu": "PASS",
+    "S-6-tooltip": "PASS",
+    "S-7": "PASS",
+    "S-8": "PASS",
+    "S-9-4digit": "PASS",
+    "S-9-5digit": "PASS"
+  },
+  "zed": {
+    "prerequisite": "PASS",
+    "S-1": "PASS",
+    "S-2-cursor-line": "PASS",
+    "S-2-cursor-softwrap": "PASS",
+    "S-3-single": "PASS",
+    "S-3-split": "PASS",
+    "S-4": "PASS",
+    "S-5": "PASS",
+    "S-8": "PASS",
+    "S-9-4digit": "PASS",
+    "S-9-5digit": "PASS"
+  }
+}

@@ -1,0 +1,23 @@
+01:05:45.744 zed pids before: 
+01:05:47.006 launched zed pid=10708 hwnd=21627444
+01:05:51.451 resize: Exception: D:\projects\workbench-gpui\tools\measure\window-rect.ps1:293
+01:05:51.452 resize: Line |
+01:05:51.453 resize:  293 |      throw "Target window for '$ProcessName' not found on any desktop  …
+01:05:51.455 resize:      |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~에서
+01:05:51.456 resize:      | Target window for 'workbench-gpui' not found on any desktop in WinSta0.
+01:05:53.619 client origin=(240,90) size=1440x852
+01:05:57.149 capture a-outside exit=0
+01:06:01.029 capture b-hover-2s exit=0
+01:06:01.319 wheel done
+01:06:02.893 capture c-scrolling exit=0
+01:06:04.928 capture d-after-0.5s exit=0
+01:06:07.141 capture d-after-1.2s exit=0
+01:06:09.644 capture d-after-2.2s exit=0
+01:06:13.180 capture d-after-4.2s exit=0
+01:06:16.694 capture e-outside-after exit=0
+01:06:17.758 close: Exception: D:\projects\workbench-gpui\tools\measure\window-rect.ps1:293
+01:06:17.759 close: Line |
+01:06:17.760 close:  293 |      throw "Target window for '$ProcessName' not found on any desktop  …
+01:06:17.761 close:      |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~에서
+01:06:17.762 close:      | Target window for 'workbench-gpui' not found on any desktop in WinSta0.
+01:06:20.913 new zed pids remaining: 10708,31672

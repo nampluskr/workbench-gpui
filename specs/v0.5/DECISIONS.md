@@ -22,6 +22,7 @@
 | D-10 IBM Plex Sans·Lilex 커밋 | `SPEC.md` R-14, `PLAN.md` Phase 3 |
 | D-11 ITEMS가 SPEC 역할 | `SPEC.md` 판정 방법 |
 | D-12 core ITEMS가 갈래 지침보다 우선 | 루트 `INTENT.md`·`AGENTS.md`의 예외 표시, `AGENTS.md` 레포 규칙 "core ITEMS 우선", `SPEC.md` R-2·R-22, `PLAN.md` Phase 8 |
+| D-14 gpui-base 0.8.1 vendor로 줄 번호 열을 Zed와 같게 | 이 문서 D-4·D-5, `SPEC.md` R-13·R-14, `vendor/gpui-base/PATCHES.md` |
 
 ---
 
@@ -85,6 +86,44 @@
 **배제한 대안**
 
 - **v0.4처럼 `spec` 역할을 따로 둔다** — core D-2가 v0.4 구성을 잇지 않고 서브 에이전트를 writer·coder·checker 셋으로 줄였다.
+
+---
+
+## D-4. gpui-base 0.8.1을 `vendor/gpui-base/`에 두고 줄 번호 열만 고친다
+
+**선택**
+
+- gpui-base 0.8.1을 `vendor/gpui-base/`에 복사하고 `Cargo.toml` `[patch.crates-io]`에 `gpui-base = { path = "vendor/gpui-base" }`를 둔다. 버전은 0.8.1 그대로다. 원본 `LICENSE-APACHE`(Apache-2.0)를 함께 둔다.
+- 고친 곳은 줄 번호 열뿐이다: 최소 자릿수 3 → 4, 번호 좌우 여백(왼쪽 22px + 자릿수 × 숫자 폭 + 오른쪽 29px, 본문은 +5px), 일반·현재 줄 번호 색을 따로 받는 `EditorGutterTheme`. 바꾼 파일은 `src/input/base/element.rs`·`src/theme.rs`·`src/lib.rs` 셋이다.
+- 원본과의 차이와 이유는 `vendor/gpui-base/PATCHES.md`에 적는다.
+
+**근거**
+
+- core D-14(core-leader 사용자 위임 2026-11-07, D-13)를 이 레포에 적용했다(K-07).
+- gpui-component·gpui-base 0.8.1에는 줄 번호 최소 자릿수·여백을 바꿀 공개 옵션이 없다(K-06 조사). 줄 번호 전용 색도 없다(K-04 조사).
+- C-14 리뷰: 원본 218개 파일과 해시 대조해 PATCHES.md에 적은 3개 외에는 같다. Cargo 변경은 patch 한 줄과 lock의 gpui-base source·checksum 두 줄뿐이다.
+
+**배제한 대안**
+
+- core D-14의 배제 대안을 따른다: (A) 지금 폭 유지, (C) 바깥 padding으로 근사, gpui-component 전체 fork.
+
+---
+
+## D-5. I-13 줄 번호 색은 Zed One Light 값으로 한다 (앞의 (A) 결정을 대체)
+
+**선택**
+
+- 현재 줄 번호 `#44454b`(T-05.08), 나머지 줄 번호 `#b4b4bb`(T-05.07). 지금 앱 테마(gpui-component Default Light)에 맞춰 One Light 값을 쓴다. 값은 `src/ui/theme.rs`가 `EditorGutterTheme`으로 넣는다(D-4).
+- 앞서 core-leader DECISION(2026-11-07)의 "(A) 줄 번호 색은 현재 동작 유지(`foreground`/`muted_foreground`)"는 이 결정으로 대체됐다.
+
+**근거**
+
+- core D-14가 "(A) 유지"를 뒤집고 vendor로 줄 번호 색도 함께 맞추기로 했다.
+- C-15 V3: 현재 줄 번호 `#44454b`, 일반 줄 번호 `#b4b4bb`를 픽셀로 확인(PASS, `verify/reviews/measure-ORDER-03.md`).
+
+**배제한 대안**
+
+- **(A) 현재 동작 유지, 차이를 Phase 12 V4로** — core D-14로 대체됐다.
 
 ---
 

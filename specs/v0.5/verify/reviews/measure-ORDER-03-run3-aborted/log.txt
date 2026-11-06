@@ -1,0 +1,100 @@
+2026-11-07 02:31:30.399 === ORDER-03 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03) ===
+2026-11-07 02:31:31.076 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 02:31:31.079 Generating 5-digit line fixture (10,050 lines) at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md...
+2026-11-07 02:31:31.125 5-digit fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md
+2026-11-07 02:31:31.148 --- Starting workbench-gpui measurement ---
+2026-11-07 02:31:31.154 Calling session.ps1 -Action Start...
+2026-11-07 02:31:32.606 App launched PID=15724
+2026-11-07 02:31:32.618 Copied 5-digit fixture to D:\projects\workbench-gpui\target\measure-ab0993cbf3584ba18e4fd3c54286ae13\01-order03-5digit.md
+2026-11-07 02:31:34.209 Found main window HWND=0xCC0722
+2026-11-07 02:31:36.010 Resize: {
+2026-11-07 02:31:36.012 Resize:   "hwnd": "0xCC0722",
+2026-11-07 02:31:36.013 Resize:   "desktop": "Default",
+2026-11-07 02:31:36.014 Resize:   "title": "",
+2026-11-07 02:31:36.015 Resize:   "className": "workbench-gpui",
+2026-11-07 02:31:36.017 Resize:   "workArea_SPI": {
+2026-11-07 02:31:36.018 Resize:     "left": 0,
+2026-11-07 02:31:36.019 Resize:     "top": 0,
+2026-11-07 02:31:36.020 Resize:     "right": 1920,
+2026-11-07 02:31:36.021 Resize:     "bottom": 1032,
+2026-11-07 02:31:36.023 Resize:     "width": 1920,
+2026-11-07 02:31:36.024 Resize:     "height": 1032
+2026-11-07 02:31:36.025 Resize:   },
+2026-11-07 02:31:36.026 Resize:   "workArea_Monitor": {
+2026-11-07 02:31:36.027 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 02:31:36.028 Resize:     "left": 0,
+2026-11-07 02:31:36.029 Resize:     "top": 0,
+2026-11-07 02:31:36.030 Resize:     "right": 1920,
+2026-11-07 02:31:36.031 Resize:     "bottom": 1032,
+2026-11-07 02:31:36.032 Resize:     "width": 1920,
+2026-11-07 02:31:36.033 Resize:     "height": 1032
+2026-11-07 02:31:36.034 Resize:   },
+2026-11-07 02:31:36.035 Resize:   "workAreaCenter": {
+2026-11-07 02:31:36.036 Resize:     "x": 960.0,
+2026-11-07 02:31:36.037 Resize:     "y": 516.0
+2026-11-07 02:31:36.038 Resize:   },
+2026-11-07 02:31:36.040 Resize:   "windowRect": {
+2026-11-07 02:31:36.041 Resize:     "left": 232,
+2026-11-07 02:31:36.042 Resize:     "top": 90,
+2026-11-07 02:31:36.043 Resize:     "right": 1688,
+2026-11-07 02:31:36.044 Resize:     "bottom": 950,
+2026-11-07 02:31:36.045 Resize:     "width": 1456,
+2026-11-07 02:31:36.046 Resize:     "height": 860
+2026-11-07 02:31:36.047 Resize:   },
+2026-11-07 02:31:36.048 Resize:   "windowCenter": {
+2026-11-07 02:31:36.049 Resize:     "x": 960.0,
+2026-11-07 02:31:36.050 Resize:     "y": 520.0
+2026-11-07 02:31:36.051 Resize:   },
+2026-11-07 02:31:36.052 Resize:   "windowCenterDiff": {
+2026-11-07 02:31:36.054 Resize:     "dx": 0.0,
+2026-11-07 02:31:36.055 Resize:     "dy": 4.0
+2026-11-07 02:31:36.056 Resize:   },
+2026-11-07 02:31:36.057 Resize:   "clientRect": {
+2026-11-07 02:31:36.057 Resize:     "width": 1440,
+2026-11-07 02:31:36.058 Resize:     "height": 852
+2026-11-07 02:31:36.061 Resize:   },
+2026-11-07 02:31:36.062 Resize:   "clientToScreen": {
+2026-11-07 02:31:36.063 Resize:     "x": 240,
+2026-11-07 02:31:36.064 Resize:     "y": 90
+2026-11-07 02:31:36.065 Resize:   },
+2026-11-07 02:31:36.066 Resize:   "clientScreenRect": {
+2026-11-07 02:31:36.067 Resize:     "left": 240,
+2026-11-07 02:31:36.068 Resize:     "top": 90,
+2026-11-07 02:31:36.069 Resize:     "right": 1680,
+2026-11-07 02:31:36.070 Resize:     "bottom": 942,
+2026-11-07 02:31:36.071 Resize:     "width": 1440,
+2026-11-07 02:31:36.072 Resize:     "height": 852
+2026-11-07 02:31:36.073 Resize:   },
+2026-11-07 02:31:36.074 Resize:   "clientCenter": {
+2026-11-07 02:31:36.075 Resize:     "x": 960.0,
+2026-11-07 02:31:36.076 Resize:     "y": 516.0
+2026-11-07 02:31:36.077 Resize:   },
+2026-11-07 02:31:36.078 Resize:   "clientCenterDiff": {
+2026-11-07 02:31:36.078 Resize:     "dx": 0.0,
+2026-11-07 02:31:36.079 Resize:     "dy": 0.0
+2026-11-07 02:31:36.080 Resize:   },
+2026-11-07 02:31:36.081 Resize:   "capture": {
+2026-11-07 02:31:36.082 Resize:     "ok": false,
+2026-11-07 02:31:36.083 Resize:     "path": ""
+2026-11-07 02:31:36.084 Resize:   }
+2026-11-07 02:31:36.085 Resize: }
+2026-11-07 02:31:36.779 Client size check: target=1440x852, actual=1440x852
+2026-11-07 02:31:36.781 Client size 1440x852 verified successfully.
+2026-11-07 02:31:37.424 Foreground check for 'After resize': target=0xCC0722, foreground=0xF90426
+2026-11-07 02:31:37.425 Warning: Foreground window (16319526) != target (13371170) during After resize
+2026-11-07 02:31:37.426 Checking if project tree is already loaded or in empty state...
+2026-11-07 02:31:37.469 Cleaning up workbench-gpui process (PID=15724)...
+2026-11-07 02:31:37.540 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 02:31:38.668 Session Stop: {
+2026-11-07 02:31:38.670 Session Stop:   "fixtureRemoved": true,
+2026-11-07 02:31:38.671 Session Stop:   "files": {
+2026-11-07 02:31:38.672 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 02:31:38.673 Session Stop:   },
+2026-11-07 02:31:38.673 Session Stop:   "exeUnchanged": true,
+2026-11-07 02:31:38.674 Session Stop:   "restored": true
+2026-11-07 02:31:38.675 Session Stop: }
+2026-11-07 02:31:38.758 ERROR: 메서드 호출에 실패했습니다. [System.Collections.Specialized.OrderedDictionary]에 'ContainsKey'(이)라는 메서드가 없습니다.
+2026-11-07 02:31:38.760 Run-AppMeasure에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 530
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 980
+2026-11-07 02:43:38.175 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 02:43:38.183 Using existing 5-digit fixture at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md

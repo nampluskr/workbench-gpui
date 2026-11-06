@@ -193,7 +193,7 @@ impl Render for EditorPoc {
                 div()
                     .flex_1()
                     .min_h_0()
-                    .child(Editor::new(&self.editor).h_full()),
+                    .child(Editor::new(&self.editor).font(super::fonts::editor()).text_size(super::metrics::BUFFER_FONT_SIZE).line_height(relative(super::metrics::BUFFER_LINE_HEIGHT_MULTIPLIER)).h_full()),
             )
     }
 }

@@ -6,6 +6,7 @@ mod app_menu;
 mod context_menu;
 mod editor_poc;
 mod folders;
+mod fonts;
 mod keymap;
 mod markdown_preview;
 mod layout;
@@ -563,6 +564,7 @@ impl Render for Workbench {
         // 키 컨텍스트 `Workspace`(I-022~I-024): 사이드바와 Workspace 를 함께 감싸, 어느 자리에 포커스가 있어도
         // 창 단위 키가 듣는다. 깊이는 Workspace > Sidebar, Workspace > ProjectPanel 이다.
         let root = div()
+            .font(fonts::ui())
             .key_context(crate::keymap::builtin::WORKSPACE_CONTEXT)
             .on_action(cx.listener(Self::on_toggle_left_dock))
             .on_action(cx.listener(Self::on_toggle_project_panel_focus))
@@ -673,6 +675,8 @@ pub fn run(dev: DevOptions) {
         .with_assets(gpui_kit::assets::Assets)
         .run(move |cx| {
             gpui_kit::init(cx);
+            fonts::init(cx);
+            theme::init(cx);
             keymap::init(dev.keymap, cx);
             let glyph_font = title_bar::glyph_font(cx);
             let poc_options = dev.editor_poc.then(|| dev.clone());

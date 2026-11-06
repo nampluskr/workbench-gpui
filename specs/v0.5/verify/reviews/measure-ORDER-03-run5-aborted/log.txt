@@ -1,0 +1,129 @@
+2026-11-07 03:03:05.175 === ORDER-03 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03) ===
+2026-11-07 03:03:05.842 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 03:03:05.845 Generating 5-digit line fixture (10,050 lines) at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md...
+2026-11-07 03:03:05.892 5-digit fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md
+2026-11-07 03:03:05.917 --- Starting workbench-gpui measurement ---
+2026-11-07 03:03:05.923 Calling session.ps1 -Action Start...
+2026-11-07 03:03:07.375 App launched PID=30132
+2026-11-07 03:03:07.400 Copied 5-digit fixture to D:\projects\workbench-gpui\target\measure-f4cd2de6343342e2a569f9ef20979d10\01-order03-5digit.md
+2026-11-07 03:03:08.995 Found main window HWND=0x1950238
+2026-11-07 03:03:10.747 Resize: {
+2026-11-07 03:03:10.749 Resize:   "hwnd": "0x1950238",
+2026-11-07 03:03:10.750 Resize:   "desktop": "Default",
+2026-11-07 03:03:10.752 Resize:   "title": "",
+2026-11-07 03:03:10.753 Resize:   "className": "workbench-gpui",
+2026-11-07 03:03:10.754 Resize:   "workArea_SPI": {
+2026-11-07 03:03:10.755 Resize:     "left": 0,
+2026-11-07 03:03:10.756 Resize:     "top": 0,
+2026-11-07 03:03:10.758 Resize:     "right": 1920,
+2026-11-07 03:03:10.759 Resize:     "bottom": 1032,
+2026-11-07 03:03:10.760 Resize:     "width": 1920,
+2026-11-07 03:03:10.761 Resize:     "height": 1032
+2026-11-07 03:03:10.762 Resize:   },
+2026-11-07 03:03:10.763 Resize:   "workArea_Monitor": {
+2026-11-07 03:03:10.764 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 03:03:10.765 Resize:     "left": 0,
+2026-11-07 03:03:10.766 Resize:     "top": 0,
+2026-11-07 03:03:10.767 Resize:     "right": 1920,
+2026-11-07 03:03:10.768 Resize:     "bottom": 1032,
+2026-11-07 03:03:10.769 Resize:     "width": 1920,
+2026-11-07 03:03:10.770 Resize:     "height": 1032
+2026-11-07 03:03:10.771 Resize:   },
+2026-11-07 03:03:10.772 Resize:   "workAreaCenter": {
+2026-11-07 03:03:10.773 Resize:     "x": 960.0,
+2026-11-07 03:03:10.774 Resize:     "y": 516.0
+2026-11-07 03:03:10.775 Resize:   },
+2026-11-07 03:03:10.776 Resize:   "windowRect": {
+2026-11-07 03:03:10.777 Resize:     "left": 232,
+2026-11-07 03:03:10.778 Resize:     "top": 90,
+2026-11-07 03:03:10.780 Resize:     "right": 1688,
+2026-11-07 03:03:10.781 Resize:     "bottom": 950,
+2026-11-07 03:03:10.782 Resize:     "width": 1456,
+2026-11-07 03:03:10.783 Resize:     "height": 860
+2026-11-07 03:03:10.784 Resize:   },
+2026-11-07 03:03:10.785 Resize:   "windowCenter": {
+2026-11-07 03:03:10.786 Resize:     "x": 960.0,
+2026-11-07 03:03:10.789 Resize:     "y": 520.0
+2026-11-07 03:03:10.790 Resize:   },
+2026-11-07 03:03:10.791 Resize:   "windowCenterDiff": {
+2026-11-07 03:03:10.792 Resize:     "dx": 0.0,
+2026-11-07 03:03:10.793 Resize:     "dy": 4.0
+2026-11-07 03:03:10.794 Resize:   },
+2026-11-07 03:03:10.794 Resize:   "clientRect": {
+2026-11-07 03:03:10.795 Resize:     "width": 1440,
+2026-11-07 03:03:10.796 Resize:     "height": 852
+2026-11-07 03:03:10.797 Resize:   },
+2026-11-07 03:03:10.798 Resize:   "clientToScreen": {
+2026-11-07 03:03:10.799 Resize:     "x": 240,
+2026-11-07 03:03:10.800 Resize:     "y": 90
+2026-11-07 03:03:10.801 Resize:   },
+2026-11-07 03:03:10.802 Resize:   "clientScreenRect": {
+2026-11-07 03:03:10.803 Resize:     "left": 240,
+2026-11-07 03:03:10.804 Resize:     "top": 90,
+2026-11-07 03:03:10.805 Resize:     "right": 1680,
+2026-11-07 03:03:10.806 Resize:     "bottom": 942,
+2026-11-07 03:03:10.807 Resize:     "width": 1440,
+2026-11-07 03:03:10.808 Resize:     "height": 852
+2026-11-07 03:03:10.809 Resize:   },
+2026-11-07 03:03:10.810 Resize:   "clientCenter": {
+2026-11-07 03:03:10.811 Resize:     "x": 960.0,
+2026-11-07 03:03:10.812 Resize:     "y": 516.0
+2026-11-07 03:03:10.812 Resize:   },
+2026-11-07 03:03:10.813 Resize:   "clientCenterDiff": {
+2026-11-07 03:03:10.814 Resize:     "dx": 0.0,
+2026-11-07 03:03:10.815 Resize:     "dy": 0.0
+2026-11-07 03:03:10.816 Resize:   },
+2026-11-07 03:03:10.817 Resize:   "capture": {
+2026-11-07 03:03:10.818 Resize:     "ok": false,
+2026-11-07 03:03:10.819 Resize:     "path": ""
+2026-11-07 03:03:10.820 Resize:   }
+2026-11-07 03:03:10.821 Resize: }
+2026-11-07 03:03:11.521 Client size check: target=1440x852, actual=1440x852
+2026-11-07 03:03:11.523 Client size 1440x852 verified successfully.
+2026-11-07 03:03:12.161 Foreground check for 'After resize': target=0x1950238, foreground=0x5E03BC
+2026-11-07 03:03:12.163 Warning: Foreground window (6161340) != target (26542648) during After resize
+2026-11-07 03:03:12.163 Checking if project tree is already loaded or in empty state...
+2026-11-07 03:03:12.223 Found 'project-empty-open' button at (660, 202). Clicking to load project...
+2026-11-07 03:03:12.708 Step 'project-open' confirmed in layout snapshot (seq=2)
+2026-11-07 03:03:12.713 Moving mouse away to dismiss any active tooltip before finding/clicking file...
+2026-11-07 03:03:13.138 Tree row for '00-order03.md': index=3, box=tree-row-03 (basis: stdout [dev] tree rows parsing (line 523, label='00-order03.md'))
+2026-11-07 03:03:13.161 Double-clicking '00-order03.md' at screen coords (660, 214)...
+2026-11-07 03:03:13.747 Step 'file-open' confirmed in layout snapshot (seq=3)
+2026-11-07 03:03:13.755 Fixture file opened successfully in editor.
+2026-11-07 03:03:13.758 --- State S-1: Editor Body Font & Line Height ---
+2026-11-07 03:03:14.074 Foreground check for 'S-1': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:14.622 Step 'S-1-body' confirmed in layout snapshot (seq=3)
+2026-11-07 03:03:14.930 Foreground check for 'Capture app-S-1-body': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:16.522 Capture 'app-S-1-body' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-1-body.png (exit=0)
+2026-11-07 03:03:16.524 --- State S-2: Cursor Line Highlight & Line Number Colors (I-13) ---
+2026-11-07 03:03:16.844 Foreground check for 'S-2': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:17.903 Step 'S-2-cursor-line' confirmed in layout snapshot (seq=3)
+2026-11-07 03:03:17.904 Editor bounds for S-2 (cursor line & gutter colors): x=540, y=65, w=900, h=756 (gutter left=540)
+2026-11-07 03:03:18.219 Foreground check for 'Capture app-S-2-cursor-line': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:19.816 Capture 'app-S-2-cursor-line' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-2-cursor-line.png (exit=0)
+2026-11-07 03:03:19.820 Navigating cursor to soft-wrapped long line...
+2026-11-07 03:03:21.648 Step 'S-2-cursor-softwrap' confirmed in layout snapshot (seq=3)
+2026-11-07 03:03:21.968 Foreground check for 'Capture app-S-2-cursor-softwrap': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:23.597 Capture 'app-S-2-cursor-softwrap' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-2-cursor-softwrap.png (exit=0)
+2026-11-07 03:03:23.599 --- State S-3: Pane Border & Split ---
+2026-11-07 03:03:23.607 Step 'S-3-single' confirmed in layout snapshot (seq=3)
+2026-11-07 03:03:23.919 Foreground check for 'Capture app-S-3-single-pane': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:25.461 Capture 'app-S-3-single-pane' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-3-single-pane.png (exit=0)
+2026-11-07 03:03:25.462 Splitting pane right (Ctrl+\ or tab-btn-split)...
+2026-11-07 03:03:33.940 ERROR: Step 'S-3-split' failed expectation: tab-bar must appear at least twice (2 split panes)
+2026-11-07 03:03:34.242 Foreground check for 'Capture error-S-3-split': target=0x1950238, foreground=0x1950238
+2026-11-07 03:03:35.781 Capture 'error-S-3-split' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\error-S-3-split.png (exit=0)
+2026-11-07 03:03:35.792 Cleaning up workbench-gpui process (PID=30132)...
+2026-11-07 03:03:35.893 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 03:03:36.980 Session Stop: {
+2026-11-07 03:03:36.981 Session Stop:   "files": {
+2026-11-07 03:03:36.981 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 03:03:36.982 Session Stop:   },
+2026-11-07 03:03:36.983 Session Stop:   "exeUnchanged": true,
+2026-11-07 03:03:36.983 Session Stop:   "fixtureRemoved": true,
+2026-11-07 03:03:36.984 Session Stop:   "restored": true
+2026-11-07 03:03:36.985 Session Stop: }
+2026-11-07 03:03:37.059 ERROR: Step 'S-3-split' assertion failed: tab-bar must appear at least twice (2 split panes)
+2026-11-07 03:03:37.060 Assert-LayoutCondition에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 470
+Run-AppMeasure에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 702
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 1104

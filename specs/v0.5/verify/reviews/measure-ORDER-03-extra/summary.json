@@ -1,0 +1,8 @@
+{
+  "app": {
+    "prerequisite": "PASS",
+    "S-9-5digit": "PASS",
+    "S-5-code": "PASS"
+  },
+  "zed": {}
+}

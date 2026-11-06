@@ -1,0 +1,16 @@
+2026-11-07 02:31:17.202 === ORDER-03 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03) ===
+2026-11-07 02:31:18.047 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 02:31:18.051 Generating 5-digit line fixture (10,050 lines) at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md...
+2026-11-07 02:31:18.096 5-digit fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md
+2026-11-07 02:31:18.121 --- Starting workbench-gpui measurement ---
+2026-11-07 02:31:18.126 Calling session.ps1 -Action Start...
+2026-11-07 02:31:19.047 Cleaning up workbench-gpui process (PID=)...
+2026-11-07 02:31:19.050 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 02:31:19.887 Session Stop: Get-Content: D:\projects\workbench-gpui\tools\measure\session.ps1:67
+2026-11-07 02:31:19.889 Session Stop: Line |
+2026-11-07 02:31:19.890 Session Stop:   67 |      $session=Get-Content -Raw (Join-Path $Out 'session.json') | Conve …
+2026-11-07 02:31:19.892 Session Stop:      |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~에서
+2026-11-07 02:31:19.893 Session Stop:      | 경로 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\session.json'이(가) 없으므로 찾을 수 없습니다.
+2026-11-07 02:31:19.962 ERROR: session.json not found after session start
+2026-11-07 02:31:19.964 Run-AppMeasure에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 503
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 980

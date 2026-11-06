@@ -206,10 +206,11 @@ pub(super) fn buffer_hash(text: &str) -> u64 {
 }
 
 /// Tab editor scrollbar: gpui-base's own scrollbar on the editor's scroll handle, track width from the spec
-/// (P2-5, D-10 item 6). Axis follows the editor (vertical with soft wrap, both without), like gpui-base's default.
+/// (P2-5, D-10 item 6). I-9: show overflowing axes without hover or fade; Base hides axes with no overflow.
 pub(super) fn editor_scrollbar(context: EditorScrollbarContext, _: &mut Window, _: &mut App) -> AnyElement {
     Scrollbar::new(&context)
         .axis(context.axis())
+        .mode(gpui_kit::base::ScrollbarMode::Always)
         .styles(|s| s.track(|t| t.width(metrics::EDITOR_SCROLLBAR_WIDTH)))
         .into_any_element()
 }
@@ -226,9 +227,8 @@ pub struct DividerSides {
 /// that to Alt+Shift only, inside its private `on_mouse_down` (gpui-base state.rs 2750), so the press is swallowed
 /// in the capture phase and re-sent as Alt+Shift at the same spot; the drag then runs gpui-base's own block
 /// selection (virtual columns, wrapped rows). Deferred: gpui takes the listener list out while dispatching.
-/// `readonly` while the first read is pending (`!Tab::loaded`). `bordered`: the editor draws its own 1px border (gpui-kit default),
-/// off while the pane is zoomed, whose frame is the border (P4-E-F2). `sides`: edges that touch a pane divider, where the
-/// divider is the only line (P4-E-F3).
+/// `readonly` while the first read is pending (`!Tab::loaded`). The legacy `bordered` and divider-side refinements
+/// are overridden by I-7: pane/tab/divider frames own every boundary; the input has no border or corner radius.
 pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool, sides: DividerSides) -> impl IntoElement {
     div()
         .size_full()
@@ -245,11 +245,15 @@ pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool,
         .child(
             // P2-7: font size and comfortable line height from the spec; refine over gpui-kit's mono size × 1.5.
             Editor::new(editor)
+                .font(super::fonts::editor())
                 .readonly(readonly)
                 .bordered(bordered)
                 .when(sides.left, |e| e.border_l(px(0.)))
                 .when(sides.right, |e| e.border_r(px(0.)))
                 .when(sides.bottom, |e| e.border_b(px(0.)))
+                // I-7: pane/tab/divider frames own the boundary, not the input control.
+                .border_0()
+                .rounded_none()
                 .text_size(metrics::BUFFER_FONT_SIZE)
                 .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
                 .h_full(),

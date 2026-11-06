@@ -169,7 +169,7 @@ impl Render for TooltipView {
         let border = theme.border;
         let two_line = self.lines.len() > 1;
 
-        let mut body = v_flex();
+        let mut body = v_flex().font(super::fonts::ui());
         if two_line {
             body = body.gap(TWO_LINE_GAP);
             for (i, (title, shortcut)) in self.lines.iter().enumerate() {

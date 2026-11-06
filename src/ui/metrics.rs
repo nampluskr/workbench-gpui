@@ -96,6 +96,8 @@ pub const BORDER_1PX: Rems = rems_from_px(1.);
 pub const TEXT_SIZE_DEFAULT: Rems = rems_from_px(14.);
 /// typography["size.small"] (L-05) 글자 12. gpui `text_xs()` 는 font_size = rems(0.75) 만 설정한다(줄 높이는 건드리지 않는다).
 pub const TEXT_SIZE_SMALL: Rems = rems_from_px(12.);
+/// I-14 UI font size sets the window rem baseline, not individual element sizes.
+pub const UI_FONT_SIZE: Rems = rems_from_px(16.);
 /// titlebar["left_group.gap"] (L-87) 타이틀 바 왼쪽 그룹 gap 2 (`gap_0p5`).
 pub const TITLE_BAR_LEFT_GROUP_GAP: Rems = rems_from_px(2.);
 /// scrollbar["width.editor"] (L-308) editor scrollbar track width 15 (gpui-base default 16). Pixels: gpui-base track width type.
@@ -104,6 +106,9 @@ pub const EDITOR_SCROLLBAR_WIDTH: Pixels = px(15.);
 pub const BUFFER_FONT_SIZE: Pixels = px(15.);
 /// editor["line_height.comfortable_multiplier"] (E-010) 1.618 × font size = editor["line_height.comfortable"] 24.27.
 pub const BUFFER_LINE_HEIGHT_MULTIPLIER: f32 = 1.618;
+/// Zed measurement (tauri ORDER-03-R1, section 2): preview code uses 16px at 1.618 line height.
+pub const PREVIEW_CODE_FONT_SIZE: Pixels = px(16.);
+pub const PREVIEW_CODE_LINE_HEIGHT_MULTIPLIER: f32 = 1.618;
 /// editor["confirm_close.path_max_chars"] (E-081) the unsaved-edits question shows at most 80 characters of the path.
 pub const CONFIRM_CLOSE_PATH_MAX_CHARS: usize = 80;
 // spec: none (app value) — 타이틀 바 폴더 이름 버튼 좌우 padding 6.

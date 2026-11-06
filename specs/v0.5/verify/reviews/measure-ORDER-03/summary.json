@@ -1,0 +1,31 @@
+{
+  "app": {
+    "prerequisite": "PASS",
+    "S-1": "SKIPPED",
+    "S-2-cursor-line": "SKIPPED",
+    "S-2-cursor-softwrap": "SKIPPED",
+    "S-3-single": "SKIPPED",
+    "S-3-split": "FAIL: Step 'S-3-split' assertion failed: tab-bar must appear at least twice (2 split panes)",
+    "S-4": "PASS",
+    "S-5": "FAIL: Step 'S-5-preview' assertion failed: preview tab active (toolbar-btn-preview absent)",
+    "S-6-menu": "PASS",
+    "S-6-tooltip": "PASS",
+    "S-7": "PASS",
+    "S-8": "PASS",
+    "S-9-4digit": "PASS",
+    "S-9-5digit": "PASS"
+  },
+  "zed": {
+    "prerequisite": "PASS",
+    "S-1": "PASS",
+    "S-2-cursor-line": "PASS",
+    "S-2-cursor-softwrap": "PASS",
+    "S-3-single": "PASS",
+    "S-3-split": "PASS",
+    "S-4": "PASS",
+    "S-5": "PASS",
+    "S-8": "PASS",
+    "S-9-4digit": "PASS",
+    "S-9-5digit": "PASS"
+  }
+}

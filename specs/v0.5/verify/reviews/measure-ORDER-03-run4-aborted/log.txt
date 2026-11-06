@@ -1,0 +1,105 @@
+2026-11-07 02:45:04.873 === ORDER-03 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03) ===
+2026-11-07 02:45:05.565 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 02:45:05.569 Generating 5-digit line fixture (10,050 lines) at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md...
+2026-11-07 02:45:05.610 5-digit fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-5digit-fixture.md
+2026-11-07 02:45:05.634 --- Starting workbench-gpui measurement ---
+2026-11-07 02:45:05.639 Calling session.ps1 -Action Start...
+2026-11-07 02:45:07.123 App launched PID=11080
+2026-11-07 02:45:07.144 Copied 5-digit fixture to D:\projects\workbench-gpui\target\measure-bea956a481654ff4850b676b46f00a1e\01-order03-5digit.md
+2026-11-07 02:45:08.733 Found main window HWND=0x4C01DA
+2026-11-07 02:45:10.546 Resize: {
+2026-11-07 02:45:10.548 Resize:   "hwnd": "0x4C01DA",
+2026-11-07 02:45:10.549 Resize:   "desktop": "Default",
+2026-11-07 02:45:10.551 Resize:   "title": "",
+2026-11-07 02:45:10.552 Resize:   "className": "workbench-gpui",
+2026-11-07 02:45:10.553 Resize:   "workArea_SPI": {
+2026-11-07 02:45:10.555 Resize:     "left": 0,
+2026-11-07 02:45:10.556 Resize:     "top": 0,
+2026-11-07 02:45:10.558 Resize:     "right": 1920,
+2026-11-07 02:45:10.559 Resize:     "bottom": 1032,
+2026-11-07 02:45:10.560 Resize:     "width": 1920,
+2026-11-07 02:45:10.561 Resize:     "height": 1032
+2026-11-07 02:45:10.563 Resize:   },
+2026-11-07 02:45:10.564 Resize:   "workArea_Monitor": {
+2026-11-07 02:45:10.566 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 02:45:10.567 Resize:     "left": 0,
+2026-11-07 02:45:10.568 Resize:     "top": 0,
+2026-11-07 02:45:10.570 Resize:     "right": 1920,
+2026-11-07 02:45:10.571 Resize:     "bottom": 1032,
+2026-11-07 02:45:10.573 Resize:     "width": 1920,
+2026-11-07 02:45:10.574 Resize:     "height": 1032
+2026-11-07 02:45:10.575 Resize:   },
+2026-11-07 02:45:10.577 Resize:   "workAreaCenter": {
+2026-11-07 02:45:10.578 Resize:     "x": 960.0,
+2026-11-07 02:45:10.580 Resize:     "y": 516.0
+2026-11-07 02:45:10.581 Resize:   },
+2026-11-07 02:45:10.584 Resize:   "windowRect": {
+2026-11-07 02:45:10.586 Resize:     "left": 232,
+2026-11-07 02:45:10.587 Resize:     "top": 90,
+2026-11-07 02:45:10.588 Resize:     "right": 1688,
+2026-11-07 02:45:10.589 Resize:     "bottom": 950,
+2026-11-07 02:45:10.590 Resize:     "width": 1456,
+2026-11-07 02:45:10.591 Resize:     "height": 860
+2026-11-07 02:45:10.592 Resize:   },
+2026-11-07 02:45:10.593 Resize:   "windowCenter": {
+2026-11-07 02:45:10.595 Resize:     "x": 960.0,
+2026-11-07 02:45:10.596 Resize:     "y": 520.0
+2026-11-07 02:45:10.597 Resize:   },
+2026-11-07 02:45:10.598 Resize:   "windowCenterDiff": {
+2026-11-07 02:45:10.599 Resize:     "dx": 0.0,
+2026-11-07 02:45:10.601 Resize:     "dy": 4.0
+2026-11-07 02:45:10.603 Resize:   },
+2026-11-07 02:45:10.604 Resize:   "clientRect": {
+2026-11-07 02:45:10.607 Resize:     "width": 1440,
+2026-11-07 02:45:10.608 Resize:     "height": 852
+2026-11-07 02:45:10.609 Resize:   },
+2026-11-07 02:45:10.610 Resize:   "clientToScreen": {
+2026-11-07 02:45:10.611 Resize:     "x": 240,
+2026-11-07 02:45:10.612 Resize:     "y": 90
+2026-11-07 02:45:10.614 Resize:   },
+2026-11-07 02:45:10.615 Resize:   "clientScreenRect": {
+2026-11-07 02:45:10.616 Resize:     "left": 240,
+2026-11-07 02:45:10.618 Resize:     "top": 90,
+2026-11-07 02:45:10.619 Resize:     "right": 1680,
+2026-11-07 02:45:10.620 Resize:     "bottom": 942,
+2026-11-07 02:45:10.621 Resize:     "width": 1440,
+2026-11-07 02:45:10.622 Resize:     "height": 852
+2026-11-07 02:45:10.623 Resize:   },
+2026-11-07 02:45:10.624 Resize:   "clientCenter": {
+2026-11-07 02:45:10.625 Resize:     "x": 960.0,
+2026-11-07 02:45:10.626 Resize:     "y": 516.0
+2026-11-07 02:45:10.627 Resize:   },
+2026-11-07 02:45:10.628 Resize:   "clientCenterDiff": {
+2026-11-07 02:45:10.629 Resize:     "dx": 0.0,
+2026-11-07 02:45:10.630 Resize:     "dy": 0.0
+2026-11-07 02:45:10.631 Resize:   },
+2026-11-07 02:45:10.632 Resize:   "capture": {
+2026-11-07 02:45:10.633 Resize:     "ok": false,
+2026-11-07 02:45:10.634 Resize:     "path": ""
+2026-11-07 02:45:10.635 Resize:   }
+2026-11-07 02:45:10.636 Resize: }
+2026-11-07 02:45:11.336 Client size check: target=1440x852, actual=1440x852
+2026-11-07 02:45:11.339 Client size 1440x852 verified successfully.
+2026-11-07 02:45:11.965 Foreground check for 'After resize': target=0x4C01DA, foreground=0x10D0970
+2026-11-07 02:45:11.967 Warning: Foreground window (17631600) != target (4981210) during After resize
+2026-11-07 02:45:11.968 Checking if project tree is already loaded or in empty state...
+2026-11-07 02:45:12.029 Found 'project-empty-open' button at (660, 202). Clicking to load project...
+2026-11-07 02:45:12.539 Step 'project-open' confirmed in layout snapshot (seq=2)
+2026-11-07 02:45:12.559 Double-clicking tree-row-01 at screen coords (660, 162)...
+2026-11-07 02:45:21.079 ERROR: Step 'file-open' failed expectation: active-item and toolbar-btn-preview must be present after opening markdown fixture
+2026-11-07 02:45:21.397 Foreground check for 'Capture error-file-open': target=0x4C01DA, foreground=0x4C01DA
+2026-11-07 02:45:22.975 Capture 'error-file-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\error-file-open.png (exit=0)
+2026-11-07 02:45:22.999 Cleaning up workbench-gpui process (PID=11080)...
+2026-11-07 02:45:23.084 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 02:45:24.200 Session Stop: {
+2026-11-07 02:45:24.201 Session Stop:   "restored": true,
+2026-11-07 02:45:24.202 Session Stop:   "files": {
+2026-11-07 02:45:24.203 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 02:45:24.204 Session Stop:   },
+2026-11-07 02:45:24.205 Session Stop:   "fixtureRemoved": true,
+2026-11-07 02:45:24.206 Session Stop:   "exeUnchanged": true
+2026-11-07 02:45:24.207 Session Stop: }
+2026-11-07 02:45:24.293 ERROR: Step 'file-open' assertion failed: active-item and toolbar-btn-preview must be present after opening markdown fixture
+2026-11-07 02:45:24.295 Assert-LayoutCondition에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 465
+Run-AppMeasure에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 564
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order03-v3.ps1: 줄 989

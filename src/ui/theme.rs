@@ -2,6 +2,26 @@
 
 use gpui_kit::{Hsla, Rgba, black, hsla, rgb, rgba, white};
 
+/// T-05.05: Zed One Light, matching the application's fixed light appearance.
+fn active_line_background() -> Hsla {
+    rgba(0xebebecbf).into()
+}
+
+pub fn init(cx: &mut gpui_kit::App) {
+    gpui_kit::component::Theme::update(cx, |theme| {
+        std::sync::Arc::make_mut(&mut theme.highlight_theme).style.editor_active_line = Some(active_line_background());
+    });
+    cx.set_global(line_number_theme());
+}
+
+/// T-05.07/08: Zed One Light, matching the application's fixed light appearance.
+fn line_number_theme() -> gpui_kit::base::EditorGutterTheme {
+    gpui_kit::base::EditorGutterTheme {
+        line_number: rgb(0xb4b4bb).into(),
+        active_line_number: rgb(0x44454b).into(),
+    }
+}
+
 /// L-84 close button hover background #E81120.
 pub fn close_hover_bg() -> Rgba {
     rgb(0xE81120)
@@ -35,4 +55,24 @@ pub fn elevation_2_shadow_2(is_dark: bool) -> Hsla {
 // spec: none (app value) — dev-only font measurement text run color (never painted).
 pub fn measure_text() -> Hsla {
     black()
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn k07_gutter_geometry_and_colors() {
+        use gpui_kit::{base::EditorGutterTheme, px, rgb};
+        for (digits, gutter, text) in [(1, 87., 92.), (4, 87., 92.), (5, 96., 101.)] {
+            assert_eq!(EditorGutterTheme::width(digits, px(9.)), px(gutter));
+            assert_eq!(EditorGutterTheme::text_start(digits, px(9.)), px(text));
+        }
+        let theme = super::line_number_theme();
+        assert_eq!(theme.line_number, rgb(0xb4b4bb).into());
+        assert_eq!(theme.active_line_number, rgb(0x44454b).into());
+    }
+    #[test]
+    fn k04_active_line_uses_zed_one_light_color() {
+        let color: gpui_kit::Rgba = super::active_line_background().into();
+        assert_eq!(color, gpui_kit::rgba(0xebebecbf));
+    }
 }

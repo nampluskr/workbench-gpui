@@ -1,0 +1,140 @@
+2026-11-07 04:18:16.024 === ORDER-03 V3 Capture Script Started (Only=App, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra) ===
+2026-11-07 04:18:16.719 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra\order03-fixture.md
+2026-11-07 04:18:16.722 Generating 5-digit line fixture (10,050 lines) at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra\order03-5digit-fixture.md...
+2026-11-07 04:18:16.756 5-digit fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra\order03-5digit-fixture.md
+2026-11-07 04:18:16.771 --- Starting workbench-gpui measurement ---
+2026-11-07 04:18:16.777 Calling session.ps1 -Action Start...
+2026-11-07 04:18:18.180 App launched PID=2808
+2026-11-07 04:18:18.205 Copied 5-digit fixture to D:\projects\workbench-gpui\target\measure-c5bd6cef12da42509e56a2b48af0e639\01-order03-5digit.md
+2026-11-07 04:18:20.119 Found main window HWND=0x1520CC6
+2026-11-07 04:18:21.979 Resize: {
+2026-11-07 04:18:21.981 Resize:   "hwnd": "0x1520CC6",
+2026-11-07 04:18:21.982 Resize:   "desktop": "Default",
+2026-11-07 04:18:21.983 Resize:   "title": "",
+2026-11-07 04:18:21.984 Resize:   "className": "workbench-gpui",
+2026-11-07 04:18:21.985 Resize:   "workArea_SPI": {
+2026-11-07 04:18:21.987 Resize:     "left": 0,
+2026-11-07 04:18:21.988 Resize:     "top": 0,
+2026-11-07 04:18:21.989 Resize:     "right": 1920,
+2026-11-07 04:18:21.990 Resize:     "bottom": 1032,
+2026-11-07 04:18:21.996 Resize:     "width": 1920,
+2026-11-07 04:18:21.997 Resize:     "height": 1032
+2026-11-07 04:18:21.997 Resize:   },
+2026-11-07 04:18:21.999 Resize:   "workArea_Monitor": {
+2026-11-07 04:18:22.000 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 04:18:22.000 Resize:     "left": 0,
+2026-11-07 04:18:22.001 Resize:     "top": 0,
+2026-11-07 04:18:22.003 Resize:     "right": 1920,
+2026-11-07 04:18:22.004 Resize:     "bottom": 1032,
+2026-11-07 04:18:22.005 Resize:     "width": 1920,
+2026-11-07 04:18:22.006 Resize:     "height": 1032
+2026-11-07 04:18:22.007 Resize:   },
+2026-11-07 04:18:22.008 Resize:   "workAreaCenter": {
+2026-11-07 04:18:22.009 Resize:     "x": 960.0,
+2026-11-07 04:18:22.009 Resize:     "y": 516.0
+2026-11-07 04:18:22.011 Resize:   },
+2026-11-07 04:18:22.012 Resize:   "windowRect": {
+2026-11-07 04:18:22.013 Resize:     "left": 232,
+2026-11-07 04:18:22.014 Resize:     "top": 90,
+2026-11-07 04:18:22.015 Resize:     "right": 1688,
+2026-11-07 04:18:22.016 Resize:     "bottom": 950,
+2026-11-07 04:18:22.017 Resize:     "width": 1456,
+2026-11-07 04:18:22.018 Resize:     "height": 860
+2026-11-07 04:18:22.020 Resize:   },
+2026-11-07 04:18:22.021 Resize:   "windowCenter": {
+2026-11-07 04:18:22.022 Resize:     "x": 960.0,
+2026-11-07 04:18:22.023 Resize:     "y": 520.0
+2026-11-07 04:18:22.024 Resize:   },
+2026-11-07 04:18:22.025 Resize:   "windowCenterDiff": {
+2026-11-07 04:18:22.026 Resize:     "dx": 0.0,
+2026-11-07 04:18:22.026 Resize:     "dy": 4.0
+2026-11-07 04:18:22.027 Resize:   },
+2026-11-07 04:18:22.028 Resize:   "clientRect": {
+2026-11-07 04:18:22.029 Resize:     "width": 1440,
+2026-11-07 04:18:22.030 Resize:     "height": 852
+2026-11-07 04:18:22.031 Resize:   },
+2026-11-07 04:18:22.032 Resize:   "clientToScreen": {
+2026-11-07 04:18:22.033 Resize:     "x": 240,
+2026-11-07 04:18:22.034 Resize:     "y": 90
+2026-11-07 04:18:22.035 Resize:   },
+2026-11-07 04:18:22.036 Resize:   "clientScreenRect": {
+2026-11-07 04:18:22.037 Resize:     "left": 240,
+2026-11-07 04:18:22.038 Resize:     "top": 90,
+2026-11-07 04:18:22.039 Resize:     "right": 1680,
+2026-11-07 04:18:22.040 Resize:     "bottom": 942,
+2026-11-07 04:18:22.042 Resize:     "width": 1440,
+2026-11-07 04:18:22.043 Resize:     "height": 852
+2026-11-07 04:18:22.044 Resize:   },
+2026-11-07 04:18:22.045 Resize:   "clientCenter": {
+2026-11-07 04:18:22.046 Resize:     "x": 960.0,
+2026-11-07 04:18:22.046 Resize:     "y": 516.0
+2026-11-07 04:18:22.048 Resize:   },
+2026-11-07 04:18:22.049 Resize:   "clientCenterDiff": {
+2026-11-07 04:18:22.050 Resize:     "dx": 0.0,
+2026-11-07 04:18:22.051 Resize:     "dy": 0.0
+2026-11-07 04:18:22.052 Resize:   },
+2026-11-07 04:18:22.053 Resize:   "capture": {
+2026-11-07 04:18:22.054 Resize:     "ok": false,
+2026-11-07 04:18:22.054 Resize:     "path": ""
+2026-11-07 04:18:22.056 Resize:   }
+2026-11-07 04:18:22.056 Resize: }
+2026-11-07 04:18:22.743 Client size check: target=1440x852, actual=1440x852
+2026-11-07 04:18:22.745 Client size 1440x852 verified successfully.
+2026-11-07 04:18:23.385 Foreground check for 'After resize': target=0x1520CC6, foreground=0xB806D6
+2026-11-07 04:18:23.387 Warning: Foreground window (12060374) != target (22154438) during After resize
+2026-11-07 04:18:23.387 Checking if project tree is already loaded or in empty state...
+2026-11-07 04:18:23.447 Found 'project-empty-open' button at (660, 202). Clicking to load project...
+2026-11-07 04:18:23.928 Step 'project-open' confirmed in layout snapshot (seq=2)
+2026-11-07 04:18:23.934 Moving mouse away to dismiss any active tooltip before finding/clicking file...
+2026-11-07 04:18:24.375 Tree row for '00-order03.md': index=3, box=tree-row-03 (basis: stdout [dev] tree rows parsing (line 523, label='00-order03.md'))
+2026-11-07 04:18:24.409 Double-clicking '00-order03.md' at screen coords (660, 214)...
+2026-11-07 04:18:24.979 Step 'file-open' confirmed in layout snapshot (seq=3)
+2026-11-07 04:18:24.990 Fixture file opened successfully in editor.
+2026-11-07 04:18:25.000 Steps selected for execution: S-9-5digit, S-5-code
+2026-11-07 04:18:25.010 [app] === Step 'S-9-5digit': Line Number 5-Digit Gutter Geometry ===
+2026-11-07 04:18:25.016 --- Step S-9-5digit: Line Number 5-Digit Gutter Geometry (Single Pane) ---
+2026-11-07 04:18:25.332 Foreground check for 'S-9 5-digit': target=0x1520CC6, foreground=0x1520CC6
+2026-11-07 04:18:25.667 Opening 5-digit fixture from tree: find by name '01-order03-5digit.md'...
+2026-11-07 04:18:25.680 Tree row for '01-order03-5digit.md': index=4, box=tree-row-04 (basis: stdout [dev] tree rows parsing (line 740, label='01-order03-5digit.md'))
+2026-11-07 04:18:25.706 Double-clicking '01-order03-5digit.md' at screen coords (660, 240)...
+2026-11-07 04:18:25.969 Step 'S-9-5digit-open' confirmed in layout snapshot (seq=5)
+2026-11-07 04:18:26.009 Clicking inside active-item at (1230, 533) to guarantee editor focus...
+2026-11-07 04:18:26.442 Navigating to end of 5-digit document (Ctrl+End)...
+2026-11-07 04:18:27.205 Editor bounds for S-9 5-digit (single pane): x=540, y=65, w=900, h=756 (editor left x=540)
+2026-11-07 04:18:27.509 Foreground check for 'Capture app-S-9-gutter-5digit': target=0x1520CC6, foreground=0x1520CC6
+2026-11-07 04:18:29.141 Capture 'app-S-9-gutter-5digit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra\app-S-9-gutter-5digit.png (exit=0)
+2026-11-07 04:18:29.143 Closing 5-digit tab (Ctrl+W)...
+2026-11-07 04:18:29.686 [app] Step 'S-9-5digit' (Line Number 5-Digit Gutter Geometry) -> PASS
+2026-11-07 04:18:29.687 [app] === Step 'S-5-code': Markdown Preview Code Block (I-14) ===
+2026-11-07 04:18:29.695 --- Step S-5-code: Markdown Preview Code Block in Single Pane ---
+2026-11-07 04:18:30.007 Foreground check for 'S-5-code': target=0x1520CC6, foreground=0x1520CC6
+2026-11-07 04:18:30.058 Clicking toolbar-btn-preview at (1661, 172) to open preview in active pane...
+2026-11-07 04:18:32.797 Step 'S-5-preview' confirmed in layout snapshot (seq=6)
+2026-11-07 04:18:33.228 Hovering inside preview at (1110, 517) and wheeling down 4 ticks to center Section 4 code block...
+2026-11-07 04:18:34.898 Foreground check for 'Capture app-S-5-code-block': target=0x1520CC6, foreground=0x1520CC6
+2026-11-07 04:18:36.478 Capture 'app-S-5-code-block' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra\app-S-5-code-block.png (exit=0)
+2026-11-07 04:18:36.799 Foreground check for 'Capture app-S-5-markdown-preview': target=0x1520CC6, foreground=0x1520CC6
+2026-11-07 04:18:38.368 Capture 'app-S-5-markdown-preview' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03-extra\app-S-5-markdown-preview.png (exit=0)
+2026-11-07 04:18:38.369 Closing markdown preview tab (Ctrl+W)...
+2026-11-07 04:18:38.551 Step 'S-5-restore-editor' confirmed in layout snapshot (seq=7)
+2026-11-07 04:18:38.553 [app] Step 'S-5-code' (Markdown Preview Code Block (I-14)) -> PASS
+2026-11-07 04:18:38.554 Cleaning up workbench-gpui process (PID=2808)...
+2026-11-07 04:18:38.657 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 04:18:39.775 Session Stop: {
+2026-11-07 04:18:39.776 Session Stop:   "files": {
+2026-11-07 04:18:39.777 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 04:18:39.777 Session Stop:   },
+2026-11-07 04:18:39.778 Session Stop:   "exeUnchanged": true,
+2026-11-07 04:18:39.779 Session Stop:   "restored": true,
+2026-11-07 04:18:39.780 Session Stop:   "fixtureRemoved": true
+2026-11-07 04:18:39.780 Session Stop: }
+2026-11-07 04:18:39.871 === ORDER-03 V3 Capture Script Finished ===
+2026-11-07 04:18:39.884 === Execution Summary ===
+2026-11-07 04:18:39.885 {
+  "app": {
+    "prerequisite": "PASS",
+    "S-9-5digit": "PASS",
+    "S-5-code": "PASS"
+  },
+  "zed": {}
+}

@@ -219,11 +219,12 @@ I-8. 요청 원문 "gpui는 마크다운 문서 편집창에서 자동 줄바꿈
 **정해진 결과**
 
 - 스크롤바가 보이는 조건이 Zed와 같다.
-- Zed의 실제 조건(가만히 올려 두었을 때, 스크롤할 때): 미정(Zed에서 확인, Phase 3). 비교 때 Zed는 가만히 올려 둔 상태에서 스크롤바가 보이지 않았고, 스크롤할 때 보이는지는 확실하지 않다.
+- 기대 정정(core-leader, 사용자 위임 2026-11-07, D-13): 판정 기준은 Zed 실제 동작이다. 위 "요구"의 "올렸을 때만 보인다"를 다음으로 바꿔 읽는다. 스크롤할 내용이 있으면 세로 스크롤바가 마우스 위치와 상관없이 늘 보이고, 가로 스크롤바는 내용이 가로로 넘칠 때만 보인다(마크다운은 I-8 줄바꿈으로 넘치지 않는다).
+- Zed 실제 동작(2026-11-07, 두 갈래 leader가 마우스 입력으로 확인, gpui C-09 `verify/reviews/zed-ORDER-03.md`): 이 PC의 Zed(Windows `DynamicScrollbars` 미설정, 기본 설정)는 편집 영역 세로 스크롤바 thumb를 마우스가 창 밖·편집 영역 위·스크롤 중·멈춘 뒤 4초에서 모두 보인다. 숨김은 없다. 가로 스크롤바는 내용이 넘칠 때 보인다. C-08의 "첫 화면에서 보이지 않음"은 캡처 방식(PrintWindow) 때문이었다.
 
 **판정 방법**
 
-마우스가 편집 영역 밖에 있을 때와 위에 있을 때 스크롤바가 보이는 조건이 Zed와 같다(Zed의 실제 동작은 갈래가 먼저 확인한다). V3.
+마우스가 편집 영역 밖에 있을 때와 위에 있을 때, 스크롤 중과 멈춘 뒤에 스크롤바가 보이는 조건이 Zed와 같다(위 확인 결과). V3.
 
 **출처**
 
@@ -312,7 +313,11 @@ I-12. 요청 원문 "문서의 편집창 상단에 파일 경로/제목이 보�
 
 **정해진 결과**
 
-커서 줄의 배경과 줄 번호가 강조되고, 커서를 옮기면 강조도 옮겨 간다.
+- 커서 줄의 배경과 줄 번호가 강조되고, 커서를 옮기면 강조도 옮겨 간다.
+- 강조 색: 지금 Light 테마에 Zed One Light 값을 쓴다(`docs/refs/01-zed/03-THEME-ICONS.md`).
+  - 현재 줄 배경 `editor.active_line.background` `#ebebecbf`(T-05.05).
+  - 현재 줄 번호 `editor.active_line_number` `#44454b`(T-05.08), 나머지 줄 번호 `editor.line_number` `#b4b4bb`(T-05.07).
+- 줄 번호 색은 core D-14(gpui-base vendor)로 Zed 값에 맞춘다. 앞서 "(A) 현재 동작 유지"(core-leader DECISION 2026-11-07)는 D-14로 대체됐다(DECISIONS D-5).
 
 **판정 방법**
 
@@ -346,9 +351,19 @@ UI 전체(타이틀 바, 메뉴, 파일 트리, 탭, 상태 바, 툴팁), 에디
   | 미리보기 본문 | UI 글꼴을 따른다(`markdown_preview.font_family`·`font_size` 기본 null). 제목 굵기 600 |
   | 미리보기 코드 블록 | 에디터 글꼴을 따른다(`markdown_preview.code_font_family` 기본 null) |
 
+- 미리보기 코드 블록 크기: 글자 16px(에디터 15가 아님), 줄 높이 16 × 1.618 = 25.888px. 근거: Zed 실측(tauri ORDER-03-R1 2절), core-leader NOTICE 2026-11-07.
+- 줄 번호 열(ITEMS I-14 "줄 번호 열 폭도 Zed와 같다"): 1440×852, 100%, Lilex 15에서 편집기 왼쪽 끝 = 0px 기준, 허용 ±1px.
+
+  | 자릿수 | 숫자 잉크 오른쪽 끝 | 본문 잉크 시작 |
+  |---|---|---|
+  | 4자리 이하 | 57 | 92 |
+  | 5자리 | 66 | 101 |
+
+  근거: Zed 실측(tauri ORDER-03-R1, `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-03-R1\ORDER-03-R1-judgement.md` 1절), core-leader NOTICE 2026-11-07. 스펙 E-003·E-004(3ch·4ch)와 다르며 이 실측이 우선한다(core D-12). gpui는 core D-14(gpui-base vendor)로 맞춘다.
+
 - IBM Plex Sans와 Lilex의 글꼴 파일과 라이선스 파일(SIL OFL 1.1)을 이 레포에 넣고 커밋한다. 받는 곳은 각 글꼴의 공식 배포처(GitHub 릴리스)이고 버전을 문서에 남긴다(core D-10).
-- 넣을 굵기·스타일 파일과 버전: 미정(Phase 3).
-- 편집 영역 본문의 한글이 Zed처럼 고딕 계열로 보인다. Zed는 글꼴에 없는 글자를 Windows 기본 대체 글꼴로 그린다. 정확한 글꼴 이름: 미정(Zed에서 확인, Phase 3).
+- 넣을 굵기·스타일 파일과 버전: IBM Plex Sans 1.1.0(`@ibm/plex-sans@1.1.0` 릴리스) Regular·Italic·SemiBold·SemiBoldItalic, Lilex 2.630(릴리스 `2.630`) Regular·Bold·Italic·BoldItalic(K-03, `cards/K-03.report.md`).
+- 편집 영역 본문의 한글이 Zed처럼 고딕 계열로 보인다. Zed는 글꼴에 없는 글자를 Windows 기본 대체 글꼴로 그린다. 한글 대체 글꼴: Malgun Gothic(추정, C-08; 갈래 앱도 같은 글꼴로 맞춤, core-leader DECISION).
 
 **판정 방법**
 

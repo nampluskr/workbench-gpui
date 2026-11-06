@@ -8,6 +8,8 @@ param(
     [string]$ProcessName = 'workbench-gpui',
     [string]$TargetHwnd,
     [ValidateSet('Measure', 'Resize', 'Close')][string]$Action = 'Measure',
+    [int]$X = -10000,
+    [int]$Y = -10000,
     [int]$Width = 100,
     [int]$Height = 100,
     [string]$Capture,
@@ -161,7 +163,7 @@ namespace WgMeasureWin
             return match;
         }
 
-        public static MeasureResult ExecuteOperation(WindowMatch win, string action, int width, int height, string capturePath)
+        public static MeasureResult ExecuteOperation(WindowMatch win, string action, int x, int y, int width, int height, string capturePath)
         {
             MeasureResult result = new MeasureResult
             {
@@ -186,8 +188,10 @@ namespace WgMeasureWin
                 }
 
                 if (action == "Resize") {
-                    uint flags = SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE;
-                    SetWindowPos(win.Hwnd, IntPtr.Zero, 0, 0, width, height, flags);
+                    uint flags = (x != -10000 && y != -10000)
+                        ? (SWP_NOZORDER | SWP_NOACTIVATE)
+                        : (SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+                    SetWindowPos(win.Hwnd, IntPtr.Zero, x != -10000 ? x : 0, y != -10000 ? y : 0, width, height, flags);
                     Thread.Sleep(400);
                 }
 
@@ -264,14 +268,14 @@ if ($TargetHwnd) {
             [WgMeasureWin.Engine]::EnumDesktopWindows($d, {
                 param($w, $l)
                 if ($w -eq $h) {
-                    $match = [WgMeasureWin.WindowMatch]@{ Hwnd = $w; Desktop = $deskName; Title = ''; ClassName = 'Zed::Window' }
+                    $script:match = [WgMeasureWin.WindowMatch]@{ Hwnd = $w; Desktop = $deskName; Title = ''; ClassName = $ProcessName }
                     return $false
                 }
                 return $true
             }, [IntPtr]::Zero) | Out-Null
             [WgMeasureWin.Engine]::CloseDesktop($d) | Out-Null
         }
-        return ($match -eq $null)
+        return ($script:match -eq $null)
     }, [IntPtr]::Zero) | Out-Null
 } else {
     $processes = @(Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)
@@ -285,13 +289,15 @@ if ($TargetHwnd) {
     }
 }
 
+if (-not $match -and $script:match) { $match = $script:match }
+
 if (-not $match) {
     throw "Target window for '$ProcessName' not found on any desktop in WinSta0."
 }
 
 # 2. 실행
 $captureFullPath = if ($Capture) { [System.IO.Path]::GetFullPath($Capture, (Get-Location).Path) } else { $null }
-$res = [WgMeasureWin.Engine]::ExecuteOperation($match, $Action, $Width, $Height, $captureFullPath)
+$res = [WgMeasureWin.Engine]::ExecuteOperation($match, $Action, $X, $Y, $Width, $Height, $captureFullPath)
 
 if ($Action -eq 'Close') {
     $closeObj = [ordered]@{ action = 'Close'; hwnd = $res.Hwnd; desktop = $res.Desktop }

@@ -1,0 +1,58 @@
+2026-11-07 01:52:09.732 === ORDER-03 V3 Capture Script Started (Only=App, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03) ===
+2026-11-07 01:52:10.419 Fixture created at D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\order03-fixture.md
+2026-11-07 01:52:10.444 --- Starting workbench-gpui measurement ---
+2026-11-07 01:52:10.449 Calling session.ps1 -Action Start...
+2026-11-07 01:52:12.069 App launched PID=30984
+2026-11-07 01:52:14.267 Found main window HWND=0x{0:X}
+2026-11-07 01:52:14.269 Resizing workbench-gpui to client 1440x852...
+2026-11-07 01:52:15.694 Resize: Exception: D:\projects\workbench-gpui\tools\measure\window-rect.ps1:293
+2026-11-07 01:52:15.696 Resize: Line |
+2026-11-07 01:52:15.697 Resize:  293 |      throw "Target window for '$ProcessName' not found on any desktop  …
+2026-11-07 01:52:15.698 Resize:      |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~에서
+2026-11-07 01:52:15.699 Resize:      | Target window for 'workbench-gpui' not found on any desktop in WinSta0.
+2026-11-07 01:52:18.159 Warning: Foreground window (40372218) != target (1247906) during After resize
+2026-11-07 01:52:18.161 Waiting for layout dump with tree-row-01...
+2026-11-07 01:52:27.962 Warning: tree-row-01 not found by probe name; falling back to clicking tree item area
+2026-11-07 01:52:27.975 Double-clicking tree-row-01 at screen coords (340, 190)...
+2026-11-07 01:52:30.225 --- State S-1: Editor Body Font & Line Height ---
+2026-11-07 01:52:33.005 Capture 'app-S-1-body' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-1-body.png (exit=0)
+2026-11-07 01:52:33.010 --- State S-2: Cursor Line Highlight ---
+2026-11-07 01:52:35.507 Capture 'app-S-2-cursor-line' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-2-cursor-line.png (exit=0)
+2026-11-07 01:52:35.508 Navigating cursor to soft-wrapped long line...
+2026-11-07 01:52:39.286 Capture 'app-S-2-cursor-softwrap' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-2-cursor-softwrap.png (exit=0)
+2026-11-07 01:52:39.287 --- State S-3: Pane Border & Split ---
+2026-11-07 01:52:41.236 Capture 'app-S-3-single-pane' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-3-single-pane.png (exit=0)
+2026-11-07 01:52:41.237 Splitting pane right (Ctrl+\ or tab-btn-split)...
+2026-11-07 01:52:44.254 Capture 'app-S-3-split-pane' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-3-split-pane.png (exit=0)
+2026-11-07 01:52:44.255 Closing split pane tab (Ctrl+W)...
+2026-11-07 01:52:45.014 --- State S-4: Korean Body Text ---
+2026-11-07 01:52:45.015 Navigating to Korean text section...
+2026-11-07 01:52:48.556 Capture 'app-S-4-korean-body' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-4-korean-body.png (exit=0)
+2026-11-07 01:52:48.557 --- State S-5: Markdown Preview ---
+2026-11-07 01:52:48.576 Sending Ctrl+Shift+V for markdown preview...
+2026-11-07 01:52:51.649 Capture 'app-S-5-markdown-preview' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-5-markdown-preview.png (exit=0)
+2026-11-07 01:52:51.650 Closing markdown preview tab (Ctrl+W)...
+2026-11-07 01:52:52.398 --- State S-6: UI Shell Menu & Tooltip ---
+2026-11-07 01:52:52.399 Opening menu with F10...
+2026-11-07 01:52:54.922 Capture 'app-S-6-menu-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-6-menu-open.png (exit=0)
+2026-11-07 01:52:55.481 Hovering over app-menu-button at (559, 106) for tooltip...
+2026-11-07 01:52:58.108 Capture 'app-S-6-tooltip' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-6-tooltip.png (exit=0)
+2026-11-07 01:52:58.525 --- State S-7: Markdown Soft-Wrap & No Horizontal Scrollbar ---
+2026-11-07 01:53:01.305 Capture 'app-S-7-softwrap-no-hscroll' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-7-softwrap-no-hscroll.png (exit=0)
+2026-11-07 01:53:01.306 --- State S-8: Vertical Scrollbar Always Visible ---
+2026-11-07 01:53:05.240 Capture 'app-S-8-scrollbar-outside' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-8-scrollbar-outside.png (exit=0)
+2026-11-07 01:53:05.241 Wheeling down 3 ticks inside editor...
+2026-11-07 01:53:07.773 Capture 'app-S-8-scrollbar-scrolling' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-8-scrollbar-scrolling.png (exit=0)
+2026-11-07 01:53:07.775 Waiting 4.2 seconds to verify no fade out...
+2026-11-07 01:53:13.808 Capture 'app-S-8-scrollbar-after-4s' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-03\app-S-8-scrollbar-after-4s.png (exit=0)
+2026-11-07 01:53:13.809 Cleaning up workbench-gpui process (PID=30984)...
+2026-11-07 01:53:13.902 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 01:53:14.975 Session Stop: {
+2026-11-07 01:53:14.976 Session Stop:   "fixtureRemoved": true,
+2026-11-07 01:53:14.977 Session Stop:   "files": {
+2026-11-07 01:53:14.978 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 01:53:14.979 Session Stop:   },
+2026-11-07 01:53:14.980 Session Stop:   "exeUnchanged": true,
+2026-11-07 01:53:14.980 Session Stop:   "restored": true
+2026-11-07 01:53:14.981 Session Stop: }
+2026-11-07 01:53:15.062 === ORDER-03 V3 Capture Script Finished Successfully ===

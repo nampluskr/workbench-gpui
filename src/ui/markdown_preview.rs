@@ -1,12 +1,13 @@
 //! Markdown preview (v0.4 P4-5, R-14, D-7; 01-LAYOUT `E-038`, `E-039`, `L-69`, `L-101~L-111`, 02-INTERACTION `I-044`,
 //! `I-045`). A preview is a tab of its own (`Tab::markdown`) whose hidden editor view is kept equal to the file, so an
 //! edit in the source shows at once. The render is gpui-component's `TextView::markdown`, styled with the 5th section
-//! values of `spec/zed-metrics.toml` (`[markdown_preview]`) as far as that component allows.
+//! values of `spec/zed-metrics.toml` (`[markdown_preview]`). K-03 uses the Base TextView heading-weight hook.
 
 use std::path::Path;
 
 use gpui_kit::component::ActiveTheme as _;
-use gpui_kit::component::text::{MarkdownExtensions, MarkdownNode, TextView, TextViewStyle};
+use gpui_kit::component::text::{MarkdownExtensions, MarkdownNode};
+use gpui_kit::base::{TextView, TextViewStyle};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
@@ -25,9 +26,7 @@ const BODY_FONT_SIZE: Pixels = px(16.);
 const BODY_LINE_HEIGHT: f32 = 1.5;
 /// `paragraph_gap` (L-103).
 const PARAGRAPH_GAP: f32 = 16.;
-/// Not set, a component limit (P4-E-F1-R1, H-25): the h1/h2 bottom line and padding of L-105. gpui-component 0.8.1's
-/// `TextViewStyle` turns a heading style into a text size only (`compat.rs` `resolve_component_style`); the border and
-/// padding hook (`gpui_base::TextViewStyle::with_heading`) is not reachable through the component `TextView`.
+/// L-105 heading borders and padding remain outside K-03's typography scope.
 /// `h1.font_size` … `h6.font_size` (L-104).
 const HEADING_SIZES: [f32; 6] = [28., 22.4, 19.2, 16., 14., 13.6];
 /// `blockquote.padding_left` / `border_left` (L-106).
@@ -112,7 +111,7 @@ fn with_frontmatter(view: TextView) -> TextView {
     })
     .markdown_block_renderer("frontmatter", |node, _window, cx| {
         let theme = cx.theme();
-        let (border, key_bg, fg, mono) = (theme.border, theme.sidebar, theme.foreground, theme.mono_font_family.clone());
+        let (border, key_bg, fg) = (theme.border, theme.sidebar, theme.foreground);
         let cell = || div().px(CELL_PADDING_X).py(CELL_PADDING_Y);
         match node.data::<Frontmatter>() {
             // L-111: 2 columns over the full width, 1px border with radius 4; key cell on `panel_background` and
@@ -138,7 +137,8 @@ fn with_frontmatter(view: TextView) -> TextView {
                 .p(CODE_PADDING)
                 .rounded(CODE_RADIUS)
                 .bg(fg.opacity(INLINE_CODE_OPACITY))
-                .font_family(mono)
+                .font(super::fonts::editor())
+                .text_size(super::metrics::BUFFER_FONT_SIZE)
                 .child(text.clone())
                 .into_any_element(),
             None => div().into_any_element(),
@@ -148,17 +148,33 @@ fn with_frontmatter(view: TextView) -> TextView {
 
 /// The preview body (L-101~L-111): `text` rendered, a column of at most 800px centred in the pane with 16px around it,
 /// on the editor background.
+fn heading_style(level: u8) -> StyleRefinement {
+    StyleRefinement::default()
+        .text_size(px(HEADING_SIZES[usize::from(level.clamp(1, 6)) - 1]))
+        .font_weight(FontWeight::SEMIBOLD)
+}
+
 pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     let side = |s: StyleRefinement| s.border_t(TABLE_BORDER).border_b(TABLE_BORDER).border_l(TABLE_BORDER).border_r(TABLE_BORDER);
     let style = TextViewStyle::default()
-        .paragraph_gap(rems_from_px(PARAGRAPH_GAP))
-        .heading_font_size(|level, _| px(HEADING_SIZES[usize::from(level.clamp(1, 6)) - 1]))
-        .code_block(StyleRefinement::default().p(CODE_PADDING).my(CODE_MARGIN_Y).rounded(CODE_RADIUS))
-        .inline_code(HighlightStyle { background_color: Some(theme.foreground.opacity(INLINE_CODE_OPACITY)), ..Default::default() })
-        .table(side(StyleRefinement::default()).border_color(theme.border).rounded(TABLE_RADIUS))
-        .table_head(StyleRefinement::default().font_weight(FontWeight::SEMIBOLD).bg(theme.title_bar))
-        .table_cell(StyleRefinement::default().px(CELL_PADDING_X).py(CELL_PADDING_Y));
+        .with_foreground(theme.foreground)
+        .with_muted_foreground(theme.muted_foreground)
+        .with_link(theme.link)
+        .with_selection(theme.selection)
+        .with_code_background(theme.muted)
+        .with_border(theme.border)
+        .with_dark(theme.is_dark())
+        .with_paragraph_gap(rems_from_px(PARAGRAPH_GAP))
+        .with_heading(heading_style)
+        .with_code_block(StyleRefinement::default().font(super::fonts::editor())
+            .text_size(super::metrics::PREVIEW_CODE_FONT_SIZE)
+            .line_height(relative(super::metrics::PREVIEW_CODE_LINE_HEIGHT_MULTIPLIER))
+            .p(CODE_PADDING).my(CODE_MARGIN_Y).rounded(CODE_RADIUS))
+        .with_inline_code(HighlightStyle { background_color: Some(theme.foreground.opacity(INLINE_CODE_OPACITY)), ..Default::default() })
+        .with_table(side(StyleRefinement::default()).border_color(theme.border).rounded(TABLE_RADIUS))
+        .with_table_head(StyleRefinement::default().font_weight(FontWeight::SEMIBOLD).bg(theme.title_bar))
+        .with_table_cell(StyleRefinement::default().px(CELL_PADDING_X).py(CELL_PADDING_Y));
     let quote = StyleRefinement::default()
         .pl(QUOTE_PADDING_LEFT)
         .border_l(QUOTE_BORDER_LEFT)
@@ -171,6 +187,7 @@ pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
         .bg(theme.background)
         .p(CONTAINER_PADDING)
         .text_color(theme.foreground)
+        .font(super::fonts::ui())
         .text_size(BODY_FONT_SIZE)
         .line_height(relative(BODY_LINE_HEIGHT))
         .child(
@@ -247,6 +264,21 @@ pub fn file_name(path: &Path) -> String {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn k06_preview_code_size_and_line_height() {
+        let size = f32::from(super::super::metrics::PREVIEW_CODE_FONT_SIZE);
+        let multiplier = super::super::metrics::PREVIEW_CODE_LINE_HEIGHT_MULTIPLIER;
+        assert_eq!(size, 16.);
+        assert!((size * multiplier - 25.888).abs() < 0.00001);
+        assert_eq!(super::super::metrics::BUFFER_FONT_SIZE, gpui_kit::px(15.));
+    }
+    #[test]
+    fn k03_preview_heading_weight_and_body_size() {
+        assert_eq!(super::BODY_FONT_SIZE, super::super::fonts::UI_SIZE);
+        for level in 1..=6 {
+            assert_eq!(super::heading_style(level).text.font_weight, Some(gpui_kit::FontWeight::SEMIBOLD));
+        }
+    }
     use super::{Frontmatter, classify, BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
     use crate::ui::metrics::spec::assert_spec;
     use std::path::Path;
