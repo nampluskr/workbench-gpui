@@ -1,0 +1,71 @@
+{
+  "hwnd": "0x12C07A2",
+  "desktop": "exebox-DQH463G7H5U7Q6RGDEFGOEFYFC",
+  "title": "workbench-gpui",
+  "className": "Zed::Window",
+  "workArea_SPI": {
+    "left": 0,
+    "top": 0,
+    "right": 1920,
+    "bottom": 1032,
+    "width": 1920,
+    "height": 1032
+  },
+  "workArea_Monitor": {
+    "device": "\\\\.\\DISPLAY1",
+    "left": 0,
+    "top": 0,
+    "right": 1920,
+    "bottom": 1032,
+    "width": 1920,
+    "height": 1032
+  },
+  "workAreaCenter": {
+    "x": 960.0,
+    "y": 516.0
+  },
+  "windowRect": {
+    "left": 232,
+    "top": 90,
+    "right": 1688,
+    "bottom": 950,
+    "width": 1456,
+    "height": 860
+  },
+  "windowCenter": {
+    "x": 960.0,
+    "y": 520.0
+  },
+  "windowCenterDiff": {
+    "dx": 0.0,
+    "dy": 4.0
+  },
+  "clientRect": {
+    "width": 1440,
+    "height": 852
+  },
+  "clientToScreen": {
+    "x": 240,
+    "y": 90
+  },
+  "clientScreenRect": {
+    "left": 240,
+    "top": 90,
+    "right": 1680,
+    "bottom": 942,
+    "width": 1440,
+    "height": 852
+  },
+  "clientCenter": {
+    "x": 960.0,
+    "y": 516.0
+  },
+  "clientCenterDiff": {
+    "dx": 0.0,
+    "dy": 0.0
+  },
+  "capture": {
+    "ok": true,
+    "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-02-R1\\initial-window.png"
+  }
+}

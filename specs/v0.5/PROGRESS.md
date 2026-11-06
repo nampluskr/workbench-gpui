@@ -120,6 +120,42 @@
   - 검증: V3. 앱 데이터는 `session.ps1`로 복원(`restored=true`), 종료 뒤 `workbench-gpui` 프로세스 0건.
   - 특이사항(core-leader 판정 대상): 클라이언트 중심은 작업 영역 중심보다 위로 4px(dy −4)다. DWM 보이지 않는 테두리가 좌·우·아래에만 있어서다. 창 바깥 사각형 중심은 일치한다.
 
+- **ORDER-02 판정 → ORDER-02-R1** (2026-11-06, core-leader)
+  - 무엇을: core-leader가 ORDER-02를 판정했다(사용자 위임, core D-13). 재지시 `D:\projects\workbench-core\specs\v0.5\orders\ORDER-02-R1.md`.
+  - 결과:
+    - 기준 1 미충족: 클라이언트 중심이 세로 −4px. 기준 2·3·4 충족.
+    - 결정: I-6 판정 방법 그대로 **클라이언트 영역** 중심이 작업 영역 중심과 같아야 한다. 정수 반올림 1px까지 허용. 보이지 않는 테두리 크기는 하드코딩하지 않고 실행 중 실제 값을 쓴다.
+  - 검증: 해당 없음(판정).
+
+- **K-02 클라이언트 영역을 작업 영역 정가운데로** (2026-11-06, coder)
+  - 무엇을: 세로 −4px 원인을 gpui 소스로 찾아 시작 bounds를 보정했다. 카드 `specs/v0.5/cards/K-02.md`.
+  - 결과:
+    - 원인(`gpui-pre-windows-0.3.10`): `src/events.rs` `handle_calc_client_size`가 숨긴 타이틀 바 창의 위 테두리를 0으로 되돌리는데, `src/window.rs` `calculate_window_rect`는 높이 차이(아래 테두리 8px)를 위아래로 반씩 나눈다. 그래서 클라이언트가 위로 4px 치우친다.
+    - 보정(`src/ui/mod.rs`): 주 모니터 시스템 DPI의 `GetSystemMetricsForDpi`(`SM_CYSIZEFRAME` + `SM_CXPADDEDBORDER`)로 테두리를 구하고, gpui가 위에 배분하는 정수 절반을 배율로 나눈 만큼 시작 bounds를 아래로 옮긴다. 고정 픽셀 상수는 쓰지 않았다. 고정 크기·최소 크기 유지.
+    - 실행 모델: `/clear` 뒤 Codex 세션 모델이 기본값(GPT-6.1 Terra high)으로 돌아가 K-02는 Terra high로 실행됐다. leader가 K-02 뒤 `/model`로 Sol medium(세션)으로 되돌렸다.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test initial_window_uses_work_area_center_and_fixed_client_size`(1 passed), `cargo clippy --all-targets -- -D warnings` 통과(`cards/K-02.report.md`).
+
+- **C-06 K-02 코드 리뷰** (2026-11-06, checker)
+  - 무엇을: 원인 분석, 보정량(정수 나눗셈 포함), `GetDpiForSystem`과 주 모니터 DPI, 배율별 계산, 테스트, 범위를 점검했다. 카드 `specs/v0.5/cards/C-06.md`.
+  - 결과: PASS.
+    - 원인 분석이 gpui 소스와 맞다. 보정량이 gpui의 위 배분과 같다.
+    - 100%·125%·150%·200% 계산 오차 0px(홀수 크기 반올림 0.5px 이하).
+    - 지적 1건: 테스트가 `window_options`에서 더한 보정을 같은 식으로 빼서 비교하는 동어반복이다(AGENTS 4.4). → K-02-R1.
+  - 검증: V1. `git diff src/`, 그 테스트(1 passed), clippy 통과(`cards/C-06.report.md`).
+
+- **K-02-R1 테스트 동어반복 고치기** (2026-11-07, coder)
+  - 무엇을: C-06 지적대로 테스트가 기대 오프셋을 손으로 쓴 값으로 확인하게 고쳤다. 코드 동작은 바꾸지 않았다. 카드 `specs/v0.5/cards/K-02-R1.md`.
+  - 결과: 기대 오프셋 리터럴 frame_height 8 / 배율 1.0 → 4px, 9 / 1.25 → 3.2px(정수 절반 4, 홀수 경우), 13 / 2.0 → 3px. gpui `calculate_window_rect`의 정수 위 배분 근거를 테스트 주석에 남겼다. Sol medium으로 실행.
+  - 검증: V1. 그 테스트 1 passed, clippy 통과(`cards/K-02.report.md` "K-02-R1" 절).
+
+- **C-07 시작 창 재실측** (2026-11-07, checker)
+  - 무엇을: K-02 보정 뒤 C-05와 같은 조건·도구(`tools/measure/session.ps1`, `window-rect.ps1`)로 다시 쟀다. 주 모니터 1920×1080, 100%, 작업 영역 1920×1032(중심 960, 516). 카드 `specs/v0.5/cards/C-07.md`.
+  - 결과: 4/4 PASS(`verify/reviews/measure-ORDER-02-R1.md`).
+    - 첫 실행: 창 (232,90)–(1688,950) 1456×860, 클라이언트 원점 (240,90) 1440×852, 클라이언트 중심 (960, 516), 차이 0/0.
+    - 100×100 축소 시도 → 클라이언트 360×240.
+    - 1600×900으로 바꾸고 다시 실행 → 1440×852, 클라이언트 중심 차이 0/0.
+  - 검증: V3. `session.ps1 -Action Stop` 복원(`restored=true`), 종료 뒤 `workbench-gpui` 프로세스 0건.
+
 ## 사용자 요청 작업
 
 없음.

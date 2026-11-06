@@ -639,12 +639,21 @@ fn client_decorations(window: &Window, border: Hsla, content: impl IntoElement) 
     }
 }
 
-fn window_options(work_area: Bounds<Pixels>) -> WindowOptions {
+#[link(name = "user32")]
+unsafe extern "system" {
+    fn GetDpiForSystem() -> u32;
+    fn GetSystemMetricsForDpi(index: i32, dpi: u32) -> i32;
+}
+
+const SM_CYSIZEFRAME: i32 = 33;
+const SM_CXPADDEDBORDER: i32 = 92;
+
+fn window_options(work_area: Bounds<Pixels>, frame_height: i32, scale: f32) -> WindowOptions {
     // TitleBar::window_options(): appears_transparent = true 로 OS 타이틀 바를 숨긴다.
     WindowOptions {
         // Keep I-6's fixed size even when the work area is smaller.
         window_bounds: Some(WindowBounds::Windowed(Bounds::centered_at(
-            work_area.center(),
+            work_area.center() + point(px(0.), px((frame_height / 2) as f32 / scale)),
             WINDOW_INITIAL_SIZE,
         ))),
         titlebar: Some(TitlebarOptions {
@@ -673,7 +682,12 @@ pub fn run(dev: DevOptions) {
                 .primary_display()
                 .expect("failed to find primary display")
                 .visible_bounds();
-            let (window_handle, _) = gpui_kit::open_window(window_options(work_area), cx, |window, cx| {
+            // SAFETY: These functions take only scalar arguments and have no pointer requirements.
+            let (dpi, frame_height) = unsafe {
+                let dpi = GetDpiForSystem();
+                (dpi, GetSystemMetricsForDpi(SM_CYSIZEFRAME, dpi) + GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi))
+            };
+            let (window_handle, _) = gpui_kit::open_window(window_options(work_area, frame_height, dpi as f32 / 96.), cx, |window, cx| {
                 let editor_poc = poc_options
                     .map(|options| cx.new(|cx| editor_poc::EditorPoc::new(options, window, cx)));
                 let (folders, loaded) = folders::FolderList::load(pick_file);
@@ -790,17 +804,18 @@ mod window_tests {
 
     #[test]
     fn initial_window_uses_work_area_center_and_fixed_client_size() {
-        for work_area in [
-            Bounds::new(point(px(0.), px(0.)), size(px(1920.), px(1040.))),
-            Bounds::new(point(px(-1920.), px(40.)), size(px(1920.), px(1040.))),
-            Bounds::new(point(px(40.), px(0.)), size(px(1240.), px(720.))),
+        // gpui-pre-windows/src/window.rs::calculate_window_rect assigns height_offset / 2 to the top (integer division).
+        for (work_area, frame_height, scale, expected_offset_y) in [
+            (Bounds::new(point(px(0.), px(0.)), size(px(1920.), px(1040.))), 8, 1., 4.),
+            (Bounds::new(point(px(-1920.), px(40.)), size(px(1920.), px(1040.))), 9, 1.25, 3.2),
+            (Bounds::new(point(px(40.), px(0.)), size(px(1240.), px(720.))), 13, 2., 3.),
         ] {
-            let options = window_options(work_area);
+            let options = window_options(work_area, frame_height, scale);
             let Some(WindowBounds::Windowed(bounds)) = options.window_bounds else {
                 panic!("expected a windowed startup");
             };
             assert_eq!(bounds.size, WINDOW_INITIAL_SIZE);
-            assert_eq!(bounds.center(), work_area.center());
+            assert_eq!(bounds.center(), work_area.center() + point(px(0.), px(expected_offset_y)));
             assert_eq!(options.window_min_size, Some(WINDOW_MIN_SIZE));
             assert!(options.titlebar.unwrap().appears_transparent);
         }
