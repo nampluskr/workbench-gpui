@@ -1,0 +1,376 @@
+2026-11-07 06:49:56.465 === ORDER-05 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05) ===
+2026-11-07 06:49:57.153 --- Starting workbench-gpui measurements ---
+2026-11-07 06:49:57.164 Created test fixture: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\order05-fixture.md
+2026-11-07 06:49:57.172 Calling session.ps1 -Action Start...
+2026-11-07 06:49:58.820 App launched PID=14420
+2026-11-07 06:50:00.703 Found main window HWND=0xF001DA
+2026-11-07 06:50:02.435 Resize: {
+2026-11-07 06:50:02.437 Resize:   "hwnd": "0xF001DA",
+2026-11-07 06:50:02.438 Resize:   "desktop": "Default",
+2026-11-07 06:50:02.439 Resize:   "title": "",
+2026-11-07 06:50:02.441 Resize:   "className": "workbench-gpui",
+2026-11-07 06:50:02.442 Resize:   "workArea_SPI": {
+2026-11-07 06:50:02.443 Resize:     "left": 0,
+2026-11-07 06:50:02.445 Resize:     "top": 0,
+2026-11-07 06:50:02.446 Resize:     "right": 1920,
+2026-11-07 06:50:02.448 Resize:     "bottom": 1032,
+2026-11-07 06:50:02.449 Resize:     "width": 1920,
+2026-11-07 06:50:02.450 Resize:     "height": 1032
+2026-11-07 06:50:02.451 Resize:   },
+2026-11-07 06:50:02.451 Resize:   "workArea_Monitor": {
+2026-11-07 06:50:02.452 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 06:50:02.454 Resize:     "left": 0,
+2026-11-07 06:50:02.455 Resize:     "top": 0,
+2026-11-07 06:50:02.455 Resize:     "right": 1920,
+2026-11-07 06:50:02.456 Resize:     "bottom": 1032,
+2026-11-07 06:50:02.457 Resize:     "width": 1920,
+2026-11-07 06:50:02.458 Resize:     "height": 1032
+2026-11-07 06:50:02.459 Resize:   },
+2026-11-07 06:50:02.463 Resize:   "workAreaCenter": {
+2026-11-07 06:50:02.464 Resize:     "x": 960.0,
+2026-11-07 06:50:02.465 Resize:     "y": 516.0
+2026-11-07 06:50:02.466 Resize:   },
+2026-11-07 06:50:02.467 Resize:   "windowRect": {
+2026-11-07 06:50:02.468 Resize:     "left": 232,
+2026-11-07 06:50:02.469 Resize:     "top": 90,
+2026-11-07 06:50:02.470 Resize:     "right": 1688,
+2026-11-07 06:50:02.471 Resize:     "bottom": 950,
+2026-11-07 06:50:02.472 Resize:     "width": 1456,
+2026-11-07 06:50:02.473 Resize:     "height": 860
+2026-11-07 06:50:02.474 Resize:   },
+2026-11-07 06:50:02.481 Resize:   "windowCenter": {
+2026-11-07 06:50:02.482 Resize:     "x": 960.0,
+2026-11-07 06:50:02.483 Resize:     "y": 520.0
+2026-11-07 06:50:02.484 Resize:   },
+2026-11-07 06:50:02.485 Resize:   "windowCenterDiff": {
+2026-11-07 06:50:02.486 Resize:     "dx": 0.0,
+2026-11-07 06:50:02.487 Resize:     "dy": 4.0
+2026-11-07 06:50:02.487 Resize:   },
+2026-11-07 06:50:02.488 Resize:   "clientRect": {
+2026-11-07 06:50:02.489 Resize:     "width": 1440,
+2026-11-07 06:50:02.490 Resize:     "height": 852
+2026-11-07 06:50:02.491 Resize:   },
+2026-11-07 06:50:02.491 Resize:   "clientToScreen": {
+2026-11-07 06:50:02.492 Resize:     "x": 240,
+2026-11-07 06:50:02.493 Resize:     "y": 90
+2026-11-07 06:50:02.494 Resize:   },
+2026-11-07 06:50:02.495 Resize:   "clientScreenRect": {
+2026-11-07 06:50:02.495 Resize:     "left": 240,
+2026-11-07 06:50:02.496 Resize:     "top": 90,
+2026-11-07 06:50:02.497 Resize:     "right": 1680,
+2026-11-07 06:50:02.498 Resize:     "bottom": 942,
+2026-11-07 06:50:02.499 Resize:     "width": 1440,
+2026-11-07 06:50:02.499 Resize:     "height": 852
+2026-11-07 06:50:02.500 Resize:   },
+2026-11-07 06:50:02.501 Resize:   "clientCenter": {
+2026-11-07 06:50:02.502 Resize:     "x": 960.0,
+2026-11-07 06:50:02.503 Resize:     "y": 516.0
+2026-11-07 06:50:02.503 Resize:   },
+2026-11-07 06:50:02.504 Resize:   "clientCenterDiff": {
+2026-11-07 06:50:02.505 Resize:     "dx": 0.0,
+2026-11-07 06:50:02.506 Resize:     "dy": 0.0
+2026-11-07 06:50:02.507 Resize:   },
+2026-11-07 06:50:02.507 Resize:   "capture": {
+2026-11-07 06:50:02.508 Resize:     "ok": false,
+2026-11-07 06:50:02.509 Resize:     "path": ""
+2026-11-07 06:50:02.510 Resize:   }
+2026-11-07 06:50:02.511 Resize: }
+2026-11-07 06:50:03.200 Client size check: target=1440x852, actual=1440x852
+2026-11-07 06:50:03.731 Foreground check for 'After resize': target=0xF001DA, foreground=0x850542
+2026-11-07 06:50:03.733 Warning: Foreground window (8717634) != target (15729114) during After resize
+2026-11-07 06:50:03.775 Project tree not visible. Opening project tree / left dock...
+2026-11-07 06:50:03.804 Clicking 'project-empty-open'...
+2026-11-07 06:50:04.374 Step 'project-tree-open' confirmed in layout snapshot (seq=2)
+2026-11-07 06:50:04.379 Steps selected for execution: I1-titlebar-normal, I1-titlebar-maximized, I1-tabbar, I1-tabbar-zoomed, I1-tabbar-pinned, I1-toolbar, I1-tab-preview, I1-sidebar-open, I1-sidebar-closed, I18-statusbar, I1-tree-folders
+2026-11-07 06:50:04.388 [app] Step 'I1-titlebar-normal' (Title bar menu & Segoe glyphs) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:50:04.390 [app] Step 'I1-titlebar-maximized' (Title bar maximized restore glyph) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:50:04.391 [app] Step 'I1-tabbar' (Tab bar action icons) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:50:04.393 [app] Step 'I1-tabbar-zoomed' (Tab bar zoom minimize icon) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:50:04.397 ==========================================================================
+2026-11-07 06:50:04.398 [app] Running step 'I1-tabbar-pinned': Tab bar pinned tab icon
+2026-11-07 06:50:04.399 ==========================================================================
+2026-11-07 06:50:04.615 Foreground check for 'I1-tabbar-pinned': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:04.647 Markdown file not active in editor. Ensuring markdown file is open...
+2026-11-07 06:50:04.921 Double-clicking markdown file row at (660,214)...
+2026-11-07 06:50:06.041 Step 'markdown-file-open' confirmed in layout snapshot (seq=4)
+2026-11-07 06:50:06.056 Step 'tabbar-has-tab' confirmed in layout snapshot (seq=4)
+2026-11-07 06:50:06.497 Toggling pin on current tab (Ctrl-K Shift-Enter)...
+2026-11-07 06:50:07.421 Step 'tabbar-pinned' confirmed in layout snapshot (seq=4)
+2026-11-07 06:50:07.434 [CROP] pin (tab-00-pin): client=(722,42,14,14), screen=(962,132), crop=[956,126,982,152] (26x26)
+2026-11-07 06:50:07.667 Foreground check for 'Capture app-tabbar-pinned': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:09.550 Capture 'app-tabbar-pinned' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-tabbar-pinned.png (exit=0)
+2026-11-07 06:50:09.552 Restoring unpinned tab state (Ctrl-K Shift-Enter)...
+2026-11-07 06:50:10.357 [app] Step 'I1-tabbar-pinned' finished successfully.
+2026-11-07 06:50:10.361 ==========================================================================
+2026-11-07 06:50:10.364 [app] Running step 'I1-toolbar': Markdown toolbar preview eye icon
+2026-11-07 06:50:10.367 ==========================================================================
+2026-11-07 06:50:10.572 Foreground check for 'I1-toolbar': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:10.595 Step 'toolbar' confirmed in layout snapshot (seq=4)
+2026-11-07 06:50:10.602 [CROP] eye (toolbar-btn-preview): client=(1410,71,22,22), screen=(1650,161), crop=[1644,155,1678,189] (34x34)
+2026-11-07 06:50:10.814 Foreground check for 'Capture app-toolbar-preview-eye': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:12.444 Capture 'app-toolbar-preview-eye' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-toolbar-preview-eye.png (exit=0)
+2026-11-07 06:50:12.445 [app] Step 'I1-toolbar' finished successfully.
+2026-11-07 06:50:12.446 ==========================================================================
+2026-11-07 06:50:12.447 [app] Running step 'I1-tab-preview': Markdown preview tab file_doc icon
+2026-11-07 06:50:12.448 ==========================================================================
+2026-11-07 06:50:12.652 Foreground check for 'I1-tab-preview': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:12.667 Opening Markdown Preview (Ctrl+Shift+V)...
+2026-11-07 06:50:13.748 Step 'preview-tab' confirmed in layout snapshot (seq=5)
+2026-11-07 06:50:13.753 [CROP] file_doc (tab-01): client=(752,42,14,14), screen=(992,132), crop=[986,126,1012,152] (26x26)
+2026-11-07 06:50:13.978 Foreground check for 'Capture app-preview-tab-doc': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:15.498 Capture 'app-preview-tab-doc' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-preview-tab-doc.png (exit=0)
+2026-11-07 06:50:15.500 Closing preview tab (Ctrl+W)...
+2026-11-07 06:50:16.119 [app] Step 'I1-tab-preview' finished successfully.
+2026-11-07 06:50:16.120 ==========================================================================
+2026-11-07 06:50:16.121 [app] Running step 'I1-sidebar-open': Sidebar open action icons
+2026-11-07 06:50:16.122 ==========================================================================
+2026-11-07 06:50:16.330 Foreground check for 'I1-sidebar-open': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:16.371 Step 'sidebar-open' confirmed in layout snapshot (seq=6)
+2026-11-07 06:50:16.372 [CROP] threads_sidebar_left_open (sidebar-btn-toggle): client=(4,826,22,22), screen=(244,916), crop=[238,910,272,944] (34x34)
+2026-11-07 06:50:16.374 [CROP] folder_add_sidebar (sidebar-btn-folder-add): client=(273,826,22,22), screen=(513,916), crop=[507,910,541,944] (34x34)
+2026-11-07 06:50:16.585 Foreground check for 'Capture app-sidebar-open': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:18.181 Capture 'app-sidebar-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-sidebar-open.png (exit=0)
+2026-11-07 06:50:18.182 [app] Step 'I1-sidebar-open' finished successfully.
+2026-11-07 06:50:18.183 ==========================================================================
+2026-11-07 06:50:18.184 [app] Running step 'I1-sidebar-closed': Sidebar closed state
+2026-11-07 06:50:18.184 ==========================================================================
+2026-11-07 06:50:18.394 Foreground check for 'I1-sidebar-closed': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:18.414 Clicking sidebar toggle to close sidebar...
+2026-11-07 06:50:19.468 Foreground check for 'Capture app-sidebar-closed': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:21.035 Capture 'app-sidebar-closed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-sidebar-closed.png (exit=0)
+2026-11-07 06:50:21.036 Re-opening sidebar for subsequent steps...
+2026-11-07 06:50:21.869 [app] Step 'I1-sidebar-closed' finished successfully.
+2026-11-07 06:50:21.871 ==========================================================================
+2026-11-07 06:50:21.872 [app] Running step 'I18-statusbar': Status bar left dock & project icons (I-18)
+2026-11-07 06:50:21.872 ==========================================================================
+2026-11-07 06:50:22.080 Foreground check for 'I18-statusbar': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:22.101 Step 'statusbar-left' confirmed in layout snapshot (seq=10)
+2026-11-07 06:50:22.103 [CROP] file_tree (status-btn-project-panel): client=(304,826,22,22), screen=(544,916), crop=[538,910,572,944] (34x34)
+2026-11-07 06:50:22.319 Foreground check for 'Capture app-statusbar-left-open': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:23.841 Capture 'app-statusbar-left-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-statusbar-left-open.png (exit=0)
+2026-11-07 06:50:23.858 Clicking project panel dock toggle to close left dock...
+2026-11-07 06:50:24.885 Foreground check for 'Capture app-statusbar-left-closed': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:26.411 Capture 'app-statusbar-left-closed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-statusbar-left-closed.png (exit=0)
+2026-11-07 06:50:26.412 Reopening project panel dock...
+2026-11-07 06:50:27.259 [app] Step 'I18-statusbar' finished successfully.
+2026-11-07 06:50:27.260 ==========================================================================
+2026-11-07 06:50:27.261 [app] Running step 'I1-tree-folders': Project tree folder collapsed and open icons
+2026-11-07 06:50:27.264 ==========================================================================
+2026-11-07 06:50:27.479 Foreground check for 'I1-tree-folders': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:27.530 Step 'tree-folders' confirmed in layout snapshot (seq=14)
+2026-11-07 06:50:27.532 [CROP] folder_collapsed (tree-row-01): client=(300,59,16,16), screen=(540,149), crop=[534,143,562,171] (28x28)
+2026-11-07 06:50:27.550 Clicking directory row to expand: tree-row-01...
+2026-11-07 06:50:28.465 [CROP] folder_expanded (tree-row-01): client=(300,59,16,16), screen=(540,149), crop=[534,143,562,171] (28x28)
+2026-11-07 06:50:28.679 Foreground check for 'Capture app-tree-folders': target=0xF001DA, foreground=0xF001DA
+2026-11-07 06:50:30.269 Capture 'app-tree-folders' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-tree-folders.png (exit=0)
+2026-11-07 06:50:30.270 [app] Step 'I1-tree-folders' finished successfully.
+2026-11-07 06:50:30.271 Cleaning up workbench-gpui process (PID=14420)...
+2026-11-07 06:50:30.356 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 06:50:31.465 Session Stop: {
+2026-11-07 06:50:31.466 Session Stop:   "restored": true,
+2026-11-07 06:50:31.467 Session Stop:   "exeUnchanged": true,
+2026-11-07 06:50:31.468 Session Stop:   "files": {
+2026-11-07 06:50:31.469 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 06:50:31.469 Session Stop:   },
+2026-11-07 06:50:31.470 Session Stop:   "fixtureRemoved": true
+2026-11-07 06:50:31.471 Session Stop: }
+2026-11-07 06:50:31.547 --- Starting MissingIcons Verification Step ---
+2026-11-07 06:50:31.550 Temporarily renaming 'resources\zed-icons' -> 'resources\zed-icons.off'...
+2026-11-07 06:50:31.566 Launching D:\projects\workbench-gpui\target\debug\workbench-gpui.exe with icons absent...
+2026-11-07 06:50:31.595 Launched app PID=12052
+2026-11-07 06:50:33.625 MissingIcons window HWND=0x14003BC
+2026-11-07 06:50:35.303 Resize: {
+2026-11-07 06:50:35.304 Resize:   "hwnd": "0x14003BC",
+2026-11-07 06:50:35.305 Resize:   "desktop": "Default",
+2026-11-07 06:50:35.305 Resize:   "title": "",
+2026-11-07 06:50:35.306 Resize:   "className": "workbench-gpui",
+2026-11-07 06:50:35.307 Resize:   "workArea_SPI": {
+2026-11-07 06:50:35.308 Resize:     "left": 0,
+2026-11-07 06:50:35.309 Resize:     "top": 0,
+2026-11-07 06:50:35.310 Resize:     "right": 1920,
+2026-11-07 06:50:35.311 Resize:     "bottom": 1032,
+2026-11-07 06:50:35.312 Resize:     "width": 1920,
+2026-11-07 06:50:35.312 Resize:     "height": 1032
+2026-11-07 06:50:35.313 Resize:   },
+2026-11-07 06:50:35.314 Resize:   "workArea_Monitor": {
+2026-11-07 06:50:35.314 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 06:50:35.315 Resize:     "left": 0,
+2026-11-07 06:50:35.315 Resize:     "top": 0,
+2026-11-07 06:50:35.316 Resize:     "right": 1920,
+2026-11-07 06:50:35.317 Resize:     "bottom": 1032,
+2026-11-07 06:50:35.317 Resize:     "width": 1920,
+2026-11-07 06:50:35.318 Resize:     "height": 1032
+2026-11-07 06:50:35.319 Resize:   },
+2026-11-07 06:50:35.319 Resize:   "workAreaCenter": {
+2026-11-07 06:50:35.320 Resize:     "x": 960.0,
+2026-11-07 06:50:35.321 Resize:     "y": 516.0
+2026-11-07 06:50:35.321 Resize:   },
+2026-11-07 06:50:35.322 Resize:   "windowRect": {
+2026-11-07 06:50:35.323 Resize:     "left": 232,
+2026-11-07 06:50:35.323 Resize:     "top": 90,
+2026-11-07 06:50:35.324 Resize:     "right": 1688,
+2026-11-07 06:50:35.325 Resize:     "bottom": 950,
+2026-11-07 06:50:35.326 Resize:     "width": 1456,
+2026-11-07 06:50:35.327 Resize:     "height": 860
+2026-11-07 06:50:35.327 Resize:   },
+2026-11-07 06:50:35.328 Resize:   "windowCenter": {
+2026-11-07 06:50:35.329 Resize:     "x": 960.0,
+2026-11-07 06:50:35.330 Resize:     "y": 520.0
+2026-11-07 06:50:35.331 Resize:   },
+2026-11-07 06:50:35.331 Resize:   "windowCenterDiff": {
+2026-11-07 06:50:35.333 Resize:     "dx": 0.0,
+2026-11-07 06:50:35.334 Resize:     "dy": 4.0
+2026-11-07 06:50:35.335 Resize:   },
+2026-11-07 06:50:35.335 Resize:   "clientRect": {
+2026-11-07 06:50:35.336 Resize:     "width": 1440,
+2026-11-07 06:50:35.337 Resize:     "height": 852
+2026-11-07 06:50:35.338 Resize:   },
+2026-11-07 06:50:35.338 Resize:   "clientToScreen": {
+2026-11-07 06:50:35.339 Resize:     "x": 240,
+2026-11-07 06:50:35.340 Resize:     "y": 90
+2026-11-07 06:50:35.341 Resize:   },
+2026-11-07 06:50:35.342 Resize:   "clientScreenRect": {
+2026-11-07 06:50:35.342 Resize:     "left": 240,
+2026-11-07 06:50:35.343 Resize:     "top": 90,
+2026-11-07 06:50:35.344 Resize:     "right": 1680,
+2026-11-07 06:50:35.345 Resize:     "bottom": 942,
+2026-11-07 06:50:35.345 Resize:     "width": 1440,
+2026-11-07 06:50:35.346 Resize:     "height": 852
+2026-11-07 06:50:35.347 Resize:   },
+2026-11-07 06:50:35.348 Resize:   "clientCenter": {
+2026-11-07 06:50:35.348 Resize:     "x": 960.0,
+2026-11-07 06:50:35.349 Resize:     "y": 516.0
+2026-11-07 06:50:35.350 Resize:   },
+2026-11-07 06:50:35.351 Resize:   "clientCenterDiff": {
+2026-11-07 06:50:35.351 Resize:     "dx": 0.0,
+2026-11-07 06:50:35.352 Resize:     "dy": 0.0
+2026-11-07 06:50:35.353 Resize:   },
+2026-11-07 06:50:35.354 Resize:   "capture": {
+2026-11-07 06:50:35.354 Resize:     "ok": false,
+2026-11-07 06:50:35.355 Resize:     "path": ""
+2026-11-07 06:50:35.356 Resize:   }
+2026-11-07 06:50:35.357 Resize: }
+2026-11-07 06:50:36.067 Client size check: target=1440x852, actual=1440x852
+2026-11-07 06:50:36.279 Foreground check for 'MissingIcons capture': target=0x14003BC, foreground=0x14003BC
+2026-11-07 06:50:37.004 Foreground check for 'Capture app-missing-icons': target=0x14003BC, foreground=0x14003BC
+2026-11-07 06:50:38.562 Capture 'app-missing-icons' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-missing-icons.png (exit=0)
+2026-11-07 06:50:38.843 PASS: stderr contains expected warning: 'zed icons missing: run tools/fetch-zed-icons.ps1'
+2026-11-07 06:50:38.844 Restoring 'resources\zed-icons.off' -> 'resources\zed-icons'...
+2026-11-07 06:50:38.849 Restored resources\zed-icons successfully.
+2026-11-07 06:50:38.861 --- Starting Zed measurement ---
+2026-11-07 06:50:38.878 Zed top-level HWNDs before launch: 0x15A0A7E
+2026-11-07 06:50:38.879 Launching Zed (new window only, -a forbidden): C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe -n ""
+2026-11-07 06:50:40.793 New Zed window found: HWND=0x1E30544
+2026-11-07 06:50:43.834 Resizing Zed to 1440x852 client...
+2026-11-07 06:50:45.772 Zed resize: {
+2026-11-07 06:50:45.773 Zed resize:   "hwnd": "0x1E30544",
+2026-11-07 06:50:45.773 Zed resize:   "desktop": "Default",
+2026-11-07 06:50:45.774 Zed resize:   "title": "",
+2026-11-07 06:50:45.775 Zed resize:   "className": "Zed",
+2026-11-07 06:50:45.776 Zed resize:   "workArea_SPI": {
+2026-11-07 06:50:45.777 Zed resize:     "left": 0,
+2026-11-07 06:50:45.778 Zed resize:     "top": 0,
+2026-11-07 06:50:45.778 Zed resize:     "right": 1920,
+2026-11-07 06:50:45.779 Zed resize:     "bottom": 1032,
+2026-11-07 06:50:45.780 Zed resize:     "width": 1920,
+2026-11-07 06:50:45.781 Zed resize:     "height": 1032
+2026-11-07 06:50:45.784 Zed resize:   },
+2026-11-07 06:50:45.784 Zed resize:   "workArea_Monitor": {
+2026-11-07 06:50:45.785 Zed resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 06:50:45.786 Zed resize:     "left": 0,
+2026-11-07 06:50:45.787 Zed resize:     "top": 0,
+2026-11-07 06:50:45.788 Zed resize:     "right": 1920,
+2026-11-07 06:50:45.789 Zed resize:     "bottom": 1032,
+2026-11-07 06:50:45.790 Zed resize:     "width": 1920,
+2026-11-07 06:50:45.791 Zed resize:     "height": 1032
+2026-11-07 06:50:45.791 Zed resize:   },
+2026-11-07 06:50:45.792 Zed resize:   "workAreaCenter": {
+2026-11-07 06:50:45.793 Zed resize:     "x": 960.0,
+2026-11-07 06:50:45.794 Zed resize:     "y": 516.0
+2026-11-07 06:50:45.794 Zed resize:   },
+2026-11-07 06:50:45.795 Zed resize:   "windowRect": {
+2026-11-07 06:50:45.796 Zed resize:     "left": 232,
+2026-11-07 06:50:45.797 Zed resize:     "top": 90,
+2026-11-07 06:50:45.798 Zed resize:     "right": 1688,
+2026-11-07 06:50:45.798 Zed resize:     "bottom": 950,
+2026-11-07 06:50:45.799 Zed resize:     "width": 1456,
+2026-11-07 06:50:45.800 Zed resize:     "height": 860
+2026-11-07 06:50:45.801 Zed resize:   },
+2026-11-07 06:50:45.802 Zed resize:   "windowCenter": {
+2026-11-07 06:50:45.803 Zed resize:     "x": 960.0,
+2026-11-07 06:50:45.804 Zed resize:     "y": 520.0
+2026-11-07 06:50:45.804 Zed resize:   },
+2026-11-07 06:50:45.805 Zed resize:   "windowCenterDiff": {
+2026-11-07 06:50:45.806 Zed resize:     "dx": 0.0,
+2026-11-07 06:50:45.807 Zed resize:     "dy": 4.0
+2026-11-07 06:50:45.807 Zed resize:   },
+2026-11-07 06:50:45.808 Zed resize:   "clientRect": {
+2026-11-07 06:50:45.809 Zed resize:     "width": 1440,
+2026-11-07 06:50:45.809 Zed resize:     "height": 844
+2026-11-07 06:50:45.810 Zed resize:   },
+2026-11-07 06:50:45.811 Zed resize:   "clientToScreen": {
+2026-11-07 06:50:45.812 Zed resize:     "x": 240,
+2026-11-07 06:50:45.813 Zed resize:     "y": 98
+2026-11-07 06:50:45.814 Zed resize:   },
+2026-11-07 06:50:45.814 Zed resize:   "clientScreenRect": {
+2026-11-07 06:50:45.815 Zed resize:     "left": 240,
+2026-11-07 06:50:45.816 Zed resize:     "top": 98,
+2026-11-07 06:50:45.817 Zed resize:     "right": 1680,
+2026-11-07 06:50:45.817 Zed resize:     "bottom": 942,
+2026-11-07 06:50:45.818 Zed resize:     "width": 1440,
+2026-11-07 06:50:45.819 Zed resize:     "height": 844
+2026-11-07 06:50:45.819 Zed resize:   },
+2026-11-07 06:50:45.822 Zed resize:   "clientCenter": {
+2026-11-07 06:50:45.823 Zed resize:     "x": 960.0,
+2026-11-07 06:50:45.823 Zed resize:     "y": 520.0
+2026-11-07 06:50:45.824 Zed resize:   },
+2026-11-07 06:50:45.825 Zed resize:   "clientCenterDiff": {
+2026-11-07 06:50:45.826 Zed resize:     "dx": 0.0,
+2026-11-07 06:50:45.826 Zed resize:     "dy": 4.0
+2026-11-07 06:50:45.827 Zed resize:   },
+2026-11-07 06:50:45.828 Zed resize:   "capture": {
+2026-11-07 06:50:45.829 Zed resize:     "ok": false,
+2026-11-07 06:50:45.829 Zed resize:     "path": ""
+2026-11-07 06:50:45.830 Zed resize:   }
+2026-11-07 06:50:45.831 Zed resize: }
+2026-11-07 06:50:47.953 Zed client origin=(240,98) size=1440x844
+2026-11-07 06:50:48.158 Foreground check for 'Zed ready': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:48.159 ==========================================================================
+2026-11-07 06:50:48.161 [zed] Running step 'zed-titlebar': Zed Title Bar
+2026-11-07 06:50:48.163 ==========================================================================
+2026-11-07 06:50:48.367 Foreground check for 'Zed Title Bar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:48.576 Foreground check for 'Capture zed-titlebar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:50.461 Capture 'zed-titlebar' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\zed-titlebar.png (exit=0)
+2026-11-07 06:50:50.463 [zed] Step 'zed-titlebar' finished successfully.
+2026-11-07 06:50:50.464 ==========================================================================
+2026-11-07 06:50:50.466 [zed] Running step 'zed-tabbar': Zed Tab Bar
+2026-11-07 06:50:50.467 ==========================================================================
+2026-11-07 06:50:50.673 Foreground check for 'Zed Tab Bar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:50.887 Foreground check for 'Capture zed-tabbar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:52.710 Capture 'zed-tabbar' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\zed-tabbar.png (exit=0)
+2026-11-07 06:50:52.712 [zed] Step 'zed-tabbar' finished successfully.
+2026-11-07 06:50:52.713 ==========================================================================
+2026-11-07 06:50:52.715 [zed] Running step 'zed-toolbar': Zed Markdown Toolbar Eye
+2026-11-07 06:50:52.718 ==========================================================================
+2026-11-07 06:50:52.924 Foreground check for 'Zed Toolbar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:53.134 Foreground check for 'Capture zed-toolbar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:54.970 Capture 'zed-toolbar' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\zed-toolbar.png (exit=0)
+2026-11-07 06:50:54.972 [zed] Step 'zed-toolbar' finished successfully.
+2026-11-07 06:50:54.973 ==========================================================================
+2026-11-07 06:50:54.976 [zed] Running step 'zed-statusbar': Zed Status Bar Left Icons
+2026-11-07 06:50:54.977 ==========================================================================
+2026-11-07 06:50:55.190 Foreground check for 'Zed Status Bar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:55.400 Foreground check for 'Capture zed-statusbar': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:57.193 Capture 'zed-statusbar' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\zed-statusbar.png (exit=0)
+2026-11-07 06:50:57.195 [zed] Step 'zed-statusbar' finished successfully.
+2026-11-07 06:50:57.196 ==========================================================================
+2026-11-07 06:50:57.198 [zed] Running step 'zed-project-panel': Zed Project Panel & Folders
+2026-11-07 06:50:57.199 ==========================================================================
+2026-11-07 06:50:57.406 Foreground check for 'Zed Project Panel': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:57.617 Foreground check for 'Capture zed-project-panel': target=0x1E30544, foreground=0x1E30544
+2026-11-07 06:50:59.343 Capture 'zed-project-panel' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\zed-project-panel.png (exit=0)
+2026-11-07 06:50:59.345 [zed] Step 'zed-project-panel' finished successfully.
+2026-11-07 06:50:59.348 Closing target Zed window only (HWND=0x1E30544) via WM_CLOSE PostMessage...
+2026-11-07 06:51:01.361 Target Zed window HWND=0x1E30544 successfully closed
+2026-11-07 06:51:01.362 === ORDER-05 V3 Capture Script Finished ===
+2026-11-07 06:51:01.375 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\summary.json ===

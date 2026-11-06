@@ -11,7 +11,7 @@
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 
-use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
+use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
@@ -778,7 +778,7 @@ impl Workbench {
                         }),
                     )
                     .child(
-                        Icon::new(IconName::Folder)
+                        super::zed_icons::icon("folder")
                             .size(super::metrics::ICON_SMALL)
                             .text_color(icon_color),
                     )

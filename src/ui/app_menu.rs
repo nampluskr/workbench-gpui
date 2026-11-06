@@ -20,7 +20,7 @@
 //! 메뉴가 열린 채 항목의 단축키를 누르면 그 항목을 선택 표시하고 50ms 뒤 닫고 실행한다(I-520).
 
 use crate::dev::now_ms;
-use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
+use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::prelude::FluentBuilder as _;
 use gpui_kit::*;
 
@@ -734,7 +734,7 @@ impl Render for AppMenu {
                             "app-menu-button",
                             Line::text("Open Application Menu"),
                         )))
-                        .child(Icon::new(IconName::Menu).size(ICON_SMALL)),
+                        .child(super::zed_icons::icon("menu").size(ICON_SMALL)),
                 )
                 .into_any_element();
         };

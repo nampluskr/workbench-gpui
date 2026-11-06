@@ -324,7 +324,7 @@
 
 - **ORDER-03 V3 최종 판정(C-15·C-16)** (2026-11-07, leader 실행 04:18, checker 판정)
   - 무엇을 했나: leader가 화면 차례 안에서 `-Steps S-9-5digit,S-5-code`로 실행했다(`verify/reviews/measure-ORDER-03-extra/`). checker가 C-15 판정(`measure-ORDER-03/`, 03:20)에 더해 `measure-ORDER-03.md` 5절에 적었다.
-  - 결과: 통과 18/19, 측정 불가 1, 불일치 0.
+  - 결과: 통과 18/19, 측정 불가 1, 불일치 0. → Phase 4 화면 차례의 5자리 재측정 PASS(C-18)로 최종 19/19 PASS, 불일치 0.
     - 미리보기 코드 블록: Lilex 16px(문자 폭 9.60px), 평균 줄 높이 25.83px(Zed 25.89px, 스펙 25.888px) → PASS.
     - 5자리 줄 번호 열(66/101px): 측정 불가. 캡처 시점에 657KB 문서가 아직 로드되지 않아 줄 번호 1만 보였다. 66/101은 코드 기대값으로 K-07 단위 테스트로만 확인됐다. 재측정 예정.
     - checker가 처음에 이 항목을 코드 근거로 PASS로 적었다가, leader 지적으로 '측정 불가'로 고쳤다(실제 5자리 잉크를 재지 않아 AGENTS 3A.4 "추정 금지").
@@ -375,6 +375,72 @@
 - **W-17 ORDER-04 기록** (2026-11-07)
   - 무엇을 했나: 위 C-17·C-18을 적고, Phase 12 V4 목록에 I-20 OS 네이티브 대화 상자 항목을 더했다. PLAN 진행 현황 Phase 4를 review(core-leader 판정 대기)로 바꿨다. 카드 `specs/v0.5/cards/W-17.md`.
   - 결과: `PROGRESS.md`, `PLAN.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+- **Phase 4 종료 판정** (2026-11-07)
+  - 무엇을 했나: core-leader가 ORDER-04 보고와 ORDER-03 5자리 재측정을 보고 Phase 4를 판정했다(core-leader 2026-11-07, 사용자 위임 core D-13).
+  - 결과: "ORDER-04 충족, ORDER-03 5자리 재측정 PASS. Phase 4 종료 판정: 충족(I-20 두 갈래, 네이티브 대화 상자는 OS 표시로 V4)". Phase 4 커밋 `f82a292`, push 완료. Phase 3 V3 결과는 19/19 PASS로 고쳤다.
+  - 검증: core-leader 판정(gpui-leader 전달, W-18).
+  - 특이사항: 없음.
+
+- **W-18 Phase 4 종료, Phase 5 시작 기록** (2026-11-07)
+  - 무엇을 했나: PLAN 진행 현황 Phase 4를 done(커밋 `f82a292`), Phase 5를 doing(ORDER-05)으로 바꾸고, Phase 3 V3 결과를 19/19로 고쳤다(PROGRESS ORDER-03 V3 최종 판정, PLAN Phase 3 비고). 위 Phase 4 종료 판정과 Phase 5 추가 지시를 적었다. 카드 `specs/v0.5/cards/W-18.md`.
+  - 결과: `PLAN.md`, `PROGRESS.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+### Phase 5 — 아이콘 모양
+
+- **ORDER-05 받음** (2026-11-07)
+  - 무엇을 했나: core-leader의 ORDER-05(R-1·R-18, I-1·I-18)를 받았다.
+  - 결과: 추가 지시 — "ORDER-04의 1426×845는 화면 설정 문제가 아님(두 모니터 1920×1080, 작업 영역 1920×1032, DPI 96). I-6 퇴행일 수 있어 ORDER-05 첫 화면 차례에 다시 재고, 1440×852가 아니면 원인을 찾아 고친다."
+  - 검증: 해당 없음(지시 기록).
+  - 특이사항: C-18 특이사항의 "화면 설정 차이로 추정"은 이 지시로 부정됐다.
+
+- **W-18 반영 확인** (2026-11-07)
+  - 무엇을 했나: W-18이 고친 PLAN 진행 현황(Phase 3 비고 19/19, Phase 4 done `f82a292`, Phase 5 doing)과 PROGRESS(Phase 4 종료 판정, ORDER-03 V3 19/19, ORDER-05 추가 지시)가 문서에 들어 있는지 확인했다.
+  - 결과: 모두 들어 있다.
+  - 검증: 문서 대조(V0).
+  - 특이사항: 없음.
+
+- **I-6 창 크기 재측정** (2026-11-07, ORDER-05 첫 화면 차례)
+  - 무엇을 했나: ORDER-05 추가 지시대로 첫 실행 창을 다시 쟀다(`verify/reviews/measure-ORDER-05-i6/first-launch.txt`).
+  - 결과: 클라이언트 1440×852, 클라이언트 원점 화면 (240,90), 클라이언트 중심 (960,516) = 작업 영역(1920×1032) 중심, 차이 (0,0). I-6 퇴행 아님. ORDER-04의 1426×845는 `order04-v3.ps1`이 창 바깥 크기로 `SetWindowPos(1442,853)`을 넣어 클라이언트를 줄인 탓이다(앱 퇴행 아님). 앱 코드는 고치지 않았다.
+  - 검증: V3(GetClientRect·ClientToScreen 값).
+  - 특이사항: 같은 일을 막으려고 측정 스크립트 규칙을 HERDR-SETUP 5.4에 더했다(W-19).
+
+
+- **K-08 Zed 아이콘 복사본과 UI 아이콘 교체** (2026-11-07, coder)
+  - 무엇을 했나: Zed 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`의 `assets/icons`와 라이선스를 `resources/zed-icons/`(.gitignore)로 받는 `tools/fetch-zed-icons.ps1`을 쓰고 실행했다. `src/ui/zed_icons.rs`(AssetSource, gpui-kit 기본 자산에 위임)를 두고 타이틀 바·탭 바·상태 바·sidebar·트리·메뉴 아이콘을 복사본 SVG로 바꿨다. 카드 `specs/v0.5/cards/K-08.md`, 보고 `cards/K-08.report.md`.
+  - 결과: 404개 파일(UI 299, file_icons 96, knockouts 6, LICENSES, LICENSE-APACHE, LICENSE-GPL), `git ls-files resources/zed-icons` 0행. 대응 표는 SPEC R-1로 옮겼다. 복사본이 없으면 같은 크기 빈 칸 + stderr 경고 한 번. 남은 비-Zed 출처는 파일 트리 파일 아이콘 `IconName::File`(Phase 7). 결정은 DECISIONS D-6.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test missing_zed_icons`(1 passed), `cargo clippy --all-targets -- -D warnings` PASS.
+  - 특이사항: 이름 대조용 Zed crates 소스를 레포 안에 받으려던 것을 leader가 막고 레포 밖 `%TEMP%`로 옮기게 했다. 레포 안에 Zed 소스는 없다.
+
+- **K-08-R1 창 제어 버튼 글리프로 되돌림** (2026-11-07, coder)
+  - 무엇을 했나: K-08이 창 제어 4개에 쓴 Linux용 `generic_*.svg`를 K-08 전 Segoe Fluent Icons 글리프 구현으로 되돌렸다. 카드 `specs/v0.5/cards/K-08-R1.md`.
+  - 결과: U+E921/E922/E923/E8BB, Fluent가 없으면 Segoe MDL2 Assets. Zed Windows와 같다(`crates/platform_title_bar/src/platforms/platform_windows.rs`). core-leader 결정으로 I-1 SVG 기준의 예외(DECISIONS D-7). `src/ui/title_bar.rs`가 HEAD와 같다.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test ui::layout::tests`(3 passed), clippy PASS.
+  - 특이사항: 없음.
+
+- **C-19 K-08 리뷰와 ORDER-05 V3 스크립트** (2026-11-07, checker)
+  - 무엇을 했나: K-08·K-08-R1 코드와 대응 표를 고정 커밋 소스와 대조하고, `tools/measure/order03-v3.ps1`을 재사용해 `tools/measure/order05-v3.ps1`(앱 12단계, Zed 5단계, `-MissingIcons`)을 썼다. 카드 `specs/v0.5/cards/C-19.md`, 보고 `cards/C-19.report.md`.
+  - 결과: 리뷰 PASS(지적 없음). 스크립트는 `Ensure-ClientSize`로 GetClientRect 1440×852를 확인한다. run1·run2 실패 뒤 수정 1로 단계 실패 격리, 단계별 자체 전제(`Ensure-MarkdownFileOpen` 등), 고정 탭 프로브 `tab-00`·단축키 `ctrl-k shift-enter`, `-Skip` 정확 매칭을 고쳤다.
+  - 검증: V1(코드 대조, `cargo test missing_zed_icons`·`ui::layout`, clippy, `-DryRunStdout`).
+  - 특이사항: 없음.
+
+- **ORDER-05 V3 실행** (2026-11-07, leader 실행)
+  - 무엇을 했나: 화면 차례 안에서 `order05-v3.ps1`을 3회 실행했다.
+  - 결과:
+    - run1(`verify/reviews/measure-ORDER-05-run1/`): titlebar normal·maximized, tabbar, tabbar-zoomed 성공. `I1-tabbar-pinned`에서 FATAL로 멈췄다(프로브 이름·열린 탭 없음·단축키·예외 전파).
+    - run2(`measure-ORDER-05-run2/`): 앞 4단계를 건너뛰자 `I1-toolbar`가 앞 단계의 Markdown 파일 열기에 기대고 있어 실패했다(단계 의존).
+    - 3차(`measure-ORDER-05/`): 앞 4단계를 건너뛰고 나머지 앱 단계(pinned·toolbar·tab-preview·sidebar open/closed·I18-statusbar·tree-folders·MissingIcons)와 Zed 5단계 전부 PASS. MissingIcons: 경고 있음, 빈 칸, 앱 안 죽음.
+  - 검증: V3 캡처. 판정은 C-20(checker) 진행 중.
+  - 특이사항: run1·run2 실패는 스크립트 문제였고 C-19 수정 1로 고쳤다.
+
+- **W-19 Phase 5 문서** (2026-11-07)
+  - 무엇을 했나: DECISIONS D-6(아이콘 복사본)·D-7(창 제어 글리프 예외)을 더하고, SPEC R-1에 대응 표, R-18에 `file_tree.svg`·`folder_add.svg`를 적고, 위 Phase 5 기록과 HERDR-SETUP 5.4 창 크기 규칙을 더했다. 카드 `specs/v0.5/cards/W-19.md`.
+  - 결과: `DECISIONS.md`, `SPEC.md`, `PROGRESS.md`, `HERDR-SETUP.md` 수정.
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: 없음.
 

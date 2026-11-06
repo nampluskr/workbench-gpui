@@ -34,6 +34,7 @@ mod title_bar;
 mod tooltip;
 mod watch;
 mod watch_io;
+mod zed_icons;
 
 use std::time::Duration;
 
@@ -669,10 +670,9 @@ fn window_options(work_area: Bounds<Pixels>, frame_height: i32, scale: f32) -> W
 
 /// 앱을 시작하고 창 하나를 연다. `dev` 는 디버그 빌드 전용 시험 플래그다.
 pub fn run(dev: DevOptions) {
-    // gpui-kit 기본 컴포넌트 아이콘(101개) 자산. 등록하지 않으면 Icon 이 자리만 잡고 그려지지 않는다
-    // (gpui-kit-assets 0.8.1 README "let app = gpui_kit::application().with_assets(Assets)").
+    // Keep component assets available alongside the local Zed SVGs.
     gpui_kit::application()
-        .with_assets(gpui_kit::assets::Assets)
+        .with_assets(zed_icons::Assets::new())
         .run(move |cx| {
             gpui_kit::init(cx);
             fonts::init(cx);

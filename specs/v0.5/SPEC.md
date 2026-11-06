@@ -28,7 +28,34 @@ UI 전체의 아이콘 모양이 Zed(또는 Zed 화면 캡처)와 같다.
 - 아이콘 모양이 Zed와 같다.
 - Zed 아이콘 원본(`zed/assets/icons/*.svg`, 299개)을 이 레포의 `.gitignore` 폴더에 복사해 그대로 쓴다. 대상은 UI 아이콘 전부다(core D-9).
 - 아이콘은 SVG로 그리고 색은 `currentColor`로 두어 테마 색을 따른다(core D-9).
-- 복사 폴더 경로, 출처 커밋, 복사본이 없을 때의 모습, 다시 채우는 방법: 미정(Phase 5).
+- 복사 폴더 경로, 출처 커밋, 복사본이 없을 때의 모습, 다시 채우는 방법: `DECISIONS.md` D-6.
+- 예외: 창 제어 버튼 4개는 SVG가 아니라 Zed Windows와 같은 Segoe Fluent Icons 글리프로 그린다(`DECISIONS.md` D-7, core-leader 결정).
+- 남은 비-Zed 출처: 파일 트리 파일 아이콘 `IconName::File`(Phase 7).
+
+앱 자리와 Zed 아이콘의 대응(K-08 보고, 창 제어 4행은 K-08-R1). 근거는 Zed 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`의 저장소 상대 경로다.
+
+| 앱 자리 | Zed 아이콘 | 근거 / 판정 |
+|---|---|---|
+| 타이틀 바 앱 메뉴 | `menu.svg` | `crates/title_bar/src/application_menu.rs:194` Menu |
+| 창 최소화 | Segoe Fluent Icons 글리프 U+E921 | Zed Windows와 같음. `crates/platform_title_bar/src/platforms/platform_windows.rs:16–39,80–83` |
+| 창 최대화 | Segoe Fluent Icons 글리프 U+E922 | Zed Windows와 같음. 위 파일, Fluent가 없으면 Segoe MDL2 Assets |
+| 창 복원 | Segoe Fluent Icons 글리프 U+E923 | Zed Windows와 같음. 위 파일, 같은 글꼴 선택 |
+| 창 닫기 | Segoe Fluent Icons 글리프 U+E8BB | Zed Windows와 같음. 위 파일, 같은 글꼴 선택 |
+| sidebar 푸터 토글(열림) | `threads_sidebar_left_open.svg` | `crates/sidebar/src/sidebar.rs:7493` ThreadsSidebarLeftOpen |
+| 상태 바 sidebar 토글(닫힘) | `threads_sidebar_left_closed.svg` | `crates/workspace/src/status_bar.rs:258` ThreadsSidebarLeftClosed |
+| sidebar·상태 바 Add Project | `folder_add.svg` | `crates/sidebar/src/sidebar.rs:6772` FolderAdd |
+| 상태 바 프로젝트 패널 / Close Left Dock | `file_tree.svg` | `crates/project_panel/src/project_panel.rs:8281` FileTree |
+| 탭 뒤로 / 앞으로 | `arrow_left.svg` / `arrow_right.svg` | `crates/workspace/src/pane.rs:3508,3531` ArrowLeft·ArrowRight |
+| Markdown 미리보기 탭 | `file_doc.svg` | `crates/markdown_preview/src/markdown_preview_view.rs:1664` FileDoc |
+| 탭 고정 해제 | `pin.svg` | `crates/workspace/src/pane.rs:3040` Pin |
+| 탭 닫기 | `close.svg` | 위 파일 :3055,3057 Close |
+| 탭 새 항목 | `plus.svg` | 위 파일 :4366 Plus |
+| 탭 분할 | `split.svg` | 위 파일 :4390 Split |
+| pane 확대 / 축소 | `maximize.svg` / `minimize.svg` | 위 파일 :4417,4420 Maximize·Minimize |
+| Markdown 툴바 Preview Markdown | `eye.svg` | `crates/zed/src/zed/quick_action_bar/preview.rs:43,64` Preview Markdown·Eye |
+| sidebar 등록 폴더 | `folder.svg` | 애매: 앱 전용 등록 폴더 자리. Zed 기본 폴더와 같은 이름의 UI SVG, V3 대조 필요 |
+| 프로젝트 트리 접힌/새 폴더 | `folder.svg` | 애매: Zed의 트리 폴더는 아이콘 테마 영역. 파일 아이콘 적용 유보(Phase 7)에 따라 UI SVG |
+| 프로젝트 트리 열린 폴더 | `folder_open.svg` | 애매: 위와 같음. 새 폴더 입력은 접힌 폴더 표시 유지 |
 
 **판정 방법**
 
@@ -462,6 +489,7 @@ I-17. 요청 원문 "zed와 동일하게", "햄버거 메뉴 동일하게 - zed�
 - 왼쪽 dock 여닫기 버튼이 트리 모양 아이콘이다.
 - Add Project 버튼에 "+"가 붙어 있다.
 - 아이콘 출처는 R-1과 같다(core D-9).
+- 상태 바 왼쪽 dock 여닫기 버튼: `file_tree.svg`(Zed `crates/project_panel/src/project_panel.rs:8281` FileTree). Add Project 버튼: `folder_add.svg`(Zed `crates/sidebar/src/sidebar.rs:6772` FolderAdd). R-1 대응 표와 같다(K-08).
 
 **판정 방법**
 

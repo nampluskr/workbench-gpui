@@ -129,7 +129,7 @@ impl Workbench {
                 .size_full()
                 // The first screen has no folder and one pane, which counts as the active one: its end buttons show as
                 // before P4-3b (`+`, split off, zoom), with nothing to act on yet.
-                .child(layout::tab_bar(&[], end_buttons_shown(false, true).then(first_screen_end), Rc::new(|_, _, _| {}), &self.glyph_font, cx))
+                .child(layout::tab_bar(&[], end_buttons_shown(false, true).then(first_screen_end), Rc::new(|_, _, _| {}), cx))
                 .child(div().flex_1().min_h_0().child(div().size_full().bg(theme.background)))
                 .into_any_element();
         };
@@ -323,7 +323,7 @@ impl Workbench {
             // A press the editor body did not take (tab bar, toolbar, empty or preview body) moves the keyboard to the
             // pane too, so typing, Save and Close go where the active pane is (P4-23b-R1).
             .on_mouse_down(MouseButton::Left, cx.listener(|this, _: &MouseDownEvent, window, cx| this.focus_active_pane(window, cx)))
-            .child(layout::tab_bar(&tabs, end, end_drop, &self.glyph_font, cx))
+            .child(layout::tab_bar(&tabs, end, end_drop, cx))
             .child(
                 div()
                     .relative()

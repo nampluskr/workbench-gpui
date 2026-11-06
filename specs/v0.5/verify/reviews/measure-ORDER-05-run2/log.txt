@@ -1,0 +1,113 @@
+2026-11-07 06:31:20.949 === ORDER-05 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05) ===
+2026-11-07 06:31:21.640 --- Starting workbench-gpui measurements ---
+2026-11-07 06:31:21.647 Created test fixture: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\order05-fixture.md
+2026-11-07 06:31:21.653 Calling session.ps1 -Action Start...
+2026-11-07 06:31:23.198 App launched PID=13404
+2026-11-07 06:31:24.787 Found main window HWND=0x5B0110
+2026-11-07 06:31:26.662 Resize: {
+2026-11-07 06:31:26.664 Resize:   "hwnd": "0x5B0110",
+2026-11-07 06:31:26.666 Resize:   "desktop": "Default",
+2026-11-07 06:31:26.667 Resize:   "title": "",
+2026-11-07 06:31:26.668 Resize:   "className": "workbench-gpui",
+2026-11-07 06:31:26.669 Resize:   "workArea_SPI": {
+2026-11-07 06:31:26.670 Resize:     "left": 0,
+2026-11-07 06:31:26.671 Resize:     "top": 0,
+2026-11-07 06:31:26.673 Resize:     "right": 1920,
+2026-11-07 06:31:26.674 Resize:     "bottom": 1032,
+2026-11-07 06:31:26.674 Resize:     "width": 1920,
+2026-11-07 06:31:26.675 Resize:     "height": 1032
+2026-11-07 06:31:26.676 Resize:   },
+2026-11-07 06:31:26.677 Resize:   "workArea_Monitor": {
+2026-11-07 06:31:26.678 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 06:31:26.678 Resize:     "left": 0,
+2026-11-07 06:31:26.679 Resize:     "top": 0,
+2026-11-07 06:31:26.680 Resize:     "right": 1920,
+2026-11-07 06:31:26.681 Resize:     "bottom": 1032,
+2026-11-07 06:31:26.682 Resize:     "width": 1920,
+2026-11-07 06:31:26.682 Resize:     "height": 1032
+2026-11-07 06:31:26.683 Resize:   },
+2026-11-07 06:31:26.684 Resize:   "workAreaCenter": {
+2026-11-07 06:31:26.685 Resize:     "x": 960.0,
+2026-11-07 06:31:26.685 Resize:     "y": 516.0
+2026-11-07 06:31:26.686 Resize:   },
+2026-11-07 06:31:26.688 Resize:   "windowRect": {
+2026-11-07 06:31:26.689 Resize:     "left": 232,
+2026-11-07 06:31:26.690 Resize:     "top": 90,
+2026-11-07 06:31:26.691 Resize:     "right": 1688,
+2026-11-07 06:31:26.692 Resize:     "bottom": 950,
+2026-11-07 06:31:26.693 Resize:     "width": 1456,
+2026-11-07 06:31:26.694 Resize:     "height": 860
+2026-11-07 06:31:26.695 Resize:   },
+2026-11-07 06:31:26.696 Resize:   "windowCenter": {
+2026-11-07 06:31:26.697 Resize:     "x": 960.0,
+2026-11-07 06:31:26.698 Resize:     "y": 520.0
+2026-11-07 06:31:26.698 Resize:   },
+2026-11-07 06:31:26.699 Resize:   "windowCenterDiff": {
+2026-11-07 06:31:26.700 Resize:     "dx": 0.0,
+2026-11-07 06:31:26.701 Resize:     "dy": 4.0
+2026-11-07 06:31:26.701 Resize:   },
+2026-11-07 06:31:26.702 Resize:   "clientRect": {
+2026-11-07 06:31:26.703 Resize:     "width": 1440,
+2026-11-07 06:31:26.704 Resize:     "height": 852
+2026-11-07 06:31:26.707 Resize:   },
+2026-11-07 06:31:26.707 Resize:   "clientToScreen": {
+2026-11-07 06:31:26.708 Resize:     "x": 240,
+2026-11-07 06:31:26.709 Resize:     "y": 90
+2026-11-07 06:31:26.710 Resize:   },
+2026-11-07 06:31:26.711 Resize:   "clientScreenRect": {
+2026-11-07 06:31:26.712 Resize:     "left": 240,
+2026-11-07 06:31:26.712 Resize:     "top": 90,
+2026-11-07 06:31:26.713 Resize:     "right": 1680,
+2026-11-07 06:31:26.714 Resize:     "bottom": 942,
+2026-11-07 06:31:26.715 Resize:     "width": 1440,
+2026-11-07 06:31:26.715 Resize:     "height": 852
+2026-11-07 06:31:26.716 Resize:   },
+2026-11-07 06:31:26.717 Resize:   "clientCenter": {
+2026-11-07 06:31:26.718 Resize:     "x": 960.0,
+2026-11-07 06:31:26.718 Resize:     "y": 516.0
+2026-11-07 06:31:26.720 Resize:   },
+2026-11-07 06:31:26.721 Resize:   "clientCenterDiff": {
+2026-11-07 06:31:26.722 Resize:     "dx": 0.0,
+2026-11-07 06:31:26.722 Resize:     "dy": 0.0
+2026-11-07 06:31:26.723 Resize:   },
+2026-11-07 06:31:26.724 Resize:   "capture": {
+2026-11-07 06:31:26.725 Resize:     "ok": false,
+2026-11-07 06:31:26.726 Resize:     "path": ""
+2026-11-07 06:31:26.726 Resize:   }
+2026-11-07 06:31:26.727 Resize: }
+2026-11-07 06:31:27.429 Client size check: target=1440x852, actual=1440x852
+2026-11-07 06:31:27.950 Foreground check for 'After resize': target=0x5B0110, foreground=0x26C0774
+2026-11-07 06:31:27.951 Warning: Foreground window (40634228) != target (5964048) during After resize
+2026-11-07 06:31:28.019 Found 'project-empty-open' button, clicking...
+2026-11-07 06:31:28.585 Step 'project-open' confirmed in layout snapshot (seq=2)
+2026-11-07 06:31:28.595 Steps selected for execution: I1-titlebar-normal, I1-titlebar-maximized, I1-tabbar, I1-tabbar-zoomed, I1-tabbar-pinned, I1-toolbar, I1-tab-preview, I1-sidebar-open, I1-sidebar-closed, I18-statusbar, I1-tree-folders
+2026-11-07 06:31:28.607 [app] Step 'I1-titlebar-normal' (Title bar menu & Segoe glyphs) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:31:28.609 [app] Step 'I1-titlebar-maximized' (Title bar maximized restore glyph) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:31:28.611 [app] Step 'I1-tabbar' (Tab bar action icons) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:31:28.612 [app] Step 'I1-tabbar-zoomed' (Tab bar zoom minimize icon) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:31:28.613 [app] Step 'I1-tabbar-pinned' (Tab bar pinned tab icon) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 06:31:28.615 ==========================================================================
+2026-11-07 06:31:28.616 [app] Running step 'I1-toolbar': Markdown toolbar preview eye icon
+2026-11-07 06:31:28.617 ==========================================================================
+2026-11-07 06:31:28.827 Foreground check for 'I1-toolbar': target=0x5B0110, foreground=0x5B0110
+2026-11-07 06:31:33.717 ERROR: Step 'toolbar' failed expectation: toolbar-btn-preview must be present for markdown document
+2026-11-07 06:31:33.923 Foreground check for 'Capture error-toolbar': target=0x5B0110, foreground=0x5B0110
+2026-11-07 06:31:35.539 Capture 'error-toolbar' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\error-toolbar.png (exit=0)
+2026-11-07 06:31:35.548 ERROR in [app] step 'I1-toolbar': Step 'toolbar' assertion failed: toolbar-btn-preview must be present for markdown document
+2026-11-07 06:31:35.549 Cleaning up workbench-gpui process (PID=13404)...
+2026-11-07 06:31:35.616 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 06:31:36.744 Session Stop: {
+2026-11-07 06:31:36.745 Session Stop:   "files": {
+2026-11-07 06:31:36.746 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 06:31:36.747 Session Stop:   },
+2026-11-07 06:31:36.748 Session Stop:   "exeUnchanged": true,
+2026-11-07 06:31:36.749 Session Stop:   "restored": true,
+2026-11-07 06:31:36.754 Session Stop:   "fixtureRemoved": true
+2026-11-07 06:31:36.754 Session Stop: }
+2026-11-07 06:31:36.823 FATAL ERROR: Step 'toolbar' assertion failed: toolbar-btn-preview must be present for markdown document
+2026-11-07 06:31:36.825 Assert-LayoutCondition에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 424
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 789
+Invoke-MeasureStep에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 440
+Run-AppMeasure에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 989
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 1197
+2026-11-07 06:31:36.836 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\summary.json ===

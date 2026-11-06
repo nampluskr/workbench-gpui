@@ -5,7 +5,7 @@
 //! 아이콘은 gpui-kit 기본 아이콘 묶음에서 가까운 것을 임시로 쓴다(Zed 아이콘 테마는 PoC 7단계 범위).
 //! 색은 gpui-kit 기본 테마 토큰이다(테마 매핑 G-106 은 v0.1 범위 밖).
 
-use gpui_kit::component::{ActiveTheme as _, Icon, IconName, h_flex, v_flex};
+use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::*;
 
 use gpui_kit::prelude::FluentBuilder as _;
@@ -72,7 +72,7 @@ pub fn sidebar(list: AnyElement, cx: &App) -> impl IntoElement {
                         .child(icon_with_probe(
                             "sidebar-btn-toggle",
                             &["sidebar-icon-toggle"],
-                            IconName::PanelLeft,
+                            "threads_sidebar_left_open",
                             Some(Spec::two(
                                 "sidebar-btn-toggle",
                                 Line::action("Toggle Sidebar", "multi_workspace::ToggleWorkspaceSidebar"),
@@ -91,7 +91,7 @@ pub fn sidebar(list: AnyElement, cx: &App) -> impl IntoElement {
                         .child(icon_with_probe(
                             "sidebar-btn-folder-add",
                             &["sidebar-icon-folder-add"],
-                            IconName::Folder,
+                            "folder_add",
                             Some(Spec::one(
                                 "sidebar-btn-folder-add",
                                 Line::action("Add Project", "workspace::Open"),
@@ -119,7 +119,7 @@ fn dispatch(name: &'static str) -> impl Fn(&ClickEvent, &mut Window, &mut App) +
 fn icon_with_probe(
     id: &'static str,
     icon_name: &'static [&'static str],
-    icon: IconName,
+    icon: &'static str,
     tooltip: Option<Spec>,
     cx: &App,
 ) -> Stateful<Div> {
@@ -136,7 +136,7 @@ fn icon_with_probe(
         .text_color(theme.muted_foreground)
         .hover(move |s| s.bg(hover_bg))
         .when_some(tooltip, |d, spec| d.tooltip(tooltip::build(spec)))
-        .child(Icon::new(icon).size(ICON_SMALL))
+        .child(super::zed_icons::icon(icon).size(ICON_SMALL))
 }
 
 /// 탭 바 (L-61: [시작 영역] + [탭 목록] + [끝 영역]).
@@ -238,11 +238,6 @@ const TAB_BAR_END_DROP_MIN_WIDTH: Rems = rems_from_px(24.);
 /// `tab_drop_line_width` (I-715).
 const TAB_DROP_LINE_WIDTH: Pixels = px(2.);
 
-/// Segoe Fluent Icons / MDL2 "Pin" (E718). gpui-kit's bundled icon set has no pin (Cargo files are off limits), so the
-/// pin slot uses the title bar's glyph font.
-// shortcut: glyph font instead of an SVG pin; switch to `IconName::Pin` once the full icon catalog is bundled.
-const GLYPH_PIN: &str = "\u{E718}";
-
 /// The end buttons of the pane that has focus (I-706): `+`, split, zoom.
 pub struct BarEnd {
     /// I-707: the split button is disabled for an empty pane.
@@ -292,7 +287,7 @@ const TAB_PROBES: [&str; 12] = [
 /// 탭 목록(L-61 가운데 영역). 탭이 없으면 v0.1 뼈대의 자리 표시 탭 하나를 그린다(판단: 앞 Phase 판정 그대로).
 /// L-63: 활성 탭은 아래 테두리 대신 1px 여백(내용 높이 31), 비활성 탭은 아래 테두리. 탭 사이는 오른쪽 테두리(판단).
 /// L-64 [시작 슬롯 12][제목][끝 슬롯 14], L-67 파일 아이콘 없음.
-fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement {
+fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
     let theme = cx.theme();
     if tabs.is_empty() {
         return div()
@@ -382,10 +377,10 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
                             h_flex()
                                 .gap(TAB_GAP)
                                 .items_center()
-                                .when(tab.markdown, |d| d.child(Icon::new(IconName::BookOpen).size(ICON_SMALL)))
+                                .when(tab.markdown, |d| d.child(super::zed_icons::icon("file_doc").size(ICON_SMALL)))
                                 .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone())),
                         )
-                        .child(end_slot(i, tab, glyph_font, cx)),
+                        .child(end_slot(i, tab, cx)),
                 ),
         );
     }
@@ -393,7 +388,7 @@ fn tab_list(tabs: &[TabView], glyph_font: &SharedString, cx: &App) -> AnyElement
 }
 
 /// Pin slot of a pinned tab (L-66): the pin icon replaces the close button; a click unpins.
-fn pin_slot(i: usize, tab: &TabView, glyph_font: &SharedString, cx: &App) -> AnyElement {
+fn pin_slot(i: usize, tab: &TabView, cx: &App) -> AnyElement {
     let unpin = tab.unpin.clone();
     div()
         .id(("tab-pin", i))
@@ -403,15 +398,14 @@ fn pin_slot(i: usize, tab: &TabView, glyph_font: &SharedString, cx: &App) -> Any
         .justify_center()
         .size(TAB_END_SLOT)
         .text_color(cx.theme().muted_foreground)
-        .font_family(glyph_font.clone())
         .text_size(ICON_SMALL)
         .on_click(move |e, window, cx| unpin(e, window, cx))
-        .child(GLYPH_PIN)
+        .child(super::zed_icons::icon("pin").size(ICON_SMALL))
         .into_any_element()
 }
 
-fn end_slot(i: usize, tab: &TabView, glyph_font: &SharedString, cx: &App) -> AnyElement {
-    if tab.pinned { pin_slot(i, tab, glyph_font, cx) } else { close_slot(i, tab, cx).into_any_element() }
+fn end_slot(i: usize, tab: &TabView, cx: &App) -> AnyElement {
+    if tab.pinned { pin_slot(i, tab, cx) } else { close_slot(i, tab, cx).into_any_element() }
 }
 
 /// 탭 끝 슬롯 (L-64, L-66): 닫기 버튼. 아이콘 `Close` Small Muted, 탭에 마우스를 올릴 때만 보인다(`show_close_button` 기본 "hover").
@@ -429,10 +423,10 @@ fn close_slot(i: usize, tab: &TabView, cx: &App) -> impl IntoElement {
         .invisible()
         .group_hover(SharedString::from(format!("tab-{i}")), |s| s.visible())
         .on_click(move |e, window, cx| close(e, window, cx))
-        .child(Icon::new(IconName::Close).size(ICON_SMALL))
+        .child(super::zed_icons::icon("close").size(ICON_SMALL))
 }
 
-pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, glyph_font: &SharedString, cx: &App) -> impl IntoElement {
+pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     let drop_bg = theme.drop_target;
     h_flex()
@@ -460,21 +454,21 @@ pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, gly
                 .child(icon_with_probe(
                     "tab-btn-back",
                     &["tab-icon-back"],
-                    IconName::ArrowLeft,
+                    "arrow_left",
                     Some(Spec::one("tab-btn-back", Line::action("Go Back", "pane::GoBack"))),
                     cx,
                 ))
                 .child(icon_with_probe(
                     "tab-btn-forward",
                     &["tab-icon-forward"],
-                    IconName::ArrowRight,
+                    "arrow_right",
                     Some(Spec::one("tab-btn-forward", Line::action("Go Forward", "pane::GoForward"))),
                     cx,
                 )),
         )
         .child(
             // 활성 탭: 아래 테두리 대신 1px 여백을 두어 내용 높이 31 을 남긴다. 탭이 없으면 자리 표시.
-            tab_list(tabs, glyph_font, cx),
+            tab_list(tabs, cx),
         )
         .child(
             // I-716: a drop on the empty end puts the tab last and does not split.
@@ -492,12 +486,12 @@ pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, gly
             let split = icon_with_probe(
                 "tab-btn-split",
                 &["tab-icon-split"],
-                IconName::PanelRight,
+                "split",
                 Some(Spec::one("tab-btn-split", Line::text("Split Pane"))),
                 cx,
             );
             let (on_split, on_zoom) = (end.on_split, end.on_zoom);
-            let (zoom_label, zoom_icon) = if end.zoomed { ("Zoom Out", IconName::Minimize) } else { ("Zoom In", IconName::Maximize) };
+            let (zoom_label, zoom_icon) = if end.zoomed { ("Zoom Out", "minimize") } else { ("Zoom In", "maximize") };
             h_flex()
                 .on_children_prepainted(probe(&["tab-btn-new", "tab-btn-split", "tab-btn-zoom"]))
                 .flex_shrink_0()
@@ -511,7 +505,7 @@ pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, gly
                 .child(icon_with_probe(
                     "tab-btn-new",
                     &["tab-icon-new"],
-                    IconName::Plus,
+                    "plus",
                     Some(Spec::one("tab-btn-new", Line::text("New…"))),
                     cx,
                 ))
@@ -563,7 +557,7 @@ pub fn markdown_toolbar(on_preview: CloseHandler, cx: &App) -> impl IntoElement 
         .border_color(theme.border)
         .bg(theme.background)
         .child(
-            icon_with_probe("toolbar-btn-preview", &["toolbar-icon-preview"], IconName::Eye, Some(tip), cx)
+            icon_with_probe("toolbar-btn-preview", &["toolbar-icon-preview"], "eye", Some(tip), cx)
                 .on_click(move |e, window, cx| on_preview(e, window, cx)),
         )
 }
@@ -595,7 +589,7 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
             let pp = icon_with_probe(
                 "status-btn-project-panel",
                 &["status-icon-project-panel"],
-                IconName::FolderOpen,
+                "file_tree",
                 Some(project_panel_toggle_tooltip(dock_open)),
                 cx,
             )
@@ -615,7 +609,7 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
                     icon_with_probe(
                         "status-btn-sidebar-toggle",
                         &["status-icon-sidebar-toggle"],
-                        IconName::PanelLeft,
+                        "threads_sidebar_left_closed",
                         // L-251 사이드바가 닫혔을 때: `Open Folder Sidebar` + 사이드바 토글 키.
                         Some(Spec::one(
                             "status-btn-sidebar-toggle",
@@ -629,7 +623,7 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
                     icon_with_probe(
                         "status-btn-folder-add",
                         &["status-icon-folder-add"],
-                        IconName::Folder,
+                        "folder_add",
                         Some(Spec::one("status-btn-folder-add", Line::action("Add Project", "workspace::Open"))),
                         cx,
                     )

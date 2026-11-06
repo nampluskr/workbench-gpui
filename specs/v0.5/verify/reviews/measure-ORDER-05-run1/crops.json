@@ -1,0 +1,244 @@
+{
+  "menu": {
+    "icon": "menu",
+    "probe": "app-menu-button",
+    "clientBounds": {
+      "x": 308.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 5.0
+    },
+    "screenCoords": {
+      "y": 95,
+      "x": 548
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 123,
+      "left": 542,
+      "width": 34,
+      "right": 576,
+      "top": 89
+    }
+  },
+  "window-min": {
+    "icon": "window-min",
+    "probe": "window-btn-min",
+    "clientBounds": {
+      "x": 1332.0,
+      "w": 36.0,
+      "h": 32.0,
+      "y": 0.0
+    },
+    "screenCoords": {
+      "y": 90,
+      "x": 1572
+    },
+    "cropRect": {
+      "height": 44,
+      "bottom": 128,
+      "left": 1566,
+      "width": 48,
+      "right": 1614,
+      "top": 84
+    }
+  },
+  "window-max": {
+    "icon": "window-max",
+    "probe": "window-btn-max",
+    "clientBounds": {
+      "x": 1368.0,
+      "w": 36.0,
+      "h": 32.0,
+      "y": 0.0
+    },
+    "screenCoords": {
+      "y": 90,
+      "x": 1608
+    },
+    "cropRect": {
+      "height": 44,
+      "bottom": 128,
+      "left": 1602,
+      "width": 48,
+      "right": 1650,
+      "top": 84
+    }
+  },
+  "window-close": {
+    "icon": "window-close",
+    "probe": "window-btn-close",
+    "clientBounds": {
+      "x": 1404.0,
+      "w": 36.0,
+      "h": 32.0,
+      "y": 0.0
+    },
+    "screenCoords": {
+      "y": 90,
+      "x": 1644
+    },
+    "cropRect": {
+      "height": 44,
+      "bottom": 128,
+      "left": 1638,
+      "width": 48,
+      "right": 1686,
+      "top": 84
+    }
+  },
+  "window-restore": {
+    "icon": "window-restore",
+    "probe": "window-btn-max",
+    "clientBounds": {
+      "x": 1848.0,
+      "w": 36.0,
+      "h": 32.0,
+      "y": 0.0
+    },
+    "screenCoords": {
+      "y": 0,
+      "x": 1848
+    },
+    "cropRect": {
+      "height": 38,
+      "bottom": 38,
+      "left": 1842,
+      "width": 48,
+      "right": 1890,
+      "top": 0
+    }
+  },
+  "arrow_left": {
+    "icon": "arrow_left",
+    "probe": "tab-btn-back",
+    "clientBounds": {
+      "x": 546.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 37.0
+    },
+    "screenCoords": {
+      "y": 127,
+      "x": 786
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 155,
+      "left": 780,
+      "width": 34,
+      "right": 814,
+      "top": 121
+    }
+  },
+  "arrow_right": {
+    "icon": "arrow_right",
+    "probe": "tab-btn-forward",
+    "clientBounds": {
+      "x": 572.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 37.0
+    },
+    "screenCoords": {
+      "y": 127,
+      "x": 812
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 155,
+      "left": 806,
+      "width": 34,
+      "right": 840,
+      "top": 121
+    }
+  },
+  "plus": {
+    "icon": "plus",
+    "probe": "tab-btn-new",
+    "clientBounds": {
+      "x": 1360.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 37.0
+    },
+    "screenCoords": {
+      "y": 127,
+      "x": 1600
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 155,
+      "left": 1594,
+      "width": 34,
+      "right": 1628,
+      "top": 121
+    }
+  },
+  "split": {
+    "icon": "split",
+    "probe": "tab-btn-split",
+    "clientBounds": {
+      "x": 1386.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 37.0
+    },
+    "screenCoords": {
+      "y": 127,
+      "x": 1626
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 155,
+      "left": 1620,
+      "width": 34,
+      "right": 1654,
+      "top": 121
+    }
+  },
+  "maximize": {
+    "icon": "maximize",
+    "probe": "tab-btn-zoom",
+    "clientBounds": {
+      "x": 1412.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 37.0
+    },
+    "screenCoords": {
+      "y": 127,
+      "x": 1652
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 155,
+      "left": 1646,
+      "width": 34,
+      "right": 1680,
+      "top": 121
+    }
+  },
+  "minimize": {
+    "icon": "minimize",
+    "probe": "tab-btn-zoom",
+    "clientBounds": {
+      "x": 1412.0,
+      "w": 22.0,
+      "h": 22.0,
+      "y": 37.0
+    },
+    "screenCoords": {
+      "y": 127,
+      "x": 1652
+    },
+    "cropRect": {
+      "height": 34,
+      "bottom": 155,
+      "left": 1646,
+      "width": 34,
+      "right": 1680,
+      "top": 121
+    }
+  }
+}

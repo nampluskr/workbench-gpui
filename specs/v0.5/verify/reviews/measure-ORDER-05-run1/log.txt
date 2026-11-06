@@ -1,0 +1,229 @@
+2026-11-07 06:30:33.107 === ORDER-05 V3 Capture Script Started (Only=Both, Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05) ===
+2026-11-07 06:30:33.786 --- Starting workbench-gpui measurements ---
+2026-11-07 06:30:33.793 Created test fixture: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\order05-fixture.md
+2026-11-07 06:30:33.802 Calling session.ps1 -Action Start...
+2026-11-07 06:30:35.283 App launched PID=29016
+2026-11-07 06:30:37.176 Found main window HWND=0x13C03BC
+2026-11-07 06:30:38.921 Resize: {
+2026-11-07 06:30:38.933 Resize:   "hwnd": "0x13C03BC",
+2026-11-07 06:30:38.934 Resize:   "desktop": "Default",
+2026-11-07 06:30:38.935 Resize:   "title": "",
+2026-11-07 06:30:38.936 Resize:   "className": "workbench-gpui",
+2026-11-07 06:30:38.938 Resize:   "workArea_SPI": {
+2026-11-07 06:30:38.939 Resize:     "left": 0,
+2026-11-07 06:30:38.940 Resize:     "top": 0,
+2026-11-07 06:30:38.942 Resize:     "right": 1920,
+2026-11-07 06:30:38.943 Resize:     "bottom": 1032,
+2026-11-07 06:30:38.944 Resize:     "width": 1920,
+2026-11-07 06:30:38.945 Resize:     "height": 1032
+2026-11-07 06:30:38.946 Resize:   },
+2026-11-07 06:30:38.947 Resize:   "workArea_Monitor": {
+2026-11-07 06:30:38.948 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 06:30:38.949 Resize:     "left": 0,
+2026-11-07 06:30:38.950 Resize:     "top": 0,
+2026-11-07 06:30:38.951 Resize:     "right": 1920,
+2026-11-07 06:30:38.952 Resize:     "bottom": 1032,
+2026-11-07 06:30:38.953 Resize:     "width": 1920,
+2026-11-07 06:30:38.954 Resize:     "height": 1032
+2026-11-07 06:30:38.955 Resize:   },
+2026-11-07 06:30:38.956 Resize:   "workAreaCenter": {
+2026-11-07 06:30:38.957 Resize:     "x": 960.0,
+2026-11-07 06:30:38.958 Resize:     "y": 516.0
+2026-11-07 06:30:38.959 Resize:   },
+2026-11-07 06:30:38.960 Resize:   "windowRect": {
+2026-11-07 06:30:38.961 Resize:     "left": 232,
+2026-11-07 06:30:38.963 Resize:     "top": 90,
+2026-11-07 06:30:38.964 Resize:     "right": 1688,
+2026-11-07 06:30:38.965 Resize:     "bottom": 950,
+2026-11-07 06:30:38.966 Resize:     "width": 1456,
+2026-11-07 06:30:38.967 Resize:     "height": 860
+2026-11-07 06:30:38.968 Resize:   },
+2026-11-07 06:30:38.969 Resize:   "windowCenter": {
+2026-11-07 06:30:38.970 Resize:     "x": 960.0,
+2026-11-07 06:30:38.971 Resize:     "y": 520.0
+2026-11-07 06:30:38.972 Resize:   },
+2026-11-07 06:30:38.973 Resize:   "windowCenterDiff": {
+2026-11-07 06:30:38.974 Resize:     "dx": 0.0,
+2026-11-07 06:30:38.975 Resize:     "dy": 4.0
+2026-11-07 06:30:38.975 Resize:   },
+2026-11-07 06:30:38.977 Resize:   "clientRect": {
+2026-11-07 06:30:38.978 Resize:     "width": 1440,
+2026-11-07 06:30:38.979 Resize:     "height": 852
+2026-11-07 06:30:38.980 Resize:   },
+2026-11-07 06:30:38.982 Resize:   "clientToScreen": {
+2026-11-07 06:30:38.983 Resize:     "x": 240,
+2026-11-07 06:30:38.984 Resize:     "y": 90
+2026-11-07 06:30:38.985 Resize:   },
+2026-11-07 06:30:38.986 Resize:   "clientScreenRect": {
+2026-11-07 06:30:38.987 Resize:     "left": 240,
+2026-11-07 06:30:38.988 Resize:     "top": 90,
+2026-11-07 06:30:38.989 Resize:     "right": 1680,
+2026-11-07 06:30:38.990 Resize:     "bottom": 942,
+2026-11-07 06:30:38.991 Resize:     "width": 1440,
+2026-11-07 06:30:38.992 Resize:     "height": 852
+2026-11-07 06:30:38.993 Resize:   },
+2026-11-07 06:30:38.994 Resize:   "clientCenter": {
+2026-11-07 06:30:38.995 Resize:     "x": 960.0,
+2026-11-07 06:30:38.995 Resize:     "y": 516.0
+2026-11-07 06:30:38.996 Resize:   },
+2026-11-07 06:30:38.997 Resize:   "clientCenterDiff": {
+2026-11-07 06:30:38.998 Resize:     "dx": 0.0,
+2026-11-07 06:30:38.999 Resize:     "dy": 0.0
+2026-11-07 06:30:39.000 Resize:   },
+2026-11-07 06:30:39.001 Resize:   "capture": {
+2026-11-07 06:30:39.002 Resize:     "ok": false,
+2026-11-07 06:30:39.003 Resize:     "path": ""
+2026-11-07 06:30:39.003 Resize:   }
+2026-11-07 06:30:39.004 Resize: }
+2026-11-07 06:30:39.692 Client size check: target=1440x852, actual=1440x852
+2026-11-07 06:30:40.214 Foreground check for 'After resize': target=0x13C03BC, foreground=0xE10AC8
+2026-11-07 06:30:40.216 Warning: Foreground window (14748360) != target (20710332) during After resize
+2026-11-07 06:30:40.276 Found 'project-empty-open' button, clicking...
+2026-11-07 06:30:40.847 Step 'project-open' confirmed in layout snapshot (seq=2)
+2026-11-07 06:30:40.859 Steps selected for execution: I1-titlebar-normal, I1-titlebar-maximized, I1-tabbar, I1-tabbar-zoomed, I1-tabbar-pinned, I1-toolbar, I1-tab-preview, I1-sidebar-open, I1-sidebar-closed, I18-statusbar, I1-tree-folders
+2026-11-07 06:30:40.872 ==========================================================================
+2026-11-07 06:30:40.873 [app] Running step 'I1-titlebar-normal': Title bar menu & Segoe glyphs
+2026-11-07 06:30:40.874 ==========================================================================
+2026-11-07 06:30:41.081 Foreground check for 'I1-titlebar-normal': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:41.092 Step 'titlebar-normal' confirmed in layout snapshot (seq=2)
+2026-11-07 06:30:41.106 [CROP] menu (app-menu-button): client=(308,5,22,22), screen=(548,95), crop=[542,89,576,123] (34x34)
+2026-11-07 06:30:41.115 [CROP] window-min (window-btn-min): client=(1332,0,36,32), screen=(1572,90), crop=[1566,84,1614,128] (48x44)
+2026-11-07 06:30:41.116 [CROP] window-max (window-btn-max): client=(1368,0,36,32), screen=(1608,90), crop=[1602,84,1650,128] (48x44)
+2026-11-07 06:30:41.118 [CROP] window-close (window-btn-close): client=(1404,0,36,32), screen=(1644,90), crop=[1638,84,1686,128] (48x44)
+2026-11-07 06:30:41.336 Foreground check for 'Capture app-titlebar-normal': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:42.957 Capture 'app-titlebar-normal' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-titlebar-normal.png (exit=0)
+2026-11-07 06:30:42.972 [app] Step 'I1-titlebar-normal' finished successfully.
+2026-11-07 06:30:42.973 ==========================================================================
+2026-11-07 06:30:42.974 [app] Running step 'I1-titlebar-maximized': Title bar maximized restore glyph
+2026-11-07 06:30:42.975 ==========================================================================
+2026-11-07 06:30:43.180 Foreground check for 'I1-titlebar-maximized': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:43.181 Maximizing window (SW_MAXIMIZE)...
+2026-11-07 06:30:43.802 Step 'titlebar-maximized' confirmed in layout snapshot (seq=3)
+2026-11-07 06:30:43.804 [CROP] window-restore (window-btn-max): client=(1848,0,36,32), screen=(1848,0), crop=[1842,0,1890,38] (48x38)
+2026-11-07 06:30:44.015 Foreground check for 'Capture app-titlebar-maximized': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:45.903 Capture 'app-titlebar-maximized' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-titlebar-maximized.png (exit=0)
+2026-11-07 06:30:45.904 Restoring window back (SW_RESTORE)...
+2026-11-07 06:30:47.932 Resize: {
+2026-11-07 06:30:47.934 Resize:   "hwnd": "0x13C03BC",
+2026-11-07 06:30:47.935 Resize:   "desktop": "Default",
+2026-11-07 06:30:47.936 Resize:   "title": "",
+2026-11-07 06:30:47.937 Resize:   "className": "workbench-gpui",
+2026-11-07 06:30:47.938 Resize:   "workArea_SPI": {
+2026-11-07 06:30:47.940 Resize:     "left": 0,
+2026-11-07 06:30:47.941 Resize:     "top": 0,
+2026-11-07 06:30:47.942 Resize:     "right": 1920,
+2026-11-07 06:30:47.943 Resize:     "bottom": 1032,
+2026-11-07 06:30:47.944 Resize:     "width": 1920,
+2026-11-07 06:30:47.944 Resize:     "height": 1032
+2026-11-07 06:30:47.945 Resize:   },
+2026-11-07 06:30:47.946 Resize:   "workArea_Monitor": {
+2026-11-07 06:30:47.947 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 06:30:47.948 Resize:     "left": 0,
+2026-11-07 06:30:47.949 Resize:     "top": 0,
+2026-11-07 06:30:47.950 Resize:     "right": 1920,
+2026-11-07 06:30:47.950 Resize:     "bottom": 1032,
+2026-11-07 06:30:47.951 Resize:     "width": 1920,
+2026-11-07 06:30:47.952 Resize:     "height": 1032
+2026-11-07 06:30:47.953 Resize:   },
+2026-11-07 06:30:47.953 Resize:   "workAreaCenter": {
+2026-11-07 06:30:47.954 Resize:     "x": 960.0,
+2026-11-07 06:30:47.955 Resize:     "y": 516.0
+2026-11-07 06:30:47.956 Resize:   },
+2026-11-07 06:30:47.957 Resize:   "windowRect": {
+2026-11-07 06:30:47.962 Resize:     "left": 232,
+2026-11-07 06:30:47.963 Resize:     "top": 90,
+2026-11-07 06:30:47.964 Resize:     "right": 1688,
+2026-11-07 06:30:47.964 Resize:     "bottom": 950,
+2026-11-07 06:30:47.965 Resize:     "width": 1456,
+2026-11-07 06:30:47.966 Resize:     "height": 860
+2026-11-07 06:30:47.966 Resize:   },
+2026-11-07 06:30:47.967 Resize:   "windowCenter": {
+2026-11-07 06:30:47.968 Resize:     "x": 960.0,
+2026-11-07 06:30:47.969 Resize:     "y": 520.0
+2026-11-07 06:30:47.969 Resize:   },
+2026-11-07 06:30:47.970 Resize:   "windowCenterDiff": {
+2026-11-07 06:30:47.971 Resize:     "dx": 0.0,
+2026-11-07 06:30:47.972 Resize:     "dy": 4.0
+2026-11-07 06:30:47.972 Resize:   },
+2026-11-07 06:30:47.973 Resize:   "clientRect": {
+2026-11-07 06:30:47.974 Resize:     "width": 1440,
+2026-11-07 06:30:47.974 Resize:     "height": 852
+2026-11-07 06:30:47.975 Resize:   },
+2026-11-07 06:30:47.976 Resize:   "clientToScreen": {
+2026-11-07 06:30:47.977 Resize:     "x": 240,
+2026-11-07 06:30:47.977 Resize:     "y": 90
+2026-11-07 06:30:47.978 Resize:   },
+2026-11-07 06:30:47.978 Resize:   "clientScreenRect": {
+2026-11-07 06:30:47.979 Resize:     "left": 240,
+2026-11-07 06:30:47.980 Resize:     "top": 90,
+2026-11-07 06:30:47.980 Resize:     "right": 1680,
+2026-11-07 06:30:47.981 Resize:     "bottom": 942,
+2026-11-07 06:30:47.982 Resize:     "width": 1440,
+2026-11-07 06:30:47.982 Resize:     "height": 852
+2026-11-07 06:30:47.983 Resize:   },
+2026-11-07 06:30:47.984 Resize:   "clientCenter": {
+2026-11-07 06:30:47.985 Resize:     "x": 960.0,
+2026-11-07 06:30:47.985 Resize:     "y": 516.0
+2026-11-07 06:30:47.986 Resize:   },
+2026-11-07 06:30:47.987 Resize:   "clientCenterDiff": {
+2026-11-07 06:30:47.988 Resize:     "dx": 0.0,
+2026-11-07 06:30:47.988 Resize:     "dy": 0.0
+2026-11-07 06:30:47.989 Resize:   },
+2026-11-07 06:30:47.990 Resize:   "capture": {
+2026-11-07 06:30:47.990 Resize:     "ok": false,
+2026-11-07 06:30:47.991 Resize:     "path": ""
+2026-11-07 06:30:47.992 Resize:   }
+2026-11-07 06:30:47.992 Resize: }
+2026-11-07 06:30:48.709 Client size check: target=1440x852, actual=1440x852
+2026-11-07 06:30:48.711 [app] Step 'I1-titlebar-maximized' finished successfully.
+2026-11-07 06:30:48.715 ==========================================================================
+2026-11-07 06:30:48.717 [app] Running step 'I1-tabbar': Tab bar action icons
+2026-11-07 06:30:48.719 ==========================================================================
+2026-11-07 06:30:48.935 Foreground check for 'I1-tabbar': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:48.948 Step 'tabbar' confirmed in layout snapshot (seq=5)
+2026-11-07 06:30:48.951 [CROP] arrow_left (tab-btn-back): client=(546,37,22,22), screen=(786,127), crop=[780,121,814,155] (34x34)
+2026-11-07 06:30:48.953 [CROP] arrow_right (tab-btn-forward): client=(572,37,22,22), screen=(812,127), crop=[806,121,840,155] (34x34)
+2026-11-07 06:30:48.954 [CROP] plus (tab-btn-new): client=(1360,37,22,22), screen=(1600,127), crop=[1594,121,1628,155] (34x34)
+2026-11-07 06:30:48.956 [CROP] split (tab-btn-split): client=(1386,37,22,22), screen=(1626,127), crop=[1620,121,1654,155] (34x34)
+2026-11-07 06:30:48.957 [CROP] maximize (tab-btn-zoom): client=(1412,37,22,22), screen=(1652,127), crop=[1646,121,1680,155] (34x34)
+2026-11-07 06:30:49.163 Foreground check for 'Capture app-tabbar': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:50.728 Capture 'app-tabbar' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-tabbar.png (exit=0)
+2026-11-07 06:30:50.729 [app] Step 'I1-tabbar' finished successfully.
+2026-11-07 06:30:50.730 ==========================================================================
+2026-11-07 06:30:50.731 [app] Running step 'I1-tabbar-zoomed': Tab bar zoom minimize icon
+2026-11-07 06:30:50.731 ==========================================================================
+2026-11-07 06:30:50.947 Foreground check for 'I1-tabbar-zoomed': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:50.948 Splitting pane right (Ctrl+\)...
+2026-11-07 06:30:51.675 Toggling zoom on pane (Alt+Z)...
+2026-11-07 06:30:52.416 Step 'tabbar-zoomed' confirmed in layout snapshot (seq=6)
+2026-11-07 06:30:52.417 [CROP] minimize (tab-btn-zoom): client=(1412,37,22,22), screen=(1652,127), crop=[1646,121,1680,155] (34x34)
+2026-11-07 06:30:52.619 Foreground check for 'Capture app-tabbar-zoomed': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:54.179 Capture 'app-tabbar-zoomed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\app-tabbar-zoomed.png (exit=0)
+2026-11-07 06:30:54.180 Restoring unzoomed state (Alt+Z) and closing split pane (Ctrl+W)...
+2026-11-07 06:30:55.332 [app] Step 'I1-tabbar-zoomed' finished successfully.
+2026-11-07 06:30:55.333 ==========================================================================
+2026-11-07 06:30:55.334 [app] Running step 'I1-tabbar-pinned': Tab bar pinned tab icon
+2026-11-07 06:30:55.335 ==========================================================================
+2026-11-07 06:30:55.540 Foreground check for 'I1-tabbar-pinned': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:30:55.541 Toggling pin on current tab (Alt+P)...
+2026-11-07 06:31:01.181 ERROR: Step 'tabbar-pinned' failed expectation: tab-0 must be present
+2026-11-07 06:31:01.387 Foreground check for 'Capture error-tabbar-pinned': target=0x13C03BC, foreground=0x13C03BC
+2026-11-07 06:31:03.049 Capture 'error-tabbar-pinned' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\error-tabbar-pinned.png (exit=0)
+2026-11-07 06:31:03.059 ERROR in [app] step 'I1-tabbar-pinned': Step 'tabbar-pinned' assertion failed: tab-0 must be present
+2026-11-07 06:31:03.060 Cleaning up workbench-gpui process (PID=29016)...
+2026-11-07 06:31:03.149 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 06:31:04.319 Session Stop: {
+2026-11-07 06:31:04.320 Session Stop:   "files": {
+2026-11-07 06:31:04.321 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 06:31:04.323 Session Stop:   },
+2026-11-07 06:31:04.324 Session Stop:   "fixtureRemoved": true,
+2026-11-07 06:31:04.325 Session Stop:   "exeUnchanged": true,
+2026-11-07 06:31:04.327 Session Stop:   "restored": true
+2026-11-07 06:31:04.328 Session Stop: }
+2026-11-07 06:31:04.431 FATAL ERROR: Step 'tabbar-pinned' assertion failed: tab-0 must be present
+2026-11-07 06:31:04.433 Assert-LayoutCondition에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 424
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 768
+Invoke-MeasureStep에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 440
+Run-AppMeasure에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 989
+<ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order05-v3.ps1: 줄 1197
+2026-11-07 06:31:04.454 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-05\summary.json ===

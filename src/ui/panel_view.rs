@@ -217,16 +217,6 @@ fn with_press<E: InteractiveElement>(el: E, path: PathBuf, weak: &WeakEntity<Wor
     })
 }
 
-fn icon_for(row: &Row) -> IconName {
-    if row.new_entry == Some(true) || (row.is_dir && !row.expanded) {
-        IconName::FolderClosed
-    } else if row.is_dir {
-        IconName::FolderOpen
-    } else {
-        IconName::File
-    }
-}
-
 fn render_row(
     ix: usize,
     v: &RowView,
@@ -277,7 +267,12 @@ fn render_row(
         .px(ROW_PAD_X)
         .gap(ROW_GAP)
         .items_center()
-        .child(Icon::new(icon_for(row)).size(ICON).flex_shrink_0())
+        .child(if row.is_dir || row.new_entry == Some(true) {
+            super::zed_icons::icon(if row.expanded && row.new_entry != Some(true) { "folder_open" } else { "folder" }).size(ICON)
+        } else {
+            // File icons remain unchanged until Phase 7.
+            Icon::new(IconName::File).size(ICON)
+        }.flex_shrink_0())
         .child(label);
 
     let highlighted = v.selected || v.marked;

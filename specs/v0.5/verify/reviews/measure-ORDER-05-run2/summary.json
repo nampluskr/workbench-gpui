@@ -1,0 +1,12 @@
+{
+  "app": {
+    "I1-titlebar-normal": "SKIPPED",
+    "I1-titlebar-maximized": "SKIPPED",
+    "I1-tabbar": "SKIPPED",
+    "I1-tabbar-zoomed": "SKIPPED",
+    "I1-tabbar-pinned": "SKIPPED",
+    "I1-toolbar": "FAIL: Step 'toolbar' assertion failed: toolbar-btn-preview must be present for markdown document"
+  },
+  "zed": {},
+  "crops": {}
+}

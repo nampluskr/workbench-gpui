@@ -152,6 +152,7 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
 - **기존 창 보호**: 측정·확인 때는 자기가 띄운 프로세스(PID로 기록)만 닫고 끝낸다. 이미 열려 있던 Zed·앱 창과 프로세스는 닫거나 `Stop-Process`하지 않는다. 이름으로 모든 프로세스를 끝내지 않는다(`Stop-Process -Name` 대신 `-Id <띄운 PID>`). 계기: C-08에서 checker가 이미 열려 있던 Zed 창을 닫고 zed 프로세스를 모두 끝냈다(2026-11-07). (core-leader DECISION 2026-11-07, D-13)
 - **입력이 필요한 확인**: checker(agy)는 격리된 가상 데스크톱에서 돌아 `SetCursorPos`·`SendInput`이 실패한다(C-08). 마우스·키 입력이 필요한 확인(호버, 스크롤, 커서 이동 등)은 leader가 화면 차례 안에서 `tools/`의 입력 스크립트를 실행하고 출력·캡처 파일을 남기며, checker는 그 파일로 판정한다. (core-leader DECISION 2026-11-07, D-13)
 - **화면 확인 캡처**: `tools/capture.ps1 -Method Screen`을 쓴다. PrintWindow는 DirectComposition 오버레이(스크롤바 등)를 빠뜨린다(C-09).
+- **창 크기**: 측정 스크립트는 창 크기를 `Ensure-ClientSize`로 맞추고 `GetClientRect`로 클라이언트 1440×852를 확인한다. 바깥 크기(1442×853 등)로 `SetWindowPos` 하지 않는다. 계기: ORDER-04 `order04-v3.ps1`이 `SetWindowPos(1442,853)`을 넣어 클라이언트가 1426×845가 됐다(ORDER-05 I-6 재측정으로 앱 퇴행 아님을 확인, 2026-11-07).
 - **Zed 창**: Zed는 `zed -n`으로 연 자기 창 안에서만 파일을 연다. `-a`는 쓰지 않는다(V3에서 `zed -a`로 사용자 Zed 창에 탭이 추가된 사고, C-15).
 
 ### 5.5 그 밖

@@ -18,7 +18,7 @@
 | D-6 core에는 core-leader 하나 | 없음(이 레포에 적용할 것 없음) |
 | D-7 자기 워크스페이스만 쓴다 | `AGENTS.md` 레포 규칙 |
 | D-8 Zed 테마·아이콘 테마 복사 | `SPEC.md` R-3·R-4, `PLAN.md` Phase 7 |
-| D-9 Zed UI 아이콘 복사 | `SPEC.md` R-1·R-18, `PLAN.md` Phase 5 |
+| D-9 Zed UI 아이콘 복사 | 이 문서 D-6·D-7, `SPEC.md` R-1·R-18, `PLAN.md` Phase 5 |
 | D-10 IBM Plex Sans·Lilex 커밋 | `SPEC.md` R-14, `PLAN.md` Phase 3 |
 | D-11 ITEMS가 SPEC 역할 | `SPEC.md` 판정 방법 |
 | D-12 core ITEMS가 갈래 지침보다 우선 | 루트 `INTENT.md`·`AGENTS.md`의 예외 표시, `AGENTS.md` 레포 규칙 "core ITEMS 우선", `SPEC.md` R-2·R-22, `PLAN.md` Phase 8 |
@@ -127,8 +127,52 @@
 
 ---
 
+## D-6. Zed UI 아이콘 복사본은 고정 커밋에서 `resources/zed-icons/`로 받고 커밋하지 않는다
+
+**선택**
+
+- 출처: `zed-industries/zed` 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`의 `assets/icons` 전체(UI SVG 299개, `file_icons/` 96개, `knockouts/` 6개, `LICENSES`)와 저장소 `LICENSE-APACHE`·`LICENSE-GPL`. 모두 404개 파일이다.
+- 두는 곳: `resources/zed-icons/`. `.gitignore`에 넣고 커밋하지 않는다.
+- 다시 채우기: 저장소 루트에서 `pwsh -NoProfile -File tools/fetch-zed-icons.ps1`. git과 네트워크가 필요하다. 같은 커밋만 받고 다른 커밋으로 대신하지 않는다(커밋·파일 수가 다르면 실패한다).
+- 복사본이 없을 때: 앱은 죽지 않는다. 아이콘 자리는 같은 크기의 빈 칸으로 그리고, 시작할 때 stderr에 `zed icons missing: run tools/fetch-zed-icons.ps1`를 한 번 낸다.
+- 앱 자리에 쓸 Zed 아이콘 이름은 같은 커밋의 Zed crates 소스에서 이름만 대조한다. 소스는 레포 밖 `%TEMP%`에만 받고 코드는 복사하지 않는다.
+- 남은 비-Zed 출처: 파일 트리 파일 아이콘 `IconName::File`(gpui-kit). Phase 7(아이콘 테마)에서 다룬다.
+
+**근거**
+
+- core D-9(Zed UI 아이콘 복사)를 이 레포에 적용했다. 폴더·출처 커밋·없을 때 모습·다시 채우기는 leader가 정했다(K-08).
+- K-08 보고: 전체 커밋 해시 확인, 404개 파일, `git ls-files resources/zed-icons` 0행. C-19 리뷰 PASS(파일 수·라이선스 3파일·추적 제외 확인).
+- Zed crates 소스를 레포에 받으려던 것을 leader가 막고 `%TEMP%`로 옮기게 했다(K-08 작업 중, K-08 보고 "출처와 복원").
+- 복사본 없음: `missing_zed_icons_are_empty_without_panic` 테스트, ORDER-05 V3 `MissingIcons` 단계(경고 있음, 빈 칸, 앱 안 죽음).
+
+**배제한 대안**
+
+- **이 PC의 Zed 설치 폴더에서 읽는다** — 버전이 고정되지 않는다. K-08 카드가 금지했다.
+- **복사본을 커밋한다** — core D-9가 `.gitignore` 폴더에 두기로 했다.
+
+---
+
+## D-7. 창 제어 버튼 4개는 Zed Windows처럼 Segoe Fluent Icons 글리프로 그린다 (R-1 SVG 기준의 예외)
+
+**선택**
+
+- 최소화 U+E921, 최대화 U+E922, 복원 U+E923, 닫기 U+E8BB. 글꼴은 `Segoe Fluent Icons`, 없으면 `Segoe MDL2 Assets`.
+- R-1의 "아이콘은 Zed 원본 SVG로" 기준에서 이 4자리만 뺀다. Linux용 `generic_*.svg`는 쓰지 않는다.
+
+**근거**
+
+- core-leader 결정(창 버튼 Segoe Fluent 글리프 예외, 2026-11-07, D-13).
+- Zed도 Windows에서는 창 제어 버튼을 이 글리프로 그린다: 같은 커밋 `crates/platform_title_bar/src/platforms/platform_windows.rs` 16~39·80~83행(leader 확인, K-08-R1). C-19가 같은 행으로 대조했다.
+- K-08-R1로 K-08 전 구현(`src/ui/title_bar.rs`)으로 되돌렸다.
+
+**배제한 대안**
+
+- **K-08처럼 `generic_minimize.svg` 등 SVG로 그린다** — Linux용이라 Windows Zed와 모양이 다르다.
+
+---
+
 ## 미결 사항
 
 - SPEC 요구 번호를 core I-n과 같은 번호의 R-n으로 매기는 것(R-1 = I-1 … R-23 = I-23). writer 초안이다. 번호 체계는 갈래가 정한다(ORDER-01 3.1). 정할 사람: leader(사용자 확정).
-- core D-8·D-9의 복사본을 둘 `.gitignore` 폴더 경로, 복사 출처 Zed 커밋, 복사본이 없을 때 앱이 어떻게 보일지, 다시 채우는 방법. 정할 사람: leader(Phase 5·7 카드).
+- core D-8의 복사본(테마·아이콘 테마)을 둘 `.gitignore` 폴더 경로, 복사 출처 Zed 커밋, 복사본이 없을 때 앱이 어떻게 보일지, 다시 채우는 방법. 정할 사람: leader(Phase 7 카드). core D-9 쪽은 D-6으로 정했다.
 - core D-10에서 넣을 글꼴 굵기·스타일 파일과 글꼴 버전. 정할 사람: leader(Phase 3 카드).

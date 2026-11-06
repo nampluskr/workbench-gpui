@@ -1,4 +1,5 @@
 target/
+resources/zed-icons/
 .serena/
 .worktrees/
 specs/v0.3/verify/**/appdata/

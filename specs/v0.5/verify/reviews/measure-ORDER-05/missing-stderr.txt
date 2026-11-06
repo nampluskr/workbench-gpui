@@ -1,0 +1,1 @@
+zed icons missing: run tools/fetch-zed-icons.ps1
