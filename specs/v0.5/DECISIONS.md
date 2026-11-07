@@ -24,6 +24,7 @@
 | D-12 core ITEMS가 갈래 지침보다 우선 | 루트 `INTENT.md`·`AGENTS.md`의 예외 표시, `AGENTS.md` 레포 규칙 "core ITEMS 우선", `SPEC.md` R-2·R-22, `PLAN.md` Phase 8 |
 | D-14 gpui-base 0.8.1 vendor로 줄 번호 열을 Zed와 같게 | 이 문서 D-4·D-5, `SPEC.md` R-13·R-14, `vendor/gpui-base/PATCHES.md` |
 | D-15 "v" 메뉴 화면은 Zed의 틀에 이 앱의 실제 내용만 | 이 문서 D-8·D-9, `SPEC.md` R-2 "2단계", `PLAN.md` Phase 6 |
+| D-17 상태 바 검색은 실제 Project Search, 진단은 언어 서버 없이 "문제 없음" 화면(ORDER-08 범위) | `SPEC.md` R-22, `PLAN.md` Phase 8 |
 
 ---
 
@@ -268,6 +269,25 @@
 
 - **이 PC의 Zed 설치 폴더에서 실행 중에 읽는다** — 버전이 고정되지 않는다. core ORDER-07 2장·6장이 금지했다.
 - **복사본을 커밋한다** — core D-8이 `.gitignore` 폴더에 두기로 했다.
+
+---
+
+## D-12. Project Search에 crate `ignore 0.4.34`·`regex 1.13.1`을 직접 의존성으로 쓴다
+
+**선택**
+
+- Project Search(R-22, core D-17)의 파일 찾기(`.gitignore` 반영)에 `ignore 0.4.34`, 정규식·단어 단위 검색에 `regex 1.13.1`을 쓴다.
+- 두 crate는 이미 `Cargo.lock` 의존성 트리에 있는 버전이다. 직접 의존성으로 올릴 때 같은 버전으로 적는다.
+- Help → View Dependency Licenses 창(SPEC R-2 Licenses 창)에 두 crate의 라이선스를 더해야 한다. `ignore`는 Unlicense OR MIT(`UNLICENSE`·`LICENSE-MIT`), `regex`는 MIT OR Apache-2.0(`LICENSE-MIT`·`LICENSE-APACHE`). 넣는 방식은 미정(구현 카드에서 정한다).
+
+**근거**
+
+- core-leader 승인(2026-11-07, gpui-leader W-34 전달). `Cargo.toml` 변경은 승인이 필요하다(`AGENTS.md` 9장).
+- 같은 버전을 쓰면 의존성 트리에 새 crate가 늘지 않는다. tauri도 같은 crate로 구현했다(`src-tauri/src/project_search.rs`).
+
+**배제한 대안**
+
+- **표준 라이브러리로 폴더를 돌고 직접 매칭한다** — `.gitignore` 규칙과 정규식을 다시 만드는 일이 커진다(AGENTS 4.1 순서 5).
 
 ---
 

@@ -2667,6 +2667,7 @@ pub(crate) struct NodeContext {
     pub(crate) table_actions: Option<Arc<TableActionsFn>>,
     pub(crate) image_source: Option<Arc<super::text_view::ImageSourceFn>>,
     pub(crate) link_click_handler: Option<Arc<LinkClickHandlerFn>>,
+    pub(crate) source_block_click: Option<std::sync::Arc<dyn Fn(usize, &mut Window, &mut App) + Send + Sync>>,
     pub(crate) markdown_extensions: Arc<MarkdownExtensions>,
     /// This frame's streamed fade-in, when any text is still fading.
     pub(crate) stream_fade: Option<Arc<StreamFadeFrame>>,
@@ -4205,6 +4206,17 @@ impl BlockNode {
         window: &mut Window,
         cx: &mut App,
     ) -> AnyElement {
+        let element = self.render_block_inner(options, node_cx, window, cx);
+        super::document::source_click_block(element, self.span().map(|s| s.start), node_cx)
+    }
+
+    fn render_block_inner(
+        &self,
+        options: NodeRenderOptions,
+        node_cx: &NodeContext,
+        window: &mut Window,
+        cx: &mut App,
+    ) -> AnyElement {
         let mb = block_gap(&options, &node_cx.style);
 
         match self {
@@ -4340,7 +4352,7 @@ impl BlockNode {
                     for (ix, item) in children.into_iter().enumerate() {
                         let is_item = item.is_list_item();
 
-                        items.push(Self::render_list_item(
+                        let rendered = Self::render_list_item(
                             item,
                             item_index,
                             NodeRenderOptions {
@@ -4352,7 +4364,8 @@ impl BlockNode {
                             node_cx,
                             window,
                             cx,
-                        ));
+                        );
+                        items.push(super::document::source_click_block(rendered, item.span().map(|s| s.start), node_cx));
 
                         if is_item {
                             item_index += 1;

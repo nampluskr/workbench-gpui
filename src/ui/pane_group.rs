@@ -652,6 +652,7 @@ impl PaneGroup {
             state
         });
         // Only edits emit Change (`set_value` does not), so this tracks edits, not reads.
+        cx.observe(&editor, |_, _, cx| cx.notify()).detach();
         cx.subscribe_in(&editor, window, |ws, editor, event: &InputEvent, window, cx| {
             if matches!(event, InputEvent::Change) {
                 ws.group.edited(editor, window, cx);

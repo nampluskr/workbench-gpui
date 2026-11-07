@@ -7934,8 +7934,10 @@ version = "0.1.0"
 dependencies = [
  "dirs 7.0.0",
  "gpui-kit",
+ "ignore",
  "jsonc-parser",
  "notify",
+ "regex",
  "rfd",
  "serde_json",
  "toml 1.1.8+spec-1.1.0",

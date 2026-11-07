@@ -1,0 +1,70 @@
+{
+  "app": {
+    "app-step8-project-search": {
+      "status": "PASS",
+      "title": "Project Search tab, Filters, Replace row, query results (R-22)",
+      "started": "2026-11-07T17:11:42.6393911+09:00",
+      "finished": "2026-11-07T17:11:57.0756725+09:00"
+    }
+  },
+  "crops": {},
+  "captures": {
+    "app-step8-search-empty": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run5\\app-step8-search-empty.png",
+    "app-step8-search-filters": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run5\\app-step8-search-filters.png",
+    "app-step8-search-replace-row": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run5\\app-step8-search-replace-row.png",
+    "app-step8-search-results": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run5\\app-step8-search-results.png",
+    "app-step8-search-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run5\\app-step8-search-open.png"
+  },
+  "hashes": {
+    "app-step8-search-empty": "F9FDCCB2EA31C2A7A9479B701537FAE9450D28DE88589D2A82B826C6556F436E",
+    "app-step8-search-filters": "C886E4EC96CD2DCC489D20EEE963B7256DB68337FCF18924320E171C22B99A6A",
+    "app-step8-search-replace-row": "5A9250E6E3A29BCA229AF8A277736B48F3A32ED65F789E98F1E3C2344AB61807",
+    "app-step8-search-results": "2675BF2D49F194AAF6D2E3D4AB998400DAAD54541F8D27BCFCF1034D3FB91999",
+    "app-step8-search-open": "22C0C1652CCB12C14820D9C9FF52989B51F9D77AC64FA853E48F26F625B0706A"
+  },
+  "tauri_refs": {
+    "dir": "D:\\projects\\workbench-tauri\\specs\\v0.5\\verify\\ORDER-08",
+    "files": [
+      "tauri-cursor.png",
+      "tauri-diagnostics.png",
+      "tauri-dock-closed.png",
+      "tauri-no-tab.png",
+      "tauri-preview-click.png",
+      "tauri-probe-after-ctrl-shift-v.png",
+      "tauri-re-diagnostics.png",
+      "tauri-re-search-empty.png",
+      "tauri-re-search-results.png",
+      "tauri-re-status-sidebar-closed.png",
+      "tauri-search-empty.png",
+      "tauri-search-open.png",
+      "tauri-search-results.png",
+      "tauri-selection.png",
+      "tauri-sidebar-closed.png",
+      "tauri-sidebar-open.png",
+      "zed-cursor.png",
+      "zed-diagnostics.png",
+      "zed-dock-click1.png",
+      "zed-dock-click2.png",
+      "zed-end-run2.png",
+      "zed-no-tab.png",
+      "zed-no-tab2.png",
+      "zed-project-click1.png",
+      "zed-project-click2.png",
+      "zed-search-empty.png",
+      "zed-search-end.png",
+      "zed-search-filters.png",
+      "zed-search-open.png",
+      "zed-search-replace-row.png",
+      "zed-search-results.png",
+      "zed-selection.png",
+      "zed-tip-diag.png",
+      "zed-tip-dock.png",
+      "zed-tip-f1.png",
+      "zed-tip-f2.png",
+      "zed-tip-filter.png",
+      "zed-tip-project.png",
+      "zed-tip-replace.png",
+      "zed-tip-search.png"
+    ]
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "app": {
+    "app-step1-notabs-status": {
+      "status": "FAIL",
+      "title": "Tab-less status bar (R-5 no-tab state)",
+      "started": "2026-11-07T16:29:40.4349075+09:00",
+      "error": "'x' 매개 변수에서 인수 변환을 처리할 수 없습니다. 값 \"[int]System.Collections.Hashtable.x\"을(를) 형식 \"System.Int32\"(으)로 변환할 수 없습니다. 오류: \"The input string '[int]System.Collections.Hashtable.x' was not in a correct format.\"",
+      "stackTrace": "<ScriptBlock>에서 D:\\projects\\workbench-gpui\\tools\\measure\\order08-v3.ps1: 줄 774\r\nInvoke-MeasureStep에서 D:\\projects\\workbench-gpui\\tools\\measure\\order08-v3.ps1: 줄 628\r\n<ScriptBlock>에서 D:\\projects\\workbench-gpui\\tools\\measure\\order08-v3.ps1: 줄 768",
+      "finished": "2026-11-07T16:29:43.2645483+09:00"
+    },
+    "app-step2-cursor-and-filetype": {
+      "status": "PASS",
+      "title": "Cursor position and Markdown filetype (R-5)",
+      "started": "2026-11-07T16:29:43.2669483+09:00",
+      "finished": "2026-11-07T16:29:43.5147293+09:00"
+    },
+    "app-step3-selection-status": {
+      "status": "FAIL",
+      "title": "Selection character count in status bar (R-5)",
+      "started": "2026-11-07T16:29:43.5175924+09:00",
+      "error": "'x' 매개 변수에서 인수 변환을 처리할 수 없습니다. 값 \"[int]System.Collections.Hashtable.x\"을(를) 형식 \"System.Int32\"(으)로 변환할 수 없습니다. 오류: \"The input string '[int]System.Collections.Hashtable.x' was not in a correct format.\"",
+      "stackTrace": "<ScriptBlock>에서 D:\\projects\\workbench-gpui\\tools\\measure\\order08-v3.ps1: 줄 826\r\nInvoke-MeasureStep에서 D:\\projects\\workbench-gpui\\tools\\measure\\order08-v3.ps1: 줄 628\r\n<ScriptBlock>에서 D:\\projects\\workbench-gpui\\tools\\measure\\order08-v3.ps1: 줄 814",
+      "finished": "2026-11-07T16:29:46.9623503+09:00"
+    },
+    "app-step4-different-filetypes": {
+      "status": "PASS",
+      "title": "Filetype names across languages (R-5)",
+      "started": "2026-11-07T16:29:46.9647756+09:00",
+      "finished": "2026-11-07T16:29:48.1444447+09:00"
+    },
+    "app-step5-preview-innermost-click": {
+      "status": "PASS",
+      "title": "Innermost Markdown block mapping (R-5)",
+      "started": "2026-11-07T16:29:48.1484611+09:00",
+      "finished": "2026-11-07T16:29:48.3848373+09:00"
+    },
+    "app-step6-sidebar-dock-toggle": {
+      "status": "PASS",
+      "title": "Sidebar and dock toggle states, dividers (R-19/R-22)",
+      "started": "2026-11-07T16:29:48.3873336+09:00",
+      "finished": "2026-11-07T16:29:48.4105946+09:00"
+    },
+    "app-step7-button-tooltips-hover": {
+      "status": "PASS",
+      "title": "Status bar button tooltips on hover (R-22)",
+      "started": "2026-11-07T16:29:48.4132997+09:00",
+      "finished": "2026-11-07T16:29:48.6636776+09:00"
+    },
+    "app-step8-project-search": {
+      "status": "PASS",
+      "title": "Project Search tab, Filters, Replace row, query results (R-22)",
+      "started": "2026-11-07T16:29:48.6661762+09:00",
+      "finished": "2026-11-07T16:30:04.3701333+09:00"
+    },
+    "app-step9-diagnostics": {
+      "status": "PASS",
+      "title": "Diagnostics tab empty problem workspace (R-22)",
+      "started": "2026-11-07T16:30:04.3774346+09:00",
+      "finished": "2026-11-07T16:30:07.1374002+09:00"
+    }
+  },
+  "crops": {},
+  "captures": {
+    "app-step1-notabs-status": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step1-notabs-status.png",
+    "app-step3-selection": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step3-selection.png",
+    "app-step8-search-empty": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step8-search-empty.png",
+    "app-step8-search-filters": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step8-search-filters.png",
+    "app-step8-search-replace-row": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step8-search-replace-row.png",
+    "app-step8-search-results": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step8-search-results.png",
+    "app-step8-search-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step8-search-open.png",
+    "app-step9-diagnostics": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08\\app-step9-diagnostics.png"
+  },
+  "hashes": {
+    "app-step1-notabs-status": "9E447FEFD979BF04F11633502D277B3D1050DAEEF1DE937D49EAB9DED98A6E43",
+    "app-step3-selection": "DC231E24B1A28F82DE5FB4185822EFFBB0F758AACE269D9D66FCF5EC79E6AE72",
+    "app-step8-search-empty": "34303E5E301F9637CD26122CF40D119B313FD014A415FE543B7997C77DCEF059",
+    "app-step8-search-filters": "487943021DD42134E04A91FBF7BA75B40B50451C15485D2BEB6925D4A51C25CC",
+    "app-step8-search-replace-row": "70B4BFAF23B6B3FC8BD55A208A8299D83A1C183A6421052DE55D12DBCDA278C1",
+    "app-step8-search-results": "0A4557F687A8421E1B62744EC2ACC16A44739927F85CF2D599B72B7FB9040C42",
+    "app-step8-search-open": "7F7DD845F690391637DF24A60A765591ED23746CB59A6A06B17818E419C5E9BA",
+    "app-step9-diagnostics": "AE49882CAE3DA13000A98068CB8F7BBB2EBC380BF97CC3A42FDBD89677DC11A4"
+  },
+  "tauri_refs": {
+    "dir": "D:\\projects\\workbench-tauri\\specs\\v0.5\\verify\\ORDER-08",
+    "files": [
+      "tauri-cursor.png",
+      "tauri-diagnostics.png",
+      "tauri-dock-closed.png",
+      "tauri-no-tab.png",
+      "tauri-preview-click.png",
+      "tauri-probe-after-ctrl-shift-v.png",
+      "tauri-search-empty.png",
+      "tauri-search-open.png",
+      "tauri-search-results.png",
+      "tauri-selection.png",
+      "tauri-sidebar-closed.png",
+      "tauri-sidebar-open.png",
+      "zed-cursor.png",
+      "zed-diagnostics.png",
+      "zed-dock-click1.png",
+      "zed-dock-click2.png",
+      "zed-end-run2.png",
+      "zed-no-tab.png",
+      "zed-no-tab2.png",
+      "zed-project-click1.png",
+      "zed-project-click2.png",
+      "zed-search-empty.png",
+      "zed-search-end.png",
+      "zed-search-filters.png",
+      "zed-search-open.png",
+      "zed-search-replace-row.png",
+      "zed-search-results.png",
+      "zed-selection.png",
+      "zed-tip-diag.png",
+      "zed-tip-dock.png",
+      "zed-tip-f1.png",
+      "zed-tip-f2.png",
+      "zed-tip-filter.png",
+      "zed-tip-project.png",
+      "zed-tip-replace.png",
+      "zed-tip-search.png"
+    ]
+  }
+}

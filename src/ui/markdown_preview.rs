@@ -154,7 +154,7 @@ fn heading_style(level: u8) -> StyleRefinement {
         .font_weight(FontWeight::SEMIBOLD)
 }
 
-pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
+pub fn body(pane: PaneId, text: SharedString, editor: Entity<gpui_kit::component::input::EditorState>, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     let side = |s: StyleRefinement| s.border_t(TABLE_BORDER).border_b(TABLE_BORDER).border_l(TABLE_BORDER).border_r(TABLE_BORDER);
     let style = TextViewStyle::default()
@@ -196,6 +196,12 @@ pub fn body(pane: PaneId, text: SharedString, cx: &App) -> impl IntoElement {
                     .style(style)
                     .blockquote_style(quote)
                     .markdown_extensions(MarkdownExtensions::default().frontmatter())
+                    .on_source_block_click(move |offset, _, cx| {
+                        editor.update(cx, |state, cx| {
+                            let start = super::status::preview_line_start(&state.value(), offset);
+                            state.set_selected_range(start..start, cx);
+                        });
+                    })
                     .selectable(true)
                     .scrollable(false),
             )),

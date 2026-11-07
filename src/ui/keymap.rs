@@ -52,7 +52,11 @@ pub mod workspace {
 }
 
 pub mod pane {
-    gpui_kit::actions!(pane, [CloseActiveItem, ActivatePreviousItem, ActivateNextItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown]);
+    gpui_kit::actions!(pane, [CloseActiveItem, ActivatePreviousItem, ActivateNextItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown, DeploySearch]);
+}
+
+pub mod diagnostics {
+    gpui_kit::actions!(diagnostics, [Deploy]);
 }
 
 pub mod markdown {
@@ -231,6 +235,8 @@ fn register_placeholder_handlers(cx: &mut App) {
         };
     }
     placeholder!(
+        pane::DeploySearch,
+        diagnostics::Deploy,
         workspace::ToggleLeftDock,
         workspace::Open,
         workspace::CopyPath,

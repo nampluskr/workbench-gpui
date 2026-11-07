@@ -166,6 +166,9 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "window_button.width" = { value = 36, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-39" }
 "window_button.height" = { value = 32, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-39" }
 "window_button.glyph_size" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-39" }
+"window_button.close.hover_background" = { value = "#E81120", unit = "hex", cond = "default", src = "01-LAYOUT 4.1절 L-84, Zed 14b7b0e crates/platform_title_bar/src/platforms/platform_windows.rs:104-128 (232,17,32)" }
+"window_button.close.hover_foreground" = { value = "#FFFFFF", unit = "hex", cond = "default", src = "01-LAYOUT 4.1절 L-84, Zed 14b7b0e crates/platform_title_bar/src/platforms/platform_windows.rs:104-128 (흰 글자)" }
+"window_button.close.active_opacity" = { value = 0.8, unit = "ratio", cond = "default", src = "01-LAYOUT 4.1절 L-84, Zed 14b7b0e crates/platform_title_bar/src/platforms/platform_windows.rs:104-128 (누름은 hover 배경·글자를 80% 불투명)" }
 "right_group.padding_right" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-89" }
 "right_group.gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 L-89" }
 "user_menu.button_width" = { value = 22, unit = "px", cond = "default", src = "01-LAYOUT 4.1절 I-608" }
@@ -273,11 +276,19 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 [statusbar]
 "height" = { value = 30, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-28" }
 "padding_y" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-28" }
+"padding_x" = { value = 4, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs:153 .p(DynamicSpacing::Base04) 네 변 padding 4(세로는 padding_y), tauri 확인·core-leader 지시 2026-11-07, 실측 1440x852 아이콘 시작 x 9·39·70·101" }
+"toggle_gap" = { value = 2, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs:280-287 사이드바 토글과 구분선 h_flex().gap_0p5(), tauri 확인·core-leader 지시 2026-11-07, 실측 1440x852 구분선 x 28·59" }
 "button_height" = { value = 22, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-28" }
 "group_gap" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-29" }
 "item_gap" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-29" }
 "icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-92" }
 "cursor_position.font_size" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 4.6절 L-97" }
+"left_divider.width" = { value = 1, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs 283·287행 Divider::vertical().color(DividerColor::Border), workbench-tauri specs/v0.5/verify/ORDER-08/zed-cursor.png (One Dark)" }
+"left_divider.height" = { value = 16, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs 283·287행 Divider::vertical().color(DividerColor::Border), workbench-tauri specs/v0.5/verify/ORDER-08/zed-cursor.png (One Dark), y 829~844" }
+"left_divider.y_top" = { value = 829, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs 283·287행 Divider::vertical().color(DividerColor::Border), workbench-tauri specs/v0.5/verify/ORDER-08/zed-cursor.png (One Dark), 클라이언트 1440x852 기준 y 829~844" }
+"left_divider.color" = { value = "border", unit = "theme_token", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs 283·287행 Divider::vertical().color(DividerColor::Border), workbench-tauri specs/v0.5/verify/ORDER-08/zed-cursor.png (One Dark)" }
+"left_divider.x_after_sidebar_toggle" = { value = 28, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs 283·287행 Divider::vertical().color(DividerColor::Border), workbench-tauri specs/v0.5/verify/ORDER-08/zed-cursor.png (One Dark), 사이드바 토글|file_tree 사이" }
+"left_divider.x_after_file_tree" = { value = 59, unit = "px", cond = "desktop_measure_100", src = "Zed 4304dec732 crates/workspace/src/status_bar.rs 283·287행 Divider::vertical().color(DividerColor::Border), workbench-tauri specs/v0.5/verify/ORDER-08/zed-cursor.png (One Dark), file_tree|검색·진단 사이" }
 
 # ==============================================================================
 # 9. 툴팁 (Tooltip)
@@ -396,6 +407,7 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "search_bar.narrow_threshold" = { value = 340, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-069" }
 "search_error.offset_top" = { value = -4, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
 "search_error.offset_left" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.12.6절 E-067" }
+"search_input.max_width" = { value = 1200, unit = "px", cond = "default", src = "Zed 4304dec732 crates/ui/src/utils/search_input.rs MAX_WIDTH (tauri SPEC R-22 toml에 없는 값 표, W-37)" }
 "tab_size" = { value = 4, unit = "chars", cond = "default", src = "02-INTERACTION 12.1절 E-055" }
 "undo.group_interval" = { value = 300, unit = "ms", cond = "default", src = "02-INTERACTION 12.2절 E-059c" }
 "confirm_close.path_max_chars" = { value = 80, unit = "chars", cond = "default", src = "02-INTERACTION 12.4절 E-081" }
@@ -406,6 +418,34 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "cursor_width" = { value = 2, unit = "px", cond = "default", src = "01-LAYOUT 4.12.2절 E-012" }
 "cursor_blink_interval" = { value = 500, unit = "ms", cond = "default", src = "01-LAYOUT 4.12.2절 E-013" }
 "selection.corner_radius_multiplier" = { value = 0.15, unit = "ratio", cond = "default", src = "01-LAYOUT 4.12.2절 E-015" }
+
+# ==============================================================================
+# 12a. Project Search 결과 (Search Results, v0.5 W-38)
+# ==============================================================================
+
+[search_results]
+"header.padding" = { value = 4, unit = "px", cond = "default", src = "Zed 4304dec732 crates/editor/src/editor.rs:303 BUFFER_HEADER_PADDING (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"header.padding_left" = { value = 4, unit = "px", cond = "default", src = "Zed 4304dec732 crates/editor/src/element/header.rs .pl_1() (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"header.padding_right" = { value = 8, unit = "px", cond = "default", src = "Zed 4304dec732 crates/editor/src/element/header.rs .pr_2() (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"header.gap" = { value = 6, unit = "px", cond = "default", src = "Zed 4304dec732 crates/editor/src/element/header.rs .gap_1p5() (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"header.radius" = { value = 2, unit = "px", cond = "default", src = "Zed 4304dec732 crates/editor/src/element/header.rs .rounded_sm(), px 값은 gpui 정의로 알려진 값, 소스 직접 확인 못 함(tauri R-22). ambiguous.md 6절 (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"header.fold_button" = { value = 28, unit = "px", cond = "default", src = "Zed 4304dec732 crates/editor/src/element/header.rs button_size (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"header.lines" = { value = 2, unit = "lines", cond = "default", src = "Zed 4304dec732 crates/editor/src/editor.rs:302 FILE_HEADER_HEIGHT, 버퍼 줄 수 (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"matches.padding_left" = { value = 6, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs .pl_1p5() (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+"count.min_width" = { value = 40, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs .min_w(rems_from_px(40)). 같은 값 ID editor.search_results_count.min_width(01-LAYOUT 4.12.6절 E-067) (tauri SPEC R-22 toml에 없는 값 표, W-38)" }
+
+# ==============================================================================
+# 12b. Project Search 빈 화면 (Project Search Landing, v0.5 W-39)
+# rems_from_px(n)은 1rem = 16px 기준(typography.rs 주석), Zed 기본 ui_font_size 16
+# ==============================================================================
+
+[project_search]
+"landing.heading_size" = { value = 16, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs:1089 Label.size(LabelSize::Large) → ui/src/components/label/label_like.rs:242 text_ui_lg → ui/src/styles/typography.rs:138 TextSize::Large = rems_from_px(16) (leader 소스 확인, core DECISION 2026-11-07, W-39)" }
+"landing.subtitle_size" = { value = 14, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs:2521-2527 Label(size 없음) → LabelSize::Default → text_ui → TextSize::Default = rems_from_px(14) (leader 소스 확인, core DECISION 2026-11-07, W-39)" }
+"landing.subtitle_margin_bottom" = { value = 8, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs:2521-2527 .mb_2() (leader 소스 확인, core DECISION 2026-11-07, W-39)" }
+"landing.action_label_size" = { value = 14, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs:1032-1043 Button 라벨 → ui/src/components/button/button.rs:517 label_size.unwrap_or_default() → TextSize::Default (leader 소스 확인, core DECISION 2026-11-07, W-39)" }
+"landing.key_size" = { value = 14, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs:1032-1043 KeyBinding → ui/src/components/keybinding.rs:544-546 size 없음 → TextSize::Default (leader 소스 확인, core DECISION 2026-11-07, W-39)" }
+"landing.gap" = { value = 4, unit = "px", cond = "default", src = "Zed 4304dec732 crates/search/src/project_search.rs:2519 부제·안내 줄 묶음 v_flex().gap_1(), :1111 제목과 그 묶음 v_flex().gap_1() (leader 소스 확인, core DECISION 2026-11-07, W-39)" }
 
 # ==============================================================================
 # 13. Picker, 대화상자 및 인라인 입력 (Pickers, Dialogs & Inline Input)

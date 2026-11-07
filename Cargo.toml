@@ -6,6 +6,8 @@ license = "Apache-2.0"
 
 [dependencies]
 dirs = "=7.0.0"
+ignore = "=0.4.34"
+regex = "=1.13.1"
 gpui-kit = "=0.8.1"
 jsonc-parser = { version = "=0.34.0", features = ["serde"] }
 notify = "8.2"

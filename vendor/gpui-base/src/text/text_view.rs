@@ -170,6 +170,7 @@ pub struct TextView {
     link_click_handler: Option<Arc<LinkClickHandlerFn>>,
     image_source: Option<Arc<ImageSourceFn>>,
     reveal_handler: Option<Rc<RevealHandlerFn>>,
+    source_block_click: Option<Arc<dyn Fn(usize, &mut Window, &mut App) + Send + Sync>>,
     markdown_extensions: Arc<MarkdownExtensions>,
     motion: Option<TextViewMotion>,
 }
@@ -220,6 +221,7 @@ impl TextView {
             link_click_handler: None,
             image_source: None,
             reveal_handler: None,
+            source_block_click: None,
             markdown_extensions: Arc::default(),
             motion: None,
         }
@@ -247,6 +249,7 @@ impl TextView {
             link_click_handler: None,
             image_source: None,
             reveal_handler: None,
+            source_block_click: None,
             markdown_extensions: Arc::default(),
             motion: None,
         }
@@ -274,6 +277,7 @@ impl TextView {
             link_click_handler: None,
             image_source: None,
             reveal_handler: None,
+            source_block_click: None,
             markdown_extensions: Arc::default(),
             motion: None,
         }
@@ -461,6 +465,12 @@ impl TextView {
         F: Fn(Bounds<Pixels>, &mut Window, &mut App) + 'static,
     {
         self.reveal_handler = Some(Rc::new(handler));
+        self
+    }
+
+    /// Receive source byte offsets in capture order; the innermost clicked block is delivered last.
+    pub fn on_source_block_click(mut self, handler: impl Fn(usize, &mut Window, &mut App) + Send + Sync + 'static) -> Self {
+        self.source_block_click = Some(Arc::new(handler));
         self
     }
 
@@ -754,6 +764,7 @@ impl Element for TextView {
             state.code_block_highlighter = code_block_highlighter;
             state.table_actions = self.table_actions.clone();
             state.link_click_handler = self.link_click_handler.clone();
+            state.source_block_click = self.source_block_click.clone();
             state.image_source = self.image_source.clone();
             state.set_markdown_extensions(self.markdown_extensions.clone(), cx);
             if let Some(motion) = &self.motion {

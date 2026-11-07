@@ -130,11 +130,72 @@ pub const TAB_BAR_EDGE_GAP: Rems = rems_from_px(4.);
 
 // ---- 상태 표시줄 (A-32.7·A-32.8) ----
 
-/// L-28 상태 표시줄 padding 4 (× 2 + 버튼 22 = 높이 30). A-32.7.
-pub const STATUS_BAR_PADDING: Rems = rems_from_px(4.);
+/// statusbar.padding_y (L-28) 4 (× 2 + 버튼 22 = 높이 30). A-32.7.
+pub const STATUS_BAR_PADDING_Y: Rems = rems_from_px(4.);
+/// statusbar.padding_x 4 (Zed status_bar.rs:153 `.p(Base04)`).
+pub const STATUS_BAR_PADDING_X: Rems = rems_from_px(4.);
+/// statusbar.toggle_gap 2: sidebar toggle ↔ its divider (Zed status_bar.rs:280-287 `gap_0p5`).
+pub const STATUS_TOGGLE_GAP: Rems = rems_from_px(2.);
 /// L-29 좌·우 그룹 사이 8, 그룹 안 gap 4. A-32.8.
 pub const STATUS_BAR_GROUP_GAP: Rems = rems_from_px(8.);
 pub const STATUS_BAR_ITEM_GAP: Rems = rems_from_px(4.);
+/// buttons["padding_x.default_compact"] (L-07) 4: padding of a text status button (cursor position, file type).
+pub const STATUS_TEXT_BUTTON_PADDING_X: Rems = rems_from_px(4.);
+// statusbar.left_divider.width / height, desktop_measure_100.
+pub const STATUS_DIVIDER_WIDTH: Pixels = px(1.);
+pub const STATUS_DIVIDER_HEIGHT: Pixels = px(16.);
+
+// ---- Project Search · Diagnostics 탭 (K-27, tauri SPEC R-22 "Zed 실측 근거") ----
+
+/// editor["toolbar.padding_y"] (E-038) 6 / ["toolbar.padding_x"] 8 / ["search_bar.gap"] (E-061) 8 / ["search_input.min_height"] (E-062) 32.
+pub const SEARCH_TOOLBAR_PADDING_Y: Rems = rems_from_px(6.);
+pub const SEARCH_TOOLBAR_PADDING_X: Rems = rems_from_px(8.);
+pub const SEARCH_BAR_GAP: Rems = rems_from_px(8.);
+pub const SEARCH_INPUT_HEIGHT: Rems = rems_from_px(32.);
+/// editor["search_input.padding_left"] 8 / ["padding_right"] 4 / ["corner_radius"] 6 / ["options_gap"] 4.
+pub const SEARCH_INPUT_PADDING_LEFT: Rems = rems_from_px(8.);
+pub const SEARCH_INPUT_PADDING_RIGHT: Rems = rems_from_px(4.);
+pub const SEARCH_INPUT_RADIUS: Rems = rems_from_px(6.);
+/// editor["search_input.max_width"] 1200 (Zed ui/src/utils/search_input.rs MAX_WIDTH, W-37).
+pub const SEARCH_INPUT_MAX_WIDTH: Rems = rems_from_px(1200.);
+/// search_results["header.padding"] 4 (margin around the band; Zed editor.rs:303 BUFFER_HEADER_PADDING) / ["header.padding_left"] 4 /
+/// ["header.padding_right"] 8 / ["header.gap"] 6 / ["header.radius"] 2 / ["header.fold_button"] 28 (W-38).
+pub const SEARCH_HEADER_MARGIN: Rems = rems_from_px(4.);
+pub const SEARCH_HEADER_PADDING_LEFT: Rems = rems_from_px(4.);
+pub const SEARCH_HEADER_PADDING_RIGHT: Rems = rems_from_px(8.);
+pub const SEARCH_HEADER_GAP: Rems = rems_from_px(6.);
+pub const SEARCH_HEADER_RADIUS: Rems = rems_from_px(2.);
+pub const SEARCH_HEADER_FOLD_BUTTON: Rems = rems_from_px(28.);
+/// search_results["header.lines"] 2: band height in buffer lines (Zed editor.rs:302 FILE_HEADER_HEIGHT).
+pub const SEARCH_HEADER_LINES: f32 = 2.;
+/// search_results["matches.padding_left"] 6 / ["count.min_width"] 40 (W-38) / editor["search_results_count.margin_left"] 8 (E-067).
+pub const SEARCH_MATCHES_PADDING_LEFT: Rems = rems_from_px(6.);
+pub const SEARCH_COUNT_MIN_WIDTH: Rems = rems_from_px(40.);
+pub const SEARCH_COUNT_MARGIN_LEFT: Rems = rems_from_px(8.);
+/// buttons["height.none"] (L-07) 16: the previous / next result buttons (Zed capture pitch 20 = 16 + buttons["gap"] 4).
+pub const SEARCH_MATCH_BUTTON: Rems = rems_from_px(16.);
+/// Gap between the Filters and Replace toggles: Zed capture 1440×852, desktop_measure_100, glyph pitch 24.5 = 22 + 2.
+pub const SEARCH_MODES_GAP: Rems = rems_from_px(2.);
+/// typography["size.large"] (L-05) 16: the empty-state title.
+pub const TEXT_SIZE_LARGE: Rems = rems_from_px(16.);
+/// Gutter columns measured from the Zed capture zed-search-results.png (1440×852, desktop_measure_100, pane x 240): expand-arrow column 28 wide (icon centre x 20 + 8 pad),
+/// right-aligned line numbers end at 65, code starts at 92.
+pub const SEARCH_GUTTER_ARROW: Rems = rems_from_px(32.);
+pub const SEARCH_GUTTER_NUMBER: Rems = rems_from_px(36.);
+pub const SEARCH_GUTTER_GAP: Rems = rems_from_px(24.);
+/// Width of the controls after the query box: toggles 22+2+22, bar gap 8, matches (border 1 + padding 6 + 16+4+16 + count margin 8 + 40).
+/// Every row reserves it so the Replace / Include·Exclude boxes end where the query box ends.
+pub const SEARCH_TRAIL_WIDTH: Rems = rems_from_px(145.);
+/// Right-hand space the search row leaves empty (Zed does not stretch the row to the pane edge). Source: Zed capture 1440×852,
+/// desktop_measure_100 (pane x 240–1440): 1432 (after the 8 toolbar padding) − 112 − (8 bar gap + 145 trail) = box end 1167.
+/// Fitted to the capture, no Zed source value found.
+pub const SEARCH_RIGHT_RESERVE: Rems = rems_from_px(112.);
+/// Zed text inset inside the query box (Zed capture 1440×852, desktop_measure_100): text starts 13 px right of the box (zed-search-empty.png 278 → 291) = 1 border + 8 padding + 4.
+pub const SEARCH_INPUT_TEXT_INSET: Rems = rems_from_px(4.);
+/// Empty-state (Zed project_search.rs landing page, spec ids project_search.landing.heading_size 16 / .subtitle_size 14 /
+/// .subtitle_margin_bottom 8 / .action_label_size 14 / .key_size 14 / .gap 4): Labels take the default text line height phi = 1.618
+/// (title 25.9, subtitle 22.7), the action rows are Button default size (22, padding 4) with gap 4 — together Zed's 29 / 34 / 26 px pitches.
+pub const SEARCH_LANDING_LINE_HEIGHT: f32 = 1.618;
 
 // ---- 왼쪽 Dock (A-32.9·A-32.10) ----
 
@@ -456,6 +517,80 @@ mod tests {
     fn spec_font_size_tolerance_applies_to_font_size_ids() {
         // 12.75 differs from 12 by more than the font_size tolerance (0.5).
         spec::assert_spec("statusbar[\"cursor_position.font_size\"]", "default", 12.75);
+    }
+
+    /// V2 (K-26): the status bar's left row, built from the constants exactly as `layout::status_bar` lays it out
+    /// (padding, 22 button, toggle gap, 1 divider, item gap), puts both dividers at the spec x.
+    #[test]
+    fn k26_status_left_dividers_follow_spec() {
+        let px = |rems: Rems| rems.0 * crate::ui::rem::BASE_REM_PX;
+        let button = px(BUTTON_DEFAULT);
+        let divider = f32::from(STATUS_DIVIDER_WIDTH);
+        for (id, rems) in [("statusbar[\"padding_x\"]", STATUS_BAR_PADDING_X), ("statusbar[\"padding_y\"]", STATUS_BAR_PADDING_Y), ("statusbar[\"toggle_gap\"]", STATUS_TOGGLE_GAP)] {
+            spec::assert_spec(id, if id.contains("padding_y") { "default" } else { "desktop_measure_100" }, px(rems));
+        }
+        let sidebar_divider = px(STATUS_BAR_PADDING_X) + button + px(STATUS_TOGGLE_GAP);
+        let project_divider = sidebar_divider + divider + px(STATUS_BAR_ITEM_GAP) + button + px(STATUS_BAR_ITEM_GAP);
+        spec::assert_spec("statusbar[\"left_divider.x_after_sidebar_toggle\"]", "desktop_measure_100", sidebar_divider);
+        spec::assert_spec("statusbar[\"left_divider.x_after_file_tree\"]", "desktop_measure_100", project_divider);
+        // Button boxes (hover background) start at 4, 33, 64 and 94; the extra gap before diagnostics is the empty lsp_button slot.
+        let gap = px(STATUS_BAR_ITEM_GAP);
+        let sidebar = px(STATUS_BAR_PADDING_X);
+        let project = sidebar + button + px(STATUS_TOGGLE_GAP) + divider + gap;
+        let search = project + button + gap + divider + gap;
+        let diagnostics = search + button + gap + gap;
+        assert_eq!([sidebar, project, search, diagnostics], [4., 33., 64., 94.]);
+        // Sidebar toggle icon box (14 centred in a 22 button) starts at 8; the spec's 9 is a measured glyph start.
+        assert_eq!(px(STATUS_BAR_PADDING_X) + (button - px(ICON_SMALL)) / 2., 8.);
+    }
+
+    /// V2 (K-27): the search toolbar row is 6 + 32 + 6 (Zed y 65–109) and its trailing controls add up to the reserved width.
+    #[test]
+    fn k27_search_toolbar_metrics_follow_spec() {
+        let px = |rems: Rems| rems.0 * crate::ui::rem::BASE_REM_PX;
+        for (id, rems) in [("editor[\"toolbar.padding_y\"]", SEARCH_TOOLBAR_PADDING_Y), ("editor[\"toolbar.padding_x\"]", SEARCH_TOOLBAR_PADDING_X),
+            ("editor[\"search_bar.gap\"]", SEARCH_BAR_GAP), ("editor[\"search_input.min_height\"]", SEARCH_INPUT_HEIGHT),
+            ("editor[\"search_input.padding_left\"]", SEARCH_INPUT_PADDING_LEFT), ("editor[\"search_input.padding_right\"]", SEARCH_INPUT_PADDING_RIGHT),
+            ("editor[\"search_input.corner_radius\"]", SEARCH_INPUT_RADIUS)] {
+            spec::assert_spec(id, "default", px(rems));
+        }
+        assert_eq!(px(SEARCH_TOOLBAR_PADDING_Y) * 2. + px(SEARCH_INPUT_HEIGHT), 44.);
+        for (id, rems) in [("search_results[\"matches.padding_left\"]", SEARCH_MATCHES_PADDING_LEFT), ("search_results[\"count.min_width\"]", SEARCH_COUNT_MIN_WIDTH),
+            ("search_results[\"header.padding\"]", SEARCH_HEADER_MARGIN), ("search_results[\"header.gap\"]", SEARCH_HEADER_GAP),
+            ("search_results[\"header.padding_left\"]", SEARCH_HEADER_PADDING_LEFT), ("search_results[\"header.padding_right\"]", SEARCH_HEADER_PADDING_RIGHT),
+            ("search_results[\"header.radius\"]", SEARCH_HEADER_RADIUS), ("search_results[\"header.fold_button\"]", SEARCH_HEADER_FOLD_BUTTON),
+            ("editor[\"search_input.max_width\"]", SEARCH_INPUT_MAX_WIDTH), ("editor[\"search_results_count.margin_left\"]", SEARCH_COUNT_MARGIN_LEFT),
+            ("buttons[\"height.none\"]", SEARCH_MATCH_BUTTON)] {
+            spec::assert_spec(id, "default", px(rems));
+        }
+        spec::assert_spec("search_results[\"header.lines\"]", "default", SEARCH_HEADER_LINES);
+        let button = px(BUTTON_DEFAULT);
+        let modes = button * 2. + px(SEARCH_MODES_GAP);
+        let matches = 1. + px(SEARCH_MATCHES_PADDING_LEFT) + px(SEARCH_MATCH_BUTTON) * 2. + px(STATUS_BAR_ITEM_GAP) + px(SEARCH_COUNT_MARGIN_LEFT) + px(SEARCH_COUNT_MIN_WIDTH);
+        assert_eq!(modes + px(SEARCH_BAR_GAP) + matches, px(SEARCH_TRAIL_WIDTH));
+        // Bar-gap-based x of the trailing glyphs (box end 1167): filter box 1175, replace 1199, previous 1236, next 1256, count 1280.
+        let filter = 1167. + px(SEARCH_BAR_GAP);
+        let replace = filter + button + px(SEARCH_MODES_GAP);
+        let previous = replace + button + px(SEARCH_BAR_GAP) + 1. + px(SEARCH_MATCHES_PADDING_LEFT);
+        let next = previous + px(SEARCH_MATCH_BUTTON) + px(STATUS_BAR_ITEM_GAP);
+        let count = next + px(SEARCH_MATCH_BUTTON) + px(SEARCH_COUNT_MARGIN_LEFT);
+        assert_eq!([filter, replace, previous, next, count], [1175., 1199., 1236., 1256., 1280.]);
+        assert_eq!(px(SEARCH_INPUT_TEXT_INSET) + px(SEARCH_INPUT_PADDING_LEFT) + 1., 13.);
+    }
+
+    /// K-30: the landing page's Label heights (phi line height) and Button rows give Zed's y pitches 29 / 34 / 26 (±1).
+    #[test]
+    fn k30_landing_pitches() {
+        let px = |rems: Rems| rems.0 * crate::ui::rem::BASE_REM_PX;
+        let (title, subtitle) = (px(TEXT_SIZE_LARGE) * SEARCH_LANDING_LINE_HEIGHT, px(TEXT_SIZE_DEFAULT) * SEARCH_LANDING_LINE_HEIGHT);
+        for (id, rems) in [("heading_size", TEXT_SIZE_LARGE), ("subtitle_size", TEXT_SIZE_DEFAULT), ("action_label_size", TEXT_SIZE_DEFAULT),
+            ("key_size", TEXT_SIZE_DEFAULT), ("subtitle_margin_bottom", SEARCH_BAR_GAP), ("gap", STATUS_BAR_ITEM_GAP)] {
+            spec::assert_spec(&format!("project_search[\"landing.{id}\"]"), "default", px(rems));
+        }
+        let (gap, row) = (px(STATUS_BAR_ITEM_GAP), px(BUTTON_DEFAULT));
+        assert!((title / 2. + gap + subtitle / 2. - 29.).abs() <= 1.);
+        assert!((subtitle / 2. + px(SEARCH_BAR_GAP) + gap + row / 2. - 34.).abs() <= 1.);
+        assert_eq!(row + gap, 26.);
     }
 
     /// V2: sidebar constants equal the spec exactly (D-3: values inside the tolerance are matched too).

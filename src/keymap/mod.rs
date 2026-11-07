@@ -16,6 +16,8 @@ pub mod file;
 pub const ACTIONS: &[(&str, bool)] = &[
     ("input::Undo", false),
     ("input::Redo", false),
+    ("pane::DeploySearch", false),
+    ("diagnostics::Deploy", false),
     ("workspace::ToggleLeftDock", false),
     ("workspace::Open", false),
     ("workspace::CopyPath", false),

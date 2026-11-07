@@ -397,6 +397,7 @@ impl Workbench {
             Some(ws) => ws.clone(),
             None => {
                 let ws = cx.new(|cx| FolderWorkspace::new(&folder, cx));
+                cx.observe(&ws, |_, _, cx| cx.notify()).detach();
                 self.folders.workspaces.insert(folder.id.clone(), ws.clone());
                 ws
             }
@@ -925,6 +926,7 @@ impl Workbench {
         }
         if let Some(folder) = self.folders.active_folder().cloned() {
             let ws = cx.new(|cx| FolderWorkspace::new(&folder, cx));
+            cx.observe(&ws, |_, _, cx| cx.notify()).detach();
             self.folders.workspaces.insert(folder.id, ws);
         }
         self.log_folders(cx);

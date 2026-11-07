@@ -95,3 +95,17 @@
 | 기본 키맵 스킴 | Zed 기본: `Zed` 키맵 | `04-APP-SPEC.md` A-29.8: `VSCode` 덧씌움 키맵 | 사용자 요구사항에 따라 `base_keymap: VSCode` 결과를 출고 기본으로 고정. |
 | 선택기 384px의 범위 (W-30) | `01-LAYOUT.md` P-002·P-010: Picker "최대 높이 384"(모달 기본 크기로 적힘). tauri SPEC R-4는 이를 "목록 최대 높이 384"로 씀 | gpui V3 Zed 실측(`measure-ORDER-07.md` 3.2, Zed `4304dec`): 목록 영역 384, 모달 전체 462(검색 38 + 목록 384 + 구분선 1 + 푸터 38 + 테두리) | 실측은 384가 목록에만 걸림을 보인다. toml에 둘 다 두었다(`picker["default_max_height"]`, `picker["theme_selector.measured.list_height"]`·`["theme_selector.measured.modal_height"]`). 어느 쪽을 기준으로 할지 결정 필요. 미결. |
 | 선택기 행 높이 (W-30) | `01-LAYOUT.md` P-004: 소스 계산 14 × 1.618 + 8 = 약 30.65px, 목록 위아래 padding 4 | gpui V3 Zed 실측: 행 피치 31~32px, 12행이 384px(평균 32) | 30.65 × 12 + 8 = 375.8로 384와 맞지 않는다. 행 높이를 Zed 화면에서 행 경계 기준으로 다시 실측 필요(`picker["item.height"]`, `picker["theme_selector.measured.list_rows"]`). 미결. |
+
+---
+
+## 6. v0.5 Project Search 값 중 소스로 확인하지 못한 항목 (W-37, V3 재측정 대상)
+
+K-27 보고 "값 표"에서 Zed 파일:줄로 확인되지 않은 값이다. 반경 2는 W-38에서 toml에 올렸고(확인 필요는 남음), 나머지 셋은 toml에 넣지 않았다. 코드는 지금 아래 값을 쓰며, V3에서 Zed 화면과 대조해 정한다.
+
+| 항목 | 지금 값 | 근거 | 문제점 | 필요한 결정/실측 |
+|---|---|---|---|---|
+| 결과 머리줄 모서리 반경 (`search_results.header.radius`) | 2px | Zed `crates/editor/src/element/header.rs` `.rounded_sm()`. tauri SPEC R-22: "2px는 gpui 쪽 정의로 알려진 값이고 소스에서 직접 확인 못 함" | toml에 올림(W-38, core 지시). `rounded_sm`의 px 값을 소스로 확인하지 못한 것은 남음 | gpui `rounded_sm` 정의 확인 또는 Zed 화면 실측(확인 필요) |
+| 발췌 화살표 열 폭 | 32px | 캡처 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08\zed-search-results.png` 픽셀(아이콘 중심 x 20) 추정 | 캡처 추정값이다 | V3에서 Zed 화면 재측정 |
+| 발췌 줄 번호 열 폭 / 코드 시작 | 36px / 번호 열 끝 뒤 24px | 같은 캡처(번호 오른쪽 끝 x≈65, 코드 시작 x≈92) 추정 | 캡처 추정값이다(K-27 "추정 일부") | V3에서 Zed 화면 재측정 |
+| 툴바 뒤 컨트롤 고정 폭 | 150px | 이 앱 구성(22+4+22 + 4 + 6+22+4+22+4+40)의 합. 둘째 줄 상자를 첫 줄과 같은 오른쪽 끝에 맞추는 값 | Zed 값이 아니라 앱 고유 구성값이다 | V3에서 둘째 줄 끝 x가 첫 줄 상자와 같은지 확인 |
+| Project Search 빈 화면 안내 줄·키·부제 글자 크기 (`project_search.landing.action_label_size`·`key_size`·`subtitle_size`, W-39) | 14px(toml, Zed 소스) | 소스: `TextSize::Default` 14. 캡처 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08\zed-search-empty.png`(1440×852 100%) 잉크 폭: "Include/exclude specific paths" 192, "Alt-F" 30, 부제 251(709–960). gpui 같은 글꼴 14px 219·34·287, 12px 164·26 → 캡처는 ≈13px | 해소(W-40, V3 5차): 14로 되돌린 앱의 부제 잉크 폭 251 = Zed 251, 세로 잉크 y 같음, 블록 왼쪽 −129 대 Zed −131. "≈13px"은 측정 비교 오류(4차 비교의 앱 폭 219는 K-28 상태의 다른 배치 값) | 없음(해소) |

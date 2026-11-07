@@ -79,7 +79,7 @@ pub fn sidebar(list: AnyElement, cx: &App) -> impl IntoElement {
                                 Line::action("Focus Sidebar", "multi_workspace::FocusWorkspaceSidebar"),
                             )),
                             cx,
-                        ).on_click(dispatch("multi_workspace::ToggleWorkspaceSidebar")))
+                        ).text_color(super::status::toggle_color(true, theme.primary, theme.muted_foreground)).on_click(dispatch("multi_workspace::ToggleWorkspaceSidebar")))
                         .when(layout_probe::is_enabled(), |d| {
                             d.child(measure_placeholder())
                         }),
@@ -250,6 +250,7 @@ pub struct BarEnd {
 
 /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
 pub struct TabView {
+    pub tool_icon: Option<&'static str>,
     pub title: SharedString,
     /// 임시 탭이면 제목 기울임(I-064, L-68).
     pub preview: bool,
@@ -378,6 +379,8 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                                 .gap(TAB_GAP)
                                 .items_center()
                                 .when(tab.markdown, |d| d.child(super::zed_icons::icon("file_doc").size(ICON_SMALL)))
+                                .when_some(tab.tool_icon, |d, icon| d.child(super::zed_icons::icon(icon).size(ICON_SMALL)
+                                    .text_color(if icon == "check" { theme.success } else { theme.muted_foreground })))
                                 .child(div().whitespace_nowrap().when(tab.preview, |d| d.italic()).when(tab.deleted, |d| d.line_through()).child(tab.title.clone())),
                         )
                         .child(end_slot(i, tab, cx)),
@@ -569,9 +572,8 @@ fn rems_1px() -> Rems {
 
 /// 상태 표시줄 (L-28 padding 4, L-29 그룹 사이 8·그룹 안 4, L-91 좌·우 목록).
 ///
-/// A-11.8 사이드바가 열린 상태: 왼쪽에 프로젝트 패널 토글. A-11.9 닫힌 상태: 사이드바 토글·폴더 추가·프로젝트 패널 토글.
-/// 오른쪽에 커서 위치(L-97, 자리 표시 "1:1").
-pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoElement {
+/// SPEC R-5/R-19/R-22: sidebar toggle, project panel, search and diagnostics; live cursor text on the right.
+pub fn status_bar(dock_open: bool, sidebar_open: bool, status: Option<(String, Option<&'static str>)>, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     // 왼쪽 그룹을 flex_1 로 늘려 오른쪽 그룹을 끝에 붙인다(justify_between 과 보이는 결과가 같다).
     // 이렇게 하면 두 그룹 사이가 정확히 gap 8 이 되어 레이아웃으로 잴 수 있다.
@@ -580,57 +582,39 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
         .on_children_prepainted(probe(&["status-left", "status-right"]))
         .flex_shrink_0()
         .w_full()
-        .p(STATUS_BAR_PADDING)
+        .px(STATUS_BAR_PADDING_X)
+        .py(STATUS_BAR_PADDING_Y)
         .gap(STATUS_BAR_GROUP_GAP)
         .bg(theme.status_bar)
         .child({
-            // A-11.9 사이드바가 닫히면 [사이드바 토글][폴더 추가][프로젝트 패널 토글] 순서.
-            let pp_action = if dock_open { "workspace::ToggleLeftDock" } else { "project_panel::ToggleFocus" };
-            let pp = icon_with_probe(
-                "status-btn-project-panel",
-                &["status-icon-project-panel"],
-                "file_tree",
-                Some(project_panel_toggle_tooltip(dock_open)),
-                cx,
-            )
-            .on_click(dispatch(pp_action));
-            let left = h_flex().flex_1().gap(STATUS_BAR_ITEM_GAP);
-            if sidebar_open {
-                left.on_children_prepainted(probe(&["status-btn-project-panel", "status-left-placeholder"]))
-                    .child(pp)
-                    .when(measuring, |d| d.child(measure_placeholder()))
-            } else {
-                left.on_children_prepainted(probe(&[
-                    "status-btn-sidebar-toggle",
-                    "status-btn-folder-add",
-                    "status-btn-project-panel",
-                ]))
-                .child(
-                    icon_with_probe(
-                        "status-btn-sidebar-toggle",
-                        &["status-icon-sidebar-toggle"],
-                        "threads_sidebar_left_closed",
-                        // L-251 사이드바가 닫혔을 때: `Open Folder Sidebar` + 사이드바 토글 키.
-                        Some(Spec::one(
-                            "status-btn-sidebar-toggle",
-                            Line::action("Open Folder Sidebar", "multi_workspace::ToggleWorkspaceSidebar"),
-                        )),
-                        cx,
-                    )
-                    .on_click(dispatch("multi_workspace::ToggleWorkspaceSidebar")),
-                )
-                .child(
-                    icon_with_probe(
-                        "status-btn-folder-add",
-                        &["status-icon-folder-add"],
-                        "folder_add",
-                        Some(Spec::one("status-btn-folder-add", Line::action("Add Project", "workspace::Open"))),
-                        cx,
-                    )
-                    .on_click(dispatch("workspace::Open")),
-                )
-                .child(pp)
-            }
+            let mut left: Vec<AnyElement> = super::status::left_items(sidebar_open).iter().map(|item| {
+                if item.starts_with("divider") {
+                    return div().flex_shrink_0().w(STATUS_DIVIDER_WIDTH).h(STATUS_DIVIDER_HEIGHT)
+                        .bg(theme.border).into_any_element();
+                }
+                let (id, icon, title, action) = match *item {
+                    "sidebar" => ("status-btn-sidebar-toggle", "threads_sidebar_left_closed", "Open Threads Sidebar", "multi_workspace::ToggleWorkspaceSidebar"),
+                    "project" => ("status-btn-project-panel", "file_tree", if dock_open { "Close Left Dock" } else { "Project Panel" }, if dock_open { "workspace::ToggleLeftDock" } else { "project_panel::ToggleFocus" }),
+                    "search" => ("status-btn-search", "magnifying_glass", "Project Search", "pane::DeploySearch"),
+                    _ => ("status-btn-diagnostics", "check", "Project Diagnostics", "diagnostics::Deploy"),
+                };
+                let line = if *item == "project" && !dock_open { Line::text(title) } else { Line::action(title, action) };
+                let icon_probe: &'static [&'static str] = match *item {
+                    "sidebar" => &["status-icon-sidebar-toggle"],
+                    "project" => &["status-icon-project-panel"],
+                    "search" => &["status-icon-search"],
+                    _ => &["status-icon-diagnostics"],
+                };
+                let button = icon_with_probe(id, icon_probe, icon, Some(Spec::one(id, line)), cx)
+                    .text_color(super::status::toggle_color(*item == "project" && dock_open, theme.primary, theme.muted_foreground))
+                    .on_click(dispatch(action));
+                button.into_any_element()
+            }).collect();
+            // Zed leaves an invisible lsp_button slot before diagnostics (zed.rs, lsp_button.rs): one more item gap.
+            left.insert(left.len() - 1, div().into_any_element());
+            // statusbar.toggle_gap: the sidebar toggle and its divider (the first two items) sit closer together.
+            let toggle = (!sidebar_open).then(|| h_flex().gap(STATUS_TOGGLE_GAP).children(left.drain(..2)));
+            h_flex().flex_1().gap(STATUS_BAR_ITEM_GAP).children(toggle).children(left)
         })
         .child(
             h_flex()
@@ -643,7 +627,10 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
                         .items_center()
                         .h(BUTTON_DEFAULT)
                         .text_size(TEXT_SIZE_SMALL)
-                        .child("1:1"),
+                        // Zed right tools: gap_2 between buttons, each padded px_1 ({line}:{column} and the file type are two buttons).
+                        .gap(STATUS_BAR_GROUP_GAP)
+                        .children(status.into_iter().flat_map(|(position, kind)| std::iter::once(position).chain(kind.map(String::from)))
+                            .map(|text| div().px(STATUS_TEXT_BUTTON_PADDING_X).child(text))),
                 ),
         )
 }
@@ -652,23 +639,6 @@ pub fn status_bar(dock_open: bool, sidebar_open: bool, cx: &App) -> impl IntoEle
 /// 그룹 안 항목이 하나뿐이면 gap 을 잴 수 없어(SPEC R-13), 그룹당 두 개가 되도록 하나 더 둔다.
 fn measure_placeholder() -> Div {
     div().flex_shrink_0().size(BUTTON_DEFAULT)
-}
-
-/// 상태 표시줄 프로젝트 패널 토글의 툴팁(L-253, L-254, L-266). 패널이 열려 있고 활성이면 `Close Left Dock`
-/// + Dock 토글 키, 닫혀 있으면 `Project Panel` + 패널 포커스 토글 키. 왼쪽 Dock 의 패널은 프로젝트 패널 하나라
-///   Dock 이 열려 있으면 활성이다.
-fn project_panel_toggle_tooltip(dock_open: bool) -> Spec {
-    if dock_open {
-        Spec::one(
-            "status-btn-project-panel",
-            Line::action("Close Left Dock", "workspace::ToggleLeftDock"),
-        )
-    } else {
-        Spec::one(
-            "status-btn-project-panel",
-            Line::action("Project Panel", "project_panel::ToggleFocus"),
-        )
-    }
 }
 
 #[cfg(test)]

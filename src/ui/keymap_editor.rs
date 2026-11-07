@@ -317,7 +317,9 @@ impl Workbench {
         // Keymap Editor belongs to the current workspace; Extensions keeps its existing cross-workspace lookup.
         let mut workspaces: Vec<_> = self.folders.workspaces.values().cloned().collect();
         if let Some(ws) = &self.settings_workspace { workspaces.push(ws.clone()); }
-        if path == TOOL_PATH { workspaces = self.active_ws().into_iter().collect(); }
+        if [TOOL_PATH, super::search_view::SEARCH, super::search_view::DIAGNOSTICS].contains(&path) {
+            workspaces = self.active_ws().into_iter().collect();
+        }
         for ws in workspaces {
             let found = ws.read(cx).group.find_source(Path::new(path), ws.read(cx).group.active);
             if let Some((pane, index)) = found {

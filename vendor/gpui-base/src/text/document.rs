@@ -1,5 +1,6 @@
 use gpui::{
     App, IntoElement, ListState, ParentElement as _, SharedString, Styled as _, Window, div,
+    InteractiveElement as _, MouseButton,
 };
 
 use std::{
@@ -249,7 +250,7 @@ impl ParsedDocument {
             return div().children(self.blocks.iter().enumerate().map(move |(ix, node)| {
                 let is_last = ix + 1 == blocks_len;
                 let (is_first, prev) = flow_position(&self.blocks, ix);
-                node.render_block(
+                let element = node.render_block(
                     NodeRenderOptions {
                         ix,
                         is_last,
@@ -260,7 +261,8 @@ impl ParsedDocument {
                     node_cx,
                     window,
                     cx,
-                )
+                );
+                element
             }));
         };
 
@@ -281,7 +283,7 @@ impl ParsedDocument {
                 move |ix, window, cx| {
                     let is_last = ix + 1 == blocks.len();
                     let (is_first, prev) = flow_position(&blocks, ix);
-                    blocks[ix]
+                    let element = blocks[ix]
                         .render_block(
                             NodeRenderOptions {
                                 ix,
@@ -294,12 +296,20 @@ impl ParsedDocument {
                             window,
                             cx,
                         )
-                        .into_any_element()
+                        .into_any_element();
+                    element
                 }
             })
             .size_full(),
         )
     }
+}
+
+pub(super) fn source_click_block(element: gpui::AnyElement, offset: Option<usize>, context: &NodeContext) -> gpui::AnyElement {
+    let (Some(offset), Some(handler)) = (offset, context.source_block_click.clone()) else { return element };
+    div().id(("source-block", offset)).capture_any_mouse_down(move |event, window, cx| {
+        if event.button == MouseButton::Left { handler(offset, window, cx); }
+    }).child(element).into_any_element()
 }
 
 #[cfg(test)]

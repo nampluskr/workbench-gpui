@@ -1,0 +1,255 @@
+{
+  "app": {
+    "app-step1-notabs-status": {
+      "status": "PASS",
+      "title": "Tab-less status bar (R-5 no-tab state)",
+      "started": "2026-11-07T16:41:30.6680194+09:00",
+      "finished": "2026-11-07T16:41:33.0833719+09:00"
+    },
+    "app-step2-cursor-and-filetype": {
+      "status": "PASS",
+      "title": "Cursor position and Markdown filetype (R-5)",
+      "started": "2026-11-07T16:41:33.0858152+09:00",
+      "finished": "2026-11-07T16:41:37.4471399+09:00"
+    },
+    "app-step3-selection-status": {
+      "status": "PASS",
+      "title": "Selection character count in status bar (R-5)",
+      "started": "2026-11-07T16:41:37.4500803+09:00",
+      "finished": "2026-11-07T16:41:40.9398090+09:00"
+    },
+    "app-step4-different-filetypes": {
+      "status": "PASS",
+      "title": "Filetype names across languages (R-5)",
+      "started": "2026-11-07T16:41:40.9430394+09:00",
+      "finished": "2026-11-07T16:41:55.3385942+09:00"
+    },
+    "app-step5-preview-innermost-click": {
+      "status": "PASS",
+      "title": "Innermost Markdown block mapping (R-5)",
+      "started": "2026-11-07T16:41:55.3424264+09:00",
+      "finished": "2026-11-07T16:41:58.8564098+09:00"
+    },
+    "app-step6-sidebar-dock-toggle": {
+      "status": "PASS",
+      "title": "Sidebar and dock toggle states, dividers (R-19/R-22)",
+      "started": "2026-11-07T16:41:58.8588737+09:00",
+      "finished": "2026-11-07T16:42:08.0891281+09:00"
+    },
+    "app-step7-button-tooltips-hover": {
+      "status": "PASS",
+      "title": "Status bar button tooltips on hover (R-22)",
+      "started": "2026-11-07T16:42:08.1076196+09:00",
+      "finished": "2026-11-07T16:42:20.3953652+09:00"
+    },
+    "app-step8-project-search": {
+      "status": "PASS",
+      "title": "Project Search tab, Filters, Replace row, query results (R-22)",
+      "started": "2026-11-07T16:42:20.3979432+09:00",
+      "finished": "2026-11-07T16:42:32.9471995+09:00"
+    },
+    "app-step9-diagnostics": {
+      "status": "PASS",
+      "title": "Diagnostics tab empty problem workspace (R-22)",
+      "started": "2026-11-07T16:42:32.9497052+09:00",
+      "finished": "2026-11-07T16:42:35.3725776+09:00"
+    }
+  },
+  "crops": {
+    "app-step1-notabs-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step1-notabs-right.png",
+      "bounds": {
+        "x": 1410,
+        "w": 26,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "5BA0C64E4AAAB927932935F423B62FE1F683EC8C2625E6BED70484E22773F34F"
+    },
+    "app-step2-cursor-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step2-cursor-right.png",
+      "bounds": {
+        "x": 1358,
+        "w": 78,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "2EB2E875194EE2BEDD6563AA31A008E0B6729F8B94A72166938C3ABC53B3C67A"
+    },
+    "app-step3-selection-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step3-selection-right.png",
+      "bounds": {
+        "x": 1205,
+        "w": 231,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "4B4282E8F3065F3F8F1ED129D615FF1C75A17A34C3CFA076094E4617F27F1C74"
+    },
+    "app-step4-type-rs-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-rs-right.png",
+      "bounds": {
+        "x": 1364,
+        "w": 72,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "E9D5DCFCE66A1C40FC264669B1AE664A9DC58382BCEBDE79F29F475CFF1CFFFA"
+    },
+    "app-step4-type-json-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-json-right.png",
+      "bounds": {
+        "x": 1359,
+        "w": 77,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "1DA3D14EE996F1F1384F381CEEADF476ABD6EB78968023CBE176E7F8E74E69CB"
+    },
+    "app-step4-type-jsonc-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-jsonc-right.png",
+      "bounds": {
+        "x": 1351,
+        "w": 85,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "78314F64F72FEAE91F66D2CEE91A13DA931A2FD3CE2CC3A8F651CF4194BD831F"
+    },
+    "app-step4-type-ts-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-ts-right.png",
+      "bounds": {
+        "x": 1331,
+        "w": 105,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "77459EAC577935998B40546061106D0C6A11D2DEDFD704C06A33219E6238EF6A"
+    },
+    "app-step4-type-txt-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-txt-right.png",
+      "bounds": {
+        "x": 1335,
+        "w": 101,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "5F037ABEF30B5E09603E1E39BBADDCAE0103E500F7243075141A8DA3BC921647"
+    },
+    "app-step6-dock-open-left": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step6-dock-open-left.png",
+      "bounds": {
+        "x": 304,
+        "w": 1020,
+        "h": 22,
+        "y": 826
+      },
+      "sha256": "125C1D18423920AE6331724CEA11658F2913EA8981551D6554F0D85FD032C3B8"
+    },
+    "app-step7-tip-sidebar-crop": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step7-tip-sidebar-crop.png",
+      "bounds": {
+        "x": 24,
+        "w": 233,
+        "h": 33,
+        "y": 803
+      },
+      "sha256": "53B42BDEF4B71F1F2B5B97FEB718B20B5CB480FD2243D987E278055E89638C2E"
+    }
+  },
+  "captures": {
+    "app-step1-notabs-status": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step1-notabs-status.png",
+    "app-step2-cursor": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step2-cursor.png",
+    "app-step3-selection": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step3-selection.png",
+    "app-step4-type-rs": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-rs.png",
+    "app-step4-type-json": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-json.png",
+    "app-step4-type-jsonc": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-jsonc.png",
+    "app-step4-type-ts": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-ts.png",
+    "app-step4-type-txt": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step4-type-txt.png",
+    "app-step5-preview-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step5-preview-open.png",
+    "app-step6-dock-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step6-dock-open.png",
+    "app-step6-dock-closed": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step6-dock-closed.png",
+    "app-step6-sidebar-closed": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step6-sidebar-closed.png",
+    "app-step6-sidebar-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step6-sidebar-open.png",
+    "app-step7-tip-sidebar": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step7-tip-sidebar.png",
+    "app-step7-tip-project": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step7-tip-project.png",
+    "app-step7-tip-search": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step7-tip-search.png",
+    "app-step7-tip-diag": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step7-tip-diag.png",
+    "app-step8-search-empty": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step8-search-empty.png",
+    "app-step8-search-filters": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step8-search-filters.png",
+    "app-step8-search-replace-row": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step8-search-replace-row.png",
+    "app-step8-search-results": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step8-search-results.png",
+    "app-step8-search-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step8-search-open.png",
+    "app-step9-diagnostics": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run2\\app-step9-diagnostics.png"
+  },
+  "hashes": {
+    "app-step1-notabs-status": "9CFC0A8C02042AD4FAC3AF0DF8EA92484F6A60992D40EBA14CCA26F0FA8B8FB4",
+    "app-step2-cursor": "C7997A2A0ACE812CFA983EF06B386A72B45F60B8D2945EFA946AA9680146666D",
+    "app-step3-selection": "362615DEF169EA99002C05838E4F5BC9E6E2AC85E7ABF13FF7A34CD3C0E95879",
+    "app-step4-type-rs": "7909B850B0D2E9D27A6DBC2A5B6E90E6DA8D23BA257754B8A0D5A52480878C96",
+    "app-step4-type-json": "2A3832B06C28ED62E911C5D56208F9B256161F64138F73C19E22F20FBE77028E",
+    "app-step4-type-jsonc": "23516CEA018E64E0AB5EC98E8B081DE17859AE0CF005431211EAA7A560CDFC75",
+    "app-step4-type-ts": "305AD512E1137BF298B23B055CC2D56A3F92C63AAACB958E9E68195E6A5E5A8A",
+    "app-step4-type-txt": "824FB6A343E363E1091D48F0E3B5449EF208F43D0CFC5E43DED145FC63DCEFAE",
+    "app-step5-preview-open": "C4D7CEDC4BE8EC8F00874157EB8E69C1A2FE187A37BF898868686741B6BC74C9",
+    "app-step6-dock-open": "670D1838ED51581432C530BB17305B0CEA0A8E75554CB8D64786BE3D74941DF8",
+    "app-step6-dock-closed": "3FC17C883A8AE84B7A1B06361135ADD4335D8B1246D4DE0D6A3C488AE1D1852F",
+    "app-step6-sidebar-closed": "DEDF018C6D15276990FF991F1B370480D0680087592F1B676C30AC80CD4F8653",
+    "app-step6-sidebar-open": "BE0AEBE878D811EEB7F150D79ACDC57C91CD539416E831037A44A2E8DC0D0025",
+    "app-step7-tip-sidebar": "DEDF018C6D15276990FF991F1B370480D0680087592F1B676C30AC80CD4F8653",
+    "app-step7-tip-project": "85FBE33A29B4F4BED9D0E9CBF4674126699377CCE69E840CC822351647116222",
+    "app-step7-tip-search": "DF9A618CBFA9EC988BE46371897C7FDAEC59174EBE6DEAD366B81234CF49C1BE",
+    "app-step7-tip-diag": "C5BEF6B72DFC11877FA04D4318E320F2684A4D4EEA0947C81EA0C6CCEF6A9F57",
+    "app-step8-search-empty": "14603D4D12C59C7BB09C1EA35068691F02C95BDBD1349868B9480DA7A4BC16BF",
+    "app-step8-search-filters": "75620359F2AA385BB909AD8566E9578D0A7571A39DA3983DBD74393A425F37DB",
+    "app-step8-search-replace-row": "19C22B054B8A0F85A76E096EEB1DB35E6D3D0629036261C1CA37B588F84948C3",
+    "app-step8-search-results": "A7A3A202250CB997D71D918A98C5CCFCE27A76CEEEE2FA7D784D3F7D1E1C14EF",
+    "app-step8-search-open": "032708FC6C0CF3EAA2D8C8579C1C67BFA4FFE13F3DE8079B235B32B1BAA1AB44",
+    "app-step9-diagnostics": "35A61AD8BF2A3269F1CAEA1FDADE680DD7968EAD1F8B723C8BEBF646FED6432F"
+  },
+  "tauri_refs": {
+    "dir": "D:\\projects\\workbench-tauri\\specs\\v0.5\\verify\\ORDER-08",
+    "files": [
+      "tauri-cursor.png",
+      "tauri-diagnostics.png",
+      "tauri-dock-closed.png",
+      "tauri-no-tab.png",
+      "tauri-preview-click.png",
+      "tauri-probe-after-ctrl-shift-v.png",
+      "tauri-re-diagnostics.png",
+      "tauri-re-search-empty.png",
+      "tauri-re-search-results.png",
+      "tauri-re-status-sidebar-closed.png",
+      "tauri-search-empty.png",
+      "tauri-search-open.png",
+      "tauri-search-results.png",
+      "tauri-selection.png",
+      "tauri-sidebar-closed.png",
+      "tauri-sidebar-open.png",
+      "zed-cursor.png",
+      "zed-diagnostics.png",
+      "zed-dock-click1.png",
+      "zed-dock-click2.png",
+      "zed-end-run2.png",
+      "zed-no-tab.png",
+      "zed-no-tab2.png",
+      "zed-project-click1.png",
+      "zed-project-click2.png",
+      "zed-search-empty.png",
+      "zed-search-end.png",
+      "zed-search-filters.png",
+      "zed-search-open.png",
+      "zed-search-replace-row.png",
+      "zed-search-results.png",
+      "zed-selection.png",
+      "zed-tip-diag.png",
+      "zed-tip-dock.png",
+      "zed-tip-f1.png",
+      "zed-tip-f2.png",
+      "zed-tip-filter.png",
+      "zed-tip-project.png",
+      "zed-tip-replace.png",
+      "zed-tip-search.png"
+    ]
+  }
+}

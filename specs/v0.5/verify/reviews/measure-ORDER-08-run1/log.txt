@@ -1,0 +1,186 @@
+[2026-11-07 16:29:30.176] Found Tauri Zed reference directory: D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08
+[2026-11-07 16:29:30.215] Available Tauri Zed reference captures: tauri-cursor.png, tauri-diagnostics.png, tauri-dock-closed.png, tauri-no-tab.png, tauri-preview-click.png, tauri-probe-after-ctrl-shift-v.png, tauri-search-empty.png, tauri-search-open.png, tauri-search-results.png, tauri-selection.png, tauri-sidebar-closed.png, tauri-sidebar-open.png, zed-cursor.png, zed-diagnostics.png, zed-dock-click1.png, zed-dock-click2.png, zed-end-run2.png, zed-no-tab.png, zed-no-tab2.png, zed-project-click1.png, zed-project-click2.png, zed-search-empty.png, zed-search-end.png, zed-search-filters.png, zed-search-open.png, zed-search-replace-row.png, zed-search-results.png, zed-selection.png, zed-tip-diag.png, zed-tip-dock.png, zed-tip-f1.png, zed-tip-f2.png, zed-tip-filter.png, zed-tip-project.png, zed-tip-replace.png, zed-tip-search.png
+[2026-11-07 16:29:30.223] Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+[2026-11-07 16:29:32.818] App launched via session.ps1: PID=24236, fixtureDir='D:\projects\workbench-gpui\target\measure-cf5167c76ecf48c2b8a2758019c96048'
+[2026-11-07 16:29:32.829] Writing ORDER-08 fixture files into 'D:\projects\workbench-gpui\target\measure-cf5167c76ecf48c2b8a2758019c96048'...
+[2026-11-07 16:29:32.856] ORDER-08 fixture files written successfully.
+[2026-11-07 16:29:34.755] Main window handle HWND=0xB088C
+[2026-11-07 16:29:36.864] Resize: {
+[2026-11-07 16:29:36.865] Resize:   "hwnd": "0xB088C",
+[2026-11-07 16:29:36.866] Resize:   "desktop": "Default",
+[2026-11-07 16:29:36.867] Resize:   "title": "",
+[2026-11-07 16:29:36.869] Resize:   "className": "workbench-gpui",
+[2026-11-07 16:29:36.870] Resize:   "workArea_SPI": {
+[2026-11-07 16:29:36.871] Resize:     "left": 0,
+[2026-11-07 16:29:36.872] Resize:     "top": 0,
+[2026-11-07 16:29:36.873] Resize:     "right": 1920,
+[2026-11-07 16:29:36.874] Resize:     "bottom": 1032,
+[2026-11-07 16:29:36.875] Resize:     "width": 1920,
+[2026-11-07 16:29:36.876] Resize:     "height": 1032
+[2026-11-07 16:29:36.878] Resize:   },
+[2026-11-07 16:29:36.879] Resize:   "workArea_Monitor": {
+[2026-11-07 16:29:36.880] Resize:     "device": "\\\\.\\DISPLAY1",
+[2026-11-07 16:29:36.881] Resize:     "left": 0,
+[2026-11-07 16:29:36.882] Resize:     "top": 0,
+[2026-11-07 16:29:36.884] Resize:     "right": 1920,
+[2026-11-07 16:29:36.885] Resize:     "bottom": 1032,
+[2026-11-07 16:29:36.887] Resize:     "width": 1920,
+[2026-11-07 16:29:36.888] Resize:     "height": 1032
+[2026-11-07 16:29:36.889] Resize:   },
+[2026-11-07 16:29:36.890] Resize:   "workAreaCenter": {
+[2026-11-07 16:29:36.891] Resize:     "x": 960.0,
+[2026-11-07 16:29:36.892] Resize:     "y": 516.0
+[2026-11-07 16:29:36.893] Resize:   },
+[2026-11-07 16:29:36.895] Resize:   "windowRect": {
+[2026-11-07 16:29:36.896] Resize:     "left": 232,
+[2026-11-07 16:29:36.897] Resize:     "top": 90,
+[2026-11-07 16:29:36.898] Resize:     "right": 1688,
+[2026-11-07 16:29:36.899] Resize:     "bottom": 950,
+[2026-11-07 16:29:36.900] Resize:     "width": 1456,
+[2026-11-07 16:29:36.901] Resize:     "height": 860
+[2026-11-07 16:29:36.902] Resize:   },
+[2026-11-07 16:29:36.903] Resize:   "windowCenter": {
+[2026-11-07 16:29:36.904] Resize:     "x": 960.0,
+[2026-11-07 16:29:36.905] Resize:     "y": 520.0
+[2026-11-07 16:29:36.906] Resize:   },
+[2026-11-07 16:29:36.907] Resize:   "windowCenterDiff": {
+[2026-11-07 16:29:36.908] Resize:     "dx": 0.0,
+[2026-11-07 16:29:36.911] Resize:     "dy": 4.0
+[2026-11-07 16:29:36.912] Resize:   },
+[2026-11-07 16:29:36.913] Resize:   "clientRect": {
+[2026-11-07 16:29:36.914] Resize:     "width": 1440,
+[2026-11-07 16:29:36.916] Resize:     "height": 852
+[2026-11-07 16:29:36.918] Resize:   },
+[2026-11-07 16:29:36.919] Resize:   "clientToScreen": {
+[2026-11-07 16:29:36.920] Resize:     "x": 240,
+[2026-11-07 16:29:36.921] Resize:     "y": 90
+[2026-11-07 16:29:36.922] Resize:   },
+[2026-11-07 16:29:36.923] Resize:   "clientScreenRect": {
+[2026-11-07 16:29:36.924] Resize:     "left": 240,
+[2026-11-07 16:29:36.925] Resize:     "top": 90,
+[2026-11-07 16:29:36.926] Resize:     "right": 1680,
+[2026-11-07 16:29:36.927] Resize:     "bottom": 942,
+[2026-11-07 16:29:36.928] Resize:     "width": 1440,
+[2026-11-07 16:29:36.929] Resize:     "height": 852
+[2026-11-07 16:29:36.929] Resize:   },
+[2026-11-07 16:29:36.930] Resize:   "clientCenter": {
+[2026-11-07 16:29:36.931] Resize:     "x": 960.0,
+[2026-11-07 16:29:36.932] Resize:     "y": 516.0
+[2026-11-07 16:29:36.933] Resize:   },
+[2026-11-07 16:29:36.934] Resize:   "clientCenterDiff": {
+[2026-11-07 16:29:36.935] Resize:     "dx": 0.0,
+[2026-11-07 16:29:36.936] Resize:     "dy": 0.0
+[2026-11-07 16:29:36.937] Resize:   },
+[2026-11-07 16:29:36.938] Resize:   "capture": {
+[2026-11-07 16:29:36.939] Resize:     "ok": false,
+[2026-11-07 16:29:36.940] Resize:     "path": ""
+[2026-11-07 16:29:36.940] Resize:   }
+[2026-11-07 16:29:36.941] Resize: }
+[2026-11-07 16:29:37.567] Client size check (workbench-gpui): target=1440x852, actual=1440x852
+[2026-11-07 16:29:39.093] Foreground check for 'App started': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:29:39.097] Checking if project tree is loaded...
+[2026-11-07 16:29:39.204] Found 'project-empty-open' button at (660, 202). Clicking...
+[2026-11-07 16:29:40.432] ==================================================================
+[2026-11-07 16:29:40.433] START STEP: app-step1-notabs-status — Tab-less status bar (R-5 no-tab state)
+[2026-11-07 16:29:40.434] ==================================================================
+[2026-11-07 16:29:41.118] Foreground check for 'Capture app-step1-notabs-status': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:29:43.207] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step1-notabs-status.png' (SHA256=9E447FEFD979BF04F11633502D277B3D1050DAEEF1DE937D49EAB9DED98A6E43)
+[2026-11-07 16:29:43.263] STEP FAIL: app-step1-notabs-status — 'x' 매개 변수에서 인수 변환을 처리할 수 없습니다. 값 "[int]System.Collections.Hashtable.x"을(를) 형식 "System.Int32"(으)로 변환할 수 없습니다. 오류: "The input string '[int]System.Collections.Hashtable.x' was not in a correct format."
+[2026-11-07 16:29:43.264] ==================================================================
+[2026-11-07 16:29:43.265] START STEP: app-step2-cursor-and-filetype — Cursor position and Markdown filetype (R-5)
+[2026-11-07 16:29:43.266] ==================================================================
+[2026-11-07 16:29:43.271] Attempting to open file 'sample.md' from tree...
+[2026-11-07 16:29:43.496] Tree row for 'sample.md': index=88, target=tree-row-88 (stdout tree rows match (index 88))
+[2026-11-07 16:29:43.511] Tree row for 'sample.md' not found; recording missing row
+[2026-11-07 16:29:43.512] 측정 불가: tree-row box 없음 (sample.md)
+[2026-11-07 16:29:43.513] STEP FINISHED: app-step2-cursor-and-filetype (status=PASS)
+[2026-11-07 16:29:43.515] ==================================================================
+[2026-11-07 16:29:43.516] START STEP: app-step3-selection-status — Selection character count in status bar (R-5)
+[2026-11-07 16:29:43.516] ==================================================================
+[2026-11-07 16:29:45.353] Foreground check for 'Capture app-step3-selection': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:29:46.948] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step3-selection.png' (SHA256=DC231E24B1A28F82DE5FB4185822EFFBB0F758AACE269D9D66FCF5EC79E6AE72)
+[2026-11-07 16:29:46.961] STEP FAIL: app-step3-selection-status — 'x' 매개 변수에서 인수 변환을 처리할 수 없습니다. 값 "[int]System.Collections.Hashtable.x"을(를) 형식 "System.Int32"(으)로 변환할 수 없습니다. 오류: "The input string '[int]System.Collections.Hashtable.x' was not in a correct format."
+[2026-11-07 16:29:46.962] ==================================================================
+[2026-11-07 16:29:46.963] START STEP: app-step4-different-filetypes — Filetype names across languages (R-5)
+[2026-11-07 16:29:46.964] ==================================================================
+[2026-11-07 16:29:46.968] Attempting to open file 'sample.rs' from tree...
+[2026-11-07 16:29:47.201] Tree row for 'sample.rs': index=89, target=tree-row-89 (stdout tree rows match (index 89))
+[2026-11-07 16:29:47.217] Tree row for 'sample.rs' not found; recording missing row
+[2026-11-07 16:29:47.218] 측정 불가: tree-row box 없음 (sample.rs)
+[2026-11-07 16:29:47.219] Attempting to open file 'sample.json' from tree...
+[2026-11-07 16:29:47.437] Tree row for 'sample.json': index=87, target=tree-row-87 (stdout tree rows match (index 87))
+[2026-11-07 16:29:47.450] Tree row for 'sample.json' not found; recording missing row
+[2026-11-07 16:29:47.451] 측정 불가: tree-row box 없음 (sample.json)
+[2026-11-07 16:29:47.452] Attempting to open file 'tsconfig.json' from tree...
+[2026-11-07 16:29:47.663] Tree row for 'tsconfig.json': index=92, target=tree-row-92 (stdout tree rows match (index 92))
+[2026-11-07 16:29:47.683] Tree row for 'tsconfig.json' not found; recording missing row
+[2026-11-07 16:29:47.684] 측정 불가: tree-row box 없음 (tsconfig.json)
+[2026-11-07 16:29:47.685] Attempting to open file 'sample.ts' from tree...
+[2026-11-07 16:29:47.895] Tree row for 'sample.ts': index=90, target=tree-row-90 (stdout tree rows match (index 90))
+[2026-11-07 16:29:47.909] Tree row for 'sample.ts' not found; recording missing row
+[2026-11-07 16:29:47.910] 측정 불가: tree-row box 없음 (sample.ts)
+[2026-11-07 16:29:47.911] Attempting to open file 'sample.txt' from tree...
+[2026-11-07 16:29:48.135] Tree row for 'sample.txt': index=91, target=tree-row-91 (stdout tree rows match (index 91))
+[2026-11-07 16:29:48.141] Tree row for 'sample.txt' not found; recording missing row
+[2026-11-07 16:29:48.142] 측정 불가: tree-row box 없음 (sample.txt)
+[2026-11-07 16:29:48.143] STEP FINISHED: app-step4-different-filetypes (status=PASS)
+[2026-11-07 16:29:48.144] ==================================================================
+[2026-11-07 16:29:48.145] START STEP: app-step5-preview-innermost-click — Innermost Markdown block mapping (R-5)
+[2026-11-07 16:29:48.147] ==================================================================
+[2026-11-07 16:29:48.150] Attempting to open file 'sample.md' from tree...
+[2026-11-07 16:29:48.369] Tree row for 'sample.md': index=88, target=tree-row-88 (stdout tree rows match (index 88))
+[2026-11-07 16:29:48.382] Tree row for 'sample.md' not found; recording missing row
+[2026-11-07 16:29:48.383] 측정 불가: tree-row box 없음 (sample.md)
+[2026-11-07 16:29:48.383] STEP FINISHED: app-step5-preview-innermost-click (status=PASS)
+[2026-11-07 16:29:48.384] ==================================================================
+[2026-11-07 16:29:48.385] START STEP: app-step6-sidebar-dock-toggle — Sidebar and dock toggle states, dividers (R-19/R-22)
+[2026-11-07 16:29:48.386] ==================================================================
+[2026-11-07 16:29:48.397] 측정 불가: status-btn-project-panel box 없음
+[2026-11-07 16:29:48.408] 측정 불가: status-btn-sidebar-toggle box 없음
+[2026-11-07 16:29:48.409] STEP FINISHED: app-step6-sidebar-dock-toggle (status=PASS)
+[2026-11-07 16:29:48.410] ==================================================================
+[2026-11-07 16:29:48.411] START STEP: app-step7-button-tooltips-hover — Status bar button tooltips on hover (R-22)
+[2026-11-07 16:29:48.412] ==================================================================
+[2026-11-07 16:29:48.426] 측정 불가: status-btn-sidebar-toggle box 없음
+[2026-11-07 16:29:48.433] 측정 불가: status-btn-project-panel box 없음
+[2026-11-07 16:29:48.438] 측정 불가: status-btn-search box 없음
+[2026-11-07 16:29:48.446] 측정 불가: status-btn-diagnostics box 없음
+[2026-11-07 16:29:48.662] STEP FINISHED: app-step7-button-tooltips-hover (status=PASS)
+[2026-11-07 16:29:48.663] ==================================================================
+[2026-11-07 16:29:48.664] START STEP: app-step8-project-search — Project Search tab, Filters, Replace row, query results (R-22)
+[2026-11-07 16:29:48.665] ==================================================================
+[2026-11-07 16:29:49.626] Search tab check in layout dump: present=False
+[2026-11-07 16:29:49.786] Foreground check for 'Capture app-step8-search-empty': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:29:51.577] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step8-search-empty.png' (SHA256=34303E5E301F9637CD26122CF40D119B313FD014A415FE543B7997C77DCEF059)
+[2026-11-07 16:29:52.262] Foreground check for 'Capture app-step8-search-filters': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:29:54.597] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step8-search-filters.png' (SHA256=487943021DD42134E04A91FBF7BA75B40B50451C15485D2BEB6925D4A51C25CC)
+[2026-11-07 16:29:55.297] Foreground check for 'Capture app-step8-search-replace-row': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:29:57.015] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step8-search-replace-row.png' (SHA256=70B4BFAF23B6B3FC8BD55A208A8299D83A1C183A6421052DE55D12DBCDA278C1)
+[2026-11-07 16:29:57.017] SAFETY GUARD: Replace button will NOT be clicked; no Replace shortcuts will be sent.
+[2026-11-07 16:29:57.018] Typing search query 'ORDER08_SEARCH_MATCH'...
+[2026-11-07 16:29:59.646] Foreground check for 'Capture app-step8-search-results': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:30:01.398] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step8-search-results.png' (SHA256=0A4557F687A8421E1B62744EC2ACC16A44739927F85CF2D599B72B7FB9040C42)
+[2026-11-07 16:30:02.387] Foreground check for 'Capture app-step8-search-open': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:30:04.367] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step8-search-open.png' (SHA256=7F7DD845F690391637DF24A60A765591ED23746CB59A6A06B17818E419C5E9BA)
+[2026-11-07 16:30:04.369] STEP FINISHED: app-step8-project-search (status=PASS)
+[2026-11-07 16:30:04.370] ==================================================================
+[2026-11-07 16:30:04.375] START STEP: app-step9-diagnostics — Diagnostics tab empty problem workspace (R-22)
+[2026-11-07 16:30:04.376] ==================================================================
+[2026-11-07 16:30:05.484] Foreground check for 'Capture app-step9-diagnostics': target=0xB088C, foreground=0xB088C
+[2026-11-07 16:30:07.134] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\app-step9-diagnostics.png' (SHA256=AE49882CAE3DA13000A98068CB8F7BBB2EBC380BF97CC3A42FDBD89677DC11A4)
+[2026-11-07 16:30:07.136] STEP FINISHED: app-step9-diagnostics (status=PASS)
+[2026-11-07 16:30:07.137] ==================================================================
+[2026-11-07 16:30:07.138] ALL ORDER-08 MEASUREMENT STEPS COMPLETED.
+[2026-11-07 16:30:07.139] ==================================================================
+[2026-11-07 16:30:07.140] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 16:30:07.142] Closing main window of app process (PID=24236)...
+[2026-11-07 16:30:07.251] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 16:30:08.650] session.ps1 Stop: {
+[2026-11-07 16:30:08.651] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 16:30:08.652] session.ps1 Stop:   "exeUnchanged": true,
+[2026-11-07 16:30:08.653] session.ps1 Stop:   "files": {
+[2026-11-07 16:30:08.654] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 16:30:08.655] session.ps1 Stop:   },
+[2026-11-07 16:30:08.656] session.ps1 Stop:   "restored": true
+[2026-11-07 16:30:08.656] session.ps1 Stop: }
+[2026-11-07 16:30:08.668] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08\order08-summary.json

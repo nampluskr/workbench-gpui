@@ -29,6 +29,9 @@ mod panel_view;
 mod project_panel;
 mod rem;
 mod settings;
+mod status;
+mod project_search;
+mod search_view;
 mod shell;
 mod tab_close;
 mod task_dialog;
@@ -519,7 +522,14 @@ impl Render for Workbench {
                     .border_color(border)
                     .child(self.body(window, cx)),
             )
-            .child(layout::status_bar(self.dock_open, self.sidebar_open, cx));
+            .child(layout::status_bar(self.dock_open, self.sidebar_open, self.active_ws().and_then(|ws| {
+                let tab = ws.read(cx).group.active_tab()?;
+                if let Some((view, _)) = &tab.tool {
+                    return view.clone().downcast::<search_view::SearchView>().ok().and_then(|view| view.read(cx).position.clone().map(|position| (position, None)));
+                }
+                let editor = tab.editor.read(cx);
+                Some(status::parts(&editor.value(), editor.cursor(), &[editor.selected_range()], Some(&tab.path)))
+            }), cx));
 
         // L-11 창 최상위 가로 배치: [왼쪽 사이드바] → [Workspace]. 오른쪽 사이드바는 없다.
         // L-12 사이드바는 창 전체 높이를 차지하고 Workspace 의 타이틀 바는 사이드바 오른쪽에서 시작한다.
@@ -589,6 +599,8 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_open_settings))
+            .on_action(cx.listener(Self::on_project_search))
+            .on_action(cx.listener(Self::on_diagnostics))
             .on_action(cx.listener(Self::on_open_keymap))
             .on_action(cx.listener(Self::on_open_extensions))
             .on_action(cx.listener(Self::on_toggle_theme_selector))

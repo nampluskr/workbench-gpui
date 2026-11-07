@@ -246,7 +246,10 @@ impl Workbench {
             .map(|(i, t)| {
                 let doc = group.docs.get(&t.path);
                 TabView {
-                    title: tab_title(t).into(),
+                    title: t.tool.as_ref().and_then(|(view, _)| view.clone().downcast::<super::search_view::SearchView>().ok())
+                        .map(|view| view.read(cx).title.clone()).unwrap_or_else(|| tab_title(t)).into(),
+                    tool_icon: if t.path == std::path::Path::new(super::search_view::SEARCH) { Some("magnifying_glass") }
+                        else if t.path == std::path::Path::new(super::search_view::DIAGNOSTICS) { Some("check") } else { None },
                     markdown: t.markdown,
                     focused: focus && focused,
                     preview: t.preview,
@@ -287,7 +290,7 @@ impl Workbench {
         let item: AnyElement = match (focused.then_some(&self.editor_poc).and_then(Option::as_ref), pane.active_tab()) {
             (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
             (None, Some(t)) if t.tool.is_some() => div().size_full().child(t.tool.as_ref().unwrap().0.clone()).into_any_element(),
-            (None, Some(t)) if t.markdown => markdown_preview::body(id, t.editor.read(cx).value(), cx).into_any_element(),
+            (None, Some(t)) if t.markdown => markdown_preview::body(id, t.editor.read(cx).value(), t.editor.clone(), cx).into_any_element(),
             (None, Some(t)) => {
                 let readonly = !group.docs.get(&t.path).is_some_and(|d| d.loaded);
                 div()

@@ -1,0 +1,128 @@
+[2026-11-07 17:02:26.077] Found Tauri Zed reference directory: D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08
+[2026-11-07 17:02:26.106] Available Tauri Zed reference captures: tauri-cursor.png, tauri-diagnostics.png, tauri-dock-closed.png, tauri-no-tab.png, tauri-preview-click.png, tauri-probe-after-ctrl-shift-v.png, tauri-re-diagnostics.png, tauri-re-search-empty.png, tauri-re-search-results.png, tauri-re-status-sidebar-closed.png, tauri-search-empty.png, tauri-search-open.png, tauri-search-results.png, tauri-selection.png, tauri-sidebar-closed.png, tauri-sidebar-open.png, zed-cursor.png, zed-diagnostics.png, zed-dock-click1.png, zed-dock-click2.png, zed-end-run2.png, zed-no-tab.png, zed-no-tab2.png, zed-project-click1.png, zed-project-click2.png, zed-search-empty.png, zed-search-end.png, zed-search-filters.png, zed-search-open.png, zed-search-replace-row.png, zed-search-results.png, zed-selection.png, zed-tip-diag.png, zed-tip-dock.png, zed-tip-f1.png, zed-tip-f2.png, zed-tip-filter.png, zed-tip-project.png, zed-tip-replace.png, zed-tip-search.png
+[2026-11-07 17:02:26.112] Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+[2026-11-07 17:02:28.006] App launched via session.ps1: PID=25036, fixtureDir='D:\projects\workbench-gpui\target\measure-6b598e06f7304dbe984d6097bd891ec7'
+[2026-11-07 17:02:28.014] Writing ORDER-08 fixture files into 'D:\projects\workbench-gpui\target\measure-6b598e06f7304dbe984d6097bd891ec7'...
+[2026-11-07 17:02:28.036] ORDER-08 fixture files written into '00-order08\' subfolder successfully.
+[2026-11-07 17:02:29.628] Main window handle HWND=0x15E07E2
+[2026-11-07 17:02:31.572] Resize: {
+[2026-11-07 17:02:31.573] Resize:   "hwnd": "0x15E07E2",
+[2026-11-07 17:02:31.574] Resize:   "desktop": "Default",
+[2026-11-07 17:02:31.575] Resize:   "title": "",
+[2026-11-07 17:02:31.576] Resize:   "className": "workbench-gpui",
+[2026-11-07 17:02:31.577] Resize:   "workArea_SPI": {
+[2026-11-07 17:02:31.581] Resize:     "left": 0,
+[2026-11-07 17:02:31.582] Resize:     "top": 0,
+[2026-11-07 17:02:31.583] Resize:     "right": 1920,
+[2026-11-07 17:02:31.584] Resize:     "bottom": 1032,
+[2026-11-07 17:02:31.585] Resize:     "width": 1920,
+[2026-11-07 17:02:31.586] Resize:     "height": 1032
+[2026-11-07 17:02:31.587] Resize:   },
+[2026-11-07 17:02:31.587] Resize:   "workArea_Monitor": {
+[2026-11-07 17:02:31.588] Resize:     "device": "\\\\.\\DISPLAY1",
+[2026-11-07 17:02:31.589] Resize:     "left": 0,
+[2026-11-07 17:02:31.590] Resize:     "top": 0,
+[2026-11-07 17:02:31.591] Resize:     "right": 1920,
+[2026-11-07 17:02:31.592] Resize:     "bottom": 1032,
+[2026-11-07 17:02:31.593] Resize:     "width": 1920,
+[2026-11-07 17:02:31.594] Resize:     "height": 1032
+[2026-11-07 17:02:31.595] Resize:   },
+[2026-11-07 17:02:31.596] Resize:   "workAreaCenter": {
+[2026-11-07 17:02:31.597] Resize:     "x": 960.0,
+[2026-11-07 17:02:31.598] Resize:     "y": 516.0
+[2026-11-07 17:02:31.599] Resize:   },
+[2026-11-07 17:02:31.600] Resize:   "windowRect": {
+[2026-11-07 17:02:31.601] Resize:     "left": 232,
+[2026-11-07 17:02:31.602] Resize:     "top": 90,
+[2026-11-07 17:02:31.602] Resize:     "right": 1688,
+[2026-11-07 17:02:31.603] Resize:     "bottom": 950,
+[2026-11-07 17:02:31.604] Resize:     "width": 1456,
+[2026-11-07 17:02:31.605] Resize:     "height": 860
+[2026-11-07 17:02:31.606] Resize:   },
+[2026-11-07 17:02:31.607] Resize:   "windowCenter": {
+[2026-11-07 17:02:31.608] Resize:     "x": 960.0,
+[2026-11-07 17:02:31.608] Resize:     "y": 520.0
+[2026-11-07 17:02:31.609] Resize:   },
+[2026-11-07 17:02:31.610] Resize:   "windowCenterDiff": {
+[2026-11-07 17:02:31.611] Resize:     "dx": 0.0,
+[2026-11-07 17:02:31.611] Resize:     "dy": 4.0
+[2026-11-07 17:02:31.612] Resize:   },
+[2026-11-07 17:02:31.613] Resize:   "clientRect": {
+[2026-11-07 17:02:31.614] Resize:     "width": 1440,
+[2026-11-07 17:02:31.614] Resize:     "height": 852
+[2026-11-07 17:02:31.615] Resize:   },
+[2026-11-07 17:02:31.616] Resize:   "clientToScreen": {
+[2026-11-07 17:02:31.616] Resize:     "x": 240,
+[2026-11-07 17:02:31.617] Resize:     "y": 90
+[2026-11-07 17:02:31.618] Resize:   },
+[2026-11-07 17:02:31.619] Resize:   "clientScreenRect": {
+[2026-11-07 17:02:31.619] Resize:     "left": 240,
+[2026-11-07 17:02:31.620] Resize:     "top": 90,
+[2026-11-07 17:02:31.623] Resize:     "right": 1680,
+[2026-11-07 17:02:31.624] Resize:     "bottom": 942,
+[2026-11-07 17:02:31.624] Resize:     "width": 1440,
+[2026-11-07 17:02:31.625] Resize:     "height": 852
+[2026-11-07 17:02:31.626] Resize:   },
+[2026-11-07 17:02:31.627] Resize:   "clientCenter": {
+[2026-11-07 17:02:31.628] Resize:     "x": 960.0,
+[2026-11-07 17:02:31.642] Resize:     "y": 516.0
+[2026-11-07 17:02:31.643] Resize:   },
+[2026-11-07 17:02:31.644] Resize:   "clientCenterDiff": {
+[2026-11-07 17:02:31.644] Resize:     "dx": 0.0,
+[2026-11-07 17:02:31.645] Resize:     "dy": 0.0
+[2026-11-07 17:02:31.646] Resize:   },
+[2026-11-07 17:02:31.646] Resize:   "capture": {
+[2026-11-07 17:02:31.647] Resize:     "ok": false,
+[2026-11-07 17:02:31.648] Resize:     "path": ""
+[2026-11-07 17:02:31.649] Resize:   }
+[2026-11-07 17:02:31.649] Resize: }
+[2026-11-07 17:02:32.279] Client size check (workbench-gpui): target=1440x852, actual=1440x852
+[2026-11-07 17:02:32.436] Foreground check for 'App started': target=0x15E07E2, foreground=0x15E07E2
+[2026-11-07 17:02:32.473] Initial layout snapshot seq=1
+[2026-11-07 17:02:32.474] Checking if project tree is loaded...
+[2026-11-07 17:02:32.501] Found 'project-empty-open' button at (660, 202). Clicking...
+[2026-11-07 17:02:32.877] Project tree loaded, seq=2
+[2026-11-07 17:02:32.878] Searching for '00-order08' folder in tree to expand...
+[2026-11-07 17:02:32.897] Tree row for '00-order08': index=1, target=tree-row-01 (stdout tree rows match (index 1))
+[2026-11-07 17:02:32.909] Clicking '00-order08' folder row at (660, 162) to expand...
+[2026-11-07 17:02:33.254] Expanded '00-order08' folder, seq=3
+[2026-11-07 17:02:33.264] Skipping step 'app-step1-notabs-status' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.266] Skipping step 'app-step2-cursor-and-filetype' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.267] Skipping step 'app-step3-selection-status' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.268] Skipping step 'app-step4-different-filetypes' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.269] Skipping step 'app-step5-preview-innermost-click' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.270] Skipping step 'app-step6-sidebar-dock-toggle' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.271] Skipping step 'app-step7-button-tooltips-hover' (not requested or explicitly skipped).
+[2026-11-07 17:02:33.272] ==================================================================
+[2026-11-07 17:02:33.273] START STEP: app-step8-project-search — Project Search tab, Filters, Replace row, query results (R-22)
+[2026-11-07 17:02:33.275] ==================================================================
+[2026-11-07 17:02:33.538] Search tab check in layout dump: present=True, seq=4
+[2026-11-07 17:02:33.706] Foreground check for 'Capture app-step8-search-empty': target=0x15E07E2, foreground=0x15E07E2
+[2026-11-07 17:02:35.446] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run4\app-step8-search-empty.png' (SHA256=DBF3D2AA36817F654E9AFD8D2A7DB590EF8D275AD2D30E58424067971949991F)
+[2026-11-07 17:02:35.841] Foreground check for 'Capture app-step8-search-filters': target=0x15E07E2, foreground=0x15E07E2
+[2026-11-07 17:02:37.462] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run4\app-step8-search-filters.png' (SHA256=FD0973F69DFFE1DF0601ACC1B2048AE5A54002B1982BB60E30261239FCC8BE7B)
+[2026-11-07 17:02:37.867] Foreground check for 'Capture app-step8-search-replace-row': target=0x15E07E2, foreground=0x15E07E2
+[2026-11-07 17:02:39.524] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run4\app-step8-search-replace-row.png' (SHA256=FDEA80F0229F820825BF480CEAE617D95EEA9DDAD10639F8C1B2DB654DAEB6C1)
+[2026-11-07 17:02:39.525] SAFETY GUARD: Replace button will NOT be clicked; no Replace shortcuts will be sent.
+[2026-11-07 17:02:39.526] Typing search query 'ORDER08_SEARCH_MATCH'...
+[2026-11-07 17:02:41.606] Foreground check for 'Capture app-step8-search-results': target=0x15E07E2, foreground=0x15E07E2
+[2026-11-07 17:02:43.201] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run4\app-step8-search-results.png' (SHA256=E93DEE83634C05E708895EC9C1F1903F17CB43AACB1BB29DB2CDB08515232F89)
+[2026-11-07 17:02:43.735] Foreground check for 'Capture app-step8-search-open': target=0x15E07E2, foreground=0x15E07E2
+[2026-11-07 17:02:45.336] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run4\app-step8-search-open.png' (SHA256=31B58250D7A6280FB595CFB3124271DEFC0C4F1205F1267FF0B28FF89EC0908A)
+[2026-11-07 17:02:45.339] STEP FINISHED: app-step8-project-search (status=PASS)
+[2026-11-07 17:02:45.341] Skipping step 'app-step9-diagnostics' (not requested or explicitly skipped).
+[2026-11-07 17:02:45.341] ==================================================================
+[2026-11-07 17:02:45.343] ALL ORDER-08 MEASUREMENT STEPS COMPLETED.
+[2026-11-07 17:02:45.344] ==================================================================
+[2026-11-07 17:02:45.345] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 17:02:45.347] Closing main window of app process (PID=25036)...
+[2026-11-07 17:02:45.454] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 17:02:46.653] session.ps1 Stop: {
+[2026-11-07 17:02:46.658] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 17:02:46.659] session.ps1 Stop:   "restored": true,
+[2026-11-07 17:02:46.659] session.ps1 Stop:   "files": {
+[2026-11-07 17:02:46.660] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 17:02:46.661] session.ps1 Stop:   },
+[2026-11-07 17:02:46.661] session.ps1 Stop:   "exeUnchanged": true
+[2026-11-07 17:02:46.662] session.ps1 Stop: }
+[2026-11-07 17:02:46.674] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run4\order08-summary.json

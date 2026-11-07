@@ -261,6 +261,8 @@ fn help_url(action: &str) -> Option<&'static str> {
 }
 
 const LICENSES: &[(&str, &str)] = &[
+    ("ignore 0.4.34 — MIT OR Unlicense", concat!(include_str!("../../resources/licenses/ignore/LICENSE-MIT"), "\n", include_str!("../../resources/licenses/ignore/UNLICENSE"))),
+    ("regex 1.13.1 — MIT OR Apache-2.0", concat!(include_str!("../../resources/licenses/regex/LICENSE-MIT"), "\n", include_str!("../../resources/licenses/regex/LICENSE-APACHE"))),
     ("IBM Plex Sans", include_str!("../../resources/fonts/ibm-plex-sans/license.txt")),
     ("Lilex", include_str!("../../resources/fonts/lilex/OFL.txt")),
     ("Zed icons — Lucide", include_str!("../../resources/zed-icons/LICENSES")),
@@ -1133,7 +1135,17 @@ mod tests {
         assert_eq!(super::help_url("help::RequestFeature"), super::help_url("help::FileBugReport"));
         assert_eq!(super::help_url("help::Repository"), Some("https://github.com/nampluskr/workbench-gpui"));
         assert_eq!(super::help_url("workspace::Save"), None);
-        assert_eq!(super::LICENSES.len(), 6);
+        assert_eq!(super::LICENSES.len(), 8);
+        for (name, files) in [
+            ("ignore 0.4.34", ["ignore/LICENSE-MIT", "ignore/UNLICENSE"]),
+            ("regex 1.13.1", ["regex/LICENSE-MIT", "regex/LICENSE-APACHE"]),
+        ] {
+            let (_, text) = super::LICENSES.iter().find(|(n, _)| n.starts_with(name)).unwrap_or_else(|| panic!("missing license entry {name}"));
+            assert!(!text.trim().is_empty());
+            for file in files {
+                assert!(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/licenses").join(file).is_file(), "missing {file}");
+            }
+        }
         assert!(super::LICENSES.iter().all(|(_, text)| text.contains("License") || text.contains("LICENSE")));
         assert_eq!(super::PANEL_LAYOUTS, ["Classic"]);
         assert_eq!(super::EDITOR_LAYOUT, [("Split Up", "pane::SplitUp"), ("Split Down", "pane::SplitDown"), ("Split Left", "pane::SplitLeft"), ("Split Right", "pane::SplitRight")]);

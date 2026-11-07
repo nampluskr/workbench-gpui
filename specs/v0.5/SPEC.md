@@ -408,7 +408,7 @@ I-4, core D-8. 요청 원문 "테마 적용 필요. 'v' 항목의 Themes에서 �
 - `13:27 Markdown`처럼 `{line}:{column}` 뒤에 한 칸 띄우고 파일 형식 이름을 보인다(`refs/I-5-zed.png`).
 - 상태 바 안의 위치는 Zed와 같다. 오른쪽 아이콘 묶음 바로 앞이다(`refs/zed-split.png`).
 - 마크다운 미리보기에서도 마우스로 누른 곳의 위치를 잡고 같은 형식으로 보인다. line·column은 누른 곳에 해당하는 원본 문서의 위치다.
-- 열린 탭이 없을 때의 표시: Zed와 같게 한다. Zed의 실제 표시는 미정(Zed에서 확인, Phase 8).
+- 열린 탭이 없을 때의 표시: Zed와 같게 한다. 위치·파일 형식 모두 보이지 않는다(아래 "Zed 확인").
 
 **판정 방법**
 
@@ -417,6 +417,48 @@ I-4, core D-8. 요청 원문 "테마 적용 필요. 'v' 항목의 Themes에서 �
 **출처**
 
 I-5. 요청 원문 "마크다운 문서 또는 소스코드 파일이 에디터 탭에서 편집 상태로 열리면, 상태바에 {line}:{column} {Filetype} 표시 필요 - zed에서 동작 방식임", 정한 것 "편집 상태가 아니라 미리보기일 때도 마우스 클릭으로 위치를 잡고 동일"(사용자 2026-11-06).
+
+
+**Zed 확인(2026-11-07)**
+
+조건: core ORDER-08 2장, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` R-5·R-19·R-22 "Zed 확인(2026-11-07)", W-34로 옮김, core ORDER-08 2장 "한 갈래가 먼저 확인했으면 읽어 써도 됨"). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08\` 아래(이하 `ORDER-08/`로 줄임).
+
+| 상태 | 상태 바 오른쪽(오른쪽 아이콘 묶음 바로 앞) | 캡처 |
+|---|---|---|
+| 편집 중 | `5:23 Markdown` | `ORDER-08/zed-cursor.png` |
+| 선택 있음 | `5:28 (5 characters) Markdown` — 위치는 선택 끝(커서), 괄호에 선택한 글자 수 | `ORDER-08/zed-selection.png` |
+| 열린 탭 없음 | 위치·파일 형식 모두 없음, 오른쪽 아이콘만 | `ORDER-08/zed-no-tab2.png`, `ORDER-08/zed-end-run2.png` |
+| Project Search 결과 탭(여러 파일 묶음) | `45:35 (8 characters)`만, 파일 형식 이름 없음 | `ORDER-08/zed-search-results.png` |
+| Diagnostics 탭 | 둘 다 없음 | `ORDER-08/zed-diagnostics.png` |
+
+- 선택 문구 규칙(tauri K-24 구현 `src/editor/position.ts`, Zed `crates/go_to_line/src/cursor_position.rs` 기준): 괄호 안에 선택이 2개 이상이면 `N selections`, 선택한 줄이 2줄 이상이면 `N lines`, 선택한 글자가 1자 이상이면 `N character(s)`를 `, `로 이어 보인다. 글자 수는 Unicode scalar 수다. 선택 끝이 줄의 0열이면 그 마지막 줄은 줄 수에 넣지 않는다. 캡처로 확인한 것은 글자 수 한 가지다.
+
+*파일 형식 이름 대응 표* (Zed `4304dec732` `crates/grammars/src/*/config.toml`의 `name`·`path_suffixes`. tauri `src/editor/filetypes.json`, gpui K-23 `src/ui/status_languages.rs`와 같다)
+
+| Zed 이름 | path_suffixes |
+|---|---|
+| Shell Script | sh, bash, bashrc, bash_profile, bash_aliases, bash_login, bash_logout, brushrc, bats, envrc, profile, zsh, zshrc, zshenv, zsh_profile, zsh_aliases, zsh_histfile, zlogin, zprofile, PKGBUILD, APKBUILD, ebuild |
+| C | c |
+| C++ | cc, ccm, hh, cpp, cppm, h, hpp, cxx, cxxm, hxx, c++, c++m, h++, hip, ipp, inl, ino, ixx, cu, cuh, C, H |
+| CSS | css, postcss, pcss |
+| Diff | diff, patch |
+| Env | .env |
+| Git Commit | TAG_EDITMSG, MERGE_MSG, COMMIT_EDITMSG, NOTES_EDITMSG, EDIT_DESCRIPTION |
+| Go | go |
+| Go Mod | mod |
+| Go Work | work |
+| JavaScript | js, jsx, mjs, cjs |
+| JSON | json, flake.lock, geojson, topojson, prettierrc, json.dist, deno.lock |
+| JSONC | jsonc, bun.lock, devcontainer.json, pyrightconfig.json, tsconfig.json, luaurc, swcrc, babelrc, eslintrc, stylelintrc, jshintrc |
+| Markdown | md, mdx, mdwn, mdc, markdown, MD |
+| Python | py, pyi, mpy |
+| Rust | rs |
+| TSX | tsx |
+| TypeScript | ts, cts, mts |
+| YAML | yml, yaml, pixi.lock, clang-format, clangd, bst |
+| Plain Text | 위 표에 없는 suffix(fallback) |
+
+- 맞추는 규칙: 파일 이름이 suffix와 같거나 `.{suffix}`로 끝나면 대응한다. 여러 개가 맞으면 긴 suffix가 이긴다(`tsconfig.json` → JSONC). 마크다운 미리보기 탭은 Markdown이다.
 
 ---
 
@@ -855,6 +897,15 @@ I-18, core D-9. 요청 원문 "close left dock 아이콘 모양 - 트리 모양 
 
 I-19. 요청 원문 "side bar, left bar on 상태일 때 진하게 표시"(사용자 2026-11-06).
 
+
+**Zed 확인(2026-11-07)**
+
+조건: core ORDER-08 2장, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` R-5·R-19·R-22 "Zed 확인(2026-11-07)", W-34로 옮김, core ORDER-08 2장 "한 갈래가 먼저 확인했으면 읽어 써도 됨"). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08\` 아래(이하 `ORDER-08/`로 줄임).
+
+- 왼쪽 dock(프로젝트 패널) 열림: 상태 바 `file_tree` 아이콘 색이 강조색(One Dark `#74ade8`, `text.accent` 계열)이 되고 배경은 바뀌지 않는다. 닫힘: 보통 아이콘 색이다(`ORDER-08/zed-cursor.png` 대 `ORDER-08/zed-project-click1.png`).
+- 사이드바 열림: 상태 바의 사이드바 토글이 사라지고, 사이드바 아래쪽 줄에 `threads_sidebar_left_open` 아이콘(왼쪽 절반 채움)이 보인다(`ORDER-08/zed-dock-click1.png`).
+- Zed 사이드바 아래쪽의 시계(스레드 기록)는 AI 기능이라 이 앱 범위 밖이다(core D-17).
+
 ---
 
 ## R-20. 파일 경로의 역슬래시를 원화 기호가 아닌 `\`로 보인다
@@ -925,6 +976,57 @@ I-21. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
 **출처**
 
 I-22. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
+
+
+**Zed 확인(2026-11-07)**
+
+조건: core ORDER-08 2장, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` R-5·R-19·R-22 "Zed 확인(2026-11-07)", W-34로 옮김, core ORDER-08 2장 "한 갈래가 먼저 확인했으면 읽어 써도 됨"). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08\` 아래(이하 `ORDER-08/`로 줄임). 툴팁의 키는 사용자 Zed 키맵 기준이다. 범위는 core D-17(언어 서버 없음, 진단은 문제 없음 화면, Project Search는 실제 검색, 이 앱에 없는 기능의 버튼은 넣지 않음)을 따른다.
+
+*왼쪽 버튼* (`ORDER-08/zed-tip-*.png`, 버튼 중심 x 14·44·74·104)
+
+| 순서 | 아이콘 | 툴팁 | 비고 |
+|---|---|---|---|
+| 1 | `threads_sidebar_left_closed` | "Open Threads Sidebar" `Ctrl-Alt-J` | 이 앱은 폴더 사이드바다. 사이드바가 열리면 상태 바에서 사라진다(R-19) |
+| — | 세로 구분선 | | spec `statusbar.left_divider.*`(W-33): 폭 1, 높이 16(y 829~844), 색 border 토큰, x 28 |
+| 2 | `file_tree` | dock 열림 "Close Left Dock" `Ctrl-B`, 닫힘 "Project Panel" | 켜짐 표시는 R-19 |
+| — | 세로 구분선 | | 같은 spec ID, x 59 |
+| 3 | 돋보기 | "Project Search" `Ctrl-Shift-F` | Project Search 탭을 연다 |
+| 4 | 진단 ✓ | "Project Diagnostics" `Ctrl-Shift-M` | Diagnostics 탭을 연다 |
+
+- 사이드바가 닫혀 있을 때 상태 바에 Add Project(`folder_add`) 버튼이 없다. `folder_add`는 사이드바가 열렸을 때 사이드바 아래쪽 줄 오른쪽 끝에만 있다(`ORDER-08/zed-dock-click1.png`).
+- 구분선 근거: Zed `4304dec732` `crates/workspace/src/status_bar.rs` 283·287행 `Divider::vertical().color(DividerColor::Border)`(W-33).
+
+*Project Search 탭* (`ORDER-08/zed-search-empty.png`, `zed-search-results.png`, `zed-search-filters.png`, `zed-search-replace-row.png`, `zed-search-end.png`, `zed-search-open.png`, `zed-tip-filter.png`, `zed-tip-replace.png`)
+
+- 탭 제목: 돋보기 아이콘 + "Project Search"(빈 상태), 검색 뒤에는 검색어.
+- 툴바 한 줄: 왼쪽 모두 접기/펴기 버튼, 검색칸(placeholder "Search all files…"), 칸 안 오른쪽 Aa(Match case `Alt-C`)·wd(Match whole words `Alt-W`)·.*(Match with regex `Alt-R`), 칸 밖 Toggle Filters(`Alt-F`)·Toggle Replace(`Alt-Shift-H`), 이전/다음 결과 화살표, `1/19`(현재/전체, 빈 상태 `0/0`).
+- 빈 상태 가운데: "Search All Files" / "Start typing to search. For more options:" / 아이콘 + "Include/exclude specific paths `Alt-F`", "Find and replace `Alt-Shift-H`", "Match with regex `Alt-R`", "Match case `Alt-C`", "Match whole words `Alt-W`".
+- Filters 줄: "Include: e.g. src/**/*.rs", "Exclude: e.g. vendor/*, *.lock" 두 칸 + "Only Search Open Files" 토글 + "Also search files ignored by configuration" 토글(기본 꺼짐 = `.gitignore`에 걸린 파일 제외).
+- Replace 줄: "Replace in project…" 칸 + 다음 바꾸기·모두 바꾸기 아이콘 두 개(확인 때 누르지 않음).
+- 결과: 파일마다 머리줄(접기 화살표, 파일 이름, 흐린 경로 또는 제목 경로 breadcrumb, 오른쪽 "Open File `Alt-Enter`"). 그 아래 일치 줄과 앞뒤 2줄 발췌(줄 번호, 위/아래로 더 펼치기 화살표), 일치 부분 강조. 결과 수는 툴바의 `현재/전체`.
+- 동작: Enter로 검색한다. `Alt-Enter`나 Open File로 그 파일·위치를 일반 편집 탭으로 연다(`ORDER-08/zed-search-open.png`: AGENTS.md 미리보기 탭, `45:35`).
+- 검색 대상(tauri 구현 `src-tauri/src/project_search.rs`, Zed `crates/project/src/project_search.rs` 166·167행 기준): `.gitignore`에 걸린 파일은 위 토글이 꺼져 있으면 뺀다. NUL 바이트가 있거나 디코딩되지 않는 파일(바이너리)은 뺀다. 한도는 파일 5,000개·일치 10,000개, 발췌 앞뒤 줄은 2다.
+- 참고: 사용자 Zed는 VSCode 기본 키맵이라 편집 영역 포커스에서 `Alt-Shift-H`는 다른 명령(incoming calls)이 잡았다. 툴팁 표기는 `Alt-Shift-H`다.
+- 구현 의존성: crate `ignore 0.4.34`·`regex 1.13.1`(DECISIONS D-12).
+
+*Project Search 빈 화면 크기* (core DECISION 2026-11-07: Zed 소스 값으로, W-39)
+
+- 소스 값(Zed `4304dec`, leader 확인, toml `[project_search]` `landing.*`):
+  - 제목: `crates/search/src/project_search.rs:1089` `Label::new(heading_text).size(LabelSize::Large)` → `crates/ui/src/components/label/label_like.rs:242` `text_ui_lg` → `crates/ui/src/styles/typography.rs:138` `TextSize::Large = rems_from_px(16)` → 16(`project_search.landing.heading_size`).
+  - 부제: `project_search.rs:2521-2527` `Label::new("Start typing to search. For more options:").color(Muted).mb_2()`, size 지정 없음 → `LabelSize::Default` → `TextSize::Default` 14(`landing.subtitle_size`), 아래 margin `mb_2` 8(`landing.subtitle_margin_bottom`).
+  - 안내 줄: `project_search.rs:1032-1043` `Button::new(id, label).start_icon(Icon::new(icon).size(IconSize::Small)).key_binding(..)` → 라벨 `button.rs:517` `label_size.unwrap_or_default()` 14(`landing.action_label_size`), 키 `keybinding.rs:544-546` size 없음 → 14(`landing.key_size`).
+  - 간격: 부제·안내 줄 묶음 `project_search.rs:2519` `v_flex().gap_1()` 4, 제목과 그 묶음 `:1111` `v_flex().gap_1()` 4(`landing.gap`).
+  - rem 환산: `rems_from_px(n)`은 1rem = 16px 기준(typography.rs 주석), Zed 기본 ui_font_size 16.
+- 캡처 측정(tauri `ORDER-08/zed-search-empty.png`, 1440×852 100%): 안내 줄 "Include/exclude specific paths" 잉크 폭 192, 키 "Alt-F" 30, 부제 709–960(251). gpui 같은 글꼴로 14px이면 219·34·287, 12px이면 164·26 → 캡처는 ≈13px에 해당한다. 제목 "Search All Files"는 16px에서 109로 Zed와 같다.
+- 결론: 소스 값 14를 쓰고, 캡처도 14px와 맞는다(소스 14 = 캡처). leader V3 5차(17:12, `verify/reviews/measure-ORDER-08-run5/app-step8-search-empty.png`)에서 14로 되돌린 앱의 부제 잉크 폭 251 = Zed 251, 세로 잉크 y 377·407·441·466·493·519·545 = Zed와 같음, 블록 왼쪽(영역 중심 기준) −129 대 Zed −131이다.
+- 위 "캡처는 ≈13px에 해당"은 측정 비교 오류였다. 4차 비교에 쓴 앱 폭 219는 K-28 상태의 다른 배치에서 잰 값이다(W-40). `spec/ambiguous.md` 6절 해소.
+
+*Diagnostics 탭* (`ORDER-08/zed-diagnostics.png`)
+
+- 탭 제목 "✓ No problems"(✓ 초록).
+- 툴바 왼쪽 접기 버튼, 오른쪽 아이콘 4개(검색, 스파클, 새로고침, 경고 토글).
+- 가운데 "No problems in workspace".
+- 이 앱에는 언어 서버가 없어 진단 출처가 없으므로 이 "문제 없음" 화면만 보인다(core D-17).
 
 ---
 

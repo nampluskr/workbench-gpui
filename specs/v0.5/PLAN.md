@@ -217,8 +217,8 @@ core PLAN의 순서를 그대로 따른다. 이유도 core PLAN "Phase 순서의
 | Phase 4 | done | 2026-11-07 | 2026-11-07 | `f82a292` | 충족(core-leader 2026-11-07, 사용자 위임 D-13: I-20 두 갈래, 네이티브 대화 상자는 OS 표시로 V4). 코드 변경 없음(Phase 3 글꼴로 풀림). V3 I-20 PASS, ORDER-03 남은 1건(5자리 줄 번호 열) PASS, OS 대화 상자는 'OS 표시'(`verify/reviews/measure-ORDER-04.md`). push 완료 |
 | Phase 5 | done | 2026-11-07 | 2026-11-07 | `e9c9825` | 충족(core-leader 2026-11-07, 사용자 위임 D-13: I-1·I-18 두 갈래, 같은 Zed 커밋·같은 대응 이름, 창 버튼은 Zed Windows와 같은 글리프). V3 I-1 21/22 PASS, 측정 불가 1(pane 축소 `minimize.svg`, Phase 6 화면 차례 재측정). I-6 재측정 정상(1440×852). push 완료 |
 | Phase 6 | done | 2026-11-07 | 2026-11-07 | `271ebf6` | 충족(core-leader 2026-11-07, 사용자 위임 D-13: I-2·I-17, D-15 범위, 두 갈래 세부 일치). ORDER-06 1단계·R1(`c723b7e`·`f013563`)·R2(`271ebf6`). R2 V3 캡처(Keymap Editor·Extensions·"v" 버튼)는 Phase 7 V3와 함께(ORDER-07 추가 (a)). push 완료 |
-| Phase 7 | review | 2026-11-07 | - | - | ORDER-07. 추가 지시 (a) ORDER-06-R2 V3 캡처 함께, (b) 측정 세션 도구 단단히(C-30). K-19~K-22, V3 PASS(앱 4차 6단계 PASS, Zed 트리 아이콘 비교는 측정 불가 → V1 근거, `verify/reviews/measure-ORDER-07.md`). core-leader 판정 대기 |
-| Phase 8 | todo | - | - | - | - |
+| Phase 7 | done | 2026-11-07 | 2026-11-07 | `158061a` | 충족(core-leader 2026-11-07, 사용자 위임 D-13: I-3·I-4 두 갈래, 같은 출처·버전·기본값). ORDER-07. 추가 지시 (a) ORDER-06-R2 V3 캡처 함께, (b) 측정 세션 도구 단단히(C-30). K-19~K-22, V3 PASS(앱 4차 6단계 PASS, Zed 트리 아이콘 비교는 측정 불가 → V1 근거, `verify/reviews/measure-ORDER-07.md`). push 완료 |
+| Phase 8 | doing | 2026-11-07 | - | - | ORDER-08. 범위 core D-17(언어 서버 없음, 진단은 문제 없음 화면, Project Search 실제 검색) |
 | Phase 9 | todo | - | - | - | - |
 | Phase 10 | todo | - | - | - | - |
 | Phase 11 | todo | - | - | - | - |

@@ -49,6 +49,8 @@ pub const WORKSPACE_CONTEXT: &str = "Workspace";
 pub const NOT_EDITING: &str = "not_editing";
 
 pub const BUILTIN: &[Builtin] = &[
+    b("ctrl-shift-f", "Workspace", "pane::DeploySearch", "SPEC R-22 Zed confirmation"),
+    b("ctrl-shift-m", "Workspace", "diagnostics::Deploy", "SPEC R-22 Zed confirmation"),
     // 메뉴 (I-516, I-517). 프로젝트 패널의 위·아래·처음·끝(I-030)과 이름 입력 확정·취소(I-035)도 이 묶음이 맡는다.
     b("down", "menu", "menu::SelectNext", "I-517, I-030"),
     b("tab", "menu", "menu::SelectNext", "I-517, I-030"),

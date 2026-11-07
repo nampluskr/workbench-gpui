@@ -1,0 +1,137 @@
+{
+  "app": {
+    "app-step2-cursor-and-filetype": {
+      "status": "PASS",
+      "title": "Cursor position and Markdown filetype (R-5)",
+      "started": "2026-11-07T16:53:44.2645835+09:00",
+      "finished": "2026-11-07T16:53:48.4769369+09:00"
+    },
+    "app-step3-selection-status": {
+      "status": "PASS",
+      "title": "Selection character count in status bar (R-5)",
+      "started": "2026-11-07T16:53:48.4851511+09:00",
+      "finished": "2026-11-07T16:53:52.0519364+09:00"
+    },
+    "app-step7-button-tooltips-hover": {
+      "status": "PASS",
+      "title": "Status bar button tooltips on hover (R-22)",
+      "started": "2026-11-07T16:53:52.0576215+09:00",
+      "finished": "2026-11-07T16:54:00.7320783+09:00"
+    },
+    "app-step8-project-search": {
+      "status": "PASS",
+      "title": "Project Search tab, Filters, Replace row, query results (R-22)",
+      "started": "2026-11-07T16:54:00.7352575+09:00",
+      "finished": "2026-11-07T16:54:14.0145700+09:00"
+    },
+    "app-step9-diagnostics": {
+      "status": "PASS",
+      "title": "Diagnostics tab empty problem workspace (R-22)",
+      "started": "2026-11-07T16:54:14.0181435+09:00",
+      "finished": "2026-11-07T16:54:16.1979617+09:00"
+    }
+  },
+  "crops": {
+    "app-step2-cursor-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step2-cursor-right.png",
+      "bounds": {
+        "h": 22,
+        "y": 826,
+        "x": 1337,
+        "w": 99
+      },
+      "sha256": "850E8CE1EE6D6B3B038549E3D904D4F76CCDB7ECD48075D5288343E73A9E30D4"
+    },
+    "app-step3-selection-right": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step3-selection-right.png",
+      "bounds": {
+        "h": 22,
+        "y": 826,
+        "x": 1105,
+        "w": 331
+      },
+      "sha256": "48FD252F4F7BFF6EAE9A5B8F2A4F60B33E3CE653D5B52FFA86FC96BCE85CB57D"
+    },
+    "app-step7-tip-search-crop": {
+      "path": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step7-tip-search-crop.png",
+      "bounds": {
+        "h": 33,
+        "y": 803,
+        "x": 84,
+        "w": 197
+      },
+      "sha256": "18964FDB3D57E155D0A0E5E099819CC6D45406E4C6574DB30506AD11738B328D"
+    }
+  },
+  "captures": {
+    "app-step2-cursor": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step2-cursor.png",
+    "app-step3-selection": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step3-selection.png",
+    "app-step7-tip-project": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step7-tip-project.png",
+    "app-step7-tip-search": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step7-tip-search.png",
+    "app-step7-tip-diag": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step7-tip-diag.png",
+    "app-step8-search-empty": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step8-search-empty.png",
+    "app-step8-search-filters": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step8-search-filters.png",
+    "app-step8-search-replace-row": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step8-search-replace-row.png",
+    "app-step8-search-results": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step8-search-results.png",
+    "app-step8-search-open": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step8-search-open.png",
+    "app-step9-diagnostics": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-08-run3\\app-step9-diagnostics.png"
+  },
+  "hashes": {
+    "app-step2-cursor": "5789A3F9FEFC34FF74848594D0C6F3BDA5CD5730CEA7438804237A9F6EE1DFB5",
+    "app-step3-selection": "0776CF5366C18AF8E7BCD148B4AF058F26897F3CC3524317094EC43997265B38",
+    "app-step7-tip-project": "47BCE41DD30917734C7926A3CE4E330A6BCB9521F526D55E92864457E88B06D8",
+    "app-step7-tip-search": "48FCA6B23FDC8929CC91829D25846F16C0CD9C399015FDD13C0BBF08051BC0AB",
+    "app-step7-tip-diag": "7D04852C8F8289790B136990F63189ECE66FB782789DBA69B641ABA4D3921A40",
+    "app-step8-search-empty": "89926F49DC249D675537A86BC54B3A5FCECE7B9ECE44CA8547759077FB0D4A88",
+    "app-step8-search-filters": "C2FC5A503A51CF33D0878DA03BDE3626CEC79BF82A39C0A6F9762D8D30BD91EB",
+    "app-step8-search-replace-row": "0A9BA25B1A463C3129608F1D2DD763F12E6D602CC2392E31C076DDF3249F15C8",
+    "app-step8-search-results": "B3BA1868485E6E41F50A5F391089532FA697B6F8B4292D39BB4F6C80E4DD69A0",
+    "app-step8-search-open": "CD3842E7750D3E82741679FDC91BE0978EA069DB6D5E8E349266437208385691",
+    "app-step9-diagnostics": "C873F7F3B23A88722041642A70F36A4F1EC9DB6C76707447F7DD722D349E410B"
+  },
+  "tauri_refs": {
+    "dir": "D:\\projects\\workbench-tauri\\specs\\v0.5\\verify\\ORDER-08",
+    "files": [
+      "tauri-cursor.png",
+      "tauri-diagnostics.png",
+      "tauri-dock-closed.png",
+      "tauri-no-tab.png",
+      "tauri-preview-click.png",
+      "tauri-probe-after-ctrl-shift-v.png",
+      "tauri-re-diagnostics.png",
+      "tauri-re-search-empty.png",
+      "tauri-re-search-results.png",
+      "tauri-re-status-sidebar-closed.png",
+      "tauri-search-empty.png",
+      "tauri-search-open.png",
+      "tauri-search-results.png",
+      "tauri-selection.png",
+      "tauri-sidebar-closed.png",
+      "tauri-sidebar-open.png",
+      "zed-cursor.png",
+      "zed-diagnostics.png",
+      "zed-dock-click1.png",
+      "zed-dock-click2.png",
+      "zed-end-run2.png",
+      "zed-no-tab.png",
+      "zed-no-tab2.png",
+      "zed-project-click1.png",
+      "zed-project-click2.png",
+      "zed-search-empty.png",
+      "zed-search-end.png",
+      "zed-search-filters.png",
+      "zed-search-open.png",
+      "zed-search-replace-row.png",
+      "zed-search-results.png",
+      "zed-selection.png",
+      "zed-tip-diag.png",
+      "zed-tip-dock.png",
+      "zed-tip-f1.png",
+      "zed-tip-f2.png",
+      "zed-tip-filter.png",
+      "zed-tip-project.png",
+      "zed-tip-replace.png",
+      "zed-tip-search.png"
+    ]
+  }
+}

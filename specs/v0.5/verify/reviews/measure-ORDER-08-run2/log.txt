@@ -1,0 +1,282 @@
+[2026-11-07 16:41:22.167] Found Tauri Zed reference directory: D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08
+[2026-11-07 16:41:22.191] Available Tauri Zed reference captures: tauri-cursor.png, tauri-diagnostics.png, tauri-dock-closed.png, tauri-no-tab.png, tauri-preview-click.png, tauri-probe-after-ctrl-shift-v.png, tauri-re-diagnostics.png, tauri-re-search-empty.png, tauri-re-search-results.png, tauri-re-status-sidebar-closed.png, tauri-search-empty.png, tauri-search-open.png, tauri-search-results.png, tauri-selection.png, tauri-sidebar-closed.png, tauri-sidebar-open.png, zed-cursor.png, zed-diagnostics.png, zed-dock-click1.png, zed-dock-click2.png, zed-end-run2.png, zed-no-tab.png, zed-no-tab2.png, zed-project-click1.png, zed-project-click2.png, zed-search-empty.png, zed-search-end.png, zed-search-filters.png, zed-search-open.png, zed-search-replace-row.png, zed-search-results.png, zed-selection.png, zed-tip-diag.png, zed-tip-dock.png, zed-tip-f1.png, zed-tip-f2.png, zed-tip-filter.png, zed-tip-project.png, zed-tip-replace.png, zed-tip-search.png
+[2026-11-07 16:41:22.197] Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+[2026-11-07 16:41:24.635] App launched via session.ps1: PID=32080, fixtureDir='D:\projects\workbench-gpui\target\measure-5c7d061b954d4ec1b4311451a255444d'
+[2026-11-07 16:41:24.646] Writing ORDER-08 fixture files into 'D:\projects\workbench-gpui\target\measure-5c7d061b954d4ec1b4311451a255444d'...
+[2026-11-07 16:41:24.679] ORDER-08 fixture files written into '00-order08\' subfolder successfully.
+[2026-11-07 16:41:26.250] Main window handle HWND=0x25F09B2
+[2026-11-07 16:41:28.219] Resize: {
+[2026-11-07 16:41:28.220] Resize:   "hwnd": "0x25F09B2",
+[2026-11-07 16:41:28.221] Resize:   "desktop": "Default",
+[2026-11-07 16:41:28.222] Resize:   "title": "",
+[2026-11-07 16:41:28.223] Resize:   "className": "workbench-gpui",
+[2026-11-07 16:41:28.224] Resize:   "workArea_SPI": {
+[2026-11-07 16:41:28.226] Resize:     "left": 0,
+[2026-11-07 16:41:28.227] Resize:     "top": 0,
+[2026-11-07 16:41:28.228] Resize:     "right": 1920,
+[2026-11-07 16:41:28.229] Resize:     "bottom": 1032,
+[2026-11-07 16:41:28.230] Resize:     "width": 1920,
+[2026-11-07 16:41:28.231] Resize:     "height": 1032
+[2026-11-07 16:41:28.232] Resize:   },
+[2026-11-07 16:41:28.233] Resize:   "workArea_Monitor": {
+[2026-11-07 16:41:28.234] Resize:     "device": "\\\\.\\DISPLAY1",
+[2026-11-07 16:41:28.235] Resize:     "left": 0,
+[2026-11-07 16:41:28.236] Resize:     "top": 0,
+[2026-11-07 16:41:28.236] Resize:     "right": 1920,
+[2026-11-07 16:41:28.237] Resize:     "bottom": 1032,
+[2026-11-07 16:41:28.239] Resize:     "width": 1920,
+[2026-11-07 16:41:28.240] Resize:     "height": 1032
+[2026-11-07 16:41:28.241] Resize:   },
+[2026-11-07 16:41:28.242] Resize:   "workAreaCenter": {
+[2026-11-07 16:41:28.243] Resize:     "x": 960.0,
+[2026-11-07 16:41:28.244] Resize:     "y": 516.0
+[2026-11-07 16:41:28.245] Resize:   },
+[2026-11-07 16:41:28.246] Resize:   "windowRect": {
+[2026-11-07 16:41:28.247] Resize:     "left": 232,
+[2026-11-07 16:41:28.248] Resize:     "top": 90,
+[2026-11-07 16:41:28.249] Resize:     "right": 1688,
+[2026-11-07 16:41:28.250] Resize:     "bottom": 950,
+[2026-11-07 16:41:28.254] Resize:     "width": 1456,
+[2026-11-07 16:41:28.255] Resize:     "height": 860
+[2026-11-07 16:41:28.256] Resize:   },
+[2026-11-07 16:41:28.257] Resize:   "windowCenter": {
+[2026-11-07 16:41:28.258] Resize:     "x": 960.0,
+[2026-11-07 16:41:28.259] Resize:     "y": 520.0
+[2026-11-07 16:41:28.260] Resize:   },
+[2026-11-07 16:41:28.261] Resize:   "windowCenterDiff": {
+[2026-11-07 16:41:28.262] Resize:     "dx": 0.0,
+[2026-11-07 16:41:28.262] Resize:     "dy": 4.0
+[2026-11-07 16:41:28.263] Resize:   },
+[2026-11-07 16:41:28.264] Resize:   "clientRect": {
+[2026-11-07 16:41:28.265] Resize:     "width": 1440,
+[2026-11-07 16:41:28.266] Resize:     "height": 852
+[2026-11-07 16:41:28.267] Resize:   },
+[2026-11-07 16:41:28.268] Resize:   "clientToScreen": {
+[2026-11-07 16:41:28.268] Resize:     "x": 240,
+[2026-11-07 16:41:28.269] Resize:     "y": 90
+[2026-11-07 16:41:28.270] Resize:   },
+[2026-11-07 16:41:28.271] Resize:   "clientScreenRect": {
+[2026-11-07 16:41:28.272] Resize:     "left": 240,
+[2026-11-07 16:41:28.273] Resize:     "top": 90,
+[2026-11-07 16:41:28.273] Resize:     "right": 1680,
+[2026-11-07 16:41:28.274] Resize:     "bottom": 942,
+[2026-11-07 16:41:28.275] Resize:     "width": 1440,
+[2026-11-07 16:41:28.276] Resize:     "height": 852
+[2026-11-07 16:41:28.278] Resize:   },
+[2026-11-07 16:41:28.278] Resize:   "clientCenter": {
+[2026-11-07 16:41:28.279] Resize:     "x": 960.0,
+[2026-11-07 16:41:28.280] Resize:     "y": 516.0
+[2026-11-07 16:41:28.281] Resize:   },
+[2026-11-07 16:41:28.282] Resize:   "clientCenterDiff": {
+[2026-11-07 16:41:28.282] Resize:     "dx": 0.0,
+[2026-11-07 16:41:28.283] Resize:     "dy": 0.0
+[2026-11-07 16:41:28.284] Resize:   },
+[2026-11-07 16:41:28.285] Resize:   "capture": {
+[2026-11-07 16:41:28.286] Resize:     "ok": false,
+[2026-11-07 16:41:28.287] Resize:     "path": ""
+[2026-11-07 16:41:28.288] Resize:   }
+[2026-11-07 16:41:28.289] Resize: }
+[2026-11-07 16:41:28.925] Client size check (workbench-gpui): target=1440x852, actual=1440x852
+[2026-11-07 16:41:29.848] Foreground check for 'App started': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:29.876] Initial layout snapshot seq=1
+[2026-11-07 16:41:29.877] Checking if project tree is loaded...
+[2026-11-07 16:41:29.905] Found 'project-empty-open' button at (660, 202). Clicking...
+[2026-11-07 16:41:30.258] Project tree loaded, seq=2
+[2026-11-07 16:41:30.259] Searching for '00-order08' folder in tree to expand...
+[2026-11-07 16:41:30.271] Tree row for '00-order08': index=1, target=tree-row-01 (stdout tree rows match (index 1))
+[2026-11-07 16:41:30.294] Clicking '00-order08' folder row at (660, 162) to expand...
+[2026-11-07 16:41:30.654] Expanded '00-order08' folder, seq=3
+[2026-11-07 16:41:30.664] ==================================================================
+[2026-11-07 16:41:30.665] START STEP: app-step1-notabs-status — Tab-less status bar (R-5 no-tab state)
+[2026-11-07 16:41:30.666] ==================================================================
+[2026-11-07 16:41:31.344] Foreground check for 'Capture app-step1-notabs-status': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:32.978] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step1-notabs-status.png' (SHA256=9CFC0A8C02042AD4FAC3AF0DF8EA92484F6A60992D40EBA14CCA26F0FA8B8FB4)
+[2026-11-07 16:41:33.008] Box 'status-icon-project-panel': bounds=308.00,830.00,14.00,14.00
+[2026-11-07 16:41:33.009] Box 'status-icon-search': bounds=339.00,830.00,14.00,14.00
+[2026-11-07 16:41:33.010] Box 'status-icon-diagnostics': bounds=369.00,830.00,14.00,14.00
+[2026-11-07 16:41:33.011] Box 'sidebar-icon-toggle': bounds=8.00,830.00,14.00,14.00
+[2026-11-07 16:41:33.012] Box 'sidebar-btn-toggle': bounds=4.00,826.00,22.00,22.00
+[2026-11-07 16:41:33.013] Box 'status-left': bounds=304.00,826.00,1098.00,22.00
+[2026-11-07 16:41:33.016] Box 'status-right': bounds=1410.00,826.00,26.00,22.00
+[2026-11-07 16:41:33.017] Box 'status-cursor': bounds=1436.00,826.00,0.00,22.00
+[2026-11-07 16:41:33.080] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step1-notabs-right.png' [1410,826 26 x 22] (SHA256=5BA0C64E4AAAB927932935F423B62FE1F683EC8C2625E6BED70484E22773F34F)
+[2026-11-07 16:41:33.082] STEP FINISHED: app-step1-notabs-status (status=PASS)
+[2026-11-07 16:41:33.083] ==================================================================
+[2026-11-07 16:41:33.084] START STEP: app-step2-cursor-and-filetype — Cursor position and Markdown filetype (R-5)
+[2026-11-07 16:41:33.085] ==================================================================
+[2026-11-07 16:41:33.090] Attempting to open file 'sample.md' from tree...
+[2026-11-07 16:41:33.303] Tree row for 'sample.md': index=3, target=tree-row-03 (stdout tree rows match (index 3))
+[2026-11-07 16:41:33.318] Double-clicking tree row for 'sample.md' at screen coords (660, 214)...
+[2026-11-07 16:41:33.887] File 'sample.md' opened, seq=6
+[2026-11-07 16:41:35.353] Foreground check for 'Capture app-step2-cursor': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:37.360] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step2-cursor.png' (SHA256=C7997A2A0ACE812CFA983EF06B386A72B45F60B8D2945EFA946AA9680146666D)
+[2026-11-07 16:41:37.389] Box 'status-icon-project-panel': bounds=308.00,830.00,14.00,14.00
+[2026-11-07 16:41:37.391] Box 'status-icon-search': bounds=339.00,830.00,14.00,14.00
+[2026-11-07 16:41:37.392] Box 'status-icon-diagnostics': bounds=369.00,830.00,14.00,14.00
+[2026-11-07 16:41:37.393] Box 'sidebar-icon-toggle': bounds=8.00,830.00,14.00,14.00
+[2026-11-07 16:41:37.394] Box 'sidebar-btn-toggle': bounds=4.00,826.00,22.00,22.00
+[2026-11-07 16:41:37.395] Box 'status-left': bounds=304.00,826.00,1020.00,22.00
+[2026-11-07 16:41:37.396] Box 'status-right': bounds=1332.00,826.00,104.00,22.00
+[2026-11-07 16:41:37.397] Box 'status-cursor': bounds=1358.00,826.00,78.00,22.00
+[2026-11-07 16:41:37.444] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step2-cursor-right.png' [1358,826 78 x 22] (SHA256=2EB2E875194EE2BEDD6563AA31A008E0B6729F8B94A72166938C3ABC53B3C67A)
+[2026-11-07 16:41:37.446] STEP FINISHED: app-step2-cursor-and-filetype (status=PASS)
+[2026-11-07 16:41:37.447] ==================================================================
+[2026-11-07 16:41:37.448] START STEP: app-step3-selection-status — Selection character count in status bar (R-5)
+[2026-11-07 16:41:37.449] ==================================================================
+[2026-11-07 16:41:38.970] Foreground check for 'Capture app-step3-selection': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:40.610] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step3-selection.png' (SHA256=362615DEF169EA99002C05838E4F5BC9E6E2AC85E7ABF13FF7A34CD3C0E95879)
+[2026-11-07 16:41:40.660] Box 'status-icon-project-panel': bounds=308.00,830.00,14.00,14.00
+[2026-11-07 16:41:40.660] Box 'status-icon-search': bounds=339.00,830.00,14.00,14.00
+[2026-11-07 16:41:40.661] Box 'status-icon-diagnostics': bounds=369.00,830.00,14.00,14.00
+[2026-11-07 16:41:40.662] Box 'sidebar-icon-toggle': bounds=8.00,830.00,14.00,14.00
+[2026-11-07 16:41:40.663] Box 'sidebar-btn-toggle': bounds=4.00,826.00,22.00,22.00
+[2026-11-07 16:41:40.663] Box 'status-left': bounds=304.00,826.00,1013.00,22.00
+[2026-11-07 16:41:40.664] Box 'status-right': bounds=1325.00,826.00,111.00,22.00
+[2026-11-07 16:41:40.665] Box 'status-cursor': bounds=1351.00,826.00,85.00,22.00
+[2026-11-07 16:41:40.692] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step3-selection-right.png' [1205,826 231 x 22] (SHA256=4B4282E8F3065F3F8F1ED129D615FF1C75A17A34C3CFA076094E4617F27F1C74)
+[2026-11-07 16:41:40.938] STEP FINISHED: app-step3-selection-status (status=PASS)
+[2026-11-07 16:41:40.939] ==================================================================
+[2026-11-07 16:41:40.941] START STEP: app-step4-different-filetypes — Filetype names across languages (R-5)
+[2026-11-07 16:41:40.942] ==================================================================
+[2026-11-07 16:41:40.946] Attempting to open file 'sample.rs' from tree...
+[2026-11-07 16:41:41.173] Tree row for 'sample.rs': index=4, target=tree-row-04 (stdout tree rows match (index 4))
+[2026-11-07 16:41:41.197] Double-clicking tree row for 'sample.rs' at screen coords (660, 240)...
+[2026-11-07 16:41:41.767] File 'sample.rs' opened, seq=11
+[2026-11-07 16:41:41.931] Foreground check for 'Capture app-step4-type-rs': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:44.136] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-rs.png' (SHA256=7909B850B0D2E9D27A6DBC2A5B6E90E6DA8D23BA257754B8A0D5A52480878C96)
+[2026-11-07 16:41:44.173] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-rs-right.png' [1364,826 72 x 22] (SHA256=E9D5DCFCE66A1C40FC264669B1AE664A9DC58382BCEBDE79F29F475CFF1CFFFA)
+[2026-11-07 16:41:44.174] Attempting to open file 'sample.json' from tree...
+[2026-11-07 16:41:44.402] Tree row for 'sample.json': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 16:41:44.421] Double-clicking tree row for 'sample.json' at screen coords (660, 188)...
+[2026-11-07 16:41:44.986] File 'sample.json' opened, seq=14
+[2026-11-07 16:41:45.149] Foreground check for 'Capture app-step4-type-json': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:46.832] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-json.png' (SHA256=2A3832B06C28ED62E911C5D56208F9B256161F64138F73C19E22F20FBE77028E)
+[2026-11-07 16:41:46.887] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-json-right.png' [1359,826 77 x 22] (SHA256=1DA3D14EE996F1F1384F381CEEADF476ABD6EB78968023CBE176E7F8E74E69CB)
+[2026-11-07 16:41:46.888] Attempting to open file 'tsconfig.json' from tree...
+[2026-11-07 16:41:47.111] Tree row for 'tsconfig.json': index=8, target=tree-row-08 (stdout tree rows match (index 8))
+[2026-11-07 16:41:47.169] Double-clicking tree row for 'tsconfig.json' at screen coords (660, 344)...
+[2026-11-07 16:41:47.770] File 'tsconfig.json' opened, seq=18
+[2026-11-07 16:41:47.931] Foreground check for 'Capture app-step4-type-jsonc': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:49.602] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-jsonc.png' (SHA256=23516CEA018E64E0AB5EC98E8B081DE17859AE0CF005431211EAA7A560CDFC75)
+[2026-11-07 16:41:49.715] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-jsonc-right.png' [1351,826 85 x 22] (SHA256=78314F64F72FEAE91F66D2CEE91A13DA931A2FD3CE2CC3A8F651CF4194BD831F)
+[2026-11-07 16:41:49.716] Attempting to open file 'sample.ts' from tree...
+[2026-11-07 16:41:49.983] Tree row for 'sample.ts': index=5, target=tree-row-05 (stdout tree rows match (index 5))
+[2026-11-07 16:41:50.050] Double-clicking tree row for 'sample.ts' at screen coords (660, 266)...
+[2026-11-07 16:41:50.656] File 'sample.ts' opened, seq=22
+[2026-11-07 16:41:50.809] Foreground check for 'Capture app-step4-type-ts': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:52.499] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-ts.png' (SHA256=305AD512E1137BF298B23B055CC2D56A3F92C63AAACB958E9E68195E6A5E5A8A)
+[2026-11-07 16:41:52.595] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-ts-right.png' [1331,826 105 x 22] (SHA256=77459EAC577935998B40546061106D0C6A11D2DEDFD704C06A33219E6238EF6A)
+[2026-11-07 16:41:52.596] Attempting to open file 'sample.txt' from tree...
+[2026-11-07 16:41:52.866] Tree row for 'sample.txt': index=6, target=tree-row-06 (stdout tree rows match (index 6))
+[2026-11-07 16:41:52.955] Double-clicking tree row for 'sample.txt' at screen coords (660, 292)...
+[2026-11-07 16:41:53.487] File 'sample.txt' opened, seq=24
+[2026-11-07 16:41:53.639] Foreground check for 'Capture app-step4-type-txt': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:55.264] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-txt.png' (SHA256=824FB6A343E363E1091D48F0E3B5449EF208F43D0CFC5E43DED145FC63DCEFAE)
+[2026-11-07 16:41:55.335] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step4-type-txt-right.png' [1335,826 101 x 22] (SHA256=5F037ABEF30B5E09603E1E39BBADDCAE0103E500F7243075141A8DA3BC921647)
+[2026-11-07 16:41:55.337] STEP FINISHED: app-step4-different-filetypes (status=PASS)
+[2026-11-07 16:41:55.338] ==================================================================
+[2026-11-07 16:41:55.339] START STEP: app-step5-preview-innermost-click — Innermost Markdown block mapping (R-5)
+[2026-11-07 16:41:55.341] ==================================================================
+[2026-11-07 16:41:55.345] Attempting to open file 'sample.md' from tree...
+[2026-11-07 16:41:55.632] Tree row for 'sample.md': index=3, target=tree-row-03 (stdout tree rows match (index 3))
+[2026-11-07 16:41:55.694] Double-clicking tree row for 'sample.md' at screen coords (660, 214)...
+[2026-11-07 16:41:56.278] File 'sample.md' opened, seq=28
+[2026-11-07 16:41:56.336] Clicking toolbar-btn-preview at (1661, 172)...
+[2026-11-07 16:41:56.819] Preview opened, seq=29
+[2026-11-07 16:41:56.919] 측정 불가: box 없음 (preview block probe boxes not present in layout dump)
+[2026-11-07 16:41:57.082] Foreground check for 'Capture app-step5-preview-open': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:41:58.854] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step5-preview-open.png' (SHA256=C4D7CEDC4BE8EC8F00874157EB8E69C1A2FE187A37BF898868686741B6BC74C9)
+[2026-11-07 16:41:58.855] STEP FINISHED: app-step5-preview-innermost-click (status=PASS)
+[2026-11-07 16:41:58.856] ==================================================================
+[2026-11-07 16:41:58.857] START STEP: app-step6-sidebar-dock-toggle — Sidebar and dock toggle states, dividers (R-19/R-22)
+[2026-11-07 16:41:58.858] ==================================================================
+[2026-11-07 16:41:58.951] Box 'status-icon-project-panel': bounds=308.00,830.00,14.00,14.00
+[2026-11-07 16:41:58.953] Box 'status-icon-search': bounds=339.00,830.00,14.00,14.00
+[2026-11-07 16:41:58.954] Box 'status-icon-diagnostics': bounds=369.00,830.00,14.00,14.00
+[2026-11-07 16:41:58.955] Box 'sidebar-icon-toggle': bounds=8.00,830.00,14.00,14.00
+[2026-11-07 16:41:58.956] Box 'sidebar-btn-toggle': bounds=4.00,826.00,22.00,22.00
+[2026-11-07 16:41:58.957] Box 'status-left': bounds=304.00,826.00,1020.00,22.00
+[2026-11-07 16:41:58.958] Box 'status-right': bounds=1332.00,826.00,104.00,22.00
+[2026-11-07 16:41:58.960] Box 'status-cursor': bounds=1358.00,826.00,78.00,22.00
+[2026-11-07 16:41:59.023] Clicking status-icon-project-panel at (555, 927)...
+[2026-11-07 16:41:59.513] Foreground check for 'Capture app-step6-dock-open': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:01.117] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step6-dock-open.png' (SHA256=670D1838ED51581432C530BB17305B0CEA0A8E75554CB8D64786BE3D74941DF8)
+[2026-11-07 16:42:01.218] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step6-dock-open-left.png' [304,826 1020 x 22] (SHA256=125C1D18423920AE6331724CEA11658F2913EA8981551D6554F0D85FD032C3B8)
+[2026-11-07 16:42:01.739] Foreground check for 'Capture app-step6-dock-closed': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:03.579] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step6-dock-closed.png' (SHA256=3FC17C883A8AE84B7A1B06361135ADD4335D8B1246D4DE0D6A3C488AE1D1852F)
+[2026-11-07 16:42:03.669] Sidebar is open (sidebar-btn-toggle found at 255, 927). Clicking to close...
+[2026-11-07 16:42:04.132] Foreground check for 'Capture app-step6-sidebar-closed': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:05.784] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step6-sidebar-closed.png' (SHA256=DEDF018C6D15276990FF991F1B370480D0680087592F1B676C30AC80CD4F8653)
+[2026-11-07 16:42:05.836] Box 'status-icon-sidebar-toggle': bounds=8.00,830.00,14.00,14.00
+[2026-11-07 16:42:05.837] Box 'status-icon-project-panel': bounds=37.00,830.00,14.00,14.00
+[2026-11-07 16:42:05.838] Box 'status-icon-search': bounds=68.00,830.00,14.00,14.00
+[2026-11-07 16:42:05.839] Box 'status-icon-diagnostics': bounds=98.00,830.00,14.00,14.00
+[2026-11-07 16:42:05.839] Box 'status-left': bounds=4.00,826.00,1320.00,22.00
+[2026-11-07 16:42:05.841] Box 'status-right': bounds=1332.00,826.00,104.00,22.00
+[2026-11-07 16:42:05.842] Box 'status-cursor': bounds=1358.00,826.00,78.00,22.00
+[2026-11-07 16:42:05.918] Sidebar toggle in status bar found at (255, 927). Clicking to open...
+[2026-11-07 16:42:06.410] Foreground check for 'Capture app-step6-sidebar-open': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:08.086] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step6-sidebar-open.png' (SHA256=BE0AEBE878D811EEB7F150D79ACDC57C91CD539416E831037A44A2E8DC0D0025)
+[2026-11-07 16:42:08.088] STEP FINISHED: app-step6-sidebar-dock-toggle (status=PASS)
+[2026-11-07 16:42:08.089] ==================================================================
+[2026-11-07 16:42:08.090] START STEP: app-step7-button-tooltips-hover — Status bar button tooltips on hover (R-22)
+[2026-11-07 16:42:08.090] ==================================================================
+[2026-11-07 16:42:08.193] Box 'status-icon-project-panel': bounds=308.00,830.00,14.00,14.00
+[2026-11-07 16:42:08.194] Box 'status-icon-search': bounds=339.00,830.00,14.00,14.00
+[2026-11-07 16:42:08.195] Box 'status-icon-diagnostics': bounds=369.00,830.00,14.00,14.00
+[2026-11-07 16:42:08.196] Box 'sidebar-icon-toggle': bounds=8.00,830.00,14.00,14.00
+[2026-11-07 16:42:08.197] Box 'sidebar-btn-toggle': bounds=4.00,826.00,22.00,22.00
+[2026-11-07 16:42:08.198] Box 'status-left': bounds=304.00,826.00,1020.00,22.00
+[2026-11-07 16:42:08.198] Box 'status-right': bounds=1332.00,826.00,104.00,22.00
+[2026-11-07 16:42:08.199] Box 'status-cursor': bounds=1358.00,826.00,78.00,22.00
+[2026-11-07 16:42:09.796] Foreground check for 'Capture app-step7-tip-sidebar': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:11.354] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step7-tip-sidebar.png' (SHA256=DEDF018C6D15276990FF991F1B370480D0680087592F1B676C30AC80CD4F8653)
+[2026-11-07 16:42:11.467] captured crop 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step7-tip-sidebar-crop.png' [24,803 233 x 33] (SHA256=53B42BDEF4B71F1F2B5B97FEB718B20B5CB480FD2243D987E278055E89638C2E)
+[2026-11-07 16:42:12.626] Foreground check for 'Capture app-step7-tip-project': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:14.315] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step7-tip-project.png' (SHA256=85FBE33A29B4F4BED9D0E9CBF4674126699377CCE69E840CC822351647116222)
+[2026-11-07 16:42:14.403] 툴팁 박스 덤프 없음 (status-icon-project-panel), 전체 캡처 보존
+[2026-11-07 16:42:15.578] Foreground check for 'Capture app-step7-tip-search': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:17.199] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step7-tip-search.png' (SHA256=DF9A618CBFA9EC988BE46371897C7FDAEC59174EBE6DEAD366B81234CF49C1BE)
+[2026-11-07 16:42:17.325] 툴팁 박스 덤프 없음 (status-icon-search), 전체 캡처 보존
+[2026-11-07 16:42:18.499] Foreground check for 'Capture app-step7-tip-diag': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:20.085] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step7-tip-diag.png' (SHA256=C5BEF6B72DFC11877FA04D4318E320F2684A4D4EEA0947C81EA0C6CCEF6A9F57)
+[2026-11-07 16:42:20.187] 툴팁 박스 덤프 없음 (status-icon-diagnostics), 전체 캡처 보존
+[2026-11-07 16:42:20.394] STEP FINISHED: app-step7-button-tooltips-hover (status=PASS)
+[2026-11-07 16:42:20.395] ==================================================================
+[2026-11-07 16:42:20.396] START STEP: app-step8-project-search — Project Search tab, Filters, Replace row, query results (R-22)
+[2026-11-07 16:42:20.397] ==================================================================
+[2026-11-07 16:42:20.844] Search tab check in layout dump: present=True, seq=43
+[2026-11-07 16:42:20.996] Foreground check for 'Capture app-step8-search-empty': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:22.637] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step8-search-empty.png' (SHA256=14603D4D12C59C7BB09C1EA35068691F02C95BDBD1349868B9480DA7A4BC16BF)
+[2026-11-07 16:42:23.156] Foreground check for 'Capture app-step8-search-filters': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:25.017] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step8-search-filters.png' (SHA256=75620359F2AA385BB909AD8566E9578D0A7571A39DA3983DBD74393A425F37DB)
+[2026-11-07 16:42:25.537] Foreground check for 'Capture app-step8-search-replace-row': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:27.188] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step8-search-replace-row.png' (SHA256=19C22B054B8A0F85A76E096EEB1DB35E6D3D0629036261C1CA37B588F84948C3)
+[2026-11-07 16:42:27.189] SAFETY GUARD: Replace button will NOT be clicked; no Replace shortcuts will be sent.
+[2026-11-07 16:42:27.190] Typing search query 'ORDER08_SEARCH_MATCH'...
+[2026-11-07 16:42:29.105] Foreground check for 'Capture app-step8-search-results': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:30.801] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step8-search-results.png' (SHA256=A7A3A202250CB997D71D918A98C5CCFCE27A76CEEEE2FA7D784D3F7D1E1C14EF)
+[2026-11-07 16:42:31.350] Foreground check for 'Capture app-step8-search-open': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:32.944] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step8-search-open.png' (SHA256=032708FC6C0CF3EAA2D8C8579C1C67BFA4FFE13F3DE8079B235B32B1BAA1AB44)
+[2026-11-07 16:42:32.946] STEP FINISHED: app-step8-project-search (status=PASS)
+[2026-11-07 16:42:32.947] ==================================================================
+[2026-11-07 16:42:32.948] START STEP: app-step9-diagnostics — Diagnostics tab empty problem workspace (R-22)
+[2026-11-07 16:42:32.948] ==================================================================
+[2026-11-07 16:42:33.775] Foreground check for 'Capture app-step9-diagnostics': target=0x25F09B2, foreground=0x25F09B2
+[2026-11-07 16:42:35.369] captured 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\app-step9-diagnostics.png' (SHA256=35A61AD8BF2A3269F1CAEA1FDADE680DD7968EAD1F8B723C8BEBF646FED6432F)
+[2026-11-07 16:42:35.371] STEP FINISHED: app-step9-diagnostics (status=PASS)
+[2026-11-07 16:42:35.372] ==================================================================
+[2026-11-07 16:42:35.373] ALL ORDER-08 MEASUREMENT STEPS COMPLETED.
+[2026-11-07 16:42:35.374] ==================================================================
+[2026-11-07 16:42:35.374] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 16:42:35.376] Closing main window of app process (PID=32080)...
+[2026-11-07 16:42:35.471] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 16:42:36.817] session.ps1 Stop: {
+[2026-11-07 16:42:36.818] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 16:42:36.819] session.ps1 Stop:   "restored": true,
+[2026-11-07 16:42:36.820] session.ps1 Stop:   "files": {
+[2026-11-07 16:42:36.820] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 16:42:36.821] session.ps1 Stop:   },
+[2026-11-07 16:42:36.822] session.ps1 Stop:   "exeUnchanged": true
+[2026-11-07 16:42:36.823] session.ps1 Stop: }
+[2026-11-07 16:42:36.844] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-08-run2\order08-summary.json

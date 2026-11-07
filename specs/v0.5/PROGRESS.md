@@ -822,6 +822,70 @@
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: R-3 판정 방법의 "탭의 파일 아이콘"은 core ITEMS 문구라 바꾸지 않았다(core D-11). 탭에 아이콘이 없다는 공통 결정과 어긋나므로 core-leader 확인이 필요하다. `measure-ORDER-07.md`는 3차 기준이며 4·5차 결과는 아직 담고 있지 않다.
 
+- **Phase 7 종료 판정** (2026-11-07)
+  - 무엇을 했나: core-leader가 ORDER-07 보고를 보고 Phase 7을 판정했다(core-leader 2026-11-07, 사용자 위임 core D-13).
+  - 결과: "Phase 7 종료 판정: 충족(I-3·I-4 두 갈래, 같은 출처·버전·기본값)". 커밋 `158061a`, push 완료.
+  - 검증: core-leader 판정(gpui-leader 전달, W-32).
+  - 특이사항: 없음.
+
+- **W-32 Phase 7 종료, Phase 8 시작 기록** (2026-11-07)
+  - 무엇을 했나: PLAN 진행 현황 Phase 7을 done(커밋 `158061a`), Phase 8을 doing으로 바꾸고, 위 Phase 7 종료 판정을 적었다. DECISIONS 적용 표에 core D-17(ORDER-08 범위: 언어 서버 없음, 진단은 문제 없음 화면, Project Search 실제 검색) 행을 더했다. 카드 `cards/W-32.md`.
+  - 결과: `PLAN.md`, `PROGRESS.md`, `DECISIONS.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+### Phase 8 — 상태 바
+
+- **W-33 상태 바 왼쪽 구분선 spec ID 추가** (2026-11-07, core-leader ORDER)
+  - 무엇을 했나: `spec/zed-metrics.toml` `[statusbar]`에 왼쪽 버튼 사이 세로 구분선 새 ID 6개(`left_divider.width` 1, `height` 16, `y_top` 829, `color` border 토큰, `x_after_sidebar_toggle` 28, `x_after_file_tree` 59)를 조건 `desktop_measure_100`으로 더하고 `spec/INDEX.md`에 색인했다. 근거는 Zed `4304dec732` `status_bar.rs` 283·287행과 tauri 캡처 `ORDER-08/zed-cursor.png`(One Dark). 기존 ID는 바꾸지 않았다. 카드 `cards/W-33.md`.
+  - 결과: ID 목록은 `cards/W-33.report.md`. coder가 K-24에서 그린다.
+  - 검증: V0. `tomllib`로 toml 파싱 OK.
+  - 특이사항: 없음.
+
+- **W-34 tauri의 Zed 확인 결과를 SPEC으로** (2026-11-07, core ORDER-08 2장)
+  - 무엇을 했나: tauri SPEC R-5·R-19·R-22 "Zed 확인(2026-11-07)"과 캡처(`D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-08\`)를 읽고 이 레포 SPEC R-5·R-19·R-22에 같은 절로 옮겼다. R-5: 편집 중·선택 있음·열린 탭 없음·검색 결과 탭·Diagnostics 탭 표시, 선택 문구 규칙, 파일 형식 대응 표(tauri 표 = K-23 표). R-5 "열린 탭 없음" 미정이 풀렸다. R-19: dock 켜짐 강조색, 사이드바 열림 때 토글 위치. R-22: 왼쪽 버튼 순서·툴팁·단축키·구분선 spec ID(W-33), Add Project 없음, Project Search 탭 구성·동작·검색 대상, Diagnostics 탭. DECISIONS D-12(core 승인: `ignore 0.4.34`·`regex 1.13.1` 직접 의존성, Licenses 창 반영 필요). 카드 `cards/W-34.md`.
+  - 결과: `SPEC.md`, `DECISIONS.md`, `PROGRESS.md` 수정. gpui 구현과 다른 곳 9건은 `cards/W-34.report.md`.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 캡처는 열어 보지 않고 tauri 기록을 그대로 옮겼다. 선택 문구의 selections·lines 규칙과 검색 한도·바이너리 제외는 캡처가 아니라 tauri 구현(Zed 소스 기준)에서 옮겼다. 두 갈래의 미리보기 클릭 위치 산출이 다르다(블록 시작 줄·열 대 블록 시작 줄·열 1).
+
+- **coder 모델 전환 기록** (2026-11-07, W-35, core D-16)
+  - 무엇을 했나: 2026-11-07 15:52, K-25 완료 직후 카드 경계에서 `gpui-coder`를 Codex GPT-6.1-Sol medium에서 Claude Code Sonnet 5.5 high로 바꿨다. 사유: Codex 5시간 한도 5% 미만. 이름 그대로. `HERDR-SETUP.md` 1장·2.1에 적었다.
+  - 결과: 복귀는 한도 초기화 뒤 카드 경계에서 leader가 따로 알린다(되돌린 시각 미정).
+  - 검증: 해당 없음(구성 기록, V0).
+  - 특이사항: 없음.
+
+- **W-36 상태 바 ID 두 개 추가** (2026-11-07, core ORDER-08 core-leader 추가 지시)
+  - 무엇을 했나: `spec/zed-metrics.toml` `[statusbar]`에 `padding_x` 4(Zed `status_bar.rs:153` Base04)와 `toggle_gap` 2(같은 파일 280–287 `gap_0p5`)를 조건 `desktop_measure_100`으로 더하고 `spec/INDEX.md`에 색인했다. 근거는 tauri 확인(실측 아이콘 시작 x 9·39·70·101, 구분선 x 28·59). 카드 `cards/W-36.md`.
+  - 결과: 기존 ID는 바꾸지 않았다. 검색→진단 아이콘 간격 31이 `button_height` 22·`item_gap` 4와 맞지 않는 점은 `cards/W-36.report.md`에 확인 필요로 남겼다.
+  - 검증: V0. `tomllib`로 toml 파싱 OK.
+  - 특이사항: 없음.
+
+- **K-25-R1 라이선스 테스트 기대값** (2026-11-07): `src/ui/app_menu.rs` 테스트의 `LICENSES.len()` 기대값을 6 → 8로 고치고 `ignore`·`regex` 라이선스 원문 파일이 실제로 있는지 검사를 더했다(C-34 REWORK). 결과: 완료. 검증: V1, `cargo test ui::app_menu` 4/4·clippy PASS.
+- **K-26 상태 바 padding·토글 gap** (2026-11-07): `STATUS_BAR_PADDING`을 `padding_x`·`padding_y`로 나누고 `STATUS_TOGGLE_GAP`(2)을 더했다. 버튼 폭 억지 지정과 구분선 x 상수를 지워 구분선 x 28·59가 계산으로 나온다(`src/ui/metrics.rs`·`layout.rs`·`mod.rs`). 결과: 완료. layout_probe 테스트는 `#[gpui::test]` 환경이 없어 순수 계산 테스트로 대신했다. 검증: V2, build·apply-manifest·`cargo test k26`·`ui::` 191개·clippy PASS.
+- **K-26-R1 진단 버튼 앞 빈 자리** (2026-11-07): search와 diagnostics 사이에 폭 0 빈 자리를 둬 `item_gap`이 한 번 더 들어가게 했다(Zed의 보이지 않는 lsp_button 자리). 버튼 박스 x 4·33·64·94(글리프 x 9·39·70·101)를 계산 테스트로 확인. 결과: 완료. 검증: V1, `cargo test k26`·clippy PASS. 실측 필요 — 박스 x·글리프 x(V3).
+- **K-27 Project Search·Diagnostics 화면** (2026-11-07): `src/ui/search_view.rs` 렌더 전부(툴바 44 + border, Search 버튼 삭제, 둘째 줄 정렬, 빈 화면, 결과 머리줄·발췌 열, Diagnostics 툴바·"No problems in workspace")와 `metrics.rs` 상수. 결과: 완료. spec에 없던 값은 W-37로 기록. 검증: V1, `cargo test k27` 2·전체 258·clippy PASS. 실측 필요 — K-27 보고 "V3 대조 목록".
+- **C-34 ORDER-08 리뷰·V3 스크립트** (2026-11-07): K-23~K-25 리뷰 REWORK(라이선스 테스트 기대값 → K-25-R1), `tools/measure/order08-v3.ps1` 9단계 작성. 결과: R-5·R-19·R-22 코드 리뷰 적합, 전체 테스트 254/255(1 실패, K-25-R1로 해소). 검증: V0, 문법·dry-run PASS.
+- **C-34-R1 V3 스크립트 고침** (2026-11-07): 파일 열기를 order03 방식(트리 행 더블클릭)으로, fixture를 session fixture 안에 복사, 단계 독립(FAIL 뒤 계속·PID 확인), 판정 문구 제거, 덤프 box 좌표만 사용, Replace 금지. 결과: 완료. 검증: V0, 문법·dry-run PASS.
+- **C-34-R2 1차 실행(16:29) 결과 반영** (2026-11-07): Crop-Image 인자 오류, 상태 바 box 이름(`status-icon-*`), 트리 30행 밖 파일 → 하위 폴더 `00-order08\`, 새 snapshot 대기(`Wait-NextSnapshot`). 결과: 완료. 1차 실행의 사용자 데이터는 정상 복원(`verify/reviews/measure-ORDER-08/`). 검증: V0, 문법·dry-run PASS.
+
+- **W-37 K-27 값 기록** (2026-11-07, core ORDER-08): K-27 값 표 가운데 Zed 파일:줄 출처 8개를 `spec/zed-metrics.toml` `[editor]`에 올리고(`search_input.max_width`, `search_results.header.*` 6개, `search_results.matches.padding_left`) `spec/INDEX.md`에 색인했다. `search_results.count.min_width`는 기존 `editor.search_results_count.min_width`(40, E-067)와 같아 새로 두지 않았다. 캡처 추정(발췌 열 32·36/24), 앱 구성값(뒤 컨트롤 150), `rounded_sm` 2는 `spec/ambiguous.md` 6절. 결과: ID 대응은 `cards/W-37.report.md`. 검증: V0, `tomllib` 파싱 OK.
+
+- **W-38 tauri R-22 값 11개를 tauri와 같은 ID로** (2026-11-07, core ORDER-08 core-leader 추가 지시): W-37에서 `[editor]` 아래 둔 `search_results.*` 7개를 새 섹션 `[search_results]`로 옮겨 전체 ID를 tauri와 같게 했다(`editor.search_results.header.*` → `search_results.header.*`, `editor.search_results.matches.padding_left` → `search_results.matches.padding_left`, leader 승인, 코드는 아직 toml 키를 쓰지 않음). `search_results.header.radius` 2(core 지시, 확인 필요는 `spec/ambiguous.md` 6절에 남음)와 `search_results.count.min_width` 40(같은 값 `editor.search_results_count.min_width`)을 더했다. `editor.search_input.max_width`는 그대로. L-84 닫기 버튼 색을 `[titlebar]` `window_button.close.hover_background`·`hover_foreground`·`active_opacity`로 올렸다. `spec/INDEX.md` 맞춤. 결과: 올린 ID와 gpui 상수 대조(11개 모두 같은 값)는 `cards/W-38.report.md`. 검증: V0, `tomllib` 파싱 OK.
+
+- **K-28 Project Search 툴바·빈 화면·상태 바 오른쪽 맞춤** (2026-11-07): 접기 아이콘 `chevron_down_up`/`chevron_up_down`, 검색 상자 끝 1167에 맞춘 오른쪽 여백·뒤 컨트롤 폭, 입력 글자 시작 291, 결과 머리 띠 전체 폭, 빈 화면 행 간격, 상태 바 오른쪽 `{줄:열}`·파일 형식을 두 항목(사이 gap 8)으로(`src/ui/search_view.rs`·`metrics.rs`·`status.rs`·`layout.rs`·`mod.rs`). 결과: 완료, 캡처에 맞춘 값(오른쪽 여백 등)은 소스 값이 아니라 다른 창 크기에서 다를 수 있음. 검증: V1, 전체 `cargo test` 259·clippy PASS. 실측 필요 — K-28 보고 V3 목록.
+- **K-29 Replace는 버퍼만, 툴바 아이콘 x, 빈 화면, W-38 ID 주석** (2026-11-07): Replace Next·All이 디스크에 쓰지 않고 버퍼를 바꿔 탭을 수정됨으로 둔다(스냅샷 비교 보호 유지, 바꾼 뒤 자동 재검색). 툴바 뒤 아이콘을 toml 값으로 역산 배치(‹ › 16, 토글 사이 2는 캡처 값), 빈 화면 부제 `pb`→`mb`와 글자 12로 축소(뒤에 W-39로 소스 값 14 결정), `metrics.rs` 주석을 W-38 ID로, `SEARCH_HEADER_LINES` 추가. 결과: 완료. 검증: V1, 전체 `cargo test` 260·clippy PASS, `k29_replacement_does_not_touch_the_disk`. 실측 필요 — K-29 보고 V3 목록.
+- **W-39 Project Search 빈 화면 크기** (2026-11-07, core DECISION): Zed `4304dec` 소스 값(leader 확인)을 `spec/zed-metrics.toml` 새 섹션 `[project_search]` `landing.heading_size` 16·`subtitle_size` 14·`subtitle_margin_bottom` 8·`action_label_size` 14·`key_size` 14·`gap` 4로 올리고 `spec/INDEX.md`에 색인. SPEC R-22에 소스 값·캡처 측정(≈13px 해당)·결론(소스 14)을 적고, 차이를 `spec/ambiguous.md` 6절에 V3 재확인 대상으로. 결과: `cards/W-39.report.md`. 검증: V0, `tomllib` 파싱 OK.
+
+- **K-30 빈 화면 Zed 소스 값으로** (2026-11-07): 제목 16, 부제 14 muted + 아래 8, 안내 줄 라벨·키 14, gap 4로 K-29의 12를 되돌리고, Label 줄 높이 phi(1.618)·안내 줄 Button 높이 22로 캡처 역산 값(`SEARCH_EMPTY_TITLE_HEIGHT` 등)을 바꿨다(`src/ui/search_view.rs`·`metrics.rs`). 결과: 완료. 검증: V1, 전체 `cargo test` 261·clippy PASS, `k30_landing_pitches`.
+- **K-30-R1 빈 화면 spec 대조** (2026-11-07): `metrics.rs` 주석을 `project_search.landing.*` 전체 ID로 맞추고 `k30_landing_pitches`에 `assert_spec` 여섯 개를 붙였다(값 변경 없음). 결과: 완료. 검증: V1, `cargo test k30`·clippy PASS.
+- **ORDER-08 V3 1차** (2026-11-07 16:29, leader 실행, `verify/reviews/measure-ORDER-08/`): 스크립트 버그(Crop-Image 인자, 상태 바 box 이름, 트리 30행 밖 파일)로 대부분 측정 불가 → C-34-R2. 사용자 앱 데이터는 바이트 동일 복원.
+- **ORDER-08 V3 2차** (16:43, `measure-ORDER-08-run2/`): 상태 바 왼쪽 버튼 박스 x 4·33·64·94, 툴팁, 파일 형식 5종, Diagnostics 아이콘·문구 PASS(`verify/reviews/measure-ORDER-08.md`). 사용자 앱 데이터 바이트 동일 복원.
+- **ORDER-08 V3 3차** (16:54, `measure-ORDER-08-run3/`): 상태 바 오른쪽 간격 19, 입력 박스 끝 1167·글자 시작 292, 결과 머리 띠 PASS. 사용자 앱 데이터 바이트 동일 복원.
+- **ORDER-08 V3 4차** (17:03, `measure-ORDER-08-run4/`): 툴바 뒤 아이콘 잉크 x(±2)와 빈 화면 세로 잉크 y PASS. 빈 화면 글자 크기는 보류(뒤에 비교 오류로 밝혀짐). 사용자 앱 데이터 바이트 동일 복원.
+- **ORDER-08 V3 5차** (17:12, `measure-ORDER-08-run5/`): 소스 값 14로 되돌린 빈 화면이 부제 잉크 폭 251 = Zed, 세로 잉크 y 같음, 블록 왼쪽 −129 대 Zed −131. 사용자 앱 데이터 바이트 동일 복원.
+- **leader 실수: 측정 세션 직접 시작** (2026-11-07 16:40경): 1차 원인 조사 중 leader가 `session.ps1 -WhatIf`를 직접 실행해 실제 세션이 시작됐다(앱 PID 13080). 즉시 그 PID만 닫고 같은 세션 `Stop`으로 복원했고, 사용자 앱 데이터가 백업과 바이트 동일함을 확인했다.
+- **W-40 빈 화면 글자 크기 차이 해소 기록** (2026-11-07): V3 5차 결과로 SPEC R-22 "Project Search 빈 화면 크기" 결론을 "소스 14 = 캡처"로 고치고 W-39의 "≈13px"이 측정 비교 오류였음을 적었다. `spec/ambiguous.md` 6절 그 행을 해소로. toml 값은 그대로. 결과: `SPEC.md`·`ambiguous.md`·`PROGRESS.md` 수정, `cards/W-40.report.md`. 검증: V0(문서만).
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |
