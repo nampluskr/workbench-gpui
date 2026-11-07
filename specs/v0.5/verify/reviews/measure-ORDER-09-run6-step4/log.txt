@@ -1,0 +1,75 @@
+[2026-11-07 21:10:35.822] Starting ORDER-09 live measurement session...
+[2026-11-07 21:10:35.835] Invoking session.ps1 Start...
+[2026-11-07 21:10:37.571] Session started. App PID=19812, Fixture='D:\projects\workbench-gpui\target\measure-d8efcd8a292d495eb2bd26f85af75ff9'
+[2026-11-07 21:10:37.578] Preparing ORDER-09 fixture files in 'D:\projects\workbench-gpui\target\measure-d8efcd8a292d495eb2bd26f85af75ff9'...
+[2026-11-07 21:10:37.701] Fixture prepared: Folder 1 'D:\projects\workbench-gpui\target\measure-d8efcd8a292d495eb2bd26f85af75ff9\workbench-tauri', Folder 2 (core) 'D:\projects\workbench-gpui\target\measure-d8efcd8a292d495eb2bd26f85af75ff9\workbench-core\specs\v0.5'.
+[2026-11-07 21:10:37.709] Searching for main window HWND of PID 19812 (up to 15s)...
+[2026-11-07 21:10:38.997] Main window handle HWND=0x8F0ADA
+[2026-11-07 21:10:39.022] Elevating target window Z-order (PID=19812, HWND=0x8F0ADA): ShowWindow(SW_RESTORE), SetWindowPos(HWND_TOP), SetForegroundWindow...
+[2026-11-07 21:10:39.188] Foreground verification for 'App started': Target=0x8F0ADA, CurrentForeground=0x8F0ADA (Matches=True)
+[2026-11-07 21:10:39.192] Waiting for initial completed layout snapshot with 'project-empty-open' or 'tree-row-01' (up to 10s)...
+[2026-11-07 21:10:39.549] Initial layout snapshot ready at seq=1 in 353ms
+[2026-11-07 21:10:39.586] Found 'project-empty-open' button at (660, 202). Clicking to open project...
+[2026-11-07 21:10:39.845] Waiting for 'tree-row-01' to appear in layout snapshot (up to 8s)...
+[2026-11-07 21:10:39.976] Project tree loaded: 'tree-row-01' present at seq=2 in 127ms
+[2026-11-07 21:10:39.981] Attempting to open file 'AGENTS.md' from tree...
+[2026-11-07 21:10:40.215] Tree row for 'AGENTS.md': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 21:10:40.228] Double-clicking tree row for 'AGENTS.md' at screen coords (660, 188)...
+[2026-11-07 21:10:40.771] File 'AGENTS.md' opened, seq=3
+[2026-11-07 21:10:40.774] [RESULT] setup: PASS - Tree and initial file tab established
+[2026-11-07 21:10:40.783] Skipping step 'step1': I-11: Tab Hover Tooltip & Navigation Button Tooltips
+[2026-11-07 21:10:40.785] Skipping step 'step2': I-23: Tab Bar Right Buttons Visibility on Pane Focus
+[2026-11-07 21:10:40.786] Skipping step 'step3': I-16: Tab Overflow, Wheel Scroll & Active Tab Visibility
+[2026-11-07 21:10:40.788] ==================================================================
+[2026-11-07 21:10:40.790] STARTING STEP 'step4': I-12: Breadcrumb Path & Heading Hierarchy (Single/Multi-Folder)
+[2026-11-07 21:10:40.791] ==================================================================
+[2026-11-07 21:10:40.819] Reset-UIState (Step4): Sending Esc twice to dismiss any open popups or menus...
+[2026-11-07 21:10:41.313] WARN: Reset-UIState - Detected lingering popup boxes: app-menu, app-menu-button, user-menu, user-menu-gap. Sending additional Esc...
+[2026-11-07 21:10:41.568] Elevating target window Z-order (PID=19812, HWND=0x8F0ADA): ShowWindow(SW_RESTORE), SetWindowPos(HWND_TOP), SetForegroundWindow...
+[2026-11-07 21:10:41.730] Foreground verification for 'Step4': Target=0x8F0ADA, CurrentForeground=0x8F0ADA (Matches=True)
+[2026-11-07 21:10:41.735] Attempting to open file 'AGENTS.md' from tree...
+[2026-11-07 21:10:41.950] Tree row for 'AGENTS.md': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 21:10:41.956] Double-clicking tree row for 'AGENTS.md' at screen coords (660, 188)...
+[2026-11-07 21:10:42.484] File 'AGENTS.md' opened, seq=5
+[2026-11-07 21:10:43.001] Breadcrumb at Line 1: breadcrumb-path=True, breadcrumb-seg-01=True
+[2026-11-07 21:10:43.078] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-a-start.png' (1440 x 852)
+[2026-11-07 21:10:43.116] Cropped 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-a-start.png' -> 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-a-start-toolbar.png' (rect=[540, 33, 900, 65])
+[2026-11-07 21:10:44.247] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-md-h2.png' (1440 x 852)
+[2026-11-07 21:10:44.260] Cropped 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-md-h2.png' -> 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-md-h2-toolbar.png' (rect=[540, 33, 900, 65])
+[2026-11-07 21:10:44.261] Attempting to open file 'App.tsx' from tree...
+[2026-11-07 21:10:44.485] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:10:44.798] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:10:45.124] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:10:45.441] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:10:45.759] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:10:46.083] Tree row for 'App.tsx' not found in layout dump after 5 attempts
+[2026-11-07 21:10:46.580] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-code.png' (1440 x 852)
+[2026-11-07 21:10:46.593] Cropped 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-code.png' -> 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-code-toolbar.png' (rect=[540, 33, 900, 65])
+[2026-11-07 21:10:46.595] Splitting pane via Ctrl-\ (Safe-KeyCombo Ctrl+OEM_5)...
+[2026-11-07 21:10:46.882] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-split-bc.png' (1440 x 852)
+[2026-11-07 21:10:46.895] Cropped 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-split-bc.png' -> 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-split-bc-toolbar.png' (rect=[540, 33, 900, 65])
+[2026-11-07 21:10:47.433] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-two-tauri.png' (1440 x 852)
+[2026-11-07 21:10:47.435] Attempting to open file 'ITEMS.md' from tree...
+[2026-11-07 21:10:47.652] Tree row for 'ITEMS.md': not found in stdout tree rows
+[2026-11-07 21:10:47.976] Tree row for 'ITEMS.md': not found in stdout tree rows
+[2026-11-07 21:10:48.312] Tree row for 'ITEMS.md': not found in stdout tree rows
+[2026-11-07 21:10:48.632] Tree row for 'ITEMS.md': not found in stdout tree rows
+[2026-11-07 21:10:48.961] Tree row for 'ITEMS.md': not found in stdout tree rows
+[2026-11-07 21:10:49.281] Tree row for 'ITEMS.md' not found in layout dump after 5 attempts
+[2026-11-07 21:10:49.331] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\app-step4-bc-two-core.png' (1440 x 852)
+[2026-11-07 21:10:49.336] [RESULT] step4: PASS - Single/multi-folder breadcrumbs and headings verified (path=True, seg01=True)
+[2026-11-07 21:10:49.337] STEP 'step4' COMPLETED.
+[2026-11-07 21:10:49.338] Skipping step 'step5': I-10: Navigation History Traversal (Alt-Left/Right & XBUTTON1)
+[2026-11-07 21:10:49.339] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 21:10:49.342] Closing main window of app process (PID=19812)...
+[2026-11-07 21:10:49.426] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 21:10:50.700] session.ps1 Stop: {
+[2026-11-07 21:10:50.701] session.ps1 Stop:   "exeUnchanged": true,
+[2026-11-07 21:10:50.702] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 21:10:50.704] session.ps1 Stop:   "files": {
+[2026-11-07 21:10:50.706] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 21:10:50.707] session.ps1 Stop:   },
+[2026-11-07 21:10:50.708] session.ps1 Stop:   "restored": true
+[2026-11-07 21:10:50.709] session.ps1 Stop: }
+[2026-11-07 21:10:50.721] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step4\order09-summary.json
+[2026-11-07 21:10:50.723] ORDER-09 V3 measurement run completed.

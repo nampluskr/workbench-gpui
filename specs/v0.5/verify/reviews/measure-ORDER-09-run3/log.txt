@@ -1,0 +1,55 @@
+[2026-11-07 20:00:46.023] Starting ORDER-09 live measurement session...
+[2026-11-07 20:00:46.058] Invoking session.ps1 Start...
+[2026-11-07 20:00:48.059] Session started. App PID=15488, Fixture='D:\projects\workbench-gpui\target\measure-7ac3d12100434ce2bab49276081362af'
+[2026-11-07 20:00:48.069] Preparing ORDER-09 fixture files in 'D:\projects\workbench-gpui\target\measure-7ac3d12100434ce2bab49276081362af'...
+[2026-11-07 20:00:48.222] Fixture prepared: Folder 1 'D:\projects\workbench-gpui\target\measure-7ac3d12100434ce2bab49276081362af\workbench-tauri', Folder 2 (core) 'D:\projects\workbench-gpui\target\measure-7ac3d12100434ce2bab49276081362af\workbench-core\specs\v0.5'.
+[2026-11-07 20:00:48.227] Searching for main window HWND of PID 15488 (up to 15s)...
+[2026-11-07 20:00:49.843] Main window handle HWND=0x1D10A88
+[2026-11-07 20:00:50.097] Initial layout snapshot seq=0
+[2026-11-07 20:00:50.099] Checking if project tree is loaded...
+[2026-11-07 20:00:50.120] Attempting to open file 'AGENTS.md' from tree...
+[2026-11-07 20:00:50.371] Tree row for 'AGENTS.md': not found in stdout tree rows
+[2026-11-07 20:00:50.711] Tree row for 'AGENTS.md': not found in stdout tree rows
+[2026-11-07 20:00:51.040] Tree row for 'AGENTS.md': not found in stdout tree rows
+[2026-11-07 20:00:51.359] Tree row for 'AGENTS.md': not found in stdout tree rows
+[2026-11-07 20:00:51.693] Tree row for 'AGENTS.md': not found in stdout tree rows
+[2026-11-07 20:00:52.011] Tree row for 'AGENTS.md' not found in layout dump after 5 attempts
+[2026-11-07 20:00:52.013] Warning: Failed to open 'AGENTS.md' initially from tree
+[2026-11-07 20:00:52.023] ==================================================================
+[2026-11-07 20:00:52.025] STARTING STEP 'step1': I-11: Tab Hover Tooltip & Navigation Button Tooltips
+[2026-11-07 20:00:52.026] ==================================================================
+[2026-11-07 20:00:52.054] FAIL: 전제 없음 (폴더 미열림, project-empty-open 상태) - step 'step1'
+[2026-11-07 20:00:52.062] [RESULT] step1: FAIL - 전제 없음 (폴더 또는 파일 탭 미열림)
+[2026-11-07 20:00:52.063] ==================================================================
+[2026-11-07 20:00:52.065] STARTING STEP 'step2': I-23: Tab Bar Right Buttons Visibility on Pane Focus
+[2026-11-07 20:00:52.066] ==================================================================
+[2026-11-07 20:00:52.072] FAIL: 전제 없음 (폴더 미열림, project-empty-open 상태) - step 'step2'
+[2026-11-07 20:00:52.073] [RESULT] step2: FAIL - 전제 없음 (폴더 또는 파일 탭 미열림)
+[2026-11-07 20:00:52.074] ==================================================================
+[2026-11-07 20:00:52.075] STARTING STEP 'step3': I-16: Tab Overflow, Wheel Scroll & Active Tab Visibility
+[2026-11-07 20:00:52.076] ==================================================================
+[2026-11-07 20:00:52.080] FAIL: 전제 없음 (폴더 미열림, project-empty-open 상태) - step 'step3'
+[2026-11-07 20:00:52.082] [RESULT] step3: FAIL - 전제 없음 (폴더 또는 파일 탭 미열림)
+[2026-11-07 20:00:52.084] ==================================================================
+[2026-11-07 20:00:52.085] STARTING STEP 'step4': I-12: Breadcrumb Path & Heading Hierarchy (Single/Multi-Folder)
+[2026-11-07 20:00:52.087] ==================================================================
+[2026-11-07 20:00:52.092] FAIL: 전제 없음 (폴더 미열림, project-empty-open 상태) - step 'step4'
+[2026-11-07 20:00:52.093] [RESULT] step4: FAIL - 전제 없음 (폴더 또는 파일 탭 미열림)
+[2026-11-07 20:00:52.094] ==================================================================
+[2026-11-07 20:00:52.095] STARTING STEP 'step5': I-10: Navigation History Traversal (Alt-Left/Right & XBUTTON1)
+[2026-11-07 20:00:52.096] ==================================================================
+[2026-11-07 20:00:52.100] FAIL: 전제 없음 (폴더 미열림, project-empty-open 상태) - step 'step5'
+[2026-11-07 20:00:52.102] [RESULT] step5: FAIL - 전제 없음 (폴더 또는 파일 탭 미열림)
+[2026-11-07 20:00:52.103] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 20:00:52.106] Closing main window of app process (PID=15488)...
+[2026-11-07 20:00:52.193] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 20:00:53.487] session.ps1 Stop: {
+[2026-11-07 20:00:53.491] session.ps1 Stop:   "restored": true,
+[2026-11-07 20:00:53.492] session.ps1 Stop:   "files": {
+[2026-11-07 20:00:53.493] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 20:00:53.494] session.ps1 Stop:   },
+[2026-11-07 20:00:53.496] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 20:00:53.497] session.ps1 Stop:   "exeUnchanged": true
+[2026-11-07 20:00:53.498] session.ps1 Stop: }
+[2026-11-07 20:00:53.512] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run3\order09-summary.json
+[2026-11-07 20:00:53.514] ORDER-09 V3 measurement run completed.

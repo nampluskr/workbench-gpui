@@ -154,6 +154,8 @@ impl SearchView {
         } else {
             if current.as_ref() != file.text { self.message = "File changed since search; search again".into(); cx.notify(); return; }
             if let Some(hit) = file.hits.get(hit) {
+                // I-10: opening a result is an explicit jump, recorded for Go Back whatever the distance.
+                self.ws.update(cx, |ws, cx| ws.group.nav_jump(&file.path, &current, hit.range.end, cx));
                 editor.update(cx, |editor, cx| editor.set_selected_range(hit.range.clone(), cx));
                 let _ = self.owner.update(cx, |this, cx| { this.focus_active_pane(window, cx); cx.notify(); });
             }

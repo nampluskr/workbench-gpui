@@ -1,0 +1,53 @@
+[2026-11-07 21:46:22.296] Starting ORDER-09 live measurement session...
+[2026-11-07 21:46:22.309] Invoking session.ps1 Start...
+[2026-11-07 21:46:24.161] Session started. App PID=37044, Fixture='D:\projects\workbench-gpui\target\measure-3ce76cccf95e416499dff075680a3ffa'
+[2026-11-07 21:46:24.169] Preparing ORDER-09 fixture files in 'D:\projects\workbench-gpui\target\measure-3ce76cccf95e416499dff075680a3ffa'...
+[2026-11-07 21:46:24.314] Fixture prepared: Folder 1 'D:\projects\workbench-gpui\target\measure-3ce76cccf95e416499dff075680a3ffa\workbench-tauri', Folder 2 (core) 'D:\projects\workbench-gpui\target\measure-3ce76cccf95e416499dff075680a3ffa\workbench-core\specs\v0.5'.
+[2026-11-07 21:46:24.321] Searching for main window HWND of PID 37044 (up to 15s)...
+[2026-11-07 21:46:25.939] Main window handle HWND=0x12A0ADE
+[2026-11-07 21:46:25.975] [ELEVATE] Elevating target window Z-order (PID=37044, HWND=0x12A0ADE, Label='App started'): ShowWindow(SW_RESTORE), SetWindowPos(HWND_TOP), SetForegroundWindow...
+[2026-11-07 21:46:26.143] [VERIFY-FG] Foreground verification for 'App started': Target=0x12A0ADE, CurrentForeground=0x1AD09E2 (Matches=False)
+[2026-11-07 21:46:26.145] WARN: App started Ensure-Foreground did not immediately make app foreground (foreground lock in effect). Subsequent safe click will activate window.
+[2026-11-07 21:46:26.148] Waiting for initial completed layout snapshot with 'project-empty-open' or 'tree-row-01' (up to 10s)...
+[2026-11-07 21:46:26.519] Initial layout snapshot ready at seq=1 in 364ms
+[2026-11-07 21:46:26.565] Found 'project-empty-open' button at (660, 202). Clicking to open project...
+[2026-11-07 21:46:26.823] Waiting for 'tree-row-01' to appear in layout snapshot (up to 8s)...
+[2026-11-07 21:46:26.965] Project tree loaded: 'tree-row-01' present at seq=2 in 139ms
+[2026-11-07 21:46:26.973] Attempting to open file 'AGENTS.md' from tree...
+[2026-11-07 21:46:27.204] Tree row for 'AGENTS.md': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 21:46:27.222] Double-clicking tree row for 'AGENTS.md' at screen coords (660, 188)...
+[2026-11-07 21:46:27.765] File 'AGENTS.md' opened, seq=3
+[2026-11-07 21:46:27.770] [RESULT] setup: PASS - Tree and initial file tab established
+[2026-11-07 21:46:27.778] Skipping step 'step1': I-11: Tab Hover Tooltip & Navigation Button Tooltips
+[2026-11-07 21:46:27.779] ==================================================================
+[2026-11-07 21:46:27.781] STARTING STEP 'step2': I-23: Tab Bar Right Buttons Visibility on Pane Focus
+[2026-11-07 21:46:27.782] ==================================================================
+[2026-11-07 21:46:27.805] Reset-UIState (Step2): Sending Esc twice to dismiss any open popups or menus...
+[2026-11-07 21:46:28.279] WARN: Reset-UIState - Detected lingering popup boxes: app-menu, app-menu-button, user-menu, user-menu-gap. Sending additional Esc...
+[2026-11-07 21:46:28.535] [ELEVATE] Elevating target window Z-order (PID=37044, HWND=0x12A0ADE, Label='Step2'): ShowWindow(SW_RESTORE), SetWindowPos(HWND_TOP), SetForegroundWindow...
+[2026-11-07 21:46:28.699] [VERIFY-FG] Foreground verification for 'Step2': Target=0x12A0ADE, CurrentForeground=0x12A0ADE (Matches=True)
+[2026-11-07 21:46:28.704] Tree row for 'AGENTS.md': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 21:46:29.029] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run7-step2\app-step2-focus-panel.png' (1440 x 852)
+[2026-11-07 21:46:29.061] Focus on Tree: right buttons present = True (probe=True, pixel=False, expected: False)
+[2026-11-07 21:46:29.138] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run7-step2\app-step2-panel-hover-tabbar.png' (1440 x 852)
+[2026-11-07 21:46:29.152] Hover over Tab Bar (Tree focused): right buttons present = False (probe=False, pixel=False, expected: False)
+[2026-11-07 21:46:29.444] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run7-step2\app-step2-focus-editor.png' (1440 x 852)
+[2026-11-07 21:46:29.457] Focus on Editor: right buttons present = True (probe=True, pixel=True, expected: True)
+[2026-11-07 21:46:29.458] [RESULT] step2: FAIL - Tree focus buttons=True (exp: False), Tree hover buttons=False (exp: False), Editor focus buttons=True (exp: True)
+[2026-11-07 21:46:29.460] STEP 'step2' COMPLETED.
+[2026-11-07 21:46:29.461] Skipping step 'step3': I-16: Tab Overflow, Wheel Scroll & Active Tab Visibility
+[2026-11-07 21:46:29.463] Skipping step 'step4': I-12: Breadcrumb Path & Heading Hierarchy (Single/Multi-Folder)
+[2026-11-07 21:46:29.464] Skipping step 'step5': I-10: Navigation History Traversal (Alt-Left/Right & XBUTTON1)
+[2026-11-07 21:46:29.465] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 21:46:29.468] Closing main window of app process (PID=37044)...
+[2026-11-07 21:46:29.565] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 21:46:30.803] session.ps1 Stop: {
+[2026-11-07 21:46:30.804] session.ps1 Stop:   "restored": true,
+[2026-11-07 21:46:30.805] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 21:46:30.806] session.ps1 Stop:   "exeUnchanged": true,
+[2026-11-07 21:46:30.812] session.ps1 Stop:   "files": {
+[2026-11-07 21:46:30.813] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 21:46:30.815] session.ps1 Stop:   }
+[2026-11-07 21:46:30.816] session.ps1 Stop: }
+[2026-11-07 21:46:30.833] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run7-step2\order09-summary.json
+[2026-11-07 21:46:30.834] ORDER-09 V3 measurement run completed.

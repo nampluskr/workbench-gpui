@@ -577,6 +577,45 @@ I-9. 요청 원문 "zed에서는 탭 영역에 마우스가 호버링될 때, �
 
 I-10. 요청 원문 "Go Back Alt Left / Go Forward Alt Right 미표시 - 마우스 호버링 시 / 작동도 되지 않음 - 둘 다", "zed와 동일하게"(사용자 2026-11-06).
 
+
+**Zed 확인(tauri, 2026-11-07)**
+
+조건: core ORDER-09, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, 100%, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` 해당 R-n "Zed 확인(2026-11-07)", 커밋 `bba6cfc`, W-41로 옮김, core-leader [NOTICE]). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-09\` 아래(이하 `ORDER-09/`로 줄임). 근거 열은 이 레포 checker의 Zed 소스 확인(`cards/C-36.report.md`, Zed `4304dec` 파일:줄).
+
+| 항목 | Zed | 캡처 | 근거(C-36) |
+|---|---|---|---|
+| 뒤로 툴팁 | "Go Back" + `Alt-Left` | `ORDER-09/zed-tip-back.png` | `crates/workspace/src/pane.rs:3514`, 키는 `Tooltip::for_action_in` |
+| 앞으로 툴팁 | "Go Forward" + `Alt-Right` | `ORDER-09/zed-tip-forward.png` | `pane.rs:3536` |
+| 기록이 없을 때 | 버튼이 흐림(비활성) | `ORDER-09/zed-tip-back.png`·`zed-tip-forward.png` | `pane.rs:3519, 3541`(disabled), 버튼은 늘 보임 `pane.rs:3614`·`assets/settings/default.json:1479` `show_nav_history_buttons` |
+| Windows 키 | `pane::GoBack` 마우스 뒤로 버튼·`alt--`·`alt-left`, `pane::GoForward` 마우스 앞으로 버튼·`alt-=`·`alt-right` | 없음 | `assets/keymaps/default-windows.json:516-521` |
+
+이동 기록(상태 바 위치로 확인, `ORDER-09/zed-nav-*.png`):
+
+| 순서 | 조작 | 결과 위치 |
+|---|---|---|
+| 1 | 시작 | AGENTS.md `5:23` |
+| 2 | `Ctrl-P`로 App.tsx 열기 | App.tsx `1:1` |
+| 3 | `Ctrl-G` 66 | App.tsx `66:1` |
+| 4 | `Alt-Left` | App.tsx `1:1` |
+| 5 | `Alt-Left` | AGENTS.md `5:23` |
+| 6 | `Alt-Right` | App.tsx `1:1` |
+| 7 | `Alt-Right` | App.tsx `66:1` |
+| 8 | `Ctrl-End` | App.tsx `75:1`(9줄 이동) |
+| 9 | `Alt-Left` | App.tsx `1:1`(`66:1`이 아님) |
+
+- 파일 열기와 Go to Line 점프는 기록되고, 9줄 커서 이동은 기록되지 않는다.
+
+기록 규칙(C-36 Zed 소스):
+
+| 규칙 | 근거 |
+|---|---|
+| pane마다 따로 기록한다(분할 pane은 독립 스택) | `crates/workspace/src/pane.rs:413, 586` |
+| 탭을 떠날 때(비활성화) 그 커서 위치를 기록한다 | `crates/editor/src/items.rs:907` `Item::deactivated` |
+| 같은 파일 안에서는 커서가 10줄 이상 움직였을 때만 기록한다 | `crates/editor/src/editor.rs:307` `MIN_NAVIGATION_HISTORY_ROW_DELTA = 10`, `crates/editor/src/navigation.rs:1567` |
+| Go to Line 같은 명시적 점프는 줄 수와 상관없이 항상 기록한다(`always: true`) | `navigation.rs:1567`(C-36의 예는 `go_to_definition`) |
+| 닫힌 탭의 기록도 남는다. 돌아가면 그 경로로 다시 열고 그 위치로 간다 | `crates/workspace/src/workspace.rs:3300-3345` |
+| 기록 상한 1024개 | tauri 확인(tauri K-38 보고, 곧 tauri R-10에 옮겨짐). 이 레포 checker 확인 전 |
+
 ---
 
 ## R-11. 탭 제목에 마우스를 올리면 파일 전체 경로를 툴팁으로 보인다
@@ -599,6 +638,18 @@ I-10. 요청 원문 "Go Back Alt Left / Go Forward Alt Right 미표시 - 마우�
 
 I-11. 요청 원문 "탭 제목에 마우스를 호버링했을 때 - 파일 경로가 나타나야 함"(사용자 2026-11-06).
 
+
+**Zed 확인(tauri, 2026-11-07)**
+
+조건: core ORDER-09, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, 100%, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` 해당 R-n "Zed 확인(2026-11-07)", 커밋 `bba6cfc`, W-41로 옮김, core-leader [NOTICE]). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-09\` 아래(이하 `ORDER-09/`로 줄임). 근거 열은 이 레포 checker의 Zed 소스 확인(`cards/C-36.report.md`, Zed `4304dec` 파일:줄).
+
+| 항목 | Zed | 캡처 | 근거(C-36) |
+|---|---|---|---|
+| 탭 툴팁 | 탭 아래에 절대 경로 `D:\projects\workbench-tauri\AGENTS.md`(역슬래시) | `ORDER-09/zed-tip-tab.png` | `crates/editor/src/items.rs:706` `file.worktree.absolutize(&file.path).compact()`, `crates/workspace/src/pane.rs:3104-3108` |
+| "+" 버튼 툴팁 | "New…"(키 없음) | `ORDER-09/zed-tip-plus.png` | 없음(C-36 범위 밖) |
+
+- C-36 추가(캡처 없음): 읽기 전용 파일은 경로 + "Read-Only Tab", 멀티버퍼는 그 제목. 툴팁 지연은 gpui 기본(약 500ms, `crates/ui/src/components/tooltip.rs`).
+
 ---
 
 ## R-12. 편집 영역 위에 파일 경로와 현재 제목 줄을 보인다
@@ -613,7 +664,7 @@ I-11. 요청 원문 "탭 제목에 마우스를 호버링했을 때 - 파일 경
 
 - 경로를 어디부터 보일지와 마크다운이 아닌 파일에서 무엇을 보일지 모두 Zed와 같다. 캡처로 본 Zed는 폴더를 하나만 열면 파일 이름부터(`INTENT.md › # INTENT — workbench-gpui › ## 무엇을 하는가`), 여럿 열면 폴더 이름부터(`workbench-gpui\INTENT.md › …`) 보인다.
 - 분할된 창은 각자 자기 커서 위치의 제목 계층을 보인다(`refs/zed-split.png`).
-- 코드 파일에서 Zed가 보이는 것(심볼 계층 등): 미정(Zed에서 확인, Phase 9).
+- 코드 파일에서 Zed가 보이는 것: 경로 뒤에 커서를 포함한 심볼 계층(아래 "Zed 확인"). 이 레포는 Phase 11에서 한다(core [DECISION] 2026-11-07).
 - Zed 캡처의 같은 줄 오른쪽 버튼들은 요청에 들어 있지 않다.
 
 **판정 방법**
@@ -623,6 +674,28 @@ I-11. 요청 원문 "탭 제목에 마우스를 호버링했을 때 - 파일 경
 **출처**
 
 I-12. 요청 원문 "문서의 편집창 상단에 파일 경로/제목이 보여야 함", 정한 것 "zed와 동일하게"(사용자 2026-11-06).
+
+
+**Zed 확인(tauri, 2026-11-07)**
+
+조건: core ORDER-09, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, 100%, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` 해당 R-n "Zed 확인(2026-11-07)", 커밋 `bba6cfc`, W-41로 옮김, core-leader [NOTICE]). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-09\` 아래(이하 `ORDER-09/`로 줄임). 근거 열은 이 레포 checker의 Zed 소스 확인(`cards/C-36.report.md`, Zed `4304dec` 파일:줄).
+
+자리: 편집 영역 위 툴바 왼쪽.
+
+| 경우 | Zed 경로 줄 | 캡처 | 근거(C-36) |
+|---|---|---|---|
+| 폴더 하나, 마크다운 1행 | `AGENTS.md › # AGENTS` | `ORDER-09/zed-a-start.png` | 경로 `crates/editor/src/editor.rs:11685` `file.path()` |
+| 폴더 하나, 마크다운 5행 | `AGENTS.md › # AGENTS › ## 레포 규칙`(제목 전체 계층, 제목은 문법 색) | `ORDER-09/zed-bc-md-h2.png` | `crates/grammars/src/markdown/outline.scm`, `editor.rs:4025, 11707` |
+| 하위 폴더 파일 | 루트 기준 상대 경로 `src\App.tsx`, `src\shell\Pane.tsx` | `ORDER-09/zed-bc-code.png` 등 | `editor.rs:11685`, 경로 첫 조각은 한 문자열(디렉터리마다 `›`로 나누지 않음) |
+| 코드 파일, 66행(심볼 안) | `src\App.tsx › function App()`(심볼 계층, 문법 색) | `ORDER-09/zed-bc-code.png` | `editor.rs:4025, 11707`(LSP 또는 tree-sitter outline) |
+| 코드 파일, 1행(심볼 밖) | 경로만 `src\App.tsx` | `ORDER-09/zed-bc-code.png` 계열 | 같음 |
+| 폴더 둘 | 루트 폴더 이름부터: `workbench-tauri\AGENTS.md › # AGENTS`, `workbench-core\specs\v0.5\ITEMS.md › # ITEMS — workbench-core v0.5` | `ORDER-09/zed-bc-two-*.png` | `crates/language/src/buffer.rs:5533` `file.full_path()` |
+| 분할 | pane마다 자기 커서 기준: 왼쪽 `… › # AGENTS`, 오른쪽 6행 `… › # AGENTS › ## 레포 규칙` | `ORDER-09/zed-split-right-click.png` | `crates/workspace/src/pane.rs:598`(pane마다 Toolbar) |
+
+- 구분자 `›`는 placeholder 색, 조각이 12개를 넘으면 가운데를 `⋯`로 줄인다(C-36, `crates/editor/src/element.rs:7141, 7170`).
+- 표시 조건: 설정 `toolbar.breadcrumbs`(기본 true), 단일 버퍼 파일일 때만(C-36, `assets/settings/default.json:598`, `crates/editor/src/items.rs:1107`).
+- 툴바 오른쪽 버튼: Zed는 미리보기(마크다운만)·검색·AI·커서·설정이다. 이 앱은 미리보기만 둔다(core ORDER-09).
+- Phase 9 범위(core [DECISION] 2026-11-07): 경로 + 마크다운 제목 계층까지 한다. 코드 파일의 심볼 계층은 Phase 11(ORDER-11)에서 한다. Phase 9에서 코드 파일은 경로만 보인다.
 
 ---
 
@@ -733,7 +806,7 @@ I-15. 요청 원문 "마크다운 문서의 하이라이트가 되지 않습니�
 **정해진 결과**
 
 - 넘칠 때의 모습과 동작(스크롤, 잘림, 활성 탭 보이기)이 Zed와 같다.
-- Zed의 실제 처리: 미정(Zed에서 확인, Phase 9).
+- Zed의 실제 처리: 아래 "Zed 확인".
 
 **판정 방법**
 
@@ -742,6 +815,21 @@ I-15. 요청 원문 "마크다운 문서의 하이라이트가 되지 않습니�
 **출처**
 
 I-16. 요청 원문 "zed와 동일하게"(화면 비교의 "탭 바 넘침"에 대한 답, 사용자 2026-11-06).
+
+
+**Zed 확인(tauri, 2026-11-07)**
+
+조건: core ORDER-09, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, 100%, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` 해당 R-n "Zed 확인(2026-11-07)", 커밋 `bba6cfc`, W-41로 옮김, core-leader [NOTICE]). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-09\` 아래(이하 `ORDER-09/`로 줄임). 근거 열은 이 레포 checker의 Zed 소스 확인(`cards/C-36.report.md`, Zed `4304dec` 파일:줄).
+
+| 항목 | Zed | 캡처 | 근거(C-36) |
+|---|---|---|---|
+| 넘칠 때 탭 모양 | 탭은 원래 폭 그대로 한 줄, 좌우가 잘림. 스크롤 화살표·목록 버튼·스크롤바 없음 | `ORDER-09/zed-overflow.png` | `crates/workspace/src/pane.rs:3653-3665` `overflow_x_scroll()`, 페이드 없이 잘림 |
+| 고정되는 것 | 뒤로/앞으로 버튼과 오른쪽 버튼 묶음은 고정, 탭 줄만 가로로 움직임 | `ORDER-09/zed-overflow.png`, `zed-wheel-*.png` | 같음 |
+| 마우스 휠 | 세로 휠 한 칸에 가로 약 80px 이동 | `ORDER-09/zed-wheel-*.png` | 휠을 가로 스크롤로(`pane.rs:3653-3665`). 80px은 캡처 값 |
+| 키보드로 탭 바꾸기 | `Ctrl-PageUp` 등으로 바꾸면 활성 탭이 보이게 스크롤 | `ORDER-09/zed-first-active.png` | `pane.rs:1523` `scroll_to_item`, 사용자가 직접 스크롤하면 억제(`suppress_scroll`) |
+| 새 탭 위치 | 활성 탭 바로 오른쪽 | `ORDER-09/zed-overflow.png` 계열 | 없음(C-36 범위 밖) |
+
+- C-36 추가: 핀 탭이 스크롤될 때 오른쪽 경계선이 보인다(`pane.rs:3720-3728`).
 
 ---
 
@@ -1041,7 +1129,7 @@ I-22. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
 **정해진 결과**
 
 - 버튼이 보이는 조건이 Zed와 같다.
-- Zed의 실제 조건: 미정(Zed에서 확인, Phase 9). 비교 때 Zed는 미리보기 pane이 없어 같은 자리를 보지 못했다.
+- Zed의 실제 조건: 아래 "Zed 확인"(pane 포커스 기준). 비교 때 Zed는 미리보기 pane이 없어 같은 자리를 보지 못했다.
 
 **판정 방법**
 
@@ -1050,3 +1138,18 @@ I-22. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
 **출처**
 
 I-23. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
+
+**Zed 확인(tauri, 2026-11-07)**
+
+조건: core ORDER-09, Zed `4304dec` 설치본 `zed -n` 새 창, 1440×852, 100%, One Dark, 사용자 `base_keymap` VSCode. 출처: workbench-tauri의 Zed 확인(tauri `specs/v0.5/SPEC.md` 해당 R-n "Zed 확인(2026-11-07)", 커밋 `bba6cfc`, W-41로 옮김, core-leader [NOTICE]). 캡처는 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-09\` 아래(이하 `ORDER-09/`로 줄임). 근거 열은 이 레포 checker의 Zed 소스 확인(`cards/C-36.report.md`, Zed `4304dec` 파일:줄).
+
+| 상황 | +, 분할, 최대화 버튼 | 캡처 |
+|---|---|---|
+| 그 pane에 포커스가 있음 | 보임 | `ORDER-09/zed-focus-panel*.png` |
+| 프로젝트 패널에 포커스, 마우스를 탭 바에 올림 | 안 보임 | `ORDER-09/zed-cond-panel-hover-tabbar.png` |
+| 프로젝트 패널에 포커스, 마우스를 편집 영역에 올림 | 안 보임 | `ORDER-09/zed-cond-panel-hover-editor.png` |
+| 분할 | 포커스가 있는 pane에만 보임 | `ORDER-09/zed-split-right-click.png` |
+
+- 마우스를 올리는 것만으로는 보이지 않는다. 기준은 pane 포커스다.
+- 근거(C-36): 조건 `pane.has_focus(window, cx) || pane.context_menu_focused(window, cx)` — 그 pane에 포커스가 있거나 그 pane의 컨텍스트 메뉴가 열려 있을 때(`crates/workspace/src/pane.rs:4345-4352`, `pane.rs:3618`). 설정 `tab_bar.show_tab_bar_buttons`(기본 true, `assets/settings/default.json:1481`).
+- 왼쪽 뒤로·앞으로 버튼은 포커스와 상관없이 늘 보인다(기록이 없으면 비활성, R-10).

@@ -6,6 +6,7 @@
 //! drag (I-725~I-727), the zoomed pane (I-730), the split popup (I-706, I-707) and the actions of I-065, I-731,
 //! I-732 and I-737. Judging functions are plain and tested (H-9).
 
+use std::path::Path;
 use std::rc::Rc;
 
 use gpui_kit::component::{ActiveTheme as _, InteractiveElementExt as _, v_flex};
@@ -54,10 +55,17 @@ impl Render for DividerDrag {
     }
 }
 
-/// I-706: the end buttons belong to the pane that has focus; a workspace with a single pane (the first screen has
-/// one) has only the active one.
-fn end_buttons_shown(active: bool, only_pane: bool) -> bool {
-    active || only_pane
+/// I-706, I-23: the end buttons show only while the pane has focus or its split popup is open (Zed pane.rs,
+/// default_render_tab_bar_buttons: has_focus || context_menu_focused, otherwise the buttons are left out, not hidden).
+/// A single pane gets no exception: focus in the project tree or the sidebar hides them.
+fn end_buttons_shown(pane_focused: bool, menu_open: bool) -> bool {
+    pane_focused || menu_open
+}
+
+/// I-11: the tab tooltip is the file's absolute path (Zed `items.rs` `tab_tooltip_text`, backslashes kept, I-20); tool tabs
+/// (Project Search, Diagnostics) and Markdown previews have no path and get none.
+fn tab_tooltip(path: &std::path::Path, tool: bool, preview: bool) -> Option<String> {
+    (!tool && !preview).then(|| path.display().to_string())
 }
 
 /// The end buttons of the first screen (no folder): split is off (I-707, nothing to split), zoom does nothing.
@@ -127,9 +135,9 @@ impl Workbench {
             return v_flex()
                 .on_children_prepainted(probe(&["tab-bar", "active-item"]))
                 .size_full()
-                // The first screen has no folder and one pane, which counts as the active one: its end buttons show as
-                // before P4-3b (`+`, split off, zoom), with nothing to act on yet.
-                .child(layout::tab_bar(&[], end_buttons_shown(false, true).then(first_screen_end), Rc::new(|_, _, _| {}), cx))
+                // The first screen has no folder and one pane: the same focus rule as any pane decides whether its end buttons
+                // (`+`, split off, zoom) show, with nothing to act on yet.
+                .child(layout::tab_bar(&[], 0, &Default::default(), layout::BarNav::none(), end_buttons_shown(focus, false).then(first_screen_end), Rc::new(|_, _, _| {}), cx))
                 .child(div().flex_1().min_h_0().child(div().size_full().bg(theme.background)))
                 .into_any_element();
         };
@@ -251,6 +259,7 @@ impl Workbench {
                     tool_icon: if t.path == std::path::Path::new(super::search_view::SEARCH) { Some("magnifying_glass") }
                         else if t.path == std::path::Path::new(super::search_view::DIAGNOSTICS) { Some("check") } else { None },
                     markdown: t.markdown,
+                    tooltip: tab_tooltip(&t.path, t.tool.is_some(), t.markdown).map(Into::into),
                     focused: focus && focused,
                     preview: t.preview,
                     pinned: pane.is_pinned(i),
@@ -267,13 +276,22 @@ impl Workbench {
                 }
             })
             .collect();
-        let end = end_buttons_shown(focused, group.panes.len() == 1).then(|| BarEnd {
+        let end = end_buttons_shown(focus && focused, focused && self.split_menu.is_some()).then(|| BarEnd {
             split_enabled: group.split_button().is_some(),
             zoomed: group.zoomed == Some(id),
             on_split: Rc::new(cx.listener(|this, e: &ClickEvent, window, cx| this.open_split_menu(e, window, cx))),
             on_zoom: Rc::new(cx.listener(|this, _: &ClickEvent, window, cx| this.toggle_zoom(window, cx))),
         });
         let tab_count = pane.tabs.len();
+        // I-16: bring the active tab into view when it changes (new tab, Ctrl-PageUp/Down, click).
+        let tab_scroll = self.tab_scroll.borrow_mut().entry(id).or_default().clone();
+        tab_scroll.follow(pane.active, tab_count);
+        let nav = layout::BarNav {
+            can_back: pane.nav.can_go_back(),
+            can_forward: pane.nav.can_go_forward(),
+            on_back: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.navigate_in(id, false, window, cx))),
+            on_forward: Rc::new(cx.listener(move |this, _: &ClickEvent, window, cx| this.navigate_in(id, true, window, cx))),
+        };
         let end_drop: layout::DropHandler = Rc::new(cx.listener(move |this, d: &TabDrag, window, cx| this.drop_tab_at(d, id, tab_count, window, cx)));
         // I-714: the overlay of an ongoing tab drag over this body; the colour is the theme drop-target token.
         // shortcut: gpui-kit's `drop_target` colour, not Zed's `drop_target_background` (no spec value, spec/ambiguous.md has none).
@@ -303,16 +321,34 @@ impl Workbench {
             }
             (None, None) => div().size_full().bg(theme.background).into_any_element(),
         };
-        // E-038, E-039: a Markdown editor tab gets the toolbar with the preview button.
-        let item = match pane.active_tab().filter(|t| !t.markdown && is_markdown(&t.path)) {
-            Some(_) if !(focused && self.editor_poc.is_some()) => {
-                let on_preview: layout::CloseHandler = Rc::new(cx.listener(|this, _: &ClickEvent, window, cx| {
-                    let side = window.modifiers().alt;
-                    this.open_markdown_preview(side, window, cx)
-                }));
+        // I-12, E-038, E-039: a single-file editor tab gets the toolbar with the breadcrumb; Markdown adds the preview button.
+        let item = match pane.active_tab().filter(|t| !t.markdown && t.tool.is_none()) {
+            Some(t) if !(focused && self.editor_poc.is_some()) => {
+                let markdown = is_markdown(&t.path);
+                let on_preview: Option<layout::CloseHandler> = markdown.then(|| -> layout::CloseHandler {
+                    Rc::new(cx.listener(|this, _: &ClickEvent, window, cx| {
+                        let side = window.modifiers().alt;
+                        this.open_markdown_preview(side, window, cx)
+                    }))
+                });
+                // Each pane reads its own active tab's cursor (a split shows two different heading trails).
+                let headings = if markdown {
+                    let editor = t.editor.read(cx);
+                    super::breadcrumb::heading_trail(&editor.value(), editor.cursor())
+                } else {
+                    Vec::new()
+                };
+                let path = self.folders.active_folder().map_or_else(
+                    || t.path.display().to_string(),
+                    |f| {
+                        let several = self.folders.state.folders.len() > 1;
+                        super::breadcrumb::path_text(Path::new(&f.path), &crate::state::path::folder_name(&f.path), &t.path, several)
+                    },
+                );
+                let crumbs = super::breadcrumb::segments(path, headings).into_iter().map(Into::into).collect();
                 v_flex()
                     .size_full()
-                    .child(layout::markdown_toolbar(on_preview, cx))
+                    .child(layout::editor_toolbar(crumbs, on_preview, cx))
                     .child(div().flex_1().min_h_0().child(item))
                     .into_any_element()
             }
@@ -327,7 +363,10 @@ impl Workbench {
             // A press the editor body did not take (tab bar, toolbar, empty or preview body) moves the keyboard to the
             // pane too, so typing, Save and Close go where the active pane is (P4-23b-R1).
             .on_mouse_down(MouseButton::Left, cx.listener(|this, _: &MouseDownEvent, window, cx| this.focus_active_pane(window, cx)))
-            .child(layout::tab_bar(&tabs, end, end_drop, cx))
+            .child(layout::tab_bar(&tabs, id as usize, &tab_scroll, nav, end, end_drop, cx))
+            // I-10: the mouse back / forward buttons over this pane.
+            .on_mouse_down(MouseButton::Navigate(NavigationDirection::Back), cx.listener(move |this, _: &MouseDownEvent, w, cx| this.navigate_in(id, false, w, cx)))
+            .on_mouse_down(MouseButton::Navigate(NavigationDirection::Forward), cx.listener(move |this, _: &MouseDownEvent, w, cx| this.navigate_in(id, true, w, cx)))
             .child(
                 div()
                     .relative()
@@ -364,6 +403,29 @@ impl Workbench {
         if ws.update(cx, |ws, cx| ws.group.split_active(dir, SplitMode::Clone, window, cx)).is_some() {
             self.focus_active_pane(window, cx);
         }
+        cx.notify();
+    }
+
+    /// I-10: `pane::GoBack` / `pane::GoForward` (keys, menu, mouse buttons) act on the active pane.
+    pub(super) fn on_go_back(&mut self, a: &pane_actions::GoBack, w: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(a, self.focus_name(w, cx), cx);
+        if let Some(id) = self.active_ws().map(|ws| ws.read(cx).group.active) {
+            self.navigate_in(id, false, w, cx);
+        }
+    }
+
+    pub(super) fn on_go_forward(&mut self, a: &pane_actions::GoForward, w: &mut Window, cx: &mut Context<Self>) {
+        keymap::log_handled(a, self.focus_name(w, cx), cx);
+        if let Some(id) = self.active_ws().map(|ws| ws.read(cx).group.active) {
+            self.navigate_in(id, true, w, cx);
+        }
+    }
+
+    /// Go back or forward in pane `id` (the tab bar buttons act on their own pane).
+    fn navigate_in(&mut self, id: PaneId, forward: bool, window: &mut Window, cx: &mut Context<Self>) {
+        let Some(ws) = self.active_ws() else { return };
+        ws.update(cx, |ws, cx| ws.group.navigate(id, forward, window, cx));
+        self.focus_active_pane(window, cx);
         cx.notify();
     }
 
@@ -496,7 +558,7 @@ impl Workbench {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{divider_delta, divider_sides, editor_bordered, end_buttons_shown, first_screen_end, flexes_at, line_start};
+    use super::{tab_tooltip, divider_delta, divider_sides, editor_bordered, end_buttons_shown, first_screen_end, flexes_at, line_start};
     use crate::ui::pane::DividerSides;
 
     fn sides_of(g: &PaneGroup<u32>) -> Vec<(u32, DividerSides)> {
@@ -549,9 +611,13 @@ mod tests {
     /// in a split, only the active pane does. The first-screen buttons are `+` and zoom with split off.
     #[test]
     fn first_screen_keeps_its_end_buttons() {
-        assert!(end_buttons_shown(false, true));
-        assert!(end_buttons_shown(true, false));
-        assert!(!end_buttons_shown(false, false));
+        // K-32 truth table: focus or an open split popup shows them; a single pane without focus does not.
+        for (focused, menu, shown) in [(true, false, true), (false, true, true), (true, true, true), (false, false, false)] {
+            assert_eq!(end_buttons_shown(focused, menu), shown);
+        }
+        assert_eq!(tab_tooltip(std::path::Path::new(r"D:\w\a.md"), false, false).as_deref(), Some(r"D:\w\a.md"));
+        assert_eq!(tab_tooltip(std::path::Path::new("workbench://Project Search"), true, false), None);
+        assert_eq!(tab_tooltip(std::path::Path::new(r"D:\w\a.md"), false, true), None);
         let end = first_screen_end();
         assert!(!end.split_enabled && !end.zoomed);
     }

@@ -68,6 +68,9 @@ const AVAILABLE: &[&str] = &[
     "pane::SplitLeft",
     "pane::SplitRight",
     "workspace::ToggleZoom",
+    // I-10: Go > Back / Forward.
+    "pane::GoBack",
+    "pane::GoForward",
 ];
 
 #[derive(Clone)]
@@ -1117,7 +1120,7 @@ mod tests {
                 "Open Markdown Preview to the Side"
             ]
         );
-        assert_eq!(labels(&menus[4].1), ["Previous Tab", "Next Tab"]);
+        assert_eq!(labels(&menus[4].1), ["Back", "Forward", "Previous Tab", "Next Tab"]);
         assert_eq!(labels(&menus[5].1), ["Minimize", "Zoom"]);
         assert_eq!(labels(&menus[6].1), ["View Dependency Licenses", "---", "File Bug Report...", "Request Feature...", "---", "workbench-gpui Repository"]);
     }

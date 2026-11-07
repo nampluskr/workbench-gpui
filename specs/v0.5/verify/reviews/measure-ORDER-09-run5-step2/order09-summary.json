@@ -1,0 +1,10 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "FATAL: setup - Failed to bring app window 0x880ADA to foreground (Current foreground: 0x3690492)"
+  }
+}

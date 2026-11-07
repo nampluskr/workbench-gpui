@@ -127,6 +127,13 @@ pub const TAB_END_SLOT: Rems = rems_from_px(14.);
 /// L-27 탭 바 양 끝 버튼 영역: 좌우 padding 6, gap 4. A-32.6.
 pub const TAB_BAR_EDGE_PADDING_X: Rems = rems_from_px(6.);
 pub const TAB_BAR_EDGE_GAP: Rems = rems_from_px(4.);
+/// I-16, tab["scroll.wheel_step"]: Zed div.rs `pixel_delta(window.line_height())`,
+/// gpui_windows/events.rs:578: 3 wheel lines * 16px rem * phi (core-leader NOTICE, K-38).
+#[cfg(test)]
+pub const TAB_WHEEL_STEP: f32 = WHEEL_LINES_PER_NOTCH * super::rem::BASE_REM_PX * SEARCH_LANDING_LINE_HEIGHT;
+/// Default Windows wheel lines per notch; the runtime uses the system setting.
+#[cfg(test)]
+pub const WHEEL_LINES_PER_NOTCH: f32 = 3.;
 
 // ---- 상태 표시줄 (A-32.7·A-32.8) ----
 
@@ -576,6 +583,12 @@ mod tests {
         let count = next + px(SEARCH_MATCH_BUTTON) + px(SEARCH_COUNT_MARGIN_LEFT);
         assert_eq!([filter, replace, previous, next, count], [1175., 1199., 1236., 1256., 1280.]);
         assert_eq!(px(SEARCH_INPUT_TEXT_INSET) + px(SEARCH_INPUT_PADDING_LEFT) + 1., 13.);
+    }
+
+    /// K-38: the source formula agrees with tab["scroll.wheel_step"] (77.7px, W-45).
+    #[test]
+    fn k34_tab_wheel_step_is_spec() {
+        spec::assert_spec("tab[\"scroll.wheel_step\"]", "default", TAB_WHEEL_STEP);
     }
 
     /// K-30: the landing page's Label heights (phi line height) and Button rows give Zed's y pitches 29 / 34 / 26 (±1).

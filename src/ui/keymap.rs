@@ -52,7 +52,7 @@ pub mod workspace {
 }
 
 pub mod pane {
-    gpui_kit::actions!(pane, [CloseActiveItem, ActivatePreviousItem, ActivateNextItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown, DeploySearch]);
+    gpui_kit::actions!(pane, [CloseActiveItem, ActivatePreviousItem, ActivateNextItem, TogglePinTab, SplitRight, SplitLeft, SplitUp, SplitDown, DeploySearch, GoBack, GoForward]);
 }
 
 pub mod diagnostics {

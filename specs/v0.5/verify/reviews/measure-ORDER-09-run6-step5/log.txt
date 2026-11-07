@@ -1,0 +1,93 @@
+[2026-11-07 21:10:52.312] Starting ORDER-09 live measurement session...
+[2026-11-07 21:10:52.325] Invoking session.ps1 Start...
+[2026-11-07 21:10:54.059] Session started. App PID=44940, Fixture='D:\projects\workbench-gpui\target\measure-b5d32c90f82e418e8151174b3cd5b0a8'
+[2026-11-07 21:10:54.066] Preparing ORDER-09 fixture files in 'D:\projects\workbench-gpui\target\measure-b5d32c90f82e418e8151174b3cd5b0a8'...
+[2026-11-07 21:10:54.187] Fixture prepared: Folder 1 'D:\projects\workbench-gpui\target\measure-b5d32c90f82e418e8151174b3cd5b0a8\workbench-tauri', Folder 2 (core) 'D:\projects\workbench-gpui\target\measure-b5d32c90f82e418e8151174b3cd5b0a8\workbench-core\specs\v0.5'.
+[2026-11-07 21:10:54.192] Searching for main window HWND of PID 44940 (up to 15s)...
+[2026-11-07 21:10:55.484] Main window handle HWND=0x15E06DC
+[2026-11-07 21:10:55.509] Elevating target window Z-order (PID=44940, HWND=0x15E06DC): ShowWindow(SW_RESTORE), SetWindowPos(HWND_TOP), SetForegroundWindow...
+[2026-11-07 21:10:55.679] Foreground verification for 'App started': Target=0x15E06DC, CurrentForeground=0x15E06DC (Matches=True)
+[2026-11-07 21:10:55.682] Waiting for initial completed layout snapshot with 'project-empty-open' or 'tree-row-01' (up to 10s)...
+[2026-11-07 21:10:56.040] Initial layout snapshot ready at seq=1 in 354ms
+[2026-11-07 21:10:56.077] Found 'project-empty-open' button at (660, 202). Clicking to open project...
+[2026-11-07 21:10:56.338] Waiting for 'tree-row-01' to appear in layout snapshot (up to 8s)...
+[2026-11-07 21:10:56.483] Project tree loaded: 'tree-row-01' present at seq=2 in 141ms
+[2026-11-07 21:10:56.490] Attempting to open file 'AGENTS.md' from tree...
+[2026-11-07 21:10:56.726] Tree row for 'AGENTS.md': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 21:10:56.737] Double-clicking tree row for 'AGENTS.md' at screen coords (660, 188)...
+[2026-11-07 21:10:57.228] File 'AGENTS.md' opened, seq=3
+[2026-11-07 21:10:57.231] [RESULT] setup: PASS - Tree and initial file tab established
+[2026-11-07 21:10:57.242] Skipping step 'step1': I-11: Tab Hover Tooltip & Navigation Button Tooltips
+[2026-11-07 21:10:57.244] Skipping step 'step2': I-23: Tab Bar Right Buttons Visibility on Pane Focus
+[2026-11-07 21:10:57.245] Skipping step 'step3': I-16: Tab Overflow, Wheel Scroll & Active Tab Visibility
+[2026-11-07 21:10:57.246] Skipping step 'step4': I-12: Breadcrumb Path & Heading Hierarchy (Single/Multi-Folder)
+[2026-11-07 21:10:57.247] ==================================================================
+[2026-11-07 21:10:57.248] STARTING STEP 'step5': I-10: Navigation History Traversal (Alt-Left/Right & XBUTTON1)
+[2026-11-07 21:10:57.249] ==================================================================
+[2026-11-07 21:10:57.274] Reset-UIState (Step5): Sending Esc twice to dismiss any open popups or menus...
+[2026-11-07 21:10:57.743] WARN: Reset-UIState - Detected lingering popup boxes: app-menu, app-menu-button, user-menu, user-menu-gap. Sending additional Esc...
+[2026-11-07 21:10:58.006] Elevating target window Z-order (PID=44940, HWND=0x15E06DC): ShowWindow(SW_RESTORE), SetWindowPos(HWND_TOP), SetForegroundWindow...
+[2026-11-07 21:10:58.171] Foreground verification for 'Step5': Target=0x15E06DC, CurrentForeground=0x15E06DC (Matches=True)
+[2026-11-07 21:10:58.179] Attempting to open file 'AGENTS.md' from tree...
+[2026-11-07 21:10:58.397] Tree row for 'AGENTS.md': index=2, target=tree-row-02 (stdout tree rows match (index 2))
+[2026-11-07 21:10:58.405] Double-clicking tree row for 'AGENTS.md' at screen coords (660, 188)...
+[2026-11-07 21:10:58.971] File 'AGENTS.md' opened, seq=5
+[2026-11-07 21:10:59.888] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step1.png' (1440 x 852)
+[2026-11-07 21:10:59.901] Step 5 [1/10] Open AGENTS.md, Line 5: ExpTab='AGENTS.md', MeasTab='AGENTS.md', CursorBox='x=1337,w=99' -> PASS
+[2026-11-07 21:10:59.904] Attempting to open file 'App.tsx' from tree...
+[2026-11-07 21:11:00.116] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:11:00.438] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:11:00.753] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:11:01.066] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:11:01.391] Tree row for 'App.tsx': not found in stdout tree rows
+[2026-11-07 21:11:01.709] Tree row for 'App.tsx' not found in layout dump after 5 attempts
+[2026-11-07 21:11:02.180] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step2.png' (1440 x 852)
+[2026-11-07 21:11:02.191] Step 5 [2/10] Open App.tsx, Line 1: ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1337,w=99' -> FAIL
+[2026-11-07 21:11:02.192] Step 5 - Nav 3: Executing jump >10 lines using PageDown (0x22, VK_NEXT) for R-10 compliance
+[2026-11-07 21:11:02.466] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step3.png' (1440 x 852)
+[2026-11-07 21:11:02.479] Step 5 [3/10] Move >10 lines via PageDown: ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1329,w=107' -> FAIL
+[2026-11-07 21:11:02.772] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step4.png' (1440 x 852)
+[2026-11-07 21:11:02.781] Step 5 [4/10] Alt-Left (Back to App.tsx Line 1): ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1337,w=99' -> FAIL
+[2026-11-07 21:11:04.649] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step5.png' (1440 x 852)
+[2026-11-07 21:11:04.654] Step 5 [5/10] Alt-Left (Back to AGENTS.md Line 5): ExpTab='AGENTS.md', MeasTab='AGENTS.md', CursorBox='x=1337,w=99' -> PASS
+[2026-11-07 21:11:05.063] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step6.png' (1440 x 852)
+[2026-11-07 21:11:05.070] Step 5 [6/10] Alt-Right (Forward to App.tsx Line 1): ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1329,w=107' -> FAIL
+[2026-11-07 21:11:06.899] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step7.png' (1440 x 852)
+[2026-11-07 21:11:06.904] Step 5 [7/10] Alt-Right (Forward to App.tsx jump position): ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1329,w=107' -> FAIL
+[2026-11-07 21:11:07.784] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step8.png' (1440 x 852)
+[2026-11-07 21:11:07.811] Step 5 [8/10] Move 9 lines (Down 9 times - no nav record): ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1329,w=107' -> FAIL
+[2026-11-07 21:11:08.100] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step9.png' (1440 x 852)
+[2026-11-07 21:11:08.109] Step 5 [9/10] Alt-Left (Back to App.tsx Line 1, skipping Step 8): ExpTab='App.tsx', MeasTab='AGENTS.md', CursorBox='x=1337,w=99' -> FAIL
+[2026-11-07 21:11:08.111] Step 5 - Nav 10: Dispatching Safe-MouseBack() strictly guarded by Assert-MouseWheelAndBack...
+[2026-11-07 21:11:09.934] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\app-step5-nav-step10-mouseback.png' (1440 x 852)
+[2026-11-07 21:11:09.946] Step 5 [10/10] Mouse Back Button (XBUTTON1 -> AGENTS.md Line 5): ExpTab='AGENTS.md', MeasTab='AGENTS.md', CursorBox='x=1337,w=99' -> PASS
+[2026-11-07 21:11:09.947] ------------------------------------------------------------------
+[2026-11-07 21:11:09.948] STEP 5 NAVIGATION HISTORY TABLE (10 STEPS):
+[2026-11-07 21:11:09.949] | Step | Action | Expected Tab | Measured Tab | Expected Cursor | Measured Cursor Box | Result |
+[2026-11-07 21:11:09.950] |------|--------|--------------|--------------|-----------------|---------------------|--------|
+[2026-11-07 21:11:09.956] | 1 | Open AGENTS.md, Line 5 | AGENTS.md | AGENTS.md | Line 5 | x=1337,w=99 | PASS |
+[2026-11-07 21:11:09.957] | 2 | Open App.tsx, Line 1 | App.tsx | AGENTS.md | Line 1 | x=1337,w=99 | FAIL |
+[2026-11-07 21:11:09.958] | 3 | Move >10 lines via PageDown | App.tsx | AGENTS.md | >Line 10 (PageDown jump) | x=1329,w=107 | FAIL |
+[2026-11-07 21:11:09.959] | 4 | Alt-Left (Back to App.tsx Line 1) | App.tsx | AGENTS.md | Line 1 | x=1337,w=99 | FAIL |
+[2026-11-07 21:11:09.959] | 5 | Alt-Left (Back to AGENTS.md Line 5) | AGENTS.md | AGENTS.md | Line 5 | x=1337,w=99 | PASS |
+[2026-11-07 21:11:09.960] | 6 | Alt-Right (Forward to App.tsx Line 1) | App.tsx | AGENTS.md | Line 1 | x=1329,w=107 | FAIL |
+[2026-11-07 21:11:09.961] | 7 | Alt-Right (Forward to App.tsx jump position) | App.tsx | AGENTS.md | >Line 10 (jump pos) | x=1329,w=107 | FAIL |
+[2026-11-07 21:11:09.962] | 8 | Move 9 lines (Down 9 times - no nav record) | App.tsx | AGENTS.md | jump pos + 9 lines | x=1329,w=107 | FAIL |
+[2026-11-07 21:11:09.963] | 9 | Alt-Left (Back to App.tsx Line 1, skipping Step 8) | App.tsx | AGENTS.md | Line 1 | x=1337,w=99 | FAIL |
+[2026-11-07 21:11:09.964] | 10 | Mouse Back Button (XBUTTON1 -> AGENTS.md Line 5) | AGENTS.md | AGENTS.md | Line 5 | x=1337,w=99 | PASS |
+[2026-11-07 21:11:09.965] ------------------------------------------------------------------
+[2026-11-07 21:11:09.966] [RESULT] step5: FAIL - Matched 3/10 nav steps (exp: 10/10), PageDown jump (>10 lines), Safe-MouseBack guarded
+[2026-11-07 21:11:09.967] STEP 'step5' COMPLETED.
+[2026-11-07 21:11:09.968] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 21:11:09.970] Closing main window of app process (PID=44940)...
+[2026-11-07 21:11:10.063] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 21:11:11.327] session.ps1 Stop: {
+[2026-11-07 21:11:11.328] session.ps1 Stop:   "files": {
+[2026-11-07 21:11:11.330] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 21:11:11.331] session.ps1 Stop:   },
+[2026-11-07 21:11:11.332] session.ps1 Stop:   "exeUnchanged": true,
+[2026-11-07 21:11:11.334] session.ps1 Stop:   "restored": true,
+[2026-11-07 21:11:11.335] session.ps1 Stop:   "fixtureRemoved": true
+[2026-11-07 21:11:11.336] session.ps1 Stop: }
+[2026-11-07 21:11:11.353] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run6-step5\order09-summary.json
+[2026-11-07 21:11:11.354] ORDER-09 V3 measurement run completed.

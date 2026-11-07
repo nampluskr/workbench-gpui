@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step4": "FAIL: 'modifiers' 매개 변수에서 인수 변환을 처리할 수 없습니다. 형식 \"System.Object[]\"의 \"System.Object[]\" 값을 형식 \"System.UInt16\"(으)로 변환할 수 없습니다."
+  }
+}

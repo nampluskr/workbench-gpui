@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step4": "PASS - breadcrumb-path=True (exp: True), seg-01=True (exp: True)"
+  }
+}

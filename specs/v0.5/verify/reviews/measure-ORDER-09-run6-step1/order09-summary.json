@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step1": "PASS - tab tooltip=True (exp: True), back tooltip=True (exp: True), forward tooltip=True (exp: True)"
+  }
+}

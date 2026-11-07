@@ -101,6 +101,12 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-k left", "Pane", "pane::SplitLeft", "I-731"),
     b("ctrl-k right", "Pane", "pane::SplitRight", "I-731"),
     b("ctrl-\\", "Pane", "pane::SplitRight", "K-12, I-731"),
+    // I-10 (Zed default-windows.json:516-521, Pane context). The tooltip shows the last key of an action, so the
+    // Alt-Left / Alt-Right Zed shows come last.
+    b("alt--", "Pane", "pane::GoBack", "K-35, I-10"),
+    b("alt-left", "Pane", "pane::GoBack", "K-35, I-10"),
+    b("alt-=", "Pane", "pane::GoForward", "K-35, I-10"),
+    b("alt-right", "Pane", "pane::GoForward", "K-35, I-10"),
     // Register the first Zed Windows key last so the existing shortcut resolver displays it.
     // Input is gpui-kit's editor context; keep undo/redo out of tab and preview focus.
     b("ctrl-z", "Input", "input::Undo", "K-12, Zed default-windows editor::Undo"),

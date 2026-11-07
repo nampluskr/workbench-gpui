@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step2": "FAIL - Tree focus buttons=True (exp: False), Tree hover buttons=False (exp: False), Editor focus buttons=True (exp: True)"
+  }
+}

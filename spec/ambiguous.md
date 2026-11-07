@@ -63,6 +63,7 @@
 | `T-18.8` | 확장 테마 이름 중복 시 덮어쓰기 | 한 파일 내 테마 이름 중복 또는 확장 간 이름 충돌 시 우선순위(나중 등록 우선 추정) 미확정. | `03-THEME-ICONS.md` 6.4절, 8절 | 확장 테마 로더 충돌 규칙 확정 |
 | `T-18.9` | 제거된 확장 테마 사용 중 설정 파일 처리 | 확장이 제거되어 테마가 폴백으로 돌아갔을 때 설정 파일을 자동 수정하지 않고 유지하는 동작 추정. | `03-THEME-ICONS.md` 6.4절, 8절 | 설정 유지 vs 기본 테마 자동 리셋 정책 결정 |
 | `T-23` | Catppuccin Icons 내장 번들 범위 | 일반 4 flavor 전체(약 1.7MB) vs 우리 앱 지원 확장자 서브셋 번들 중 선택 필요. | `03-THEME-ICONS.md` 4.6절, 8절 | 앱 바이너리 크기 및 번들 리소스 범위 결정 |
+| `T-26.5` | `panel.focused_border` 대체값 (`theme.fallback`) | 옛 값 `#62adef`(03-THEME-ICONS 1.2절 T-26.5, cond `theme_token_fallback`). core 지시로 Zed 소스 값으로 대체(W-45, 2026-11-07): Zed 4304dec `default_colors.rs:252` dark blue step 8 = `#2870bd`, tauri R-21 One Dark 실측과 같음. ID는 그대로. 라이트 기본값은 같은 파일 98행 blue light step 10 = `#0588f0`이나 toml에 라이트 값을 따로 둘 형식이 없어 src에만 적었다. | `03-THEME-ICONS.md` 1.2절 | 해소(값 대체). 라이트 값 ID가 필요하면 leader 결정 |
 
 ---
 

@@ -1,0 +1,54 @@
+[2026-11-07 19:44:29.591] Starting ORDER-09 live measurement session...
+[2026-11-07 19:44:29.609] Invoking session.ps1 Start...
+[2026-11-07 19:44:31.538] Session started. App PID=39320, Fixture='D:\projects\workbench-gpui\target\measure-b8e755b946de47f78877765e461c26db'
+[2026-11-07 19:44:31.547] Preparing ORDER-09 fixture files in 'D:\projects\workbench-gpui\target\measure-b8e755b946de47f78877765e461c26db'...
+[2026-11-07 19:44:31.657] Fixture prepared: Folder 1 'D:\projects\workbench-gpui\target\measure-b8e755b946de47f78877765e461c26db\workbench-tauri', Folder 2 (core) 'D:\projects\workbench-gpui\target\measure-b8e755b946de47f78877765e461c26db\workbench-core\specs\v0.5'.
+[2026-11-07 19:44:33.182] Found app HWND 0x1D00A88
+[2026-11-07 19:44:36.518] ==================================================================
+[2026-11-07 19:44:36.519] STARTING STEP 'step1': I-11: Tab Hover Tooltip & Navigation Button Tooltips
+[2026-11-07 19:44:36.520] ==================================================================
+[2026-11-07 19:44:36.693] STEP 'step1' COMPLETED.
+[2026-11-07 19:44:36.694] ==================================================================
+[2026-11-07 19:44:36.696] STARTING STEP 'step2': I-23: Tab Bar Right Buttons Visibility on Pane Focus
+[2026-11-07 19:44:36.698] ==================================================================
+[2026-11-07 19:44:36.887] Focus on Tree: tab-bar-end present = False (expected: False)
+[2026-11-07 19:44:36.986] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step2-focus-panel.png' (1440 x 852)
+[2026-11-07 19:44:37.025] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step2-panel-hover-tabbar.png' (1440 x 852)
+[2026-11-07 19:44:39.289] Focus on Editor: tab-bar-end present = False (expected: True)
+[2026-11-07 19:44:39.326] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step2-focus-editor.png' (1440 x 852)
+[2026-11-07 19:44:39.327] STEP 'step2' COMPLETED.
+[2026-11-07 19:44:39.328] ==================================================================
+[2026-11-07 19:44:39.329] STARTING STEP 'step3': I-16: Tab Overflow, Wheel Scroll & Active Tab Visibility
+[2026-11-07 19:44:39.331] ==================================================================
+[2026-11-07 19:44:39.680] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step3-overflow.png' (1440 x 852)
+[2026-11-07 19:44:42.045] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step3-wheel-down.png' (1440 x 852)
+[2026-11-07 19:44:49.229] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step3-first-active.png' (1440 x 852)
+[2026-11-07 19:44:49.234] STEP 'step3' COMPLETED.
+[2026-11-07 19:44:49.235] ==================================================================
+[2026-11-07 19:44:49.236] STARTING STEP 'step4': I-12: Breadcrumb Path & Heading Hierarchy (Single/Multi-Folder)
+[2026-11-07 19:44:49.237] ==================================================================
+[2026-11-07 19:44:51.266] Breadcrumb at Line 1: breadcrumb-path=False, seg01=False
+[2026-11-07 19:44:51.318] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step4-bc-a-start.png' (1440 x 852)
+[2026-11-07 19:44:53.495] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step4-bc-md-h2.png' (1440 x 852)
+[2026-11-07 19:44:55.278] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step4-bc-code.png' (1440 x 852)
+[2026-11-07 19:44:55.330] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step4-split-bc.png' (1440 x 852)
+[2026-11-07 19:44:58.680] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step4-bc-two-tauri.png' (1440 x 852)
+[2026-11-07 19:44:58.730] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step4-bc-two-core.png' (1440 x 852)
+[2026-11-07 19:44:58.731] STEP 'step4' COMPLETED.
+[2026-11-07 19:44:58.732] ==================================================================
+[2026-11-07 19:44:58.733] STARTING STEP 'step5': I-10: Navigation History Traversal (Alt-Left/Right & XBUTTON1)
+[2026-11-07 19:44:58.734] ==================================================================
+[2026-11-07 19:45:01.145] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step1.png' (1440 x 852)
+[2026-11-07 19:45:02.936] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step2.png' (1440 x 852)
+[2026-11-07 19:45:04.695] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step3.png' (1440 x 852)
+[2026-11-07 19:45:06.465] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step4.png' (1440 x 852)
+[2026-11-07 19:45:08.235] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step5.png' (1440 x 852)
+[2026-11-07 19:45:10.015] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step6.png' (1440 x 852)
+[2026-11-07 19:45:11.778] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step7.png' (1440 x 852)
+[2026-11-07 19:45:14.144] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step8.png' (1440 x 852)
+[2026-11-07 19:45:16.012] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step9.png' (1440 x 852)
+[2026-11-07 19:45:17.788] Captured client screenshot to 'D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run2\app-step5-nav-step10-mouseback.png' (1440 x 852)
+[2026-11-07 19:45:17.790] STEP 'step5' COMPLETED.
+[2026-11-07 19:45:17.792] Invoking session.ps1 Stop to restore user AppData...
+[2026-11-07 19:45:18.749] WARN: session.ps1 Stop returned exit code 1
+[2026-11-07 19:45:18.750] ORDER-09 V3 measurement run completed.

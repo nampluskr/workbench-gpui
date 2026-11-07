@@ -24,7 +24,7 @@
 |---|---|---|---|
 | `gpui-leader` | 카드 지시, 판정, 커밋, core-leader와 화면 차례 조율(core D-4). 코드·문서는 쓰지 않는다 | Claude Code Opus 5.5 (기존 세션) | 상시 |
 | `gpui-writer` | v0.5 문서(INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP)와 PROGRESS | Claude Code Opus 5.5 medium | 문서 단계와 Phase 끝 |
-| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium (2026-11-07 12:14~14:05, 15:52~ Claude Code Sonnet 5.5 high, 2.1) | 구현 Phase 동안 |
+| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium (2026-11-07 12:14~14:05, 15:52~19:27 Claude Code Sonnet 5.5 high, 2.1) | 구현 Phase 동안 |
 | `gpui-checker` | 카드 리뷰(정확성, 카드 검증 수준만큼 빌드·테스트), 화면 검증(V2·V3)과 측정. src는 고치지 않는다 | agy gemini-3.8-flash-high | 리뷰·검증 카드가 있을 때 |
 
 - herdr 에이전트 이름은 세션 안에서 유일해야 하므로 `gpui-` 접두사를 붙인다(`herdr agent rename`).
@@ -41,11 +41,11 @@
 workspace: workbench-gpui (wD)   D:\projects\workbench-gpui, 브랜치 master, worktree 없음
 ├── tab: control (wD:t1)   gpui-leader   (wD:p1)
 ├── tab: docs    (wD:t4)   gpui-writer   (wD:pD)
-├── tab: impl    (wD:t5)   gpui-coder    (wD:pE)
+├── tab: code    (wD:t7)   gpui-coder    (wD:pH)
 └── tab: check   (wD:t6)   gpui-checker  (wD:pF)
 ```
 
-- ID는 2026-11-06 leader 확인 값이다. 다시 띄우면 바뀔 수 있으므로 `herdr agent list`·`herdr tab list`로 확인하고 이름으로 부른다.
+- ID는 2026-11-06 leader 확인 값이다. coder는 2026-11-07 19:27 탭 `code`(`wD:t7`)·pane `wD:pH`로 바뀌었다(옛 `impl` `wD:t5`·`wD:pE`는 닫힘, 2.1, leader W-43). 다시 띄우면 바뀔 수 있으므로 `herdr agent list`·`herdr tab list`로 확인하고 이름으로 부른다.
 - worktree는 두지 않는다(core D-2). v0.4의 `.worktrees\editor`·`.worktrees\ui`와 로컬 브랜치 `work/editor`·`work/ui`는 master에 병합된 것을 확인한 뒤 2026-11-06 leader가 지웠다(ORDER-01-R2 C, `DECISIONS.md` D-2).
 
 ### 2.1 실행 명령
@@ -68,7 +68,8 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
   - 2026-11-07 12:14: `gpui-coder`를 Codex(GPT-6.1-Sol medium, 5시간 한도 6% 남음)에서 Claude Code Sonnet 5.5 high로 바꿨다. pane `wD:pE`, 이름 그대로(D-16, leader W-28).
   - 되돌리기: 14:00 Codex 한도 초기화 뒤, 그때 진행 중인 카드가 끝나는 때에 Codex(GPT-6.1-Sol medium)로 되돌리고 시각을 여기에 적는다(사용자 결정). 되돌린 시각: 2026-11-07 14:05. K-20이 끝난 카드 경계에서 Codex GPT-6.1-Sol medium으로 되돌렸다. Codex가 시작할 때 자체 업데이트로 한 번 종료돼 다시 띄웠다(leader W-29).
   - 2026-11-07 15:52: K-25 완료 직후 카드 경계에서 `gpui-coder`를 Codex GPT-6.1-Sol medium에서 Claude Code Sonnet 5.5 high로 다시 바꿨다. 사유: Codex 5시간 한도 5% 미만(D-16, leader W-35). 이름 그대로.
-  - 되돌리기: 한도 초기화 뒤 카드 경계에서 leader가 따로 알린다. 되돌린 시각: 미정.
+  - 되돌리기: 한도 초기화 뒤 카드 경계에서 leader가 따로 알린다. 되돌린 시각: 2026-11-07 19:27(아래 줄).
+  - 2026-11-07 19:27: K-35 완료 뒤 카드 경계에서 `gpui-coder`를 Claude Code Sonnet 5.5 high에서 Codex GPT-6.1-Sol medium으로 되돌렸다(core [DECISION] 사용자 지시). 옛 pane `wD:pE`가 Claude 종료 뒤 응답하지 않아 닫았고(탭 t5도 함께 닫힘), 새 탭 `code`(`wD:t7`)의 pane `wD:pH`에 Codex를 띄워 이름 `gpui-coder`를 붙였다. Codex는 처음 GPT-6.1 Terra high로 떠서 `/model` → GPT-6.1-Sol → Medium → s(세션)로 맞췄다(leader W-43).
 - coder는 컨텍스트를 비운(`/clear`) 뒤에는 `/model`로 Sol medium을 다시 고른다. `/clear` 뒤 기본값(GPT-6.1 Terra high)으로 돌아가 K-02가 Terra high로 실행된 일이 있다(leader 2026-11-07, W-10).
 - leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).

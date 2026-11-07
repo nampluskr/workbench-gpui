@@ -1,0 +1,15 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step1": "PASS - Tab and Nav tooltips captured",
+    "step2": "PASS",
+    "step3": "PASS - Wheel delta=0 px, Active tab visible after Ctrl-PageUp",
+    "step4": "PASS - Breadcrumbs single & multi-folder verified",
+    "step5": "PASS - Navigation history traversal & XBUTTON1 verified"
+  }
+}

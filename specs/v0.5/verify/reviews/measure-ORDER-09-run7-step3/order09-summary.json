@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step3": "FAIL - wheel delta=0 px (exp: ~80 px), active tab='Sidebar.tsx' visible=True (exp: True), overflow gap=0 px (exp: 0 px, gpui: 24 px)"
+  }
+}

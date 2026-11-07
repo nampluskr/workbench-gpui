@@ -114,12 +114,32 @@ fn project(entry: Option<&Entry>, theme: &mut gpui_kit::component::Theme) -> Opt
     })
 }
 
+/// I-12: the breadcrumb's two theme colours that gpui-kit's theme has no field for. Computed in `apply`, so a theme
+/// change replaces them. `separator` is Zed `text.placeholder` (One fallback as the other tokens); `title` is the
+/// syntax `title` colour of Markdown headings, none when the theme has no such entry (the text keeps its muted colour).
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct BreadcrumbColors {
+    pub separator: Option<Hsla>,
+    pub title: Option<Hsla>,
+}
+
+impl gpui_kit::Global for BreadcrumbColors {}
+
+fn breadcrumb_colors(entry: Option<&Entry>) -> BreadcrumbColors {
+    let Some(entry) = entry else { return BreadcrumbColors { separator: None, title: None } };
+    let style = &entry.theme["style"];
+    let base_name = if entry.theme["appearance"] == "light" { "One Light" } else { "One Dark" };
+    let base = catalog().iter().find(|e| e.name == base_name).map(|e| &e.theme["style"]).unwrap_or(&serde_json::Value::Null);
+    BreadcrumbColors { separator: resolved_color(style, base, "text.placeholder"), title: color(&style["syntax"]["title"], "color") }
+}
+
 pub fn apply(name: &str, cx: &mut gpui_kit::App) {
     let entry = catalog().iter().find(|entry| entry.name == name);
     if let Some(entry) = entry {
         let mode = if entry.theme["appearance"] == "light" { gpui_kit::component::ThemeMode::Light } else { gpui_kit::component::ThemeMode::Dark };
         gpui_kit::component::Theme::change(mode, None, cx);
     }
+    cx.set_global(breadcrumb_colors(entry));
     let gutter = gpui_kit::component::Theme::update(cx, |theme| project(entry, theme));
     if let Some(gutter) = gutter {
         cx.set_global(gutter);
@@ -239,6 +259,25 @@ mod tests {
         assert_eq!(super::super::settings::Values::default().theme, "One Dark");
         assert_eq!(super::color(&serde_json::json!({"bad":"#oops"}), "bad"), None);
     }
+    /// I-12: the breadcrumb separator and heading colours are the theme JSON's `text.placeholder` and `syntax.title.color`.
+    #[test]
+    fn k34_breadcrumb_colors_follow_the_theme_json() {
+        use super::{breadcrumb_colors, catalog, color};
+        for name in ["One Dark", "One Light"] {
+            let Some(entry) = catalog().iter().find(|e| e.name == name) else { continue };
+            let style = &entry.theme["style"];
+            let got = breadcrumb_colors(Some(entry));
+            assert_eq!(got.separator, color(style, "text.placeholder"), "{name}: separator");
+            assert!(got.separator.is_some() && got.title.is_some(), "{name}");
+            assert_eq!(got.title, color(&style["syntax"]["title"], "color"), "{name}: title");
+        }
+        let bare = super::Entry { name: "bare".into(), source: String::new(), theme: serde_json::json!({"style": {}}) };
+        let got = breadcrumb_colors(Some(&bare));
+        assert!(got.title.is_none(), "no syntax.title: the muted text colour stays");
+        assert_eq!(got.separator, color(&catalog().iter().find(|e| e.name == "One Dark").unwrap().theme["style"], "text.placeholder"));
+        assert_eq!(breadcrumb_colors(None), super::BreadcrumbColors { separator: None, title: None });
+    }
+
     #[test]
     fn k07_gutter_geometry_and_colors() {
         use gpui_kit::{base::EditorGutterTheme, px, rgb};

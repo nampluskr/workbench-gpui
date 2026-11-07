@@ -42,6 +42,8 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("pane::SplitLeft", false),
     ("pane::SplitUp", false),
     ("pane::SplitDown", false),
+    ("pane::GoBack", false),
+    ("pane::GoForward", false),
     ("workspace::ToggleZoom", false),
     ("workspace::ActivatePaneLeft", false),
     ("workspace::ActivatePaneRight", false),
@@ -111,6 +113,16 @@ mod tests {
         }
     }
 
+    /// I-10: Zed's Windows keys for Go Back / Go Forward (default-windows.json:516-521), Pane context only.
+    #[test]
+    fn k35_go_back_and_forward_keys() {
+        for (keys, action) in [("alt-left", "pane::GoBack"), ("alt--", "pane::GoBack"), ("alt-right", "pane::GoForward"), ("alt-=", "pane::GoForward")] {
+            let binding = builtin::BUILTIN.iter().find(|binding| binding.keys == keys).unwrap();
+            assert_eq!((binding.context, binding.action), (builtin::PANE_CONTEXT, action));
+            assert!(is_known_action(action));
+        }
+    }
+
     #[test]
     fn k11_settings_and_layout_actions_registered() {
         let binding = builtin::BUILTIN.iter().find(|binding| binding.keys == "ctrl-,").unwrap();
@@ -143,6 +155,8 @@ mod tests {
             ("workspace::Save", "Workspace", vec!["ctrl-s"]),
             ("pane::ActivatePreviousItem", "Pane", vec!["ctrl-pageup"]),
             ("pane::ActivateNextItem", "Pane", vec!["ctrl-pagedown"]),
+            ("pane::GoBack", "Pane", vec!["alt--", "alt-left"]),
+            ("pane::GoForward", "Pane", vec!["alt-=", "alt-right"]),
         ] {
             let bindings: Vec<_> = builtin::BUILTIN.iter().filter(|b| b.action == action).collect();
             assert!(bindings.iter().all(|b| b.context == context), "{action}");

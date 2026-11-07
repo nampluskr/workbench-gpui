@@ -3,6 +3,7 @@
 //! 진입 순서는 gpui-kit 0.8.1 crate 문서의 예시(application → init → open_window)를 따른다.
 
 mod app_menu;
+mod breadcrumb;
 mod context_menu;
 mod editor_poc;
 mod extensions;
@@ -14,6 +15,7 @@ mod markdown_preview;
 mod layout;
 mod layout_probe;
 mod menu_common;
+mod nav_history;
 pub(crate) mod metrics;
 mod pane;
 mod pane_group;
@@ -103,6 +105,8 @@ struct Workbench {
     split_menu: Option<pane_view::OpenMenu>,
     /// 열린 탭 우클릭 메뉴(Pin / Unpin, P4-23b-R1).
     tab_menu: Option<pane_view::OpenMenu>,
+    /// I-16: horizontal scroll state of each pane's tab row (rendering is `&self`, so interior mutability).
+    tab_scroll: std::cell::RefCell<std::collections::HashMap<pane_group::PaneId, layout::TabScroll>>,
     /// Where a tab being dragged would land over a pane body (I-714, P4-4).
     drop_hint: Option<tab_drag::DropHint>,
     /// 왼쪽 단추를 누른 트리 행(놓을 때 같은 행이면 누르기로 본다).
@@ -466,6 +470,10 @@ impl Render for Workbench {
         self.user_menu.update(cx, |menu, cx| menu.set_classic(classic, cx));
         // 레이아웃 탐침의 프레임 번호(사라진 툴팁·메뉴 경계를 스냅숏에서 빼려고). 창 루트라 프레임마다 그린다.
         layout_probe::begin_frame();
+        // I-10: a tab switch has no editor event, so each pane reports what it shows before the frame is built.
+        if let Some(ws) = self.active_ws() {
+            ws.update(cx, |ws, cx| ws.group.nav_sync(cx));
+        }
         // dev: 포커스 자리나 창 활성 상태가 바뀌면 낸다(키 판정에서 포커스가 어디로 갔는지 추적).
         if crate::ui::keymap::dev_flag() {
             let state = format!("focus={} active={}", self.focus_name(window, cx), window.is_window_active());
@@ -612,6 +620,8 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_toggle_pin_tab))
             .on_action(cx.listener(Self::on_open_preview))
             .on_action(cx.listener(Self::on_open_preview_to_the_side))
+            .on_action(cx.listener(Self::on_go_back))
+            .on_action(cx.listener(Self::on_go_forward))
             .on_action(cx.listener(Self::on_split_right))
             .on_action(cx.listener(Self::on_split_left))
             .on_action(cx.listener(Self::on_split_up))
@@ -753,6 +763,7 @@ pub fn run(dev: DevOptions) {
                         panel_menu: None,
                         split_menu: None,
                         tab_menu: None,
+                        tab_scroll: Default::default(),
                         drop_hint: None,
                         pending_press: None,
                         deleting: false,

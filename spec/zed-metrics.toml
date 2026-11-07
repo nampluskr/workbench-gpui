@@ -201,6 +201,10 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "footer.icon_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.2절 L-35" }
 "item.icon_size" = { value = 14, unit = "px", cond = "default", src = "04-APP-SPEC 3.3절 A-12.1" }
 "item.focus_border_width" = { value = 1, unit = "px", cond = "default", src = "04-APP-SPEC 3.3절 A-12.5" }
+"item.border_right_width" = { value = 2, unit = "px", cond = "default", src = "Zed sidebar.rs:2415-2416 border_1 + border_r_2, tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
+"item.separator_width" = { value = 1, unit = "px", cond = "default", src = "Zed sidebar.rs:2297-2299 border_t_1(둘째 묶음부터 위 1px border), tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
+"item.icon_slot_size" = { value = 16, unit = "px", cond = "default", src = "Zed crates/ui/src/components/ai/thread_item.rs:291 size_4, tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
+"item.icon_gap" = { value = 6, unit = "px", cond = "default", src = "Zed thread_item.rs:461 gap_1p5, tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
 
 # ==============================================================================
 # 5. 왼쪽 Dock 및 프로젝트 패널 (Dock & Project Panel)
@@ -251,6 +255,7 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "active_padding_bottom" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-63" }
 "indicator_size" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-65" }
 "secondary_path.font_size" = { value = 10, unit = "px", cond = "default", src = "01-LAYOUT 4.4절 L-69" }
+"scroll.wheel_step" = { value = 77.7, unit = "px", cond = "default", src = "Zed 소스 공식 휠 줄 수 3 × 창 줄 높이(16 × 1.618) = 77.66, gpui div.rs:3404 pixel_delta, gpui_windows/events.rs:578(tauri SPEC 1086행), 캡처 약 80·81(tauri ORDER-09 V3 78, gpui V3 81). W-42의 캡처 값 80을 W-45에서 정정" }
 
 # ==============================================================================
 # 7. 편집기·Pane 및 분할 영역 (Pane & PaneGroup)
@@ -646,7 +651,7 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 # ==============================================================================
 
 [theme.fallback]
-"panel.focused_border" = { value = "#62adef", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.5" }
+"panel.focused_border" = { value = "#2870bd", unit = "hex", cond = "theme_token_fallback", src = "Zed 4304dec732 crates/theme/src/default_colors.rs:252 dark() panel_focused_border = blue dark step 8(One Dark 값 null일 때), tauri SPEC R-21 One Dark 실측 #2870bd, core-leader 지시 2026-11-07(W-45). 라이트 기본은 같은 파일 98행 light() blue light step 10 = #0588f0(별도 ID 없음). 옛 값 #62adef(03-THEME-ICONS T-26.5)는 spec/ambiguous.md 3절" }
 "panel.indent_guide" = { value = "#3b3d45", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.6" }
 "panel.indent_guide_hover" = { value = "#1b1d23", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.7" }
 "panel.indent_guide_active" = { value = "#1b1d23", unit = "hex", cond = "theme_token_fallback", src = "03-THEME-ICONS 1.2절 T-26.7" }

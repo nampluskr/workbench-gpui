@@ -1,0 +1,24 @@
+[2026-11-07 20:43:10.447] Starting ORDER-09 live measurement session...
+[2026-11-07 20:43:10.462] Invoking session.ps1 Start...
+[2026-11-07 20:43:12.427] Session started. App PID=9456, Fixture='D:\projects\workbench-gpui\target\measure-899acc992989475d8243a70a39836aad'
+[2026-11-07 20:43:12.436] Preparing ORDER-09 fixture files in 'D:\projects\workbench-gpui\target\measure-899acc992989475d8243a70a39836aad'...
+[2026-11-07 20:43:12.536] Fixture prepared: Folder 1 'D:\projects\workbench-gpui\target\measure-899acc992989475d8243a70a39836aad\workbench-tauri', Folder 2 (core) 'D:\projects\workbench-gpui\target\measure-899acc992989475d8243a70a39836aad\workbench-core\specs\v0.5'.
+[2026-11-07 20:43:12.543] Searching for main window HWND of PID 9456 (up to 15s)...
+[2026-11-07 20:43:13.814] Main window handle HWND=0x6D09F0
+[2026-11-07 20:43:14.226] WARN: App started Failed to set foreground to window 0x6D09F0
+[2026-11-07 20:43:14.227] FATAL: setup - Failed to bring app window 0x6D09F0 to foreground (Current foreground: 0x10606D6)
+[2026-11-07 20:43:14.238] FATAL: FATAL: setup - Failed to bring app window 0x6D09F0 to foreground (Current foreground: 0x10606D6)
+[2026-11-07 20:43:14.242] <ScriptBlock>에서 D:\projects\workbench-gpui\tools\measure\order09-v3.ps1: 줄 1050
+[2026-11-07 20:43:14.244] Cleaning up test environment and ensuring full session restoration...
+[2026-11-07 20:43:14.249] Closing main window of app process (PID=9456)...
+[2026-11-07 20:43:14.311] Restoring app data via session.ps1 -Action Stop...
+[2026-11-07 20:43:15.541] session.ps1 Stop: {
+[2026-11-07 20:43:15.543] session.ps1 Stop:   "files": {
+[2026-11-07 20:43:15.544] session.ps1 Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+[2026-11-07 20:43:15.546] session.ps1 Stop:   },
+[2026-11-07 20:43:15.547] session.ps1 Stop:   "exeUnchanged": true,
+[2026-11-07 20:43:15.548] session.ps1 Stop:   "fixtureRemoved": true,
+[2026-11-07 20:43:15.549] session.ps1 Stop:   "restored": true
+[2026-11-07 20:43:15.550] session.ps1 Stop: }
+[2026-11-07 20:43:15.562] Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-09-run5-step1\order09-summary.json
+[2026-11-07 20:43:15.563] ORDER-09 V3 measurement run completed.

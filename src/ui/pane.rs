@@ -163,11 +163,13 @@ pub struct Pane<E = Entity<EditorState>> {
     pub active: Option<usize>,
     /// Tabs `0..pinned_count` are pinned (I-065, I-719, A-23.4); the tab bar draws them in the same row (I-066).
     pub pinned_count: usize,
+    /// I-10: this pane's back/forward history (each pane keeps its own, a split pane starts empty).
+    pub nav: super::nav_history::NavHistory,
 }
 
 impl<E> Default for Pane<E> {
     fn default() -> Self {
-        Self { tabs: Vec::new(), active: None, pinned_count: 0 }
+        Self { tabs: Vec::new(), active: None, pinned_count: 0, nav: Default::default() }
     }
 }
 

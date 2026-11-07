@@ -5,6 +5,9 @@
 //! 아이콘은 gpui-kit 기본 아이콘 묶음에서 가까운 것을 임시로 쓴다(Zed 아이콘 테마는 PoC 7단계 범위).
 //! 색은 gpui-kit 기본 테마 토큰이다(테마 매핑 G-106 은 v0.1 범위 밖).
 
+use std::cell::Cell;
+use std::rc::Rc;
+
 use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::*;
 
@@ -139,6 +142,15 @@ fn icon_with_probe(
         .child(super::zed_icons::icon(icon).size(ICON_SMALL))
 }
 
+/// A back / forward button: with a handler it clicks; without one (nothing to go to) it is dimmed like the disabled split button (I-707) and ignores presses.
+fn nav_button(id: &'static str, icon_name: &'static [&'static str], icon: &'static str, tip: Spec, on_click: Option<CloseHandler>, cx: &App) -> Stateful<Div> {
+    let button = icon_with_probe(id, icon_name, icon, Some(tip), cx);
+    match on_click {
+        Some(on_click) => button.on_click(move |e, window, cx| on_click(e, window, cx)),
+        None => button.opacity(0.4),
+    }
+}
+
 /// 탭 바 (L-61: [시작 영역] + [탭 목록] + [끝 영역]).
 ///
 /// - L-22 높이 32, L-23 탭 내용 31, L-24 탭 padding·gap 4, L-25 슬롯 12×12·14×14.
@@ -238,6 +250,21 @@ const TAB_BAR_END_DROP_MIN_WIDTH: Rems = rems_from_px(24.);
 /// `tab_drop_line_width` (I-715).
 const TAB_DROP_LINE_WIDTH: Pixels = px(2.);
 
+/// I-10: the back / forward buttons at the start of the tab bar. A button with nothing to go to looks disabled.
+pub struct BarNav {
+    pub can_back: bool,
+    pub can_forward: bool,
+    pub on_back: CloseHandler,
+    pub on_forward: CloseHandler,
+}
+
+impl BarNav {
+    /// Both buttons disabled (the first screen has no history).
+    pub fn none() -> Self {
+        Self { can_back: false, can_forward: false, on_back: Rc::new(|_, _, _| {}), on_forward: Rc::new(|_, _, _| {}) }
+    }
+}
+
 /// The end buttons of the pane that has focus (I-706): `+`, split, zoom.
 pub struct BarEnd {
     /// I-707: the split button is disabled for an empty pane.
@@ -250,6 +277,8 @@ pub struct BarEnd {
 
 /// 탭 하나의 표시 값(Phase 4 최소 탭, R-27).
 pub struct TabView {
+    /// I-11: absolute path shown as the hover tooltip; none for tool tabs and Markdown previews.
+    pub tooltip: Option<SharedString>,
     pub tool_icon: Option<&'static str>,
     pub title: SharedString,
     /// 임시 탭이면 제목 기울임(I-064, L-68).
@@ -280,6 +309,45 @@ pub struct TabView {
     pub close: CloseHandler,
 }
 
+/// I-16: horizontal scroll state of one pane's tab row. The handle is the row's; `seen` is the (active tab, tab count)
+/// the row was last scrolled for, so a wheel scroll is kept until the active tab or the tab set changes.
+// shortcut: one entry per pane id is kept after the pane closes (a handle and a Cell), prune if pane ids get reused a lot.
+#[derive(Clone, Default)]
+pub struct TabScroll {
+    handle: ScrollHandle,
+    seen: Rc<Cell<Seen>>,
+    pending: Rc<Cell<Option<usize>>>,
+}
+
+/// (active tab, tab count) a row was last scrolled for.
+type Seen = Option<(Option<usize>, usize)>;
+
+/// The tab to bring into view when the active tab or the tab count differs from what was last seen (Zed `scroll_to_item`).
+fn scroll_target(seen: Seen, active: Option<usize>, count: usize) -> Option<usize> {
+    if seen == Some((active, count)) { None } else { active }
+}
+
+impl TabScroll {
+    /// Queue once per change; prepaint must populate the viewport before requesting a scroll.
+    pub fn follow(&self, active: Option<usize>, count: usize) {
+        if let Some(ix) = scroll_target(self.seen.get(), active, count) {
+            self.pending.set(Some(ix));
+        }
+        if active.is_none() { self.pending.set(None); }
+        self.seen.set(Some((active, count)));
+    }
+
+    /// Consume after layout so the next prepaint uses the current viewport and overflow state.
+    fn after_layout(&self) -> bool {
+        if let Some(ix) = self.pending.take() {
+            self.handle.scroll_to_item(ix);
+            true
+        } else {
+            false
+        }
+    }
+}
+
 const TAB_PROBES: [&str; 12] = [
     "tab-00", "tab-01", "tab-02", "tab-03", "tab-04", "tab-05", "tab-06", "tab-07", "tab-08", "tab-09", "tab-10",
     "tab-11",
@@ -288,10 +356,10 @@ const TAB_PROBES: [&str; 12] = [
 /// 탭 목록(L-61 가운데 영역). 탭이 없으면 v0.1 뼈대의 자리 표시 탭 하나를 그린다(판단: 앞 Phase 판정 그대로).
 /// L-63: 활성 탭은 아래 테두리 대신 1px 여백(내용 높이 31), 비활성 탭은 아래 테두리. 탭 사이는 오른쪽 테두리(판단).
 /// L-64 [시작 슬롯 12][제목][끝 슬롯 14], L-67 파일 아이콘 없음.
-fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
+fn tab_list(tabs: &[TabView], pane: usize, scroll: &TabScroll, filler: AnyElement, cx: &App) -> AnyElement {
     let theme = cx.theme();
     if tabs.is_empty() {
-        return div()
+        let placeholder = div()
             .on_children_prepainted(probe(&["tab-content"]))
             .flex_shrink_0()
             .h_full()
@@ -310,8 +378,32 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                     .child(div().flex_shrink_0().size(TAB_END_SLOT)),
             )
             .into_any_element();
+        return h_flex()
+            .on_children_prepainted(probe(&["", "tab-bar-filler"]))
+            .flex_1()
+            .min_w_0()
+            .h_full()
+            .child(placeholder)
+            .child(filler)
+            .into_any_element();
     }
-    let mut row = h_flex().on_children_prepainted(probe(&TAB_PROBES)).flex_shrink_0().h_full();
+    // I-16: only this row scrolls (tabs keep their width, the overflow is clipped; no fade, arrows or scrollbar). A vertical
+    // wheel scrolls it sideways in gpui using the default 1rem text style and phi line height.
+    let after_layout = scroll.clone();
+    let mut row = h_flex()
+        .on_children_prepainted(move |mut bounds, window, cx| {
+            if after_layout.after_layout() { window.refresh(); }
+            if let Some(filler) = bounds.pop() {
+                probe(&["tab-bar-filler"])(vec![filler], window, cx);
+            }
+            probe(&TAB_PROBES)(bounds, window, cx);
+        })
+        .id(("tab-scroll", pane))
+        .flex_1()
+        .min_w_0()
+        .h_full()
+        .overflow_x_scroll()
+        .track_scroll(&scroll.handle);
     for (i, tab) in tabs.iter().enumerate() {
         let label_names: &'static [&'static str] = match i {
             0 => &["", "tab-label-00", ""],
@@ -326,6 +418,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
         row = row.child(
             div()
                 .id(("tab", i))
+                .when_some(tab.tooltip.clone().map(|path| Spec::one("tab-tooltip", Line::text(path))), |d, spec| d.tooltip(tooltip::build(spec)))
                 .flex_shrink_0()
                 .h_full()
                 .group(SharedString::from(format!("tab-{i}")))
@@ -387,7 +480,7 @@ fn tab_list(tabs: &[TabView], cx: &App) -> AnyElement {
                 ),
         );
     }
-    row.into_any_element()
+    row.child(filler).into_any_element()
 }
 
 /// Pin slot of a pinned tab (L-66): the pin icon replaces the close button; a click unpins.
@@ -429,14 +522,13 @@ fn close_slot(i: usize, tab: &TabView, cx: &App) -> impl IntoElement {
         .child(super::zed_icons::icon("close").size(ICON_SMALL))
 }
 
-pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, cx: &App) -> impl IntoElement {
+pub fn tab_bar(tabs: &[TabView], pane: usize, scroll: &TabScroll, nav: BarNav, end: Option<BarEnd>, end_drop: DropHandler, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
     let drop_bg = theme.drop_target;
     h_flex()
         .on_children_prepainted(probe(&[
             "tab-bar-start",
             "tab",
-            "tab-bar-filler",
             "tab-bar-end",
         ]))
         .flex_shrink_0()
@@ -454,35 +546,39 @@ pub fn tab_bar(tabs: &[TabView], end: Option<BarEnd>, end_drop: DropHandler, cx:
                 .border_b_1()
                 .border_r_1()
                 .border_color(theme.border)
-                .child(icon_with_probe(
+                .child(nav_button(
                     "tab-btn-back",
                     &["tab-icon-back"],
                     "arrow_left",
-                    Some(Spec::one("tab-btn-back", Line::action("Go Back", "pane::GoBack"))),
+                    Spec::one("tab-btn-back", Line::action("Go Back", "pane::GoBack")),
+                    nav.can_back.then_some(nav.on_back),
                     cx,
                 ))
-                .child(icon_with_probe(
+                .child(nav_button(
                     "tab-btn-forward",
                     &["tab-icon-forward"],
                     "arrow_right",
-                    Some(Spec::one("tab-btn-forward", Line::action("Go Forward", "pane::GoForward"))),
+                    Spec::one("tab-btn-forward", Line::action("Go Forward", "pane::GoForward")),
+                    nav.can_forward.then_some(nav.on_forward),
                     cx,
                 )),
         )
         .child(
             // 활성 탭: 아래 테두리 대신 1px 여백을 두어 내용 높이 31 을 남긴다. 탭이 없으면 자리 표시.
-            tab_list(tabs, cx),
-        )
-        .child(
-            // I-716: a drop on the empty end puts the tab last and does not split.
-            div()
-                .flex_1()
-                .min_w(TAB_BAR_END_DROP_MIN_WIDTH)
-                .h_full()
-                .border_b_1()
-                .border_color(theme.border)
-                .on_drop::<TabDrag>(move |d, window, cx| end_drop(d, window, cx))
-                .drag_over::<TabDrag>(move |s, _, _, _| s.bg(drop_bg)),
+            tab_list(
+                tabs, pane, scroll,
+                // I-716: a drop on the empty end puts the tab last and does not split.
+                div()
+                    .flex_1()
+                    .min_w(TAB_BAR_END_DROP_MIN_WIDTH)
+                    .h_full()
+                    .border_b_1()
+                    .border_color(theme.border)
+                    .on_drop::<TabDrag>(move |d, window, cx| end_drop(d, window, cx))
+                    .drag_over::<TabDrag>(move |s, _, _, _| s.bg(drop_bg))
+                    .into_any_element(),
+                cx,
+            ),
         )
         // I-706: the end buttons belong to the pane that has focus only.
         .children(end.map(|end| {
@@ -538,31 +634,62 @@ const TOOLBAR_PADDING_X: Rems = rems_from_px(8.);
 const TOOLBAR_PADDING_Y: Rems = rems_from_px(6.);
 const TOOLBAR_QUICK_ACTIONS_GAP: Pixels = px(1.);
 
-/// The toolbar of a Markdown editor tab with its quick actions (E-038, E-039): the preview button (`Eye`, Small,
-/// tooltip "Preview Markdown" with its key and the meta line). Buffer Search and Selection Controls are not built yet.
-// shortcut: the toolbar shows for Markdown files only (no breadcrumbs, no other quick actions yet), and takes the editor
-// background for `toolbar_background`; extend to every editor tab with the breadcrumb work.
-pub fn markdown_toolbar(on_preview: CloseHandler, cx: &App) -> impl IntoElement {
+/// I-12: Zed's breadcrumb button box (`ButtonLike`, default size): 22 high, 4 padding, 4 between segments.
+const BREADCRUMB_PADDING_X: Rems = rems_from_px(4.);
+const BREADCRUMB_GAP: Rems = rems_from_px(4.);
+
+/// The toolbar of a single-file editor tab: the breadcrumb on the left (path, then Markdown headings, I-12) and, for
+/// Markdown, the preview button (`Eye`, Small, tooltip "Preview Markdown" with its key and the meta line, E-038, E-039).
+/// Buffer Search and Selection Controls are not built yet.
+// shortcut: takes the editor background for `toolbar_background`. Colours: the path is `Muted`, the `›` is the theme's
+// `text.placeholder` and a heading is its syntax `title` colour (`theme::BreadcrumbColors`, muted when the theme has none).
+pub fn editor_toolbar(segments: Vec<SharedString>, on_preview: Option<CloseHandler>, cx: &App) -> impl IntoElement {
+    const SEGMENT_PROBES: [&str; 7] =
+        ["breadcrumb-path", "", "breadcrumb-seg-01", "", "breadcrumb-seg-02", "", "breadcrumb-seg-03"];
     let theme = cx.theme();
-    let mut tip = Spec::one("toolbar-btn-preview", Line::action("Preview Markdown", "markdown::OpenPreview"));
-    tip.meta = Some("Alt-Click to open in a split".into());
-    h_flex()
-        .on_children_prepainted(probe(&["toolbar-btn-preview"]))
+    let muted = theme.muted_foreground;
+    let colors = cx.try_global::<super::theme::BreadcrumbColors>().copied();
+    let separator = colors.and_then(|c| c.separator).unwrap_or(muted);
+    let title = colors.and_then(|c| c.title).unwrap_or(muted);
+    let mut crumbs = h_flex()
+        .on_children_prepainted(probe(&SEGMENT_PROBES))
+        .flex_none()
+        .h(BUTTON_DEFAULT)
+        .px(BREADCRUMB_PADDING_X)
+        .gap(BREADCRUMB_GAP)
+        .items_center()
+        .text_size(TEXT_SIZE_DEFAULT)
+        .text_color(muted);
+    for (i, segment) in segments.into_iter().enumerate() {
+        if i > 0 {
+            crumbs = crumbs.child(div().text_color(separator).child("›"));
+        }
+        // Segment 0 is the path (muted); the rest are headings.
+        crumbs = crumbs.child(div().whitespace_nowrap().font(super::fonts::editor()).when(i > 0, |d| d.text_color(title)).child(segment));
+    }
+    let preview = on_preview.map(|on_preview| {
+        let mut tip = Spec::one("toolbar-btn-preview", Line::action("Preview Markdown", "markdown::OpenPreview"));
+        tip.meta = Some("Alt-Click to open in a split".into());
+        icon_with_probe("toolbar-btn-preview", &["toolbar-icon-preview"], "eye", Some(tip), cx)
+            .on_click(move |e, window, cx| on_preview(e, window, cx))
+    });
+    let row = h_flex()
         .flex_shrink_0()
         .w_full()
         .min_h(TOOLBAR_MIN_HEIGHT)
         .px(TOOLBAR_PADDING_X)
         .py(TOOLBAR_PADDING_Y)
-        .justify_end()
         .items_center()
         .gap(TOOLBAR_QUICK_ACTIONS_GAP)
         .border_b_1()
         .border_color(theme.border)
-        .bg(theme.background)
-        .child(
-            icon_with_probe("toolbar-btn-preview", &["toolbar-icon-preview"], "eye", Some(tip), cx)
-                .on_click(move |e, window, cx| on_preview(e, window, cx)),
-        )
+        .bg(theme.background);
+    let left = div().flex_1().min_w_0().overflow_hidden().child(crumbs);
+    if preview.is_some() {
+        row.on_children_prepainted(probe(&["breadcrumb", "toolbar-btn-preview"])).child(left).children(preview)
+    } else {
+        row.on_children_prepainted(probe(&["breadcrumb"])).child(left)
+    }
 }
 
 /// 1 논리 px (rem 16 기준) — 활성 탭 아래 여백(L-63 `pb_px`).
@@ -644,7 +771,9 @@ fn measure_placeholder() -> Div {
 #[cfg(test)]
 mod tests {
     // Explicit imports: `super::*` would pull in gpui's `test` macro through `gpui_kit::*`.
-    use super::{TabPress, TabText, tab_drop_left, tab_press, tab_text};
+    use super::{TabPress, TabScroll, TabText, scroll_target, tab_drop_left, tab_press, tab_text};
+    use crate::ui::metrics::{TAB_WHEEL_STEP, WHEEL_LINES_PER_NOTCH};
+    use gpui_kit::{TextStyle, px};
     use gpui_kit::MouseButton;
 
     /// I-063, I-066, I-075, L-74: a left press activates, a double press promotes, a middle click closes a normal
@@ -670,6 +799,44 @@ mod tests {
         assert_eq!(tab_text(true, false, true), TabText::Muted);
         assert_eq!(tab_text(true, true, false), TabText::Muted);
         assert_eq!(tab_text(true, false, false), TabText::Hidden);
+    }
+
+    /// I-16: the active tab is scrolled into view once when it (or the tab count) changes, not on every render, so a
+    /// wheel scroll stays until the next change (Zed `suppress_scroll`).
+    #[test]
+    fn active_tab_scrolls_into_view_only_on_change() {
+        assert_eq!(scroll_target(None, Some(2), 5), Some(2));
+        assert_eq!(scroll_target(Some((Some(2), 5)), Some(2), 5), None);
+        assert_eq!(scroll_target(Some((Some(2), 5)), Some(3), 5), Some(3));
+        // Closing a tab keeps the active index but changes which tab it is.
+        assert_eq!(scroll_target(Some((Some(2), 5)), Some(2), 4), Some(2));
+        assert_eq!(scroll_target(Some((Some(0), 1)), None, 0), None);
+        let s = TabScroll::default();
+        s.follow(Some(1), 3);
+        assert_eq!(s.seen.get(), Some((Some(1), 3)));
+        assert_eq!(s.pending.get(), Some(1));
+        s.follow(Some(1), 3);
+        assert_eq!(s.pending.get(), Some(1));
+        assert!(s.after_layout());
+        assert_eq!(s.pending.get(), None);
+        s.follow(Some(1), 3);
+        assert!(!s.after_layout());
+        // A newer selection replaces a queued request; an empty pane cancels it.
+        s.follow(Some(2), 4);
+        s.follow(Some(3), 4);
+        assert_eq!(s.pending.get(), Some(3));
+        assert!(s.after_layout());
+        s.follow(Some(0), 1);
+        s.follow(None, 0);
+        assert!(!s.after_layout());
+    }
+
+    /// I-16: gpui rounds the default line height, keeping a notch within 0.5px of the source formula.
+    #[test]
+    fn tab_wheel_notch_follows_default_line_height() {
+        let height = TextStyle::default().line_height_in_pixels(px(crate::ui::rem::BASE_REM_PX));
+        let notch = WHEEL_LINES_PER_NOTCH * f32::from(height);
+        assert!((notch - TAB_WHEEL_STEP).abs() < 0.5, "{notch}");
     }
 
     /// I-715: the line is on the left when the dragged tab starts after the target (or in another pane), else right.

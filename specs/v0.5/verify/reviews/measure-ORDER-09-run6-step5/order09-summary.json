@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Tree and initial file tab established",
+    "step5": "FAIL - Matched 3/10 nav steps (exp: 10/10), MouseBack guarded"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "step1": "FAIL: 전제 없음",
+    "step2": "FAIL: 전제 없음",
+    "step3": "FAIL: 전제 없음",
+    "step4": "FAIL: 전제 없음",
+    "step5": "FAIL: 전제 없음"
+  }
+}

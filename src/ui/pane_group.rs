@@ -652,7 +652,12 @@ impl PaneGroup {
             state
         });
         // Only edits emit Change (`set_value` does not), so this tracks edits, not reads.
-        cx.observe(&editor, |_, _, cx| cx.notify()).detach();
+        // Every cursor move and edit notifies the editor: keep each pane's navigation history up to date (I-10).
+        cx.observe(&editor, |ws, _, cx| {
+            ws.group.nav_sync(cx);
+            cx.notify();
+        })
+        .detach();
         cx.subscribe_in(&editor, window, |ws, editor, event: &InputEvent, window, cx| {
             if matches!(event, InputEvent::Change) {
                 ws.group.edited(editor, window, cx);
@@ -660,6 +665,65 @@ impl PaneGroup {
         })
         .detach();
         editor
+    }
+
+    /// I-10: tells every pane's navigation history what its active editor tab and cursor are now, and finishes a
+    /// go back / forward whose file has loaded by moving the cursor there. Called on every editor notification and
+    /// before each frame (a tab switch has no editor event).
+    // shortcut: reads each pane's whole text per call to find the cursor row; keep a row cache if large files lag.
+    pub fn nav_sync(&mut self, cx: &mut App) {
+        for id in self.panes.keys().copied().collect::<Vec<_>>() {
+            let pane = &self.panes[&id];
+            let shown = pane.active_tab().filter(|t| t.tool.is_none() && !t.markdown).map(|t| (t.path.clone(), t.editor.clone()));
+            let pending = pane.nav.pending.clone();
+            if let Some(target) = pending {
+                match &shown {
+                    Some((path, editor)) if *path == target.path => {
+                        if self.docs.get(path).is_some_and(|d| d.pending.is_some()) {
+                            continue; // still reading: the text is not in yet
+                        }
+                        let text = editor.read(cx).value();
+                        let offset = super::nav_history::offset_of(&text, target.row, target.col);
+                        editor.update(cx, |e, cx| e.set_selected_range(offset..offset, cx));
+                        let (row, col) = super::nav_history::position_of(&text, offset);
+                        self.nav_of(id).arrived(super::nav_history::NavEntry { path: path.clone(), row, col });
+                        continue;
+                    }
+                    _ => self.nav_of(id).pending = None,
+                }
+            }
+            let now = shown.map(|(path, editor)| {
+                let e = editor.read(cx);
+                let (row, col) = super::nav_history::position_of(&e.value(), e.cursor());
+                super::nav_history::NavEntry { path, row, col }
+            });
+            self.nav_of(id).observe(now);
+        }
+    }
+
+    /// I-10: an explicit jump of the active pane to `path` at `offset` of `text` (a search result): the place it leaves
+    /// is recorded whatever the distance.
+    pub fn nav_jump(&mut self, path: &Path, text: &str, offset: usize, cx: &mut App) {
+        self.nav_sync(cx);
+        let (row, col) = super::nav_history::position_of(text, offset);
+        let id = self.active;
+        self.nav_of(id).jump(&super::nav_history::NavEntry { path: path.to_path_buf(), row, col });
+    }
+
+    fn nav_of(&mut self, id: PaneId) -> &mut super::nav_history::NavHistory {
+        &mut self.panes.get_mut(&id).expect("pane exists").nav
+    }
+
+    /// I-10: go back (or forward) in pane `id`: the history picks the place (skipping files that are gone), the file
+    /// opens in this pane if its tab is closed, and the cursor moves there once the text is in (`nav_sync`).
+    pub fn navigate(&mut self, id: PaneId, forward: bool, window: &mut Window, cx: &mut Context<FolderWorkspace>) {
+        self.nav_sync(cx);
+        let Some(pane) = self.panes.get_mut(&id) else { return };
+        let open: Vec<std::path::PathBuf> = pane.tabs.iter().filter(|t| t.tool.is_none() && !t.markdown).map(|t| t.path.clone()).collect();
+        let Some(entry) = pane.nav.step(forward, |e| open.contains(&e.path) || e.path.exists()) else { return };
+        self.activate(id);
+        self.open(&entry.path, false, window, cx);
+        self.nav_sync(cx);
     }
 
     /// An edit in view `editor`. The other views of the file take the same change (`sync_view`); their own Change then
