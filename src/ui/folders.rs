@@ -713,17 +713,39 @@ const ROW_PROBES: [&str; 12] = [
     "folder-row-08", "folder-row-09", "folder-row-10", "folder-row-11",
 ];
 
+fn folder_row_colors(missing: bool, active: bool, focused: bool, text: Hsla, muted: Hsla, focus: Hsla) -> (Hsla, Hsla) {
+    (if missing { muted.opacity(0.45) } else if active { text } else { muted },
+     if focused { focus } else { transparent_black() })
+}
+
+#[cfg(test)]
+mod sidebar_tests {
+    #[test]
+    fn sidebar_row_colors_follow_active_and_focus() {
+        let (text, muted, focus) = (gpui_kit::rgb(0xffffff).into(), gpui_kit::rgb(0x888888).into(), gpui_kit::rgb(0x2870bd).into());
+        for active in [false, true] {
+            for focused in [false, true] {
+                for missing in [false, true] {
+                    let (fg, border) = super::folder_row_colors(missing, active, focused, text, muted, focus);
+                    assert_eq!(fg, if missing { muted.opacity(0.45) } else if active { text } else { muted });
+                    assert_eq!(border, if focused { focus } else { gpui_kit::transparent_black() });
+                }
+            }
+        }
+    }
+}
+
 impl Workbench {
     /// 사이드바 폴더 목록(A-12, L-34). 세로 스크롤(A-16.7). 툴팁은 없다(A-12.8).
     pub(super) fn render_folder_list(&mut self, window: &mut Window, cx: &mut Context<Self>) -> AnyElement {
         let theme = cx.theme();
         let fg = theme.foreground;
         let muted = theme.muted_foreground;
-        let disabled = theme.muted_foreground.opacity(0.45);
-        let active_bg = theme.list_active;
-        let hover_bg = theme.secondary_hover;
-        let press_bg = theme.secondary_active;
-        let ring = theme.ring;
+        let colors = cx.global::<super::theme::SidebarColors>();
+        let hover_bg = colors.hover.unwrap_or(theme.secondary_hover);
+        let press_bg = colors.active.unwrap_or(theme.secondary_active);
+        let ring = colors.focused_border;
+        let border = theme.border;
         let sidebar_focused = self.sidebar_focus.is_focused(window);
         let names = self.folders.display_names();
         let active = self.folders.active_index();
@@ -735,9 +757,7 @@ impl Workbench {
                 println!("[dev] sidebar-scroll offset_y={scroll_y}");
             }
         }
-        let mut list = v_flex()
-            .on_children_prepainted(super::layout_probe::probe(&ROW_PROBES))
-            .w_full();
+        let mut list = v_flex().w_full();
         for (i, (folder, name)) in self.folders.state.folders.iter().zip(names).enumerate() {
             let missing = self.folders.missing.contains(&folder.id);
             let is_active = active == Some(i);
@@ -747,10 +767,28 @@ impl Workbench {
                 Some((b, s)) => (b.to_string(), Some(format!(" · {s}"))),
                 None => (name.clone(), None),
             };
-            let text_color = if missing { disabled } else if is_active { fg } else { muted };
-            let icon_color = if missing { disabled } else { muted };
+            let (text_color, focus_border) = folder_row_colors(missing, is_active, focused, fg, muted, ring);
+            let icon_color = if missing { muted.opacity(0.45) } else { muted };
+            let (row_names, label_names, icon_names): (&'static [&'static str], &'static [&'static str], &'static [&'static str]) = match i {
+                0 => (&["sidebar-row-00"], &["", "sidebar-row-label-00"], &["sidebar-row-icon-00"]),
+                1 => (&["sidebar-row-01"], &["", "sidebar-row-label-01"], &["sidebar-row-icon-01"]),
+                2 => (&["sidebar-row-02"], &["", "sidebar-row-label-02"], &["sidebar-row-icon-02"]),
+                _ => (&[], &[], &[]),
+            };
             list = list.child(
+                v_flex()
+                    .on_children_prepainted(move |bounds, window, cx| {
+                        super::layout_probe::probe(row_names)(bounds.clone(), window, cx);
+                        if i < ROW_PROBES.len() {
+                            super::layout_probe::probe(&ROW_PROBES[i..i + 1])(bounds, window, cx);
+                        }
+                    })
+                    .flex_shrink_0()
+                    .w_full()
+                    .when(i > 0, |d| d.border_t(super::metrics::SIDEBAR_ROW_SEPARATOR).border_color(border))
+                    .child(
                 h_flex()
+                    .on_children_prepainted(super::layout_probe::probe(label_names))
                     .id(("folder-row", i))
                     .flex_shrink_0()
                     .w_full()
@@ -760,11 +798,11 @@ impl Workbench {
                     .gap(super::metrics::SIDEBAR_ROW_GAP)
                     .items_center()
                     .text_size(super::metrics::TEXT_SIZE_DEFAULT)
-                    .border_1()
-                    .border_color(if focused { ring } else { gpui_kit::transparent_black() })
+                    .border(super::metrics::SIDEBAR_ROW_BORDER)
+                    .border_r(super::metrics::SIDEBAR_ROW_BORDER_RIGHT)
+                    .border_color(focus_border)
                     .text_color(text_color)
-                    .when(is_active, |r| r.bg(active_bg))
-                    .hover(move |s| if missing { s.bg(hover_bg) } else { s.bg(hover_bg).text_color(fg) })
+                    .hover(move |s| s.bg(hover_bg))
                     .active(move |s| s.bg(press_bg))
                     .on_click(cx.listener(move |this, _: &ClickEvent, window, cx| {
                         this.folders.cursor = Some(i);
@@ -779,9 +817,14 @@ impl Workbench {
                         }),
                     )
                     .child(
-                        super::zed_icons::icon("folder")
+                        h_flex()
+                            .on_children_prepainted(super::layout_probe::probe(icon_names))
+                            .flex_shrink_0()
+                            .size(super::metrics::SIDEBAR_ROW_ICON_SLOT)
+                            .justify_center()
+                            .child(super::zed_icons::icon("folder")
                             .size(super::metrics::ICON_SMALL)
-                            .text_color(icon_color),
+                            .text_color(icon_color)),
                     )
                     .child(
                         h_flex()
@@ -793,7 +836,7 @@ impl Workbench {
                             .when_some(suffix, |d, s| {
                                 d.child(div().flex_shrink_0().text_color(muted).child(s))
                             }),
-                    ),
+                    )),
             );
         }
         // 스크롤 상자 안에 줄 묶음을 둔다(줄 경계 탐침은 스크롤 상자가 아닌 안쪽 묶음에 단다).

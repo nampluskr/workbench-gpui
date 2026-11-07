@@ -68,7 +68,7 @@ fn resolved_color(style: &serde_json::Value, base: &serde_json::Value, key: &str
     }).or_else(|| color(base, key)).or_else(|| {
         // Fixed values from T-26.5..14, used only after the One fallback.
         let value = match key {
-            "panel.focused_border" | "pane.focused_border" => 0x62adef,
+            "pane.focused_border" => 0x62adef,
             "panel.indent_guide" | "scrollbar.thumb.border" | "editor.indent_guide" => 0x3b3d45,
             "panel.indent_guide_hover" | "panel.indent_guide_active" | "editor.indent_guide_active" => 0x1b1d23,
             "editor.hover_line_number" => 0x8a8f97,
@@ -133,6 +133,33 @@ fn breadcrumb_colors(entry: Option<&Entry>) -> BreadcrumbColors {
     BreadcrumbColors { separator: resolved_color(style, base, "text.placeholder"), title: color(&style["syntax"]["title"], "color") }
 }
 
+/// Sidebar tokens without gpui-kit fields; replaced on every theme change.
+#[derive(Clone, Copy)]
+pub struct SidebarColors {
+    pub focused_border: Hsla,
+    pub hover: Option<Hsla>,
+    pub active: Option<Hsla>,
+}
+
+impl gpui_kit::Global for SidebarColors {}
+
+fn panel_focused_border(style: &serde_json::Value, light: bool) -> Hsla {
+    // theme.fallback panel.focused_border: Zed blue dark step 8 / light step 10 (K-39).
+    color(style, "panel.focused_border").unwrap_or_else(|| rgb(if light { 0x0588f0 } else { 0x2870bd }).into())
+}
+
+fn sidebar_colors(entry: Option<&Entry>) -> SidebarColors {
+    let style = entry.map(|e| &e.theme["style"]).unwrap_or(&serde_json::Value::Null);
+    let light = entry.is_some_and(|e| e.theme["appearance"] == "light");
+    let base_name = if light { "One Light" } else { "One Dark" };
+    let base = catalog().iter().find(|e| e.name == base_name).map(|e| &e.theme["style"]).unwrap_or(&serde_json::Value::Null);
+    SidebarColors {
+        focused_border: panel_focused_border(style, light),
+        hover: resolved_color(style, base, "ghost_element.hover"),
+        active: resolved_color(style, base, "ghost_element.active"),
+    }
+}
+
 pub fn apply(name: &str, cx: &mut gpui_kit::App) {
     let entry = catalog().iter().find(|entry| entry.name == name);
     if let Some(entry) = entry {
@@ -140,6 +167,7 @@ pub fn apply(name: &str, cx: &mut gpui_kit::App) {
         gpui_kit::component::Theme::change(mode, None, cx);
     }
     cx.set_global(breadcrumb_colors(entry));
+    cx.set_global(sidebar_colors(entry));
     let gutter = gpui_kit::component::Theme::update(cx, |theme| project(entry, theme));
     if let Some(gutter) = gutter {
         cx.set_global(gutter);
@@ -192,6 +220,23 @@ pub fn measure_text() -> Hsla {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn k39_sidebar_theme_tokens() {
+        use serde_json::json;
+        assert_eq!(super::panel_focused_border(&json!({}), false), gpui_kit::rgb(0x2870bd).into());
+        assert_eq!(super::panel_focused_border(&json!({"panel.focused_border": null}), true), gpui_kit::rgb(0x0588f0).into());
+        for light in [false, true] {
+            assert_eq!(super::panel_focused_border(&json!({"panel.focused_border": "#123456"}), light), gpui_kit::rgb(0x123456).into());
+        }
+        for entry in super::catalog() {
+            let colors = super::sidebar_colors(Some(entry));
+            for (actual, key) in [(colors.hover, "ghost_element.hover"), (colors.active, "ghost_element.active")] {
+                if let Some(expected) = super::color(&entry.theme["style"], key) {
+                    assert_eq!(actual, Some(expected), "{}: {key}", entry.name);
+                }
+            }
+        }
+    }
     #[test]
     fn k22_names_sort_dark_then_light_by_name() {
         let names = super::names();

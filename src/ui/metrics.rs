@@ -221,6 +221,11 @@ pub const SIDEBAR_MAX_WIDTH: Rems = rems_from_px(800.);
 pub const SIDEBAR_ROW_HEIGHT: Rems = rems_from_px(31.);
 pub const SIDEBAR_ROW_PADDING_LEFT: Rems = rems_from_px(8.);
 pub const SIDEBAR_ROW_PADDING_RIGHT: Rems = rems_from_px(6.);
+/// sidebar.item focus border, right border, separator and icon slot (K-39).
+pub const SIDEBAR_ROW_BORDER: Rems = rems_from_px(1.);
+pub const SIDEBAR_ROW_BORDER_RIGHT: Rems = rems_from_px(2.);
+pub const SIDEBAR_ROW_SEPARATOR: Rems = rems_from_px(1.);
+pub const SIDEBAR_ROW_ICON_SLOT: Rems = rems_from_px(16.);
 /// L-35 사이드바 푸터: padding 4, gap 4, 위 테두리 1. A-32.13.
 /// sidebar["footer.height"] (A-11.4): 30 in total, the top border included (same as the status bar).
 pub const SIDEBAR_FOOTER_HEIGHT: Rems = rems_from_px(30.);
@@ -253,8 +258,8 @@ pub const CONFIRM_CLOSE_PATH_MAX_CHARS: usize = 80;
 pub const TITLE_FOLDER_NAME_PAD_X: Rems = rems_from_px(6.);
 // spec: none (app value) — A-24.2 폴더 목록 저장 디바운스(toml 에 없음).
 pub const FOLDERS_SAVE_DEBOUNCE: Duration = Duration::from_millis(500);
-// spec: none (app value) — 사이드바 프로젝트 헤더 줄 안 gap 4 (L-34 에 gap 값 없음).
-pub const SIDEBAR_ROW_GAP: Rems = rems_from_px(4.);
+/// sidebar["item.icon_gap"] (Zed thread_item.rs gap_1p5).
+pub const SIDEBAR_ROW_GAP: Rems = rems_from_px(6.);
 // spec: none (app value) — 빈 프로젝트·사라진 폴더 안내 화면 버튼(좌우 8, 위아래 4, 모서리 4)과 본문(padding 8, gap 8).
 pub const EMPTY_BUTTON_PAD_X: Rems = rems_from_px(8.);
 pub const EMPTY_BUTTON_PAD_Y: Rems = rems_from_px(4.);
@@ -617,6 +622,23 @@ mod tests {
         ] {
             let e = spec::lookup(id).unwrap();
             assert_eq!(f64::from(rems.0 * crate::ui::rem::BASE_REM_PX), e.value, "{id}");
+        }
+    }
+
+    #[test]
+    fn k39_sidebar_rows_match_spec() {
+        for (key, value) in [
+            ("project_header.height", SIDEBAR_ROW_HEIGHT),
+            ("project_header.padding_left", SIDEBAR_ROW_PADDING_LEFT),
+            ("project_header.padding_right", SIDEBAR_ROW_PADDING_RIGHT),
+            ("item.focus_border_width", SIDEBAR_ROW_BORDER),
+            ("item.border_right_width", SIDEBAR_ROW_BORDER_RIGHT),
+            ("item.separator_width", SIDEBAR_ROW_SEPARATOR),
+            ("item.icon_slot_size", SIDEBAR_ROW_ICON_SLOT),
+            ("item.icon_size", ICON_SMALL),
+            ("item.icon_gap", SIDEBAR_ROW_GAP),
+        ] {
+            spec::assert_spec(&format!("sidebar[\"{key}\"]"), "default", value.0 * crate::ui::rem::BASE_REM_PX);
         }
     }
 

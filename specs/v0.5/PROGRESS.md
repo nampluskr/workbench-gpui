@@ -914,6 +914,17 @@
 
 - **W-45 사이드바 줄 치수·panel.focused_border·휠 한 칸 공식값** (2026-11-07, core-leader [NOTICE] tauri ORDER-10 R-21): `spec/zed-metrics.toml` `[sidebar]`에 `item.border_right_width` 2·`item.separator_width` 1·`item.icon_slot_size` 16·`item.icon_gap` 6(Zed 소스, tauri R-21 표와 같은 ID), `[theme.fallback]` `panel.focused_border`를 `#62adef`에서 Zed `default_colors.rs:252` 다크 기본 `#2870bd`로(옛 값은 `spec/ambiguous.md` 3절, 라이트 `#0588f0`은 src에만), `tab["scroll.wheel_step"]`를 캡처 80에서 Zed 소스 공식 77.7(3 × 16 × 1.618, 조건 `default`)로 정정. `spec/INDEX.md` Sidebar·Tab Bar 행. 결과: `zed-metrics.toml`·`INDEX.md`·`ambiguous.md`·`PROGRESS.md` 수정, `cards/W-45.report.md`. 검증: V0(tomllib 파싱).
 
+- **W-46 ORDER-10 Zed 확인을 SPEC R-21로** (2026-11-07, core ORDER-10 I-21): tauri SPEC R-21 "Zed 확인(2026-11-07)" 표·toml에 없는 값 표·구현 절과 tauri ORDER-10 보고(읽기만)를 이 레포 SPEC R-21에 "Zed 확인(tauri, 2026-11-07)" 절로 옮기고 행마다 toml ID 열을 붙였다. 현재 상태의 "약 220px" 옆에 "정정: 300(core 2026-11-07)". `panel.focused_border` 라이트(tauri `border.focused` 대 이 레포 `#0588f0`)는 "두 갈래 다름, core 확인 필요"로 적었다. 결과: `SPEC.md`·`PROGRESS.md` 수정, `cards/W-46.report.md`. tauri 표와 toml 값이 다른 곳은 그 라이트 값 하나. 검증: V0(문서만).
+
+### Phase 10 — 폴더 보기 패널
+
+- **K-39 사이드바 모양** (2026-11-07, core ORDER-10 I-21): tauri R-21 Zed 확인 표대로 폴더 줄을 고쳤다. 아이콘 14를 16 칸 가운데에, 아이콘과 이름 간격 4 → 6, 현재 폴더는 글자 `text`만(배경 제거), 줄 테두리 왼·위·아래 1·오른쪽 2(평소 투명), 키보드 선택(목록 포커스 + 커서 줄) 테두리를 `border.focused`에서 `panel.focused_border`로(테마 값 우선, 없거나 null이면 다크 #2870bd·라이트 #0588f0; pane 쪽 대체값 `#62adef`는 그대로), hover/누름은 `ghost_element_hover`/`ghost_element_active`, 둘째 줄부터 위 1px `border` 선(줄 바깥 wrapper), probe `sidebar-row-*`. 폭 300·줄 31·여백 8/6·footer는 이미 같아 유지. 결과: 완료(`src/ui/folders.rs`·`metrics.rs`·`theme.rs`, `k39_sidebar_rows_match_spec` `assert_spec` 9개). 검증: V1, `cargo build`·apply-manifest·`cargo test sidebar` 4·`folder` 5·`ui::theme::tests` 8·clippy PASS.
+- **K-40 사이드바 머리 위 1px** (2026-11-07): Zed `sidebar.rs:7391-7399` 서버 장식(`Decorations::Server`)의 위 margin 1px을 `sidebar-header`에 더했다(높이 32 유지). 머리 아래 선 y 31 → 32, 첫 폴더 줄 y 33~63(Zed·tauri와 같음). 결과: 완료(`src/ui/layout.rs`). 검증: V1, `cargo test sidebar` 4·clippy PASS.
+- **C-39·C-39-R1 측정 스크립트** (2026-11-07): `tools/measure/order10-v3.ps1`(`order09-v3.ps1`의 입력 가드·세션 관리·DryRun 재사용, 4단계). R1은 1차 결과로 step3 포커스 토글 가드와 덤프 기준 측정 좌표를 고쳤다. 결과: 완료. 검증: 구문 검사·DryRun(dryrun·dryrun2), 앱 실행 없음.
+- **ORDER-10 V3 1·2차** (2026-11-07, leader 실행, `verify/reviews/measure-ORDER-10-run1-step1~4/`, `run2-step1·step3/`): 두 회차 모두 사용자 앱 데이터 바이트 동일 복원. 1차 결과로 C-39-R1. 측정표는 C-40이 쓰는 `specs/v0.5/verify/reviews/measure-ORDER-10.md`.
+- **tauri와 다른 점** (core에 알림): (1) 사이드바 이름 글자 크기 — gpui 잉크 폭 104 = Zed 104, tauri 119. (2) `panel.focused_border` 라이트 — gpui #0588f0(Zed 소스), tauri `border.focused`(SPEC R-21 "두 갈래 다름, core 확인 필요").
+- **W-47 ORDER-10 PROGRESS** (2026-11-07): 위 항목을 Phase 10에 기록. 결과: `PROGRESS.md` 수정, `cards/W-47.report.md`. 검증: V0(문서만).
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |

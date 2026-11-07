@@ -1,0 +1,770 @@
+[dev] focus-state focus=center active=true
+[dev] title text=Open Recent Project placeholder=true
+[dev] state-load source=none read_only=false bad_moved_to=none
+[dev] folders count=0 active=none cursor=none workspaces=0
+[dev] folders-end
+[dev] keymap-load seq=1 path=C:\Users\nampl\AppData\Roaming\workbench-gpui\keymap.json exists=false bindings=231 errors=0
+[dev] binding seq=1 index=0 source=gpui-kit keys=ctrl-shift-i context=- action=inspector::ToggleInspector
+[dev] binding seq=1 index=1 source=gpui-kit keys=escape context=Dialog action=ui::Cancel
+[dev] binding seq=1 index=2 source=gpui-kit keys=enter context=Dialog action=ui::Confirm
+[dev] binding seq=1 index=3 source=gpui-kit keys=escape context=Popover action=ui::Cancel
+[dev] binding seq=1 index=4 source=gpui-kit keys=enter context=Popover action=ui::Confirm
+[dev] binding seq=1 index=5 source=gpui-kit keys=space context=Popover action=ui::Confirm
+[dev] binding seq=1 index=6 source=gpui-kit keys=escape context=PopoverContent action=ui::Cancel
+[dev] binding seq=1 index=7 source=gpui-kit keys=enter context=PopoverContent action=zed::NoAction
+[dev] binding seq=1 index=8 source=gpui-kit keys=space context=PopoverContent action=zed::NoAction
+[dev] binding seq=1 index=9 source=gpui-kit keys=escape context=Sheet action=ui::Cancel
+[dev] binding seq=1 index=10 source=gpui-kit keys=up context=Combobox action=ui::SelectUp
+[dev] binding seq=1 index=11 source=gpui-kit keys=down context=Combobox action=ui::SelectDown
+[dev] binding seq=1 index=12 source=gpui-kit keys=enter context=Combobox action=ui::Confirm
+[dev] binding seq=1 index=13 source=gpui-kit keys=ctrl-enter context=Combobox action=ui::Confirm
+[dev] binding seq=1 index=14 source=gpui-kit keys=escape context=Combobox action=ui::Cancel
+[dev] binding seq=1 index=15 source=gpui-kit keys=enter context=ColorPicker action=ui::Confirm
+[dev] binding seq=1 index=16 source=gpui-kit keys=escape context=ColorPicker action=ui::Cancel
+[dev] binding seq=1 index=17 source=gpui-kit keys=space context=Select && !Input action=ui::Confirm
+[dev] binding seq=1 index=18 source=gpui-kit keys=up context=Select action=ui::SelectUp
+[dev] binding seq=1 index=19 source=gpui-kit keys=down context=Select action=ui::SelectDown
+[dev] binding seq=1 index=20 source=gpui-kit keys=enter context=Select action=ui::Confirm
+[dev] binding seq=1 index=21 source=gpui-kit keys=ctrl-enter context=Select action=ui::Confirm
+[dev] binding seq=1 index=22 source=gpui-kit keys=escape context=Select action=ui::Cancel
+[dev] binding seq=1 index=23 source=gpui-kit keys=up context=NumberInput action=number_input::Increment
+[dev] binding seq=1 index=24 source=gpui-kit keys=down context=NumberInput action=number_input::Decrement
+[dev] binding seq=1 index=25 source=gpui-kit keys=up context=TimeField action=number_input::Increment
+[dev] binding seq=1 index=26 source=gpui-kit keys=down context=TimeField action=number_input::Decrement
+[dev] binding seq=1 index=27 source=gpui-kit keys=left context=TimeField action=ui::SelectLeft
+[dev] binding seq=1 index=28 source=gpui-kit keys=right context=TimeField action=ui::SelectRight
+[dev] binding seq=1 index=29 source=gpui-kit keys=tab context=TimeField action=ui::SelectNextColumn
+[dev] binding seq=1 index=30 source=gpui-kit keys=shift-tab context=TimeField action=ui::SelectPrevColumn
+[dev] binding seq=1 index=31 source=gpui-kit keys=backspace context=TimeField action=input::Delete
+[dev] binding seq=1 index=32 source=gpui-kit keys=delete context=TimeField action=input::Delete
+[dev] binding seq=1 index=33 source=gpui-kit keys=backspace context=Input action=input::Backspace
+[dev] binding seq=1 index=34 source=gpui-kit keys=shift-backspace context=Input action=input::Backspace
+[dev] binding seq=1 index=35 source=gpui-kit keys=delete context=Input action=input::Delete
+[dev] binding seq=1 index=36 source=gpui-kit keys=shift-delete context=Input action=input::Delete
+[dev] binding seq=1 index=37 source=gpui-kit keys=ctrl-backspace context=Input action=input::DeleteToPreviousWordStart
+[dev] binding seq=1 index=38 source=gpui-kit keys=ctrl-delete context=Input action=input::DeleteToNextWordEnd
+[dev] binding seq=1 index=39 source=gpui-kit keys=enter context=Input action=input::Enter
+[dev] binding seq=1 index=40 source=gpui-kit keys=shift-enter context=Input action=input::Enter
+[dev] binding seq=1 index=41 source=gpui-kit keys=ctrl-enter context=Input action=input::Enter
+[dev] binding seq=1 index=42 source=gpui-kit keys=escape context=Input action=input::Escape
+[dev] binding seq=1 index=43 source=gpui-kit keys=up context=Input action=input::MoveUp
+[dev] binding seq=1 index=44 source=gpui-kit keys=down context=Input action=input::MoveDown
+[dev] binding seq=1 index=45 source=gpui-kit keys=left context=Input action=input::MoveLeft
+[dev] binding seq=1 index=46 source=gpui-kit keys=right context=Input action=input::MoveRight
+[dev] binding seq=1 index=47 source=gpui-kit keys=pageup context=Input action=input::MovePageUp
+[dev] binding seq=1 index=48 source=gpui-kit keys=pagedown context=Input action=input::MovePageDown
+[dev] binding seq=1 index=49 source=gpui-kit keys=tab context=Input action=input::IndentInline
+[dev] binding seq=1 index=50 source=gpui-kit keys=shift-tab context=Input action=input::OutdentInline
+[dev] binding seq=1 index=51 source=gpui-kit keys=ctrl-] context=Input action=input::Indent
+[dev] binding seq=1 index=52 source=gpui-kit keys=ctrl-[ context=Input action=input::Outdent
+[dev] binding seq=1 index=53 source=gpui-kit keys=shift-left context=Input action=ui::SelectLeft
+[dev] binding seq=1 index=54 source=gpui-kit keys=shift-right context=Input action=ui::SelectRight
+[dev] binding seq=1 index=55 source=gpui-kit keys=shift-up context=Input action=ui::SelectUp
+[dev] binding seq=1 index=56 source=gpui-kit keys=shift-down context=Input action=ui::SelectDown
+[dev] binding seq=1 index=57 source=gpui-kit keys=alt-shift-left context=Input action=ui::SelectLeft
+[dev] binding seq=1 index=58 source=gpui-kit keys=alt-shift-right context=Input action=ui::SelectRight
+[dev] binding seq=1 index=59 source=gpui-kit keys=ctrl-alt-up context=Input action=input::AddCursorAbove
+[dev] binding seq=1 index=60 source=gpui-kit keys=ctrl-alt-down context=Input action=input::AddCursorBelow
+[dev] binding seq=1 index=61 source=gpui-kit keys=home context=Input action=input::MoveHome
+[dev] binding seq=1 index=62 source=gpui-kit keys=end context=Input action=input::MoveEnd
+[dev] binding seq=1 index=63 source=gpui-kit keys=ctrl-home context=Input action=input::MoveToStart
+[dev] binding seq=1 index=64 source=gpui-kit keys=ctrl-end context=Input action=input::MoveToEnd
+[dev] binding seq=1 index=65 source=gpui-kit keys=ctrl-shift-home context=Input action=input::SelectToStart
+[dev] binding seq=1 index=66 source=gpui-kit keys=ctrl-shift-end context=Input action=input::SelectToEnd
+[dev] binding seq=1 index=67 source=gpui-kit keys=shift-home context=Input action=input::SelectToStartOfLine
+[dev] binding seq=1 index=68 source=gpui-kit keys=shift-end context=Input action=input::SelectToEndOfLine
+[dev] binding seq=1 index=69 source=gpui-kit keys=ctrl-shift-left context=Input action=input::SelectToPreviousWordStart
+[dev] binding seq=1 index=70 source=gpui-kit keys=ctrl-shift-right context=Input action=input::SelectToNextWordEnd
+[dev] binding seq=1 index=71 source=gpui-kit keys=ctrl-a context=Input action=input::SelectAll
+[dev] binding seq=1 index=72 source=gpui-kit keys=ctrl-c context=Input action=input::Copy
+[dev] binding seq=1 index=73 source=gpui-kit keys=ctrl-x context=Input action=input::Cut
+[dev] binding seq=1 index=74 source=gpui-kit keys=ctrl-v context=Input action=input::Paste
+[dev] binding seq=1 index=75 source=gpui-kit keys=ctrl-left context=Input action=input::MoveToPreviousWord
+[dev] binding seq=1 index=76 source=gpui-kit keys=ctrl-right context=Input action=input::MoveToNextWord
+[dev] binding seq=1 index=77 source=gpui-kit keys=ctrl-z context=Input action=input::Undo
+[dev] binding seq=1 index=78 source=gpui-kit keys=ctrl-y context=Input action=input::Redo
+[dev] binding seq=1 index=79 source=gpui-kit keys=ctrl-. context=Input action=input::ToggleCodeActions
+[dev] binding seq=1 index=80 source=gpui-kit keys=ctrl-f context=Input action=input::Search
+[dev] binding seq=1 index=81 source=gpui-kit keys=ctrl-h context=Input action=input::Replace
+[dev] binding seq=1 index=82 source=gpui-kit keys=up context=Tree action=ui::SelectUp
+[dev] binding seq=1 index=83 source=gpui-kit keys=down context=Tree action=ui::SelectDown
+[dev] binding seq=1 index=84 source=gpui-kit keys=left context=Tree action=ui::SelectLeft
+[dev] binding seq=1 index=85 source=gpui-kit keys=right context=Tree action=ui::SelectRight
+[dev] binding seq=1 index=86 source=gpui-kit keys=ctrl-c context=TextView action=input::Copy
+[dev] binding seq=1 index=87 source=gpui-kit keys=ctrl-a context=TextView action=input::SelectAll
+[dev] binding seq=1 index=88 source=gpui-kit keys=tab context=Root action=root::Tab
+[dev] binding seq=1 index=89 source=gpui-kit keys=shift-tab context=Root action=root::TabPrev
+[dev] binding seq=1 index=90 source=gpui-kit keys=ctrl-c context=Root action=input::Copy
+[dev] binding seq=1 index=91 source=gpui-kit keys=up context=Diff action=diff::ScrollUp
+[dev] binding seq=1 index=92 source=gpui-kit keys=down context=Diff action=diff::ScrollDown
+[dev] binding seq=1 index=93 source=gpui-kit keys=left context=Diff action=diff::ScrollLeft
+[dev] binding seq=1 index=94 source=gpui-kit keys=right context=Diff action=diff::ScrollRight
+[dev] binding seq=1 index=95 source=gpui-kit keys=pageup context=Diff action=diff::PageUp
+[dev] binding seq=1 index=96 source=gpui-kit keys=pagedown context=Diff action=diff::PageDown
+[dev] binding seq=1 index=97 source=gpui-kit keys=home context=Diff action=diff::First
+[dev] binding seq=1 index=98 source=gpui-kit keys=end context=Diff action=diff::Last
+[dev] binding seq=1 index=99 source=gpui-kit keys=shift-up context=Diff action=diff::ExtendUp
+[dev] binding seq=1 index=100 source=gpui-kit keys=shift-down context=Diff action=diff::ExtendDown
+[dev] binding seq=1 index=101 source=gpui-kit keys=ctrl-c context=Diff action=input::Copy
+[dev] binding seq=1 index=102 source=gpui-kit keys=ctrl-a context=Diff action=input::SelectAll
+[dev] binding seq=1 index=103 source=gpui-kit keys=enter context=DatePicker action=ui::Confirm
+[dev] binding seq=1 index=104 source=gpui-kit keys=escape context=DatePicker action=ui::Cancel
+[dev] binding seq=1 index=105 source=gpui-kit keys=delete context=DatePicker action=input::Delete
+[dev] binding seq=1 index=106 source=gpui-kit keys=backspace context=DatePicker action=input::Delete
+[dev] binding seq=1 index=107 source=gpui-kit keys=escape context=List action=ui::Cancel
+[dev] binding seq=1 index=108 source=gpui-kit keys=enter context=List action=ui::Confirm
+[dev] binding seq=1 index=109 source=gpui-kit keys=ctrl-enter context=List action=ui::Confirm
+[dev] binding seq=1 index=110 source=gpui-kit keys=up context=List action=ui::SelectUp
+[dev] binding seq=1 index=111 source=gpui-kit keys=down context=List action=ui::SelectDown
+[dev] binding seq=1 index=112 source=gpui-kit keys=escape context=Command action=ui::Cancel
+[dev] binding seq=1 index=113 source=gpui-kit keys=enter context=Command action=ui::Confirm
+[dev] binding seq=1 index=114 source=gpui-kit keys=up context=Command action=ui::SelectUp
+[dev] binding seq=1 index=115 source=gpui-kit keys=down context=Command action=ui::SelectDown
+[dev] binding seq=1 index=116 source=gpui-kit keys=left context=Carousel action=ui::SelectLeft
+[dev] binding seq=1 index=117 source=gpui-kit keys=right context=Carousel action=ui::SelectRight
+[dev] binding seq=1 index=118 source=gpui-kit keys=up context=Carousel action=ui::SelectUp
+[dev] binding seq=1 index=119 source=gpui-kit keys=down context=Carousel action=ui::SelectDown
+[dev] binding seq=1 index=120 source=gpui-kit keys=home context=Carousel action=ui::SelectFirst
+[dev] binding seq=1 index=121 source=gpui-kit keys=end context=Carousel action=ui::SelectLast
+[dev] binding seq=1 index=122 source=gpui-kit keys=escape context=AppMenuBar action=ui::Cancel
+[dev] binding seq=1 index=123 source=gpui-kit keys=left context=AppMenuBar action=ui::SelectLeft
+[dev] binding seq=1 index=124 source=gpui-kit keys=right context=AppMenuBar action=ui::SelectRight
+[dev] binding seq=1 index=125 source=gpui-kit keys=enter context=PopupMenu action=ui::Confirm
+[dev] binding seq=1 index=126 source=gpui-kit keys=escape context=PopupMenu action=ui::Cancel
+[dev] binding seq=1 index=127 source=gpui-kit keys=up context=PopupMenu action=ui::SelectUp
+[dev] binding seq=1 index=128 source=gpui-kit keys=down context=PopupMenu action=ui::SelectDown
+[dev] binding seq=1 index=129 source=gpui-kit keys=left context=PopupMenu action=ui::SelectLeft
+[dev] binding seq=1 index=130 source=gpui-kit keys=right context=PopupMenu action=ui::SelectRight
+[dev] binding seq=1 index=131 source=gpui-kit keys=escape context=DataTable action=ui::Cancel
+[dev] binding seq=1 index=132 source=gpui-kit keys=up context=DataTable action=ui::SelectUp
+[dev] binding seq=1 index=133 source=gpui-kit keys=down context=DataTable action=ui::SelectDown
+[dev] binding seq=1 index=134 source=gpui-kit keys=left context=DataTable action=ui::SelectPrevColumn
+[dev] binding seq=1 index=135 source=gpui-kit keys=right context=DataTable action=ui::SelectNextColumn
+[dev] binding seq=1 index=136 source=gpui-kit keys=home context=DataTable action=ui::SelectFirst
+[dev] binding seq=1 index=137 source=gpui-kit keys=end context=DataTable action=ui::SelectLast
+[dev] binding seq=1 index=138 source=gpui-kit keys=pageup context=DataTable action=ui::SelectPageUp
+[dev] binding seq=1 index=139 source=gpui-kit keys=pagedown context=DataTable action=ui::SelectPageDown
+[dev] binding seq=1 index=140 source=gpui-kit keys=tab context=DataTable action=ui::SelectNextColumn
+[dev] binding seq=1 index=141 source=gpui-kit keys=shift-tab context=DataTable action=ui::SelectPrevColumn
+[dev] binding seq=1 index=142 source=builtin keys=ctrl-shift-f context=Workspace action=pane::DeploySearch
+[dev] binding seq=1 index=143 source=builtin keys=ctrl-shift-m context=Workspace action=diagnostics::Deploy
+[dev] binding seq=1 index=144 source=builtin keys=down context=menu action=menu::SelectNext
+[dev] binding seq=1 index=145 source=builtin keys=tab context=menu action=menu::SelectNext
+[dev] binding seq=1 index=146 source=builtin keys=ctrl-n context=menu action=menu::SelectNext
+[dev] binding seq=1 index=147 source=builtin keys=up context=menu action=menu::SelectPrevious
+[dev] binding seq=1 index=148 source=builtin keys=shift-tab context=menu action=menu::SelectPrevious
+[dev] binding seq=1 index=149 source=builtin keys=ctrl-p context=menu action=menu::SelectPrevious
+[dev] binding seq=1 index=150 source=builtin keys=home context=menu action=menu::SelectFirst
+[dev] binding seq=1 index=151 source=builtin keys=pageup context=menu action=menu::SelectFirst
+[dev] binding seq=1 index=152 source=builtin keys=shift-pageup context=menu action=menu::SelectFirst
+[dev] binding seq=1 index=153 source=builtin keys=end context=menu action=menu::SelectLast
+[dev] binding seq=1 index=154 source=builtin keys=pagedown context=menu action=menu::SelectLast
+[dev] binding seq=1 index=155 source=builtin keys=shift-pagedown context=menu action=menu::SelectLast
+[dev] binding seq=1 index=156 source=builtin keys=enter context=menu action=menu::Confirm
+[dev] binding seq=1 index=157 source=builtin keys=escape context=menu action=menu::Cancel
+[dev] binding seq=1 index=158 source=builtin keys=ctrl-c context=menu action=menu::Cancel
+[dev] binding seq=1 index=159 source=builtin keys=right context=menu action=menu::SelectChild
+[dev] binding seq=1 index=160 source=builtin keys=left context=menu action=menu::SelectParent
+[dev] binding seq=1 index=161 source=builtin keys=ctrl-q context=- action=zed::Quit
+[dev] binding seq=1 index=162 source=builtin keys=ctrl-, context=- action=zed::OpenSettings
+[dev] binding seq=1 index=163 source=builtin keys=ctrl-k ctrl-s context=Workspace action=zed::OpenKeymap
+[dev] binding seq=1 index=164 source=builtin keys=ctrl-shift-x context=Workspace action=zed::Extensions
+[dev] binding seq=1 index=165 source=builtin keys=ctrl-k ctrl-t context=Workspace action=theme_selector::Toggle
+[dev] binding seq=1 index=166 source=builtin keys=ctrl-e context=KeymapEditor action=keymap_editor::EditJson
+[dev] binding seq=1 index=167 source=builtin keys=ctrl-k context=KeymapEditor action=keymap_editor::Create
+[dev] binding seq=1 index=168 source=builtin keys=ctrl-shift-w context=- action=workspace::CloseWindow
+[dev] binding seq=1 index=169 source=builtin keys=ctrl-b context=Workspace action=workspace::ToggleLeftDock
+[dev] binding seq=1 index=170 source=builtin keys=ctrl-shift-e context=Workspace action=project_panel::ToggleFocus
+[dev] binding seq=1 index=171 source=builtin keys=ctrl-alt-j context=Workspace action=multi_workspace::ToggleWorkspaceSidebar
+[dev] binding seq=1 index=172 source=builtin keys=ctrl-alt-; context=Workspace action=multi_workspace::FocusWorkspaceSidebar
+[dev] binding seq=1 index=173 source=builtin keys=ctrl-k ctrl-o context=Workspace action=workspace::Open
+[dev] binding seq=1 index=174 source=builtin keys=ctrl-s context=Workspace action=workspace::Save
+[dev] binding seq=1 index=175 source=builtin keys=ctrl-f4 context=Workspace action=pane::CloseActiveItem
+[dev] binding seq=1 index=176 source=builtin keys=ctrl-w context=Workspace action=pane::CloseActiveItem
+[dev] binding seq=1 index=177 source=builtin keys=f10 context=Workspace action=app_menu::Toggle
+[dev] binding seq=1 index=178 source=builtin keys=ctrl-k shift-enter context=Pane action=pane::TogglePinTab
+[dev] binding seq=1 index=179 source=builtin keys=ctrl-pageup context=Pane action=pane::ActivatePreviousItem
+[dev] binding seq=1 index=180 source=builtin keys=ctrl-pagedown context=Pane action=pane::ActivateNextItem
+[dev] binding seq=1 index=181 source=builtin keys=ctrl-shift-v context=Pane action=markdown::OpenPreview
+[dev] binding seq=1 index=182 source=builtin keys=ctrl-k v context=Pane action=markdown::OpenPreviewToTheSide
+[dev] binding seq=1 index=183 source=builtin keys=ctrl-k up context=Pane action=pane::SplitUp
+[dev] binding seq=1 index=184 source=builtin keys=ctrl-k down context=Pane action=pane::SplitDown
+[dev] binding seq=1 index=185 source=builtin keys=ctrl-k left context=Pane action=pane::SplitLeft
+[dev] binding seq=1 index=186 source=builtin keys=ctrl-k right context=Pane action=pane::SplitRight
+[dev] binding seq=1 index=187 source=builtin keys=ctrl-\ context=Pane action=pane::SplitRight
+[dev] binding seq=1 index=188 source=builtin keys=alt-- context=Pane action=pane::GoBack
+[dev] binding seq=1 index=189 source=builtin keys=alt-left context=Pane action=pane::GoBack
+[dev] binding seq=1 index=190 source=builtin keys=alt-= context=Pane action=pane::GoForward
+[dev] binding seq=1 index=191 source=builtin keys=alt-right context=Pane action=pane::GoForward
+[dev] binding seq=1 index=192 source=builtin keys=ctrl-z context=Input action=input::Undo
+[dev] binding seq=1 index=193 source=builtin keys=ctrl-shift-z context=Input action=input::Redo
+[dev] binding seq=1 index=194 source=builtin keys=ctrl-y context=Input action=input::Redo
+[dev] binding seq=1 index=195 source=builtin keys=ctrl-k ctrl-up context=Workspace action=workspace::ActivatePaneUp
+[dev] binding seq=1 index=196 source=builtin keys=ctrl-k ctrl-down context=Workspace action=workspace::ActivatePaneDown
+[dev] binding seq=1 index=197 source=builtin keys=ctrl-k ctrl-left context=Workspace action=workspace::ActivatePaneLeft
+[dev] binding seq=1 index=198 source=builtin keys=ctrl-k ctrl-right context=Workspace action=workspace::ActivatePaneRight
+[dev] binding seq=1 index=199 source=builtin keys=shift-escape context=Workspace action=workspace::ToggleZoom
+[dev] binding seq=1 index=200 source=builtin keys=up context=Sidebar action=menu::SelectPrevious
+[dev] binding seq=1 index=201 source=builtin keys=down context=Sidebar action=menu::SelectNext
+[dev] binding seq=1 index=202 source=builtin keys=enter context=Sidebar action=menu::Confirm
+[dev] binding seq=1 index=203 source=builtin keys=delete context=Sidebar action=project_panel::RemoveFromProject
+[dev] binding seq=1 index=204 source=builtin keys=left context=ProjectPanel action=project_panel::CollapseSelectedEntry
+[dev] binding seq=1 index=205 source=builtin keys=right context=ProjectPanel action=project_panel::ExpandSelectedEntry
+[dev] binding seq=1 index=206 source=builtin keys=ctrl-left context=ProjectPanel action=project_panel::CollapseAllEntries
+[dev] binding seq=1 index=207 source=builtin keys=ctrl-right context=ProjectPanel action=project_panel::ExpandAllEntries
+[dev] binding seq=1 index=208 source=builtin keys=space context=ProjectPanel && not_editing action=project_panel::Open
+[dev] binding seq=1 index=209 source=builtin keys=enter context=ProjectPanel action=project_panel::Rename
+[dev] binding seq=1 index=210 source=builtin keys=f2 context=ProjectPanel action=project_panel::Rename
+[dev] binding seq=1 index=211 source=builtin keys=ctrl-n context=ProjectPanel action=project_panel::NewFile
+[dev] binding seq=1 index=212 source=builtin keys=alt-n context=ProjectPanel action=project_panel::NewDirectory
+[dev] binding seq=1 index=213 source=builtin keys=ctrl-insert context=ProjectPanel action=project_panel::Copy
+[dev] binding seq=1 index=214 source=builtin keys=ctrl-c context=ProjectPanel action=project_panel::Copy
+[dev] binding seq=1 index=215 source=builtin keys=ctrl-x context=ProjectPanel action=project_panel::Cut
+[dev] binding seq=1 index=216 source=builtin keys=shift-insert context=ProjectPanel action=project_panel::Paste
+[dev] binding seq=1 index=217 source=builtin keys=ctrl-v context=ProjectPanel action=project_panel::Paste
+[dev] binding seq=1 index=218 source=builtin keys=backspace context=ProjectPanel action=project_panel::Trash
+[dev] binding seq=1 index=219 source=builtin keys=delete context=ProjectPanel action=project_panel::Trash
+[dev] binding seq=1 index=220 source=builtin keys=shift-delete context=ProjectPanel action=project_panel::Delete
+[dev] binding seq=1 index=221 source=builtin keys=ctrl-backspace context=ProjectPanel action=project_panel::Delete
+[dev] binding seq=1 index=222 source=builtin keys=ctrl-delete context=ProjectPanel action=project_panel::Delete
+[dev] binding seq=1 index=223 source=builtin keys=alt-shift-c context=ProjectPanel action=workspace::CopyPath
+[dev] binding seq=1 index=224 source=builtin keys=ctrl-k ctrl-shift-c context=ProjectPanel action=workspace::CopyRelativePath
+[dev] binding seq=1 index=225 source=builtin keys=menu context=ProjectPanel action=project_panel::DeployContextMenu
+[dev] binding seq=1 index=226 source=builtin keys=shift-f10 context=ProjectPanel action=project_panel::DeployContextMenu
+[dev] binding seq=1 index=227 source=builtin keys=shift-up context=ProjectPanel action=project_panel::SelectPreviousExtend
+[dev] binding seq=1 index=228 source=builtin keys=shift-down context=ProjectPanel action=project_panel::SelectNextExtend
+[dev] binding seq=1 index=229 source=builtin keys=ctrl-alt-r context=ProjectPanel action=project_panel::RevealInFileManager
+[dev] binding seq=1 index=230 source=builtin keys=ctrl-shift-enter context=ProjectPanel action=project_panel::OpenWithSystem
+[dev] builtin seq=1 index=0 keys=ctrl-shift-f context=Workspace action=pane::DeploySearch source=SPEC R-22 Zed confirmation
+[dev] builtin seq=1 index=1 keys=ctrl-shift-m context=Workspace action=diagnostics::Deploy source=SPEC R-22 Zed confirmation
+[dev] builtin seq=1 index=2 keys=down context=menu action=menu::SelectNext source=I-517, I-030
+[dev] builtin seq=1 index=3 keys=tab context=menu action=menu::SelectNext source=I-517, I-030
+[dev] builtin seq=1 index=4 keys=ctrl-n context=menu action=menu::SelectNext source=I-517
+[dev] builtin seq=1 index=5 keys=up context=menu action=menu::SelectPrevious source=I-517, I-030
+[dev] builtin seq=1 index=6 keys=shift-tab context=menu action=menu::SelectPrevious source=I-517, I-030
+[dev] builtin seq=1 index=7 keys=ctrl-p context=menu action=menu::SelectPrevious source=I-517
+[dev] builtin seq=1 index=8 keys=home context=menu action=menu::SelectFirst source=I-517, I-030
+[dev] builtin seq=1 index=9 keys=pageup context=menu action=menu::SelectFirst source=I-517
+[dev] builtin seq=1 index=10 keys=shift-pageup context=menu action=menu::SelectFirst source=I-517
+[dev] builtin seq=1 index=11 keys=end context=menu action=menu::SelectLast source=I-517, I-030
+[dev] builtin seq=1 index=12 keys=pagedown context=menu action=menu::SelectLast source=I-517
+[dev] builtin seq=1 index=13 keys=shift-pagedown context=menu action=menu::SelectLast source=I-517
+[dev] builtin seq=1 index=14 keys=enter context=menu action=menu::Confirm source=I-517, I-035
+[dev] builtin seq=1 index=15 keys=escape context=menu action=menu::Cancel source=I-517, I-035
+[dev] builtin seq=1 index=16 keys=ctrl-c context=menu action=menu::Cancel source=I-517
+[dev] builtin seq=1 index=17 keys=right context=menu action=menu::SelectChild source=I-517
+[dev] builtin seq=1 index=18 keys=left context=menu action=menu::SelectParent source=I-517
+[dev] builtin seq=1 index=19 keys=ctrl-q context=- action=zed::Quit source=I-341
+[dev] builtin seq=1 index=20 keys=ctrl-, context=- action=zed::OpenSettings source=K-11, core ORDER-06-R1
+[dev] builtin seq=1 index=21 keys=ctrl-k ctrl-s context=Workspace action=zed::OpenKeymap source=K-14, core ORDER-06-R1
+[dev] builtin seq=1 index=22 keys=ctrl-shift-x context=Workspace action=zed::Extensions source=K-15, core ORDER-06-R1
+[dev] builtin seq=1 index=23 keys=ctrl-k ctrl-t context=Workspace action=theme_selector::Toggle source=K-20, core ORDER-07 I-4
+[dev] builtin seq=1 index=24 keys=ctrl-e context=KeymapEditor action=keymap_editor::EditJson source=K-14, K-010
+[dev] builtin seq=1 index=25 keys=ctrl-k context=KeymapEditor action=keymap_editor::Create source=K-14, K-010
+[dev] builtin seq=1 index=26 keys=ctrl-shift-w context=- action=workspace::CloseWindow source=I-358
+[dev] builtin seq=1 index=27 keys=ctrl-b context=Workspace action=workspace::ToggleLeftDock source=I-022, A-17.7
+[dev] builtin seq=1 index=28 keys=ctrl-shift-e context=Workspace action=project_panel::ToggleFocus source=I-023, A-17.8
+[dev] builtin seq=1 index=29 keys=ctrl-alt-j context=Workspace action=multi_workspace::ToggleWorkspaceSidebar source=I-024, A-17.1
+[dev] builtin seq=1 index=30 keys=ctrl-alt-; context=Workspace action=multi_workspace::FocusWorkspaceSidebar source=I-024, A-17.2
+[dev] builtin seq=1 index=31 keys=ctrl-k ctrl-o context=Workspace action=workspace::Open source=A-13.1, A-17.6
+[dev] builtin seq=1 index=32 keys=ctrl-s context=Workspace action=workspace::Save source=E-088
+[dev] builtin seq=1 index=33 keys=ctrl-f4 context=Workspace action=pane::CloseActiveItem source=I-356, I-570
+[dev] builtin seq=1 index=34 keys=ctrl-w context=Workspace action=pane::CloseActiveItem source=K-12, I-356, I-570, L-240
+[dev] builtin seq=1 index=35 keys=f10 context=Workspace action=app_menu::Toggle source=I-310
+[dev] builtin seq=1 index=36 keys=ctrl-k shift-enter context=Pane action=pane::TogglePinTab source=I-065
+[dev] builtin seq=1 index=37 keys=ctrl-pageup context=Pane action=pane::ActivatePreviousItem source=K-10, core ORDER-06
+[dev] builtin seq=1 index=38 keys=ctrl-pagedown context=Pane action=pane::ActivateNextItem source=K-10, core ORDER-06
+[dev] builtin seq=1 index=39 keys=ctrl-shift-v context=Pane action=markdown::OpenPreview source=I-044, I-045
+[dev] builtin seq=1 index=40 keys=ctrl-k v context=Pane action=markdown::OpenPreviewToTheSide source=I-044
+[dev] builtin seq=1 index=41 keys=ctrl-k up context=Pane action=pane::SplitUp source=I-731
+[dev] builtin seq=1 index=42 keys=ctrl-k down context=Pane action=pane::SplitDown source=I-731
+[dev] builtin seq=1 index=43 keys=ctrl-k left context=Pane action=pane::SplitLeft source=I-731
+[dev] builtin seq=1 index=44 keys=ctrl-k right context=Pane action=pane::SplitRight source=I-731
+[dev] builtin seq=1 index=45 keys=ctrl-\ context=Pane action=pane::SplitRight source=K-12, I-731
+[dev] builtin seq=1 index=46 keys=alt-- context=Pane action=pane::GoBack source=K-35, I-10
+[dev] builtin seq=1 index=47 keys=alt-left context=Pane action=pane::GoBack source=K-35, I-10
+[dev] builtin seq=1 index=48 keys=alt-= context=Pane action=pane::GoForward source=K-35, I-10
+[dev] builtin seq=1 index=49 keys=alt-right context=Pane action=pane::GoForward source=K-35, I-10
+[dev] builtin seq=1 index=50 keys=ctrl-z context=Input action=input::Undo source=K-12, Zed default-windows editor::Undo
+[dev] builtin seq=1 index=51 keys=ctrl-shift-z context=Input action=input::Redo source=K-12, Zed default-windows editor::Redo
+[dev] builtin seq=1 index=52 keys=ctrl-y context=Input action=input::Redo source=K-12, Zed default-windows editor::Redo
+[dev] builtin seq=1 index=53 keys=ctrl-k ctrl-up context=Workspace action=workspace::ActivatePaneUp source=I-732
+[dev] builtin seq=1 index=54 keys=ctrl-k ctrl-down context=Workspace action=workspace::ActivatePaneDown source=I-732
+[dev] builtin seq=1 index=55 keys=ctrl-k ctrl-left context=Workspace action=workspace::ActivatePaneLeft source=I-732
+[dev] builtin seq=1 index=56 keys=ctrl-k ctrl-right context=Workspace action=workspace::ActivatePaneRight source=I-732
+[dev] builtin seq=1 index=57 keys=shift-escape context=Workspace action=workspace::ToggleZoom source=I-737
+[dev] builtin seq=1 index=58 keys=up context=Sidebar action=menu::SelectPrevious source=A-17.3
+[dev] builtin seq=1 index=59 keys=down context=Sidebar action=menu::SelectNext source=A-17.3
+[dev] builtin seq=1 index=60 keys=enter context=Sidebar action=menu::Confirm source=A-17.4
+[dev] builtin seq=1 index=61 keys=delete context=Sidebar action=project_panel::RemoveFromProject source=A-17.5
+[dev] builtin seq=1 index=62 keys=left context=ProjectPanel action=project_panel::CollapseSelectedEntry source=I-031
+[dev] builtin seq=1 index=63 keys=right context=ProjectPanel action=project_panel::ExpandSelectedEntry source=I-031
+[dev] builtin seq=1 index=64 keys=ctrl-left context=ProjectPanel action=project_panel::CollapseAllEntries source=I-032
+[dev] builtin seq=1 index=65 keys=ctrl-right context=ProjectPanel action=project_panel::ExpandAllEntries source=I-032
+[dev] builtin seq=1 index=66 keys=space context=ProjectPanel && not_editing action=project_panel::Open source=I-033
+[dev] builtin seq=1 index=67 keys=enter context=ProjectPanel action=project_panel::Rename source=I-034
+[dev] builtin seq=1 index=68 keys=f2 context=ProjectPanel action=project_panel::Rename source=I-034
+[dev] builtin seq=1 index=69 keys=ctrl-n context=ProjectPanel action=project_panel::NewFile source=I-036
+[dev] builtin seq=1 index=70 keys=alt-n context=ProjectPanel action=project_panel::NewDirectory source=I-036
+[dev] builtin seq=1 index=71 keys=ctrl-insert context=ProjectPanel action=project_panel::Copy source=I-037
+[dev] builtin seq=1 index=72 keys=ctrl-c context=ProjectPanel action=project_panel::Copy source=I-037
+[dev] builtin seq=1 index=73 keys=ctrl-x context=ProjectPanel action=project_panel::Cut source=I-037
+[dev] builtin seq=1 index=74 keys=shift-insert context=ProjectPanel action=project_panel::Paste source=I-037
+[dev] builtin seq=1 index=75 keys=ctrl-v context=ProjectPanel action=project_panel::Paste source=I-037
+[dev] builtin seq=1 index=76 keys=backspace context=ProjectPanel action=project_panel::Trash source=I-039
+[dev] builtin seq=1 index=77 keys=delete context=ProjectPanel action=project_panel::Trash source=I-039
+[dev] builtin seq=1 index=78 keys=shift-delete context=ProjectPanel action=project_panel::Delete source=I-040
+[dev] builtin seq=1 index=79 keys=ctrl-backspace context=ProjectPanel action=project_panel::Delete source=I-040
+[dev] builtin seq=1 index=80 keys=ctrl-delete context=ProjectPanel action=project_panel::Delete source=I-040
+[dev] builtin seq=1 index=81 keys=alt-shift-c context=ProjectPanel action=workspace::CopyPath source=I-041
+[dev] builtin seq=1 index=82 keys=ctrl-k ctrl-shift-c context=ProjectPanel action=workspace::CopyRelativePath source=I-041
+[dev] builtin seq=1 index=83 keys=menu context=ProjectPanel action=project_panel::DeployContextMenu source=I-042
+[dev] builtin seq=1 index=84 keys=shift-f10 context=ProjectPanel action=project_panel::DeployContextMenu source=I-042
+[dev] builtin seq=1 index=85 keys=shift-up context=ProjectPanel action=project_panel::SelectPreviousExtend source=I-043
+[dev] builtin seq=1 index=86 keys=shift-down context=ProjectPanel action=project_panel::SelectNextExtend source=I-043
+[dev] builtin seq=1 index=87 keys=ctrl-alt-r context=ProjectPanel action=project_panel::RevealInFileManager source=I-532
+[dev] builtin seq=1 index=88 keys=ctrl-shift-enter context=ProjectPanel action=project_panel::OpenWithSystem source=I-533
+[dev] keymap-load-end seq=1
+[dev] display seq=1 where=center action=input::Undo text=<none>
+[dev] display seq=1 where=center action=input::Redo text=<none>
+[dev] display seq=1 where=center action=pane::DeploySearch text=Ctrl-Shift-F
+[dev] display seq=1 where=center action=diagnostics::Deploy text=Ctrl-Shift-M
+[dev] display seq=1 where=center action=workspace::ToggleLeftDock text=Ctrl-B
+[dev] display seq=1 where=center action=workspace::Open text=Ctrl-K Ctrl-O
+[dev] display seq=1 where=center action=workspace::CopyPath text=<none>
+[dev] display seq=1 where=center action=workspace::CopyRelativePath text=<none>
+[dev] display seq=1 where=center action=workspace::CloseWindow text=Ctrl-Shift-W
+[dev] display seq=1 where=center action=workspace::Save text=Ctrl-S
+[dev] display seq=1 where=center action=workspace::UseClassicLayout text=<none>
+[dev] display seq=1 where=center action=zed::OpenSettings text=Ctrl-,
+[dev] display seq=1 where=center action=zed::OpenKeymap text=Ctrl-K Ctrl-S
+[dev] display seq=1 where=center action=zed::Extensions text=Ctrl-Shift-X
+[dev] display seq=1 where=center action=theme_selector::Toggle text=Ctrl-K Ctrl-T
+[dev] display seq=1 where=center action=icon_theme_selector::Toggle text=<none>
+[dev] display seq=1 where=center action=keymap_editor::EditJson text=<none>
+[dev] display seq=1 where=center action=keymap_editor::Create text=<none>
+[dev] display seq=1 where=center action=pane::CloseActiveItem text=Ctrl-W
+[dev] display seq=1 where=center action=pane::ActivatePreviousItem text=Ctrl-PageUp
+[dev] display seq=1 where=center action=pane::ActivateNextItem text=Ctrl-PageDown
+[dev] display seq=1 where=center action=pane::TogglePinTab text=Ctrl-K Shift-Enter
+[dev] display seq=1 where=center action=markdown::OpenPreview text=Ctrl-Shift-V
+[dev] display seq=1 where=center action=markdown::OpenPreviewToTheSide text=Ctrl-K V
+[dev] display seq=1 where=center action=pane::SplitRight text=Ctrl-\
+[dev] display seq=1 where=center action=pane::SplitLeft text=Ctrl-K Left
+[dev] display seq=1 where=center action=pane::SplitUp text=Ctrl-K Up
+[dev] display seq=1 where=center action=pane::SplitDown text=Ctrl-K Down
+[dev] display seq=1 where=center action=pane::GoBack text=Alt-Left
+[dev] display seq=1 where=center action=pane::GoForward text=Alt-Right
+[dev] display seq=1 where=center action=workspace::ToggleZoom text=Shift-Escape
+[dev] display seq=1 where=center action=workspace::ActivatePaneLeft text=Ctrl-K Ctrl-Left
+[dev] display seq=1 where=center action=workspace::ActivatePaneRight text=Ctrl-K Ctrl-Right
+[dev] display seq=1 where=center action=workspace::ActivatePaneUp text=Ctrl-K Ctrl-Up
+[dev] display seq=1 where=center action=workspace::ActivatePaneDown text=Ctrl-K Ctrl-Down
+[dev] display seq=1 where=center action=zed::Quit text=Ctrl-Q
+[dev] display seq=1 where=center action=zed::Minimize text=<none>
+[dev] display seq=1 where=center action=zed::Zoom text=<none>
+[dev] display seq=1 where=center action=multi_workspace::ToggleWorkspaceSidebar text=Ctrl-Alt-J
+[dev] display seq=1 where=center action=multi_workspace::FocusWorkspaceSidebar text=Ctrl-Alt-;
+[dev] display seq=1 where=center action=app_menu::Toggle text=F10
+[dev] display seq=1 where=center action=project_panel::ToggleFocus text=Ctrl-Shift-E
+[dev] display seq=1 where=center action=project_panel::CollapseSelectedEntry text=<none>
+[dev] display seq=1 where=center action=project_panel::ExpandSelectedEntry text=<none>
+[dev] display seq=1 where=center action=project_panel::CollapseAllEntries text=<none>
+[dev] display seq=1 where=center action=project_panel::ExpandAllEntries text=<none>
+[dev] display seq=1 where=center action=project_panel::Open text=<none>
+[dev] display seq=1 where=center action=project_panel::Rename text=<none>
+[dev] display seq=1 where=center action=project_panel::NewFile text=<none>
+[dev] display seq=1 where=center action=project_panel::NewDirectory text=<none>
+[dev] display seq=1 where=center action=project_panel::Copy text=<none>
+[dev] display seq=1 where=center action=project_panel::Cut text=<none>
+[dev] display seq=1 where=center action=project_panel::Paste text=<none>
+[dev] display seq=1 where=center action=project_panel::Trash text=<none>
+[dev] display seq=1 where=center action=project_panel::Delete text=<none>
+[dev] display seq=1 where=center action=project_panel::DeployContextMenu text=<none>
+[dev] display seq=1 where=center action=project_panel::SelectPreviousExtend text=<none>
+[dev] display seq=1 where=center action=project_panel::SelectNextExtend text=<none>
+[dev] display seq=1 where=center action=project_panel::RemoveFromProject text=<none>
+[dev] display seq=1 where=center action=project_panel::RevealInFileManager text=<none>
+[dev] display seq=1 where=center action=project_panel::OpenWithSystem text=<none>
+[dev] display seq=1 where=center action=menu::SelectNext text=<none>
+[dev] display seq=1 where=center action=menu::SelectPrevious text=<none>
+[dev] display seq=1 where=center action=menu::SelectFirst text=<none>
+[dev] display seq=1 where=center action=menu::SelectLast text=<none>
+[dev] display seq=1 where=center action=menu::Confirm text=<none>
+[dev] display seq=1 where=center action=menu::Cancel text=<none>
+[dev] display seq=1 where=center action=menu::SelectChild text=<none>
+[dev] display seq=1 where=center action=menu::SelectParent text=<none>
+[dev] display seq=1 where=sidebar action=input::Undo text=<none>
+[dev] display seq=1 where=sidebar action=input::Redo text=<none>
+[dev] display seq=1 where=sidebar action=pane::DeploySearch text=Ctrl-Shift-F
+[dev] display seq=1 where=sidebar action=diagnostics::Deploy text=Ctrl-Shift-M
+[dev] display seq=1 where=sidebar action=workspace::ToggleLeftDock text=Ctrl-B
+[dev] display seq=1 where=sidebar action=workspace::Open text=Ctrl-K Ctrl-O
+[dev] display seq=1 where=sidebar action=workspace::CopyPath text=<none>
+[dev] display seq=1 where=sidebar action=workspace::CopyRelativePath text=<none>
+[dev] display seq=1 where=sidebar action=workspace::CloseWindow text=Ctrl-Shift-W
+[dev] display seq=1 where=sidebar action=workspace::Save text=Ctrl-S
+[dev] display seq=1 where=sidebar action=workspace::UseClassicLayout text=<none>
+[dev] display seq=1 where=sidebar action=zed::OpenSettings text=Ctrl-,
+[dev] display seq=1 where=sidebar action=zed::OpenKeymap text=Ctrl-K Ctrl-S
+[dev] display seq=1 where=sidebar action=zed::Extensions text=Ctrl-Shift-X
+[dev] display seq=1 where=sidebar action=theme_selector::Toggle text=Ctrl-K Ctrl-T
+[dev] display seq=1 where=sidebar action=icon_theme_selector::Toggle text=<none>
+[dev] display seq=1 where=sidebar action=keymap_editor::EditJson text=<none>
+[dev] display seq=1 where=sidebar action=keymap_editor::Create text=<none>
+[dev] display seq=1 where=sidebar action=pane::CloseActiveItem text=Ctrl-W
+[dev] display seq=1 where=sidebar action=pane::ActivatePreviousItem text=<none>
+[dev] display seq=1 where=sidebar action=pane::ActivateNextItem text=<none>
+[dev] display seq=1 where=sidebar action=pane::TogglePinTab text=<none>
+[dev] display seq=1 where=sidebar action=markdown::OpenPreview text=<none>
+[dev] display seq=1 where=sidebar action=markdown::OpenPreviewToTheSide text=<none>
+[dev] display seq=1 where=sidebar action=pane::SplitRight text=<none>
+[dev] display seq=1 where=sidebar action=pane::SplitLeft text=<none>
+[dev] display seq=1 where=sidebar action=pane::SplitUp text=<none>
+[dev] display seq=1 where=sidebar action=pane::SplitDown text=<none>
+[dev] display seq=1 where=sidebar action=pane::GoBack text=<none>
+[dev] display seq=1 where=sidebar action=pane::GoForward text=<none>
+[dev] display seq=1 where=sidebar action=workspace::ToggleZoom text=Shift-Escape
+[dev] display seq=1 where=sidebar action=workspace::ActivatePaneLeft text=Ctrl-K Ctrl-Left
+[dev] display seq=1 where=sidebar action=workspace::ActivatePaneRight text=Ctrl-K Ctrl-Right
+[dev] display seq=1 where=sidebar action=workspace::ActivatePaneUp text=Ctrl-K Ctrl-Up
+[dev] display seq=1 where=sidebar action=workspace::ActivatePaneDown text=Ctrl-K Ctrl-Down
+[dev] display seq=1 where=sidebar action=zed::Quit text=Ctrl-Q
+[dev] display seq=1 where=sidebar action=zed::Minimize text=<none>
+[dev] display seq=1 where=sidebar action=zed::Zoom text=<none>
+[dev] display seq=1 where=sidebar action=multi_workspace::ToggleWorkspaceSidebar text=Ctrl-Alt-J
+[dev] display seq=1 where=sidebar action=multi_workspace::FocusWorkspaceSidebar text=Ctrl-Alt-;
+[dev] display seq=1 where=sidebar action=app_menu::Toggle text=F10
+[dev] display seq=1 where=sidebar action=project_panel::ToggleFocus text=Ctrl-Shift-E
+[dev] display seq=1 where=sidebar action=project_panel::CollapseSelectedEntry text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::ExpandSelectedEntry text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::CollapseAllEntries text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::ExpandAllEntries text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Open text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Rename text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::NewFile text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::NewDirectory text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Copy text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Cut text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Paste text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Trash text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::Delete text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::DeployContextMenu text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::SelectPreviousExtend text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::SelectNextExtend text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::RemoveFromProject text=Delete
+[dev] display seq=1 where=sidebar action=project_panel::RevealInFileManager text=<none>
+[dev] display seq=1 where=sidebar action=project_panel::OpenWithSystem text=<none>
+[dev] display seq=1 where=sidebar action=menu::SelectNext text=Down
+[dev] display seq=1 where=sidebar action=menu::SelectPrevious text=Up
+[dev] display seq=1 where=sidebar action=menu::SelectFirst text=<none>
+[dev] display seq=1 where=sidebar action=menu::SelectLast text=<none>
+[dev] display seq=1 where=sidebar action=menu::Confirm text=Enter
+[dev] display seq=1 where=sidebar action=menu::Cancel text=<none>
+[dev] display seq=1 where=sidebar action=menu::SelectChild text=<none>
+[dev] display seq=1 where=sidebar action=menu::SelectParent text=<none>
+[dev] display seq=1 where=project_panel action=input::Undo text=<none>
+[dev] display seq=1 where=project_panel action=input::Redo text=<none>
+[dev] display seq=1 where=project_panel action=pane::DeploySearch text=Ctrl-Shift-F
+[dev] display seq=1 where=project_panel action=diagnostics::Deploy text=Ctrl-Shift-M
+[dev] display seq=1 where=project_panel action=workspace::ToggleLeftDock text=Ctrl-B
+[dev] display seq=1 where=project_panel action=workspace::Open text=Ctrl-K Ctrl-O
+[dev] display seq=1 where=project_panel action=workspace::CopyPath text=Alt-Shift-C
+[dev] display seq=1 where=project_panel action=workspace::CopyRelativePath text=Ctrl-K Ctrl-Shift-C
+[dev] display seq=1 where=project_panel action=workspace::CloseWindow text=Ctrl-Shift-W
+[dev] display seq=1 where=project_panel action=workspace::Save text=Ctrl-S
+[dev] display seq=1 where=project_panel action=workspace::UseClassicLayout text=<none>
+[dev] display seq=1 where=project_panel action=zed::OpenSettings text=Ctrl-,
+[dev] display seq=1 where=project_panel action=zed::OpenKeymap text=Ctrl-K Ctrl-S
+[dev] display seq=1 where=project_panel action=zed::Extensions text=Ctrl-Shift-X
+[dev] display seq=1 where=project_panel action=theme_selector::Toggle text=Ctrl-K Ctrl-T
+[dev] display seq=1 where=project_panel action=icon_theme_selector::Toggle text=<none>
+[dev] display seq=1 where=project_panel action=keymap_editor::EditJson text=<none>
+[dev] display seq=1 where=project_panel action=keymap_editor::Create text=<none>
+[dev] display seq=1 where=project_panel action=pane::CloseActiveItem text=Ctrl-W
+[dev] display seq=1 where=project_panel action=pane::ActivatePreviousItem text=<none>
+[dev] display seq=1 where=project_panel action=pane::ActivateNextItem text=<none>
+[dev] display seq=1 where=project_panel action=pane::TogglePinTab text=<none>
+[dev] display seq=1 where=project_panel action=markdown::OpenPreview text=<none>
+[dev] display seq=1 where=project_panel action=markdown::OpenPreviewToTheSide text=<none>
+[dev] display seq=1 where=project_panel action=pane::SplitRight text=<none>
+[dev] display seq=1 where=project_panel action=pane::SplitLeft text=<none>
+[dev] display seq=1 where=project_panel action=pane::SplitUp text=<none>
+[dev] display seq=1 where=project_panel action=pane::SplitDown text=<none>
+[dev] display seq=1 where=project_panel action=pane::GoBack text=<none>
+[dev] display seq=1 where=project_panel action=pane::GoForward text=<none>
+[dev] display seq=1 where=project_panel action=workspace::ToggleZoom text=Shift-Escape
+[dev] display seq=1 where=project_panel action=workspace::ActivatePaneLeft text=Ctrl-K Ctrl-Left
+[dev] display seq=1 where=project_panel action=workspace::ActivatePaneRight text=Ctrl-K Ctrl-Right
+[dev] display seq=1 where=project_panel action=workspace::ActivatePaneUp text=Ctrl-K Ctrl-Up
+[dev] display seq=1 where=project_panel action=workspace::ActivatePaneDown text=Ctrl-K Ctrl-Down
+[dev] display seq=1 where=project_panel action=zed::Quit text=Ctrl-Q
+[dev] display seq=1 where=project_panel action=zed::Minimize text=<none>
+[dev] display seq=1 where=project_panel action=zed::Zoom text=<none>
+[dev] display seq=1 where=project_panel action=multi_workspace::ToggleWorkspaceSidebar text=Ctrl-Alt-J
+[dev] display seq=1 where=project_panel action=multi_workspace::FocusWorkspaceSidebar text=Ctrl-Alt-;
+[dev] display seq=1 where=project_panel action=app_menu::Toggle text=F10
+[dev] display seq=1 where=project_panel action=project_panel::ToggleFocus text=Ctrl-Shift-E
+[dev] display seq=1 where=project_panel action=project_panel::CollapseSelectedEntry text=Left
+[dev] display seq=1 where=project_panel action=project_panel::ExpandSelectedEntry text=Right
+[dev] display seq=1 where=project_panel action=project_panel::CollapseAllEntries text=Ctrl-Left
+[dev] display seq=1 where=project_panel action=project_panel::ExpandAllEntries text=Ctrl-Right
+[dev] display seq=1 where=project_panel action=project_panel::Open text=Space
+[dev] display seq=1 where=project_panel action=project_panel::Rename text=F2
+[dev] display seq=1 where=project_panel action=project_panel::NewFile text=Ctrl-N
+[dev] display seq=1 where=project_panel action=project_panel::NewDirectory text=Alt-N
+[dev] display seq=1 where=project_panel action=project_panel::Copy text=Ctrl-C
+[dev] display seq=1 where=project_panel action=project_panel::Cut text=Ctrl-X
+[dev] display seq=1 where=project_panel action=project_panel::Paste text=Ctrl-V
+[dev] display seq=1 where=project_panel action=project_panel::Trash text=Delete
+[dev] display seq=1 where=project_panel action=project_panel::Delete text=Ctrl-Delete
+[dev] display seq=1 where=project_panel action=project_panel::DeployContextMenu text=Shift-F10
+[dev] display seq=1 where=project_panel action=project_panel::SelectPreviousExtend text=Shift-Up
+[dev] display seq=1 where=project_panel action=project_panel::SelectNextExtend text=Shift-Down
+[dev] display seq=1 where=project_panel action=project_panel::RemoveFromProject text=<none>
+[dev] display seq=1 where=project_panel action=project_panel::RevealInFileManager text=Ctrl-Alt-R
+[dev] display seq=1 where=project_panel action=project_panel::OpenWithSystem text=Ctrl-Shift-Enter
+[dev] display seq=1 where=project_panel action=menu::SelectNext text=Down
+[dev] display seq=1 where=project_panel action=menu::SelectPrevious text=Up
+[dev] display seq=1 where=project_panel action=menu::SelectFirst text=Shift-PageUp
+[dev] display seq=1 where=project_panel action=menu::SelectLast text=Shift-PageDown
+[dev] display seq=1 where=project_panel action=menu::Confirm text=<none>
+[dev] display seq=1 where=project_panel action=menu::Cancel text=Escape
+[dev] display seq=1 where=project_panel action=menu::SelectChild text=<none>
+[dev] display seq=1 where=project_panel action=menu::SelectParent text=<none>
+[dev] display-end seq=1
+[dev] layout-snapshot seq=1 rem=16 scale=1 viewport=1440x852 maximized=false dock_width=240 dock_stored=default body_width=1140
+[dev] layout-box seq=1 name=active-item bounds=540.00,65.00,900.00,756.00
+[dev] layout-box seq=1 name=app-menu bounds=308.00,5.00,22.00,22.00
+[dev] layout-box seq=1 name=app-menu-button bounds=308.00,5.00,22.00,22.00
+[dev] layout-box seq=1 name=body bounds=300.00,33.00,1140.00,788.00
+[dev] layout-box seq=1 name=center bounds=540.00,33.00,900.00,788.00
+[dev] layout-box seq=1 name=dock bounds=300.00,33.00,240.00,788.00
+[dev] layout-box seq=1 name=dock-handle bounds=537.00,33.00,6.00,788.00
+[dev] layout-box seq=1 name=project-empty-open bounds=308.00,95.00,223.00,33.00
+[dev] layout-box seq=1 name=project-empty-text bounds=308.00,41.00,223.00,46.00
+[dev] layout-box seq=1 name=sidebar bounds=0.00,0.00,300.00,852.00
+[dev] layout-box seq=1 name=sidebar-btn-folder-add bounds=273.00,826.00,22.00,22.00
+[dev] layout-box seq=1 name=sidebar-btn-toggle bounds=4.00,826.00,22.00,22.00
+[dev] layout-box seq=1 name=sidebar-footer bounds=0.00,822.00,299.00,30.00
+[dev] layout-box seq=1 name=sidebar-footer-left bounds=4.00,826.00,265.00,22.00
+[dev] layout-box seq=1 name=sidebar-footer-left-placeholder bounds=30.00,826.00,22.00,22.00
+[dev] layout-box seq=1 name=sidebar-footer-right bounds=273.00,826.00,22.00,22.00
+[dev] layout-box seq=1 name=sidebar-header bounds=0.00,0.00,299.00,32.00
+[dev] layout-box seq=1 name=sidebar-icon-folder-add bounds=277.00,830.00,14.00,14.00
+[dev] layout-box seq=1 name=sidebar-icon-toggle bounds=8.00,830.00,14.00,14.00
+[dev] layout-box seq=1 name=sidebar-list bounds=0.00,32.00,299.00,790.00
+[dev] layout-box seq=1 name=status-bar bounds=300.00,822.00,1140.00,30.00
+[dev] layout-box seq=1 name=status-cursor bounds=1436.00,826.00,0.00,22.00
+[dev] layout-box seq=1 name=status-icon-diagnostics bounds=369.00,830.00,14.00,14.00
+[dev] layout-box seq=1 name=status-icon-project-panel bounds=308.00,830.00,14.00,14.00
+[dev] layout-box seq=1 name=status-icon-search bounds=339.00,830.00,14.00,14.00
+[dev] layout-box seq=1 name=status-left bounds=304.00,826.00,1098.00,22.00
+[dev] layout-box seq=1 name=status-right bounds=1410.00,826.00,26.00,22.00
+[dev] layout-box seq=1 name=status-right-placeholder bounds=1410.00,826.00,22.00,22.00
+[dev] layout-box seq=1 name=tab bounds=601.00,33.00,752.00,32.00
+[dev] layout-box seq=1 name=tab-bar bounds=540.00,33.00,900.00,32.00
+[dev] layout-box seq=1 name=tab-bar-end bounds=1353.00,33.00,87.00,32.00
+[dev] layout-box seq=1 name=tab-bar-filler bounds=780.00,33.00,573.00,32.00
+[dev] layout-box seq=1 name=tab-bar-start bounds=540.00,33.00,61.00,32.00
+[dev] layout-box seq=1 name=tab-btn-back bounds=546.00,37.00,22.00,22.00
+[dev] layout-box seq=1 name=tab-btn-forward bounds=572.00,37.00,22.00,22.00
+[dev] layout-box seq=1 name=tab-btn-new bounds=1360.00,37.00,22.00,22.00
+[dev] layout-box seq=1 name=tab-btn-split bounds=1386.00,37.00,22.00,22.00
+[dev] layout-box seq=1 name=tab-btn-zoom bounds=1412.00,37.00,22.00,22.00
+[dev] layout-box seq=1 name=tab-content bounds=601.00,33.00,179.00,31.00
+[dev] layout-box seq=1 name=tab-icon-back bounds=550.00,41.00,14.00,14.00
+[dev] layout-box seq=1 name=tab-icon-forward bounds=576.00,41.00,14.00,14.00
+[dev] layout-box seq=1 name=tab-icon-new bounds=1364.00,41.00,14.00,14.00
+[dev] layout-box seq=1 name=tab-icon-split bounds=1390.00,41.00,14.00,14.00
+[dev] layout-box seq=1 name=tab-icon-zoom bounds=1416.00,41.00,14.00,14.00
+[dev] layout-box seq=1 name=tab-label bounds=621.00,37.00,137.00,23.00
+[dev] layout-box seq=1 name=tab-slot-end bounds=762.00,41.00,14.00,14.00
+[dev] layout-box seq=1 name=tab-slot-start bounds=605.00,42.00,12.00,12.00
+[dev] layout-box seq=1 name=title-bar bounds=300.00,0.00,1140.00,32.00
+[dev] layout-box seq=1 name=title-bar-drag bounds=474.00,0.00,832.00,32.00
+[dev] layout-box seq=1 name=title-folder-name bounds=332.00,5.00,142.00,22.00
+[dev] layout-box seq=1 name=title-left bounds=300.00,0.00,174.00,32.00
+[dev] layout-box seq=1 name=user-menu bounds=1306.00,5.00,22.00,22.00
+[dev] layout-box seq=1 name=user-menu-gap bounds=1328.00,16.00,4.00,0.00
+[dev] layout-box seq=1 name=window-btn-close bounds=1404.00,0.00,36.00,32.00
+[dev] layout-box seq=1 name=window-btn-max bounds=1368.00,0.00,36.00,32.00
+[dev] layout-box seq=1 name=window-btn-min bounds=1332.00,0.00,36.00,32.00
+[dev] layout-box seq=1 name=window-controls bounds=1332.00,0.00,108.00,32.00
+[dev] layout-box seq=1 name=work-area bounds=300.00,32.00,1140.00,790.00
+[dev] layout-box seq=1 name=workspace bounds=300.00,0.00,1140.00,852.00
+[dev] layout-snapshot-end seq=1
+[dev] focus-state focus=project_panel active=true
+[dev] button-click name=open-project
+[dev] pick-folder method=dev-file
+[dev] pick-folder result=picked path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-tauri
+[dev] folder-add result=added index=0 path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-tauri
+[dev] watch-start folder=c12cd80e-284d-41fe-a30d-df3de55f43cc root=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-tauri parent_watched=true root_id=02919dc8:00010000000cd1b7 via=activate
+[dev] folder-activate index=0 id=c12cd80e-284d-41fe-a30d-df3de55f43cc workspace=EntityId(15v1) created=true folder_id=c12cd80e-284d-41fe-a30d-df3de55f43cc
+[dev] folders count=1 active=0 cursor=none workspaces=1
+[dev] folder-row index=0 id=c12cd80e-284d-41fe-a30d-df3de55f43cc name=workbench-tauri path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-tauri missing=false active=true
+[dev] folders-end
+[dev] tree folder=c12cd80e-284d-41fe-a30d-df3de55f43cc selected=none marked= expanded=. rows=workbench-tauri|0|open	src|1|closed	AGENTS.md|1|file
+[dev] tabs folder=c12cd80e-284d-41fe-a30d-df3de55f43cc active=none count=0 list=
+[dev] title text=workbench-tauri placeholder=false
+[dev] layout-snapshot seq=2 rem=16 scale=1 viewport=1440x852 maximized=false dock_width=240 dock_stored=default body_width=1140 tree_scroll_y=0.0
+[dev] layout-box seq=2 name=active-item bounds=540.00,65.00,900.00,756.00
+[dev] layout-box seq=2 name=app-menu bounds=308.00,5.00,22.00,22.00
+[dev] layout-box seq=2 name=app-menu-button bounds=308.00,5.00,22.00,22.00
+[dev] layout-box seq=2 name=body bounds=300.00,33.00,1140.00,788.00
+[dev] layout-box seq=2 name=center bounds=540.00,33.00,900.00,788.00
+[dev] layout-box seq=2 name=dock bounds=300.00,33.00,240.00,788.00
+[dev] layout-box seq=2 name=dock-handle bounds=537.00,33.00,6.00,788.00
+[dev] layout-box seq=2 name=folder-row-00 bounds=0.00,32.00,299.00,31.00
+[dev] layout-box seq=2 name=project-root-icon bounds=307.00,38.00,16.00,16.00
+[dev] layout-box seq=2 name=project-root-label bounds=327.00,34.00,105.00,23.00
+[dev] layout-box seq=2 name=sidebar bounds=0.00,0.00,300.00,852.00
+[dev] layout-box seq=2 name=sidebar-btn-folder-add bounds=273.00,826.00,22.00,22.00
+[dev] layout-box seq=2 name=sidebar-btn-toggle bounds=4.00,826.00,22.00,22.00
+[dev] layout-box seq=2 name=sidebar-footer bounds=0.00,822.00,299.00,30.00
+[dev] layout-box seq=2 name=sidebar-footer-left bounds=4.00,826.00,265.00,22.00
+[dev] layout-box seq=2 name=sidebar-footer-left-placeholder bounds=30.00,826.00,22.00,22.00
+[dev] layout-box seq=2 name=sidebar-footer-right bounds=273.00,826.00,22.00,22.00
+[dev] layout-box seq=2 name=sidebar-header bounds=0.00,0.00,299.00,32.00
+[dev] layout-box seq=2 name=sidebar-icon-folder-add bounds=277.00,830.00,14.00,14.00
+[dev] layout-box seq=2 name=sidebar-icon-toggle bounds=8.00,830.00,14.00,14.00
+[dev] layout-box seq=2 name=sidebar-list bounds=0.00,32.00,299.00,790.00
+[dev] layout-box seq=2 name=sidebar-row-00 bounds=0.00,32.00,299.00,31.00
+[dev] layout-box seq=2 name=sidebar-row-icon-00 bounds=10.00,40.00,14.00,14.00
+[dev] layout-box seq=2 name=sidebar-row-label-00 bounds=31.00,36.00,260.00,23.00
+[dev] layout-box seq=2 name=status-bar bounds=300.00,822.00,1140.00,30.00
+[dev] layout-box seq=2 name=status-cursor bounds=1436.00,826.00,0.00,22.00
+[dev] layout-box seq=2 name=status-icon-diagnostics bounds=369.00,830.00,14.00,14.00
+[dev] layout-box seq=2 name=status-icon-project-panel bounds=308.00,830.00,14.00,14.00
+[dev] layout-box seq=2 name=status-icon-search bounds=339.00,830.00,14.00,14.00
+[dev] layout-box seq=2 name=status-left bounds=304.00,826.00,1098.00,22.00
+[dev] layout-box seq=2 name=status-right bounds=1410.00,826.00,26.00,22.00
+[dev] layout-box seq=2 name=status-right-placeholder bounds=1410.00,826.00,22.00,22.00
+[dev] layout-box seq=2 name=tab bounds=601.00,33.00,839.00,32.00
+[dev] layout-box seq=2 name=tab-bar bounds=540.00,33.00,900.00,32.00
+[dev] layout-box seq=2 name=tab-bar-filler bounds=780.00,33.00,660.00,32.00
+[dev] layout-box seq=2 name=tab-bar-start bounds=540.00,33.00,61.00,32.00
+[dev] layout-box seq=2 name=tab-btn-back bounds=546.00,37.00,22.00,22.00
+[dev] layout-box seq=2 name=tab-btn-forward bounds=572.00,37.00,22.00,22.00
+[dev] layout-box seq=2 name=tab-content bounds=601.00,33.00,179.00,31.00
+[dev] layout-box seq=2 name=tab-icon-back bounds=550.00,41.00,14.00,14.00
+[dev] layout-box seq=2 name=tab-icon-forward bounds=576.00,41.00,14.00,14.00
+[dev] layout-box seq=2 name=tab-label bounds=621.00,37.00,137.00,23.00
+[dev] layout-box seq=2 name=tab-slot-end bounds=762.00,41.00,14.00,14.00
+[dev] layout-box seq=2 name=tab-slot-start bounds=605.00,42.00,12.00,12.00
+[dev] layout-box seq=2 name=title-bar bounds=300.00,0.00,1140.00,32.00
+[dev] layout-box seq=2 name=title-bar-drag bounds=449.00,0.00,857.00,32.00
+[dev] layout-box seq=2 name=title-folder-name bounds=332.00,5.00,117.00,22.00
+[dev] layout-box seq=2 name=title-left bounds=300.00,0.00,149.00,32.00
+[dev] layout-box seq=2 name=tree-content-00 bounds=300.00,33.00,239.00,26.00
+[dev] layout-box seq=2 name=tree-content-01 bounds=300.00,59.00,239.00,26.00
+[dev] layout-box seq=2 name=tree-content-02 bounds=300.00,85.00,239.00,26.00
+[dev] layout-box seq=2 name=tree-guide-01-0 bounds=315.00,63.00,1.00,22.00
+[dev] layout-box seq=2 name=tree-guide-02-0 bounds=315.00,85.00,1.00,22.00
+[dev] layout-box seq=2 name=tree-icon-01 bounds=327.00,64.00,16.00,16.00
+[dev] layout-box seq=2 name=tree-icon-02 bounds=327.00,90.00,16.00,16.00
+[dev] layout-box seq=2 name=tree-label-01 bounds=347.00,60.00,19.00,23.00
+[dev] layout-box seq=2 name=tree-label-02 bounds=347.00,86.00,78.00,23.00
+[dev] layout-box seq=2 name=tree-row-00 bounds=300.00,33.00,239.00,26.00
+[dev] layout-box seq=2 name=tree-row-01 bounds=300.00,59.00,239.00,26.00
+[dev] layout-box seq=2 name=tree-row-02 bounds=300.00,85.00,239.00,26.00
+[dev] layout-box seq=2 name=user-menu bounds=1306.00,5.00,22.00,22.00
+[dev] layout-box seq=2 name=user-menu-gap bounds=1328.00,16.00,4.00,0.00
+[dev] layout-box seq=2 name=window-btn-close bounds=1404.00,0.00,36.00,32.00
+[dev] layout-box seq=2 name=window-btn-max bounds=1368.00,0.00,36.00,32.00
+[dev] layout-box seq=2 name=window-btn-min bounds=1332.00,0.00,36.00,32.00
+[dev] layout-box seq=2 name=window-controls bounds=1332.00,0.00,108.00,32.00
+[dev] layout-box seq=2 name=work-area bounds=300.00,32.00,1140.00,790.00
+[dev] layout-box seq=2 name=workspace bounds=300.00,0.00,1140.00,852.00
+[dev] layout-snapshot-end seq=2
+[dev] focus-state focus=sidebar active=true
+[dev] button-click action=workspace::Open
+[dev] action-handled name=workspace::Open by=workbench focus=sidebar
+[dev] pick-folder method=dev-file
+[dev] pick-folder result=picked path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-core
+[dev] folder-add result=added index=1 path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-core
+[dev] watch-stop folder=c12cd80e-284d-41fe-a30d-df3de55f43cc root=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-tauri via=activate
+[dev] watch-start folder=47da3ed3-85c0-4410-82ff-c02e762e4d88 root=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-core parent_watched=true root_id=02919dc8:00010000000cd1bb via=activate
+[dev] folder-activate index=1 id=47da3ed3-85c0-4410-82ff-c02e762e4d88 workspace=EntityId(18v1) created=true folder_id=47da3ed3-85c0-4410-82ff-c02e762e4d88
+[dev] folders count=2 active=1 cursor=none workspaces=2
+[dev] folder-row index=0 id=c12cd80e-284d-41fe-a30d-df3de55f43cc name=workbench-tauri path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-tauri missing=false active=false
+[dev] folder-row index=1 id=47da3ed3-85c0-4410-82ff-c02e762e4d88 name=workbench-core path=D:\projects\workbench-gpui\target\measure-9034dc55b4454196bceb3c38160b7123\workbench-core missing=false active=true
+[dev] folders-end
+[dev] tree folder=47da3ed3-85c0-4410-82ff-c02e762e4d88 selected=none marked= expanded=. rows=workbench-core|0|open	specs \ v0.5|1|closed
+[dev] tabs folder=47da3ed3-85c0-4410-82ff-c02e762e4d88 active=none count=0 list=
+[dev] title text=workbench-core placeholder=false
+[dev] layout-snapshot seq=3 rem=16 scale=1 viewport=1440x852 maximized=false dock_width=240 dock_stored=default body_width=1140 tree_scroll_y=0.0
+[dev] layout-box seq=3 name=active-item bounds=540.00,65.00,900.00,756.00
+[dev] layout-box seq=3 name=app-menu bounds=308.00,5.00,22.00,22.00
+[dev] layout-box seq=3 name=app-menu-button bounds=308.00,5.00,22.00,22.00
+[dev] layout-box seq=3 name=body bounds=300.00,33.00,1140.00,788.00
+[dev] layout-box seq=3 name=center bounds=540.00,33.00,900.00,788.00
+[dev] layout-box seq=3 name=dock bounds=300.00,33.00,240.00,788.00
+[dev] layout-box seq=3 name=dock-handle bounds=537.00,33.00,6.00,788.00
+[dev] layout-box seq=3 name=folder-row-00 bounds=0.00,32.00,299.00,31.00
+[dev] layout-box seq=3 name=folder-row-01 bounds=0.00,64.00,299.00,31.00
+[dev] layout-box seq=3 name=project-root-icon bounds=307.00,38.00,16.00,16.00
+[dev] layout-box seq=3 name=project-root-label bounds=327.00,34.00,104.00,23.00
+[dev] layout-box seq=3 name=sidebar bounds=0.00,0.00,300.00,852.00
+[dev] layout-box seq=3 name=sidebar-btn-folder-add bounds=273.00,826.00,22.00,22.00
+[dev] layout-box seq=3 name=sidebar-btn-toggle bounds=4.00,826.00,22.00,22.00
+[dev] layout-box seq=3 name=sidebar-footer bounds=0.00,822.00,299.00,30.00
+[dev] layout-box seq=3 name=sidebar-footer-left bounds=4.00,826.00,265.00,22.00
+[dev] layout-box seq=3 name=sidebar-footer-left-placeholder bounds=30.00,826.00,22.00,22.00
+[dev] layout-box seq=3 name=sidebar-footer-right bounds=273.00,826.00,22.00,22.00
+[dev] layout-box seq=3 name=sidebar-header bounds=0.00,0.00,299.00,32.00
+[dev] layout-box seq=3 name=sidebar-icon-folder-add bounds=277.00,830.00,14.00,14.00
+[dev] layout-box seq=3 name=sidebar-icon-toggle bounds=8.00,830.00,14.00,14.00
+[dev] layout-box seq=3 name=sidebar-list bounds=0.00,32.00,299.00,790.00
+[dev] layout-box seq=3 name=sidebar-row-00 bounds=0.00,32.00,299.00,31.00
+[dev] layout-box seq=3 name=sidebar-row-01 bounds=0.00,64.00,299.00,31.00
+[dev] layout-box seq=3 name=sidebar-row-icon-00 bounds=10.00,40.00,14.00,14.00
+[dev] layout-box seq=3 name=sidebar-row-icon-01 bounds=10.00,72.00,14.00,14.00
+[dev] layout-box seq=3 name=sidebar-row-label-00 bounds=31.00,36.00,260.00,23.00
+[dev] layout-box seq=3 name=sidebar-row-label-01 bounds=31.00,68.00,260.00,23.00
+[dev] layout-box seq=3 name=status-bar bounds=300.00,822.00,1140.00,30.00
+[dev] layout-box seq=3 name=status-cursor bounds=1436.00,826.00,0.00,22.00
+[dev] layout-box seq=3 name=status-icon-diagnostics bounds=369.00,830.00,14.00,14.00
+[dev] layout-box seq=3 name=status-icon-project-panel bounds=308.00,830.00,14.00,14.00
+[dev] layout-box seq=3 name=status-icon-search bounds=339.00,830.00,14.00,14.00
+[dev] layout-box seq=3 name=status-left bounds=304.00,826.00,1098.00,22.00
+[dev] layout-box seq=3 name=status-right bounds=1410.00,826.00,26.00,22.00
+[dev] layout-box seq=3 name=status-right-placeholder bounds=1410.00,826.00,22.00,22.00
+[dev] layout-box seq=3 name=tab bounds=601.00,33.00,839.00,32.00
+[dev] layout-box seq=3 name=tab-bar bounds=540.00,33.00,900.00,32.00
+[dev] layout-box seq=3 name=tab-bar-filler bounds=780.00,33.00,660.00,32.00
+[dev] layout-box seq=3 name=tab-bar-start bounds=540.00,33.00,61.00,32.00
+[dev] layout-box seq=3 name=tab-btn-back bounds=546.00,37.00,22.00,22.00
+[dev] layout-box seq=3 name=tab-btn-forward bounds=572.00,37.00,22.00,22.00
+[dev] layout-box seq=3 name=tab-content bounds=601.00,33.00,179.00,31.00
+[dev] layout-box seq=3 name=tab-icon-back bounds=550.00,41.00,14.00,14.00
+[dev] layout-box seq=3 name=tab-icon-forward bounds=576.00,41.00,14.00,14.00
+[dev] layout-box seq=3 name=tab-label bounds=621.00,37.00,137.00,23.00
+[dev] layout-box seq=3 name=tab-slot-end bounds=762.00,41.00,14.00,14.00
+[dev] layout-box seq=3 name=tab-slot-start bounds=605.00,42.00,12.00,12.00
+[dev] layout-box seq=3 name=title-bar bounds=300.00,0.00,1140.00,32.00
+[dev] layout-box seq=3 name=title-bar-drag bounds=448.00,0.00,858.00,32.00
+[dev] layout-box seq=3 name=title-folder-name bounds=332.00,5.00,116.00,22.00
+[dev] layout-box seq=3 name=title-left bounds=300.00,0.00,148.00,32.00
+[dev] layout-box seq=3 name=tree-content-00 bounds=300.00,33.00,239.00,26.00
+[dev] layout-box seq=3 name=tree-content-01 bounds=300.00,59.00,239.00,26.00
+[dev] layout-box seq=3 name=tree-guide-01-0 bounds=315.00,63.00,1.00,18.00
+[dev] layout-box seq=3 name=tree-icon-01 bounds=327.00,64.00,16.00,16.00
+[dev] layout-box seq=3 name=tree-label-01 bounds=347.00,60.00,79.00,23.00
+[dev] layout-box seq=3 name=tree-row-00 bounds=300.00,33.00,239.00,26.00
+[dev] layout-box seq=3 name=tree-row-01 bounds=300.00,59.00,239.00,26.00
+[dev] layout-box seq=3 name=user-menu bounds=1306.00,5.00,22.00,22.00
+[dev] layout-box seq=3 name=user-menu-gap bounds=1328.00,16.00,4.00,0.00
+[dev] layout-box seq=3 name=window-btn-close bounds=1404.00,0.00,36.00,32.00
+[dev] layout-box seq=3 name=window-btn-max bounds=1368.00,0.00,36.00,32.00
+[dev] layout-box seq=3 name=window-btn-min bounds=1332.00,0.00,36.00,32.00
+[dev] layout-box seq=3 name=window-controls bounds=1332.00,0.00,108.00,32.00
+[dev] layout-box seq=3 name=work-area bounds=300.00,32.00,1140.00,790.00
+[dev] layout-box seq=3 name=workspace bounds=300.00,0.00,1140.00,852.00
+[dev] layout-snapshot-end seq=3
+[dev] key keystroke=escape action=none context=Root > Workspace > Sidebar
+[dev] key keystroke=escape action=none context=Root > Workspace > Sidebar
+[dev] tooltip-shown id=sidebar-btn-folder-add t_ms=1794057436672 mouse=284.00,837.00 rows=Add Project|Ctrl-K Ctrl-O
+[dev] state-save result=written
+[dev] key keystroke=escape action=none context=Root > Workspace > Sidebar
+[dev] tooltip-hidden id=sidebar-btn-folder-add t_ms=1794057437352

@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Two folders loaded and sidebar opened",
+    "step2": "PASS - hover bg=#363C46 (exp: #363c46, ghost_element_hover)"
+  }
+}

@@ -1024,7 +1024,7 @@ I-20. 요청 원문 "한글 글꼴 때문에 ₩로 보이는 것을 \로 보이
 
 상태 바 왼쪽 버튼으로 여는 폴더 보기 패널의 폭, 아이콘과 이름 사이 간격, 선택 표시가 Zed 사이드바와 같다.
 
-- 이 레포의 현재 상태: 폭 약 207px, 검색칸이 없고 `projects`가 위에 있으며, 현재 폴더는 옅은 파란 배경이다(`refs/compare/X-folders-gpui.png`). Zed는 폭 약 220px다.
+- 이 레포의 현재 상태: 폭 약 207px, 검색칸이 없고 `projects`가 위에 있으며, 현재 폴더는 옅은 파란 배경이다(`refs/compare/X-folders-gpui.png`). Zed는 폭 약 220px다. 정정: 300(core 2026-11-07, Zed 소스 `threads_sidebar.default_width` 300, tauri 캡처 오른쪽 선 x 299).
 
 **정해진 결과**
 
@@ -1039,6 +1039,51 @@ I-20. 요청 원문 "한글 글꼴 때문에 ₩로 보이는 것을 \로 보이
 **출처**
 
 I-21. 요청 원문 "나머지는 Zed와 동일하게"(사용자 2026-11-06).
+
+**Zed 확인(tauri, 2026-11-07)**
+
+조건: 데스크톱 1920×1080 100%, 클라이언트 1440×852, One Dark, Zed `zed -n` 새 창(폴더 workbench-tauri), Ctrl-Alt-J로 열고 닫음. 캡처 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-10\`(Zed `zed-start.png`·`zed-sb-open.png`·`zed-sb-down.png`·`zed-sb-hover.png`, tauri `tauri-two-idle.png`·`tauri-two-hover.png`·`tauri-two-focused.png`·`tauri-v3-two.json`). tauri SPEC R-21(읽기만)과 tauri `specs/v0.5/reports/ORDER-10.md`에서 옮겼고 마지막 열에 이 레포 `spec/zed-metrics.toml` ID를 붙였다(섹션 없이 적은 `item.*`·`project_header.*`·`footer.*`는 `[sidebar]`). 줄 = Zed 프로젝트 묶음 머리(이 앱의 폴더 줄).
+
+| 항목 | Zed 소스 근거 | Zed 실측 | tauri 실측 | 판정 | 우리 toml ID |
+| --- | --- | --- | --- | --- | --- |
+| 폭 | `default.json` 1195 `threads_sidebar.default_width` 300, 최소 200·최대 800(`agent_settings.rs` 37-38) | 300(오른쪽 선 x 299) | 300(선 x 299) | 같음. core가 앞서 본 약 220은 이번 조건에서 나오지 않음 | `sidebar.default_width` 300 (`min_width` 200·`max_width` 800) |
+| 줄 높이 | `sidebar.rs` 2409 `Tab::content_height` = 32 - 1 | 31(y 33~63) | 31(y 33~63) | 같음 | `sidebar.project_header.height` 31 (`item_row.height` 31) |
+| 안쪽 여백·테두리 | 2412-2416 `pl_2 pr_1p5 border_1 border_r_2` = 왼 8·오른 6, 테두리 1(오른쪽 2), 평소 투명 | 이름 잉크 x 9 | 아이콘 칸 x 9 | 같음 | `project_header.padding_left` 8·`padding_right` 6, `item.focus_border_width` 1·`item.border_right_width` 2 |
+| 아이콘과 이름 | `thread_item.rs` 291·461 아이콘 칸 `size_4` = 16, 아이콘 Small 14, 간격 `gap_1p5` = 6(Zed 사이드바에서 이름 앞에 아이콘이 있는 줄. 묶음 머리 자체에는 앞 아이콘이 없다) | 묶음 머리에 아이콘 없음 | 아이콘 칸 x 9~25, 이름 x 31 | 소스 기준 같음 | `item.icon_slot_size` 16·`item.icon_size` 14·`item.icon_gap` 6 |
+| 현재 폴더 표시 | 2377-2386 현재 묶음은 글자 기본색(text), 나머지 Muted, 배경 없음 | 글자 #dce0e5 계열, 배경 없음 | text rgb(220,224,229)·나머지 text.muted rgb(169,175,188), 배경 없음 | 같음 | 테마 토큰 `text`·`text.muted` |
+| 키보드 선택 | 2246-2247·2417-2421 사이드바 포커스 + 선택 줄만 테두리 `panel_focused_border`. One Dark는 null이라 기본값(`default_colors.rs` 252 dark blue step 8) | #2870bd, 왼 1·오른 2 | #2870bd, 1/2 | 같음 | 토큰 `panel_focused_border` → toml `[theme.fallback]` `panel.focused_border` #2870bd, 폭 `item.focus_border_width` 1·`item.border_right_width` 2 |
+| hover / 누름 | 2425-2426 `ghost_element_hover` / `ghost_element_active` | hover #363c46 | rgb(54,60,70) = #363c46 | 같음(누름은 소스만) | 토큰 `ghost_element_hover`·`ghost_element_active` |
+| 줄 사이 선 | 2297-2299 둘째 묶음부터 위 1px `border` | 묶음 하나라 캡처 없음 | y 64 1px #474b57(border) | 소스 기준 같음 | `item.separator_width` 1, 토큰 `border` |
+| 글자 크기 | Label 기본 크기 | 이름 잉크 폭 120(workbench-tauri) | 119 | 1px 이내 | 없음(Label 기본 크기) |
+| 검색칸 | Zed는 위에 "Search threads…" 검색칸 | 있음 | 없음 | 사용자 결정(2026-11-06)대로 두지 않음 | 없음 |
+| 아래쪽 줄 | 7529-7539 `p_1 gap_1 border_t_1(border)`, 왼쪽 토글, Thread History(시계), 빈칸, 오른쪽 끝 Add Project(`folder_add`) | 위 선 y 821, 토글 잉크 x 9~20, 시계 35~46, Add Project 278~290 | 위 선 y 821, 토글 svg x 8~22, Add Project svg 277~291 | 같음. 시계 버튼은 이 앱에 스레드 기록 기능이 없어 두지 않음(내용 불변 원칙) | `footer.padding` 4·`footer.gap` 4·`footer.border_top` 1(토큰 `border`)·`footer.icon_size` 14·`footer.height` 30 |
+| "No threads yet" 줄 | 스레드 없는 묶음 아래 안내 줄 | 있음 | 없음 | 내용이라 두지 않음(I-21은 모양만) | 없음 |
+
+- tauri `toml에 없는 값` 표의 다섯 값은 W-45에서 이 레포 toml에 올렸다: `sidebar.item.border_right_width` 2, `sidebar.item.separator_width` 1, `sidebar.item.icon_slot_size` 16, `sidebar.item.icon_gap` 6, `theme.fallback.panel.focused_border` #2870bd(옛 값 #62adef는 `spec/ambiguous.md` 3절).
+- **두 갈래 다름, core 확인 필요**: `panel.focused_border` 라이트 기본값. tauri는 정하지 않고 라이트에서 `border.focused`를 쓴다. 이 레포 toml은 Zed 소스 라이트 기본 `#0588f0`(`default_colors.rs` 98행 blue light step 10)을 src에 적었다(W-45, 별도 ID 없음).
+- 남은 차이(tauri 보고): 줄 사이 선은 Zed에서 묶음이 둘 이상일 때만 생겨 캡처로 확인하지 못했다(소스 기준). 누름(`ghost_element_active`) 색은 소스 기준, 실측 안 함.
+
+**toml에 없는 값(gpui 등록 요청)** — 근거는 위 표.
+
+| 임시 ID | 값 | Zed 근거 |
+| --- | --- | --- |
+| `sidebar.item.border_right_width` | 2 | `sidebar.rs` 2415-2416 `border_1` + `border_r_2` |
+| `sidebar.item.separator_width` | 1 | `sidebar.rs` 2297-2299 `border_t_1` |
+| `sidebar.item.icon_slot_size` | 16 | `thread_item.rs` 291 `size_4` |
+| `sidebar.item.icon_gap` | 6 | `thread_item.rs` 461 `gap_1p5` |
+| `panel.focused_border` 다크 기본값(테마에 값이 없을 때) | #2870bd | `default_colors.rs` 252 dark blue step 8, One Dark 실측 |
+
+`panel.focused_border` 기본값(core 결정 2026-11-07, K-46): 테마에 값이 없으면 다크는 Zed `default_colors.rs` 252행 `blue().dark().step_8()` = #2870bd, 라이트는 98행 `blue().light().step_10()` = #0588f0. (앞서 라이트를 정하지 않고 `border.focused`를 쓰던 것을 바꾼다.)
+
+**tauri 구현(tauri K-44, 참고)**
+
+- 파일: `src/app.css`, `src/spec/metrics.ts`, `src/theme/theme.ts`·`apply.ts`·`theme.test.ts`. `src/shell/Sidebar.tsx`의 내용·순서·클릭·키·메뉴·추가·제거와 아래쪽 버튼, 폭 설정은 바꾸지 않았다.
+- 현재 폴더는 `text`, 나머지는 `text.muted`. 현재 줄 선택 배경을 없애고 hover·누름 배경만 둔다. hover 때 다른 폴더 이름을 기본색으로 바꾸던 규칙도 없앴다.
+- 줄 테두리는 왼·위·아래 1, 오른쪽 2이고 평소 투명하다. 사이드바에 포커스가 있고 cursor 줄일 때만 `panel.focused_border` 색이다. 이전 inset box-shadow(1px 윤곽선)는 없앴다.
+- 둘째 줄부터 `border` 색 1px 구분선을 줄 테두리 바깥에 둔다(줄 사이 margin과 pseudo-element). 포커스 테두리와 구분선이 함께 보이고 줄 높이는 31 그대로다.
+- 아이콘 14는 그대로 두고 16×16 칸 가운데에 놓는다. 칸과 이름 사이 6.
+- 테마에 `panel.focused_border` 값이 있으면 그것을 쓴다(`parseColor`·`formatColor`로 검사). 다크에서 null·누락이면 #2870bd, 라이트는 CSS 변수를 내지 않아 `border.focused`가 남는다. 테마를 바꿀 때 sheet를 바꿔 끼워 다크 기본값이 라이트에 남지 않는다. 단위 테스트 1개(명시값 우선, 다크 기본값, 라이트 미설정, 잘못된 색 거부).
+- 위 임시 ID 네 개는 `src/spec/metrics.ts`, 다크 기본값은 `src/theme/theme.ts`에 두고 gpui toml 등록 뒤 바꾼다. 기존 toml 값(줄 높이 31, padding 8/6, 아이콘 14, 테두리 1)은 그대로 쓴다.
 
 ---
 

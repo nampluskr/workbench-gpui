@@ -37,6 +37,8 @@ pub fn sidebar(list: AnyElement, cx: &App) -> impl IntoElement {
                 .flex_shrink_0()
                 .w_full()
                 .h(TITLE_BAR_HEIGHT)
+                // Zed sidebar's server-decorated header has a 1px top margin; its bottom border is inside the height.
+                .mt(BORDER_1PX)
                 .border_b_1()
                 .border_color(theme.border)
                 .window_control_area(WindowControlArea::Drag),

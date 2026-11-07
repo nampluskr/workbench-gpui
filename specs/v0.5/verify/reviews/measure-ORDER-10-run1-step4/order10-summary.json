@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Two folders loaded and sidebar opened",
+    "step4": "PASS - 위 선 y=821 (exp: 821), 토글 x=8..22 (exp: 9~20), Add Project x=277..291 (exp: 278~290)"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Two folders loaded and sidebar opened",
+    "step1": "FAIL - 폭=300 px (exp: 300), 선 x=299 (exp: 299), 줄높이=31 px (exp: 31), 선 y=63 (exp: 64)"
+  }
+}

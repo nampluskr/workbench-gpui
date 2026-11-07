@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Two folders loaded and sidebar opened",
+    "step3": "PASS - focus border=#2870BD (exp: #2870bd), method=focus-guard + Down, y=48"
+  }
+}

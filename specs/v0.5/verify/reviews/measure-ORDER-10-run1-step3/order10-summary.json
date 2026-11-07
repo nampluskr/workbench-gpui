@@ -1,0 +1,11 @@
+{
+  "app": {},
+  "crops": {},
+  "captures": {},
+  "hashes": {},
+  "tauri_refs": {},
+  "results": {
+    "setup": "PASS - Two folders loaded and sidebar opened",
+    "step3": "FAIL - focus border=#2F343E (exp: #2870bd), method=Ctrl-Alt-; + Down"
+  }
+}
