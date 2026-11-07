@@ -12,6 +12,6 @@ resources/zed-languages/
 specs/v0.5/verify/reviews/measure-*-dryrun*/
 specs/v0.5/verify/reviews/**/*-5digit-fixture.md
 specs/v0.5/verify/reviews/measure-ORDER-09-run4/app-step5-nav-step10-mouseback.png
-# ORDER-11 runs 2-3: a foreign overlay window shows in every full capture; keep only the clean breadcrumb crops
-specs/v0.5/verify/reviews/measure-ORDER-11-run[23]-*/*.png
+# ORDER-11 runs 2-4: a foreign overlay window shows in every full capture; keep only the clean breadcrumb crops
+specs/v0.5/verify/reviews/measure-ORDER-11-run[234]-*/*.png
 !specs/v0.5/verify/reviews/measure-ORDER-11-run2-step5/*-toolbar.png

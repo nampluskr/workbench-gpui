@@ -1,0 +1,128 @@
+{
+  "app": {},
+  "crops": {
+    "step3-sh": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-sh-editor.png",
+    "step3-diff": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-diff-editor.png",
+    "step3-go": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-go-editor.png",
+    "step3-gomod": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-gomod-editor.png",
+    "step3-gowork": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-gowork-editor.png",
+    "step3-env": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-env-editor.png",
+    "step3-commit": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-commit-editor.png"
+  },
+  "captures": {
+    "step3-sh": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-sh.png",
+    "step3-diff": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-diff.png",
+    "step3-go": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-go.png",
+    "step3-gomod": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-gomod.png",
+    "step3-gowork": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-gowork.png",
+    "step3-env": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-env.png",
+    "step3-commit": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step3\\app-step3-commit.png"
+  },
+  "hashes": {
+    "step3-sh-cap": "A14C08D2A723282CD4E5DFE43D9F2A5A52D0A56FD44B2D3AAB3BA92E42745649",
+    "step3-sh-crop": "EDD8672F37FFB9AA42F1355185B69C3C76AFD779C4144EB38DEEE95DD747558D",
+    "step3-diff-cap": "D46ACD6C072347CC6F2C890CA4386FF84DE006FED2D199FEE6FD3645E1B405FA",
+    "step3-diff-crop": "3A0AF2F234F3A6618F5AE40331C2526E116937C60A6EB68BF7757AC035054DE5",
+    "step3-go-cap": "CA44AF5652755766261B503DB13C418437353DFD8DE6534BD17FCBDEE8A2F6A1",
+    "step3-go-crop": "FEC623217FC194623491E16EF6A172FFAA97F9427E2D351616CA1C5ABF8B2DF5",
+    "step3-gomod-cap": "D3898750C76DF3459355CBC8846AB86DBDF70589B2FA1EDB792C109AF7546313",
+    "step3-gomod-crop": "67EEB32CE39E9B9ECD89F9E3C882D3F04F207598F63C267951C3DB5170CE7AF2",
+    "step3-gowork-cap": "DB37EE005F4A3387BEB23F04DDBCCE2C5EE8DD5A464F8ED15C169C3B2C90AA4C",
+    "step3-gowork-crop": "314A68D8C1F996804E9C162C94F88BFC721AB2D1A4E074B788415E7048238C70",
+    "step3-env-cap": "0DB6FE41577C0F20560480B7059766DD7909814EC623BEECFBCDB29B764B4BBE",
+    "step3-env-crop": "9D257EC87E26DCC3473B8B45E789F333B58B9F907ED71BB8B18A269692DE33AF",
+    "step3-commit-cap": "F2E07C5C97EEB8FC3DB0760D0FA52BB12EAD881387AAADC89CB37228ED783E8D",
+    "step3-commit-crop": "EAECB5ECEC9BDDBC0971F578737FCB039BDB5BD8E1D98F39850C5C4144A3083D"
+  },
+  "dump": {
+    "step3-sh": {
+      "active_tab": "sample.sh",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step3-diff": {
+      "active_tab": "sample.diff",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step3-go": {
+      "active_tab": "sample.go",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step3-gomod": {
+      "active_tab": "go.mod",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step3-gowork": {
+      "active_tab": "go.work",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step3-env": {
+      "active_tab": ".env",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step3-commit": {
+      "active_tab": "COMMIT_EDITMSG",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    }
+  },
+  "tauri_refs": {
+    "step3-sh": {
+      "ref_file": "zed-sh.png",
+      "exists": true,
+      "hash": "0413F26753D80D6E6077FC7B84B0FD93E29F2BC3011D82CABA5D6507FFAA06DA"
+    },
+    "step3-diff": {
+      "ref_file": "zed-diff.png",
+      "exists": false,
+      "hash": null
+    },
+    "step3-go": {
+      "ref_file": "zed-go.png",
+      "exists": true,
+      "hash": "FA45D83F0C3AF6B484366FFD546824105DFC9E898FAA1802ADF0523EB95E5BC9"
+    },
+    "step3-gomod": {
+      "ref_file": "zed-gomod.png",
+      "exists": false,
+      "hash": null
+    },
+    "step3-gowork": {
+      "ref_file": "zed-gowork.png",
+      "exists": false,
+      "hash": null
+    },
+    "step3-env": {
+      "ref_file": "zed-env.png",
+      "exists": false,
+      "hash": null
+    },
+    "step3-commit": {
+      "ref_file": "zed-commit.png",
+      "exists": false,
+      "hash": null
+    }
+  },
+  "results": {
+    "setup": "PASS - Syntax fixture folder loaded into workspace",
+    "step3-sh": "캡처 OK (탭=sample.sh, 커서=1:1, ref=zed-sh.png, ref존재=True)",
+    "step3-diff": "캡처 OK (탭=sample.diff, 커서=1:1, ref=zed-diff.png, ref존재=False)",
+    "step3-go": "캡처 OK (탭=sample.go, 커서=1:1, ref=zed-go.png, ref존재=True)",
+    "step3-gomod": "캡처 OK (탭=go.mod, 커서=1:1, ref=zed-gomod.png, ref존재=False)",
+    "step3-gowork": "캡처 OK (탭=go.work, 커서=1:1, ref=zed-gowork.png, ref존재=False)",
+    "step3-env": "캡처 OK (탭=.env, 커서=1:1, ref=zed-env.png, ref존재=False)",
+    "step3-commit": "캡처 OK (탭=COMMIT_EDITMSG, 커서=1:1, ref=zed-commit.png, ref존재=False)"
+  }
+}

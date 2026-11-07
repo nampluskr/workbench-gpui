@@ -1,0 +1,96 @@
+{
+  "app": {},
+  "crops": {
+    "step4-py": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-py-editor.png",
+    "step4-js": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-js-editor.png",
+    "step4-ts": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-ts-editor.png",
+    "step4-tsx": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-tsx-editor.png",
+    "step4-yaml": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-yaml-editor.png"
+  },
+  "captures": {
+    "step4-py": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-py.png",
+    "step4-js": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-js.png",
+    "step4-ts": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-ts.png",
+    "step4-tsx": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-tsx.png",
+    "step4-yaml": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run4-step4\\app-step4-yaml.png"
+  },
+  "hashes": {
+    "step4-py-cap": "BAE751D206A12B2F48EAA7F69AF7EE2CEEFAB249FEFFC9A8FBC106C0D3E62DF7",
+    "step4-py-crop": "5ABD228A4871600989D97B5EFF9F88DE24E363AAA46E12D76E620AD9E0301B32",
+    "step4-js-cap": "C47FB92F8ABDA983CFA28BC11FCF0502FE09BDCD56FDF752DECA7012663FE515",
+    "step4-js-crop": "63AB86088ABE40DC084EE2518A7322AA17F31208608A46397B981F914EF03E85",
+    "step4-ts-cap": "5E5147D3B532C04435A588B04F73EFAA9ACFD88DC8D9551935BCFEFAB4DD6D81",
+    "step4-ts-crop": "CE82EECB9C7A1447AB6B985539177A9F9597D3C79B74EA17B097CB5AB8AE44EB",
+    "step4-tsx-cap": "3FEFF7DE6731F057F27094118467CBF55A5D9E9FED7BC0D7B43DC855AED5C326",
+    "step4-tsx-crop": "6741C35DA8632EF7D9D19B9762CE7905A24DA0ECEB6B75C33490562E94DBCCCB",
+    "step4-yaml-cap": "10AAB273A8E5F141788663AB1E74A6B3495699C6BBD7BE5CEDFA87DA6097D29F",
+    "step4-yaml-crop": "19D96B705213759D3B3D99259FD09FC3401E604CC2CB7F1375A2439E12755AE9"
+  },
+  "dump": {
+    "step4-py": {
+      "active_tab": "sample.py",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step4-js": {
+      "active_tab": "sample.js",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step4-ts": {
+      "active_tab": "sample.ts",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step4-tsx": {
+      "active_tab": "sample.tsx",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step4-yaml": {
+      "active_tab": "sample.yaml",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    }
+  },
+  "tauri_refs": {
+    "step4-py": {
+      "ref_file": "zed-py.png",
+      "exists": true,
+      "hash": "64921B2B1A2C5D95C6DC51AB5226725BBDEC9CDAE90FA3FC59A3876D104AC7D1"
+    },
+    "step4-js": {
+      "ref_file": "zed-js.png",
+      "exists": true,
+      "hash": "45A7908692825FC65A330274DFE43803DDB0AF6926A89C092C1A2C764060970E"
+    },
+    "step4-ts": {
+      "ref_file": "zed-ts.png",
+      "exists": true,
+      "hash": "53C6BD478E8314DE9E889EAB9753B476823B2CD3B3D9D44E3B2D8D1C0710FD69"
+    },
+    "step4-tsx": {
+      "ref_file": "zed-tsx.png",
+      "exists": true,
+      "hash": "60513CCF038DA5A0CC882BB25E505669488BAAB9D4AC1C73C1CDFA93AFBB62F7"
+    },
+    "step4-yaml": {
+      "ref_file": "zed-yaml.png",
+      "exists": true,
+      "hash": "B7EED79E6F7D61064C2C4EDE0098563B76B891C243E59542B34FCCFCC7115A89"
+    }
+  },
+  "results": {
+    "setup": "PASS - Syntax fixture folder loaded into workspace",
+    "step4-py": "캡처 OK (탭=sample.py, 커서=1:1, ref=zed-py.png, ref존재=True)",
+    "step4-js": "캡처 OK (탭=sample.js, 커서=1:1, ref=zed-js.png, ref존재=True)",
+    "step4-ts": "캡처 OK (탭=sample.ts, 커서=1:1, ref=zed-ts.png, ref존재=True)",
+    "step4-tsx": "캡처 OK (탭=sample.tsx, 커서=1:1, ref=zed-tsx.png, ref존재=True)",
+    "step4-yaml": "캡처 OK (탭=sample.yaml, 커서=1:1, ref=zed-yaml.png, ref존재=True)"
+  }
+}
