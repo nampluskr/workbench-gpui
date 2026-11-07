@@ -383,7 +383,7 @@ impl<E> PaneGroup<E> {
             p.active = Some(i);
             return Some(Opened { ix: i, created: false, read: None });
         }
-        let (ix, replaced) = p.place(Tab { path: path.to_path_buf(), preview, markdown: false, editor: make() }, keep);
+        let (ix, replaced) = p.place(Tab { path: path.to_path_buf(), preview, markdown: false, editor: make(), tool: None }, keep);
         if let Some(old) = replaced {
             self.forget_if_unseen(&old.path);
         }
@@ -401,7 +401,7 @@ impl<E> PaneGroup<E> {
             p.active = Some(i);
             return Some((i, false));
         }
-        let (ix, _) = p.place(Tab { path: path.to_path_buf(), preview: false, markdown: true, editor: make() }, false);
+        let (ix, _) = p.place(Tab { path: path.to_path_buf(), preview: false, markdown: true, editor: make(), tool: None }, false);
         Some((ix, true))
     }
 
@@ -431,6 +431,7 @@ impl<E> PaneGroup<E> {
     /// What closing one view of `path` must do (P3-3 flow): another view keeps the file, so nothing to ask; the last
     /// view is judged by the file (`Docs::close_state`).
     pub fn close_state(&self, path: &Path) -> CloseState {
+        if self.panes.values().flat_map(|p| &p.tabs).any(|t| t.path == path && t.tool.is_some()) { return CloseState::Clean; }
         if self.views(path).nth(1).is_some() { CloseState::Clean } else { self.docs.close_state(path) }
     }
 
@@ -480,7 +481,7 @@ impl<E> PaneGroup<E> {
         match mode {
             SplitMode::Clone => {
                 let tab = self.active_pane().active_tab()?;
-                let view = Tab { path: tab.path.clone(), preview: false, markdown: tab.markdown, editor: clone(tab) };
+                let view = Tab { path: tab.path.clone(), preview: false, markdown: tab.markdown, editor: clone(tab), tool: tab.tool.clone() };
                 let id = self.add_pane(src, dir);
                 self.panes.get_mut(&id)?.insert_at(view, 0, false);
                 self.active = id;
@@ -592,12 +593,12 @@ impl<E> PaneGroup<E> {
     /// the tab. `copy` (Ctrl held, an editor that can clone) puts a new view there instead and leaves the source.
     pub fn drop_split(&mut self, from: PaneId, ix: usize, target: PaneId, dir: SplitDirection, copy: Option<E>) -> Option<PaneId> {
         let tab = self.panes.get(&from)?.tabs.get(ix)?;
-        let (path, markdown) = (tab.path.clone(), tab.markdown);
+        let (path, markdown, tool) = (tab.path.clone(), tab.markdown, tab.tool.clone());
         let pinned = self.panes[&from].is_pinned(ix);
         let id = self.add_pane(target, dir);
         match copy {
             Some(editor) => {
-                self.panes.get_mut(&id)?.insert_at(Tab { path, preview: false, markdown, editor }, 0, false);
+                self.panes.get_mut(&id)?.insert_at(Tab { path, preview: false, markdown, editor, tool }, 0, false);
             }
             None => {
                 let tab = self.panes.get_mut(&from)?.close_tab(ix)?;
@@ -614,12 +615,12 @@ impl<E> PaneGroup<E> {
     /// (after the active tab, outside the pinned run; `Pane::place`), not at the drop place a move uses. A pane that
     /// already shows the file only activates that tab. Nothing happens within one pane.
     pub fn copy_tab_view(&mut self, from: PaneId, ix: usize, to: PaneId, editor: E) {
-        let Some((path, markdown)) = self.panes.get(&from).and_then(|p| p.tabs.get(ix)).map(|t| (t.path.clone(), t.markdown)) else { return };
+        let Some((path, markdown, tool)) = self.panes.get(&from).and_then(|p| p.tabs.get(ix)).map(|t| (t.path.clone(), t.markdown, t.tool.clone())) else { return };
         let Some(dst) = self.panes.get_mut(&to).filter(|_| from != to) else { return };
         match if markdown { dst.find_preview(&path) } else { dst.find(&path) } {
             Some(i) => dst.active = Some(i),
             None => {
-                dst.place(Tab { path, preview: false, markdown, editor }, false);
+                dst.place(Tab { path, preview: false, markdown, editor, tool }, false);
             }
         }
         self.active = to;
@@ -1127,9 +1128,9 @@ mod tests {
     #[test]
     fn i722_dropped_tab_is_normal_and_pins_in_run() {
         let mut p = super::Pane::<u32>::default();
-        p.insert_at(super::Tab { path: "a".into(), preview: true, markdown: false, editor: 1 }, 0, false);
+        p.insert_at(super::Tab { path: "a".into(), preview: true, markdown: false, editor: 1, tool: None }, 0, false);
         p.toggle_pin(0);
-        p.insert_at(super::Tab { path: "b".into(), preview: true, markdown: false, editor: 2 }, 0, false);
+        p.insert_at(super::Tab { path: "b".into(), preview: true, markdown: false, editor: 2, tool: None }, 0, false);
         assert_eq!((p.pinned_count, p.tabs[0].preview), (2, false));
     }
 

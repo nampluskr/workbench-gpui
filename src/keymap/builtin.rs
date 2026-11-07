@@ -70,6 +70,10 @@ pub const BUILTIN: &[Builtin] = &[
     // 전역(컨텍스트 없음, 빈 문자열). 02 9.2절 키 열(A-18.11)의 ☰ 메뉴 항목 키 (D-2 이후 변경, D-031 ③).
     b("ctrl-q", "", "zed::Quit", "I-341"),
     b("ctrl-,", "", "zed::OpenSettings", "K-11, core ORDER-06-R1"),
+    b("ctrl-k ctrl-s", "Workspace", "zed::OpenKeymap", "K-14, core ORDER-06-R1"),
+    b("ctrl-shift-x", "Workspace", "zed::Extensions", "K-15, core ORDER-06-R1"),
+    b("ctrl-e", "KeymapEditor", "keymap_editor::EditJson", "K-14, K-010"),
+    b("ctrl-k", "KeymapEditor", "keymap_editor::Create", "K-14, K-010"),
     b("ctrl-shift-w", "", "workspace::CloseWindow", "I-358"),
     // 창·작업 영역 (I-022~I-024, I-310, A-13.1, A-17.1·A-17.2·A-17.6~A-17.8).
     b("ctrl-b", "Workspace", "workspace::ToggleLeftDock", "I-022, A-17.7"),
@@ -78,8 +82,8 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-alt-;", "Workspace", "multi_workspace::FocusWorkspaceSidebar", "I-024, A-17.2"),
     b("ctrl-k ctrl-o", "Workspace", "workspace::Open", "A-13.1, A-17.6"),
     b("ctrl-s", "Workspace", "workspace::Save", "E-088"),
-    b("ctrl-w", "Workspace", "pane::CloseActiveItem", "I-356, I-570, L-240"),
     b("ctrl-f4", "Workspace", "pane::CloseActiveItem", "I-356, I-570"),
+    b("ctrl-w", "Workspace", "pane::CloseActiveItem", "K-12, I-356, I-570, L-240"),
     b("f10", "Workspace", "app_menu::Toggle", "I-310"),
     // Pin and split (P4-2, P4-3b). Zed binds them in the Pane / Editor contexts; the editor and the tab bar sit inside Workspace here.
     // Pane context only: the sidebar, the project panel and its name input are outside it (P4-23b-R1).
@@ -89,11 +93,16 @@ pub const BUILTIN: &[Builtin] = &[
     // Zed binds these in Editor / MarkdownPreview with a `.md` condition; the handler does nothing for other files.
     b("ctrl-shift-v", "Pane", "markdown::OpenPreview", "I-044, I-045"),
     b("ctrl-k v", "Pane", "markdown::OpenPreviewToTheSide", "I-044"),
-    b("ctrl-\\", "Pane", "pane::SplitRight", "I-731"),
     b("ctrl-k up", "Pane", "pane::SplitUp", "I-731"),
     b("ctrl-k down", "Pane", "pane::SplitDown", "I-731"),
     b("ctrl-k left", "Pane", "pane::SplitLeft", "I-731"),
     b("ctrl-k right", "Pane", "pane::SplitRight", "I-731"),
+    b("ctrl-\\", "Pane", "pane::SplitRight", "K-12, I-731"),
+    // Register the first Zed Windows key last so the existing shortcut resolver displays it.
+    // Input is gpui-kit's editor context; keep undo/redo out of tab and preview focus.
+    b("ctrl-z", "Input", "input::Undo", "K-12, Zed default-windows editor::Undo"),
+    b("ctrl-shift-z", "Input", "input::Redo", "K-12, Zed default-windows editor::Redo"),
+    b("ctrl-y", "Input", "input::Redo", "K-12, Zed default-windows editor::Redo"),
     b("ctrl-k ctrl-up", "Workspace", "workspace::ActivatePaneUp", "I-732"),
     b("ctrl-k ctrl-down", "Workspace", "workspace::ActivatePaneDown", "I-732"),
     b("ctrl-k ctrl-left", "Workspace", "workspace::ActivatePaneLeft", "I-732"),

@@ -1,0 +1,203 @@
+2026-11-07 10:58:09.687 === ORDER-06-R1 V3 Capture Script Started (Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1) ===
+2026-11-07 10:58:10.015 --- Starting workbench-gpui measurements (ORDER-06-R1) ---
+2026-11-07 10:58:10.030 Dedicated backup: No previous settings.json found.
+2026-11-07 10:58:10.032 Dedicated backup: No previous keymap.json found.
+2026-11-07 10:58:10.039 Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07 10:58:11.641 App launched via session.ps1: PID=27672, fixtureDir='D:\projects\workbench-gpui\target\measure-05a59d75eccc41bcaab47b847e6589de'
+2026-11-07 10:58:13.221 Main window handle HWND=0x23305EE
+2026-11-07 10:58:15.271 Resize: {
+2026-11-07 10:58:15.273 Resize:   "hwnd": "0x23305EE",
+2026-11-07 10:58:15.275 Resize:   "desktop": "Default",
+2026-11-07 10:58:15.276 Resize:   "title": "",
+2026-11-07 10:58:15.277 Resize:   "className": "workbench-gpui",
+2026-11-07 10:58:15.279 Resize:   "workArea_SPI": {
+2026-11-07 10:58:15.281 Resize:     "left": 0,
+2026-11-07 10:58:15.282 Resize:     "top": 0,
+2026-11-07 10:58:15.284 Resize:     "right": 1920,
+2026-11-07 10:58:15.285 Resize:     "bottom": 1032,
+2026-11-07 10:58:15.286 Resize:     "width": 1920,
+2026-11-07 10:58:15.287 Resize:     "height": 1032
+2026-11-07 10:58:15.288 Resize:   },
+2026-11-07 10:58:15.290 Resize:   "workArea_Monitor": {
+2026-11-07 10:58:15.291 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 10:58:15.292 Resize:     "left": 0,
+2026-11-07 10:58:15.294 Resize:     "top": 0,
+2026-11-07 10:58:15.296 Resize:     "right": 1920,
+2026-11-07 10:58:15.298 Resize:     "bottom": 1032,
+2026-11-07 10:58:15.300 Resize:     "width": 1920,
+2026-11-07 10:58:15.301 Resize:     "height": 1032
+2026-11-07 10:58:15.302 Resize:   },
+2026-11-07 10:58:15.303 Resize:   "workAreaCenter": {
+2026-11-07 10:58:15.314 Resize:     "x": 960.0,
+2026-11-07 10:58:15.316 Resize:     "y": 516.0
+2026-11-07 10:58:15.318 Resize:   },
+2026-11-07 10:58:15.320 Resize:   "windowRect": {
+2026-11-07 10:58:15.321 Resize:     "left": 232,
+2026-11-07 10:58:15.323 Resize:     "top": 90,
+2026-11-07 10:58:15.324 Resize:     "right": 1688,
+2026-11-07 10:58:15.326 Resize:     "bottom": 950,
+2026-11-07 10:58:15.328 Resize:     "width": 1456,
+2026-11-07 10:58:15.330 Resize:     "height": 860
+2026-11-07 10:58:15.331 Resize:   },
+2026-11-07 10:58:15.333 Resize:   "windowCenter": {
+2026-11-07 10:58:15.334 Resize:     "x": 960.0,
+2026-11-07 10:58:15.336 Resize:     "y": 520.0
+2026-11-07 10:58:15.337 Resize:   },
+2026-11-07 10:58:15.338 Resize:   "windowCenterDiff": {
+2026-11-07 10:58:15.340 Resize:     "dx": 0.0,
+2026-11-07 10:58:15.341 Resize:     "dy": 4.0
+2026-11-07 10:58:15.342 Resize:   },
+2026-11-07 10:58:15.343 Resize:   "clientRect": {
+2026-11-07 10:58:15.344 Resize:     "width": 1440,
+2026-11-07 10:58:15.346 Resize:     "height": 852
+2026-11-07 10:58:15.348 Resize:   },
+2026-11-07 10:58:15.349 Resize:   "clientToScreen": {
+2026-11-07 10:58:15.351 Resize:     "x": 240,
+2026-11-07 10:58:15.353 Resize:     "y": 90
+2026-11-07 10:58:15.354 Resize:   },
+2026-11-07 10:58:15.356 Resize:   "clientScreenRect": {
+2026-11-07 10:58:15.357 Resize:     "left": 240,
+2026-11-07 10:58:15.358 Resize:     "top": 90,
+2026-11-07 10:58:15.360 Resize:     "right": 1680,
+2026-11-07 10:58:15.361 Resize:     "bottom": 942,
+2026-11-07 10:58:15.362 Resize:     "width": 1440,
+2026-11-07 10:58:15.363 Resize:     "height": 852
+2026-11-07 10:58:15.365 Resize:   },
+2026-11-07 10:58:15.366 Resize:   "clientCenter": {
+2026-11-07 10:58:15.368 Resize:     "x": 960.0,
+2026-11-07 10:58:15.369 Resize:     "y": 516.0
+2026-11-07 10:58:15.370 Resize:   },
+2026-11-07 10:58:15.371 Resize:   "clientCenterDiff": {
+2026-11-07 10:58:15.372 Resize:     "dx": 0.0,
+2026-11-07 10:58:15.373 Resize:     "dy": 0.0
+2026-11-07 10:58:15.374 Resize:   },
+2026-11-07 10:58:15.376 Resize:   "capture": {
+2026-11-07 10:58:15.377 Resize:     "ok": false,
+2026-11-07 10:58:15.378 Resize:     "path": ""
+2026-11-07 10:58:15.380 Resize:   }
+2026-11-07 10:58:15.383 Resize: }
+2026-11-07 10:58:16.013 Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07 10:58:16.233 Foreground check for 'App started': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:16.283 Project tree not visible. Ensuring left dock is open and project folder active...
+2026-11-07 10:58:16.342 Clicking 'project-empty-open'...
+2026-11-07 10:58:17.391 Step 'project-tree-open' confirmed in layout snapshot (seq=2)
+2026-11-07 10:58:17.399 [app] Step 'app-menu-names-gap' (Menu bar names ink gap measurement and crop (target: 13~14px ±1)) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 10:58:17.401 ==========================================================================
+2026-11-07 10:58:17.402 [app] Running step 'app-v-button-crop': v user-menu button measurement and 4x enlarged crop
+2026-11-07 10:58:17.404 ==========================================================================
+2026-11-07 10:58:17.620 Foreground check for 'app-v-button-crop': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:17.835 Foreground check for 'Capture app-main-window': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:19.727 Capture 'app-main-window' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-main-window.png (exit=0)
+2026-11-07 10:58:19.830 Cropped image saved: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-v-button-normal.png (30x30, scale=1x)
+2026-11-07 10:58:19.867 Cropped image saved: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-v-button-crop-4x.png (104x104, scale=4x)
+2026-11-07 10:58:19.870 v button measurements logged: size=22x22, target 22x22, ink 8px, margin 4px
+2026-11-07 10:58:19.871 [app] Step 'app-v-button-crop' finished successfully.
+2026-11-07 10:58:19.873 ==========================================================================
+2026-11-07 10:58:19.874 [app] Running step 'app-settings-window': Settings window open (Ctrl-,), SPEC R-2 size check, search "font", buffer font size change
+2026-11-07 10:58:19.875 ==========================================================================
+2026-11-07 10:58:20.098 Foreground check for 'app-settings-window-open': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:20.106 Sending Ctrl-, (VK_CONTROL=0x11, VK_OEM_COMMA=0xBC) to open Settings window...
+2026-11-07 10:58:21.457 Settings window opened: HWND=0x700A76, Title='Settings'
+2026-11-07 10:58:21.661 Foreground check for 'Capture app-settings-window': target=0x700A76, foreground=0x700A76
+2026-11-07 10:58:23.441 Capture 'app-settings-window' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-settings-window.png (exit=0)
+2026-11-07 10:58:23.445 Settings client size: 900x750 (SPEC R-2 Zed measurement target: 900x750)
+2026-11-07 10:58:23.449 Sending Ctrl-, again to verify deduplication (no duplicate window, brings existing to front)...
+2026-11-07 10:58:23.663 Foreground check for 'Main window before second Ctrl-,': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:24.595 Settings window count after second Ctrl-,: 1 (expected: 1)
+2026-11-07 10:58:24.597 Foreground window: 0x700A76 (Settings HWND=0x700A76)
+2026-11-07 10:58:24.619 Settings layout orientation: isCentered=False
+2026-11-07 10:58:24.827 Foreground check for 'Settings search font': target=0x700A76, foreground=0x700A76
+2026-11-07 10:58:24.831 Clicking search input in Settings at (622,209)...
+2026-11-07 10:58:25.305 Selecting all (Ctrl-A) and typing 'font' into search input...
+2026-11-07 10:58:26.668 Foreground check for 'Capture app-settings-search-font': target=0x700A76, foreground=0x700A76
+2026-11-07 10:58:28.334 Capture 'app-settings-search-font' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-settings-search-font.png (exit=0)
+2026-11-07 10:58:28.350 Hash check for 'Settings search font': prev=22BB7DB970F4408FEA1A26C9FD94C1A08ED03BFCDF2D40CF9712FAD24F446E64, curr=22BB7DB970F4408FEA1A26C9FD94C1A08ED03BFCDF2D40CF9712FAD24F446E64 (Changed=False)
+2026-11-07 10:58:28.361 ERROR in [app] step 'app-settings-window': Assertion failed: Settings search font capture hash unchanged (22BB7DB970F4408FEA1A26C9FD94C1A08ED03BFCDF2D40CF9712FAD24F446E64) - 입력 미전달!
+2026-11-07 10:58:28.363 ==========================================================================
+2026-11-07 10:58:28.365 [app] Running step 'app-settings-comments': Verify JSONC comment and unknown keys preservation in settings.json
+2026-11-07 10:58:28.366 ==========================================================================
+2026-11-07 10:58:28.588 Foreground check for 'Reopen Settings for comments test': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:29.721 Written JSONC fixture with comments to C:\Users\nampl\AppData\Roaming\workbench-gpui\settings.json.
+2026-11-07 10:58:30.880 Capture 'app-settings-before-comments-edit' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-settings-before-comments-edit.png (exit=1)
+2026-11-07 10:58:32.132 Clicking Buffer Font Size input field at (815,165) to edit to 20...
+2026-11-07 10:58:35.175 Capture 'app-settings-comments-edited' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-settings-comments-edited.png (exit=1)
+2026-11-07 10:58:35.177 Logged settings.json after update:
+// Header comment: Settings test fixture for workbench-gpui
+{
+  /* Inline comment: Application theme */
+  "theme": "Default Light",
+  // Section comment: Buffer font size setting
+  "buffer_font_size": 18,
+  "unknown_custom_field": "preserved" // Trailing inline comment
+}
+
+2026-11-07 10:58:35.180 Comment preservation checks: header=True, inline=True, section=True, unknown=True, value20=False
+2026-11-07 10:58:35.183 ERROR in [app] step 'app-settings-comments': Assertion failed: JSONC comments or custom fields were modified or discarded during settings save!
+2026-11-07 10:58:35.184 ==========================================================================
+2026-11-07 10:58:35.185 [app] Running step 'app-settings-edit-json': 'Edit in settings.json' button opens tab in main editor
+2026-11-07 10:58:35.186 ==========================================================================
+2026-11-07 10:58:35.394 Foreground check for 'Reopen Settings': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:37.664 Capture 'app-settings-before-edit-btn' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-settings-before-edit-btn.png (exit=1)
+2026-11-07 10:58:37.665 Clicking 'Edit in settings.json' button at (800,67) (isCentered=False)...
+2026-11-07 10:58:37.871 Foreground check for 'Capture app-main-before-edit-json': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:39.533 Capture 'app-main-before-edit-json' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-main-before-edit-json.png (exit=0)
+2026-11-07 10:58:41.172 Foreground check for 'Main window with settings.json tab': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:41.388 Foreground check for 'Capture app-settings-edit-json': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:43.054 Capture 'app-settings-edit-json' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-settings-edit-json.png (exit=0)
+2026-11-07 10:58:43.057 Hash check for 'Edit in settings.json tab open': prev=793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2, curr=793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2 (Changed=False)
+2026-11-07 10:58:43.059 ERROR in [app] step 'app-settings-edit-json': Assertion failed: Edit in settings.json tab open capture hash unchanged (793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2) - 입력 미전달!
+2026-11-07 10:58:43.060 [app] Step 'app-keymap-editor' (Keymap Editor tab (Ctrl-K Ctrl-S), filter, binding change save, keymap.json logged) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 10:58:43.062 ==========================================================================
+2026-11-07 10:58:43.064 [app] Running step 'app-extensions': Extensions tab (Ctrl-Shift-X), category chips, and search
+2026-11-07 10:58:43.065 ==========================================================================
+2026-11-07 10:58:43.278 Foreground check for 'Open Extensions tab via Ctrl-Shift-X': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:43.279 Sending Ctrl-Shift-X to open Extensions tab...
+2026-11-07 10:58:44.809 Foreground check for 'Capture app-extensions-tab': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:46.448 Capture 'app-extensions-tab' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-extensions-tab.png (exit=0)
+2026-11-07 10:58:46.465 Extensions tab probe: editorLeft=540, editorTop=65
+2026-11-07 10:58:46.466 Clicking 'Themes' category chip at (876,270)...
+2026-11-07 10:58:47.597 Foreground check for 'Capture app-extensions-category-themes': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:49.284 Capture 'app-extensions-category-themes' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-extensions-category-themes.png (exit=0)
+2026-11-07 10:58:49.287 Hash check for 'Extensions chip Themes': prev=CC59232091E5910DB22B104EDAC0B701E02C7FD36E62B616DC186B29CBFF62FE, curr=390AC0DD9781E6DC2CC183F79617293267ED3B1F39B4653F96D9EE090FD5397C (Changed=True)
+2026-11-07 10:58:49.288 Clicking 'Icon Themes' category chip at (971,270)...
+2026-11-07 10:58:50.421 Foreground check for 'Capture app-extensions-category-icons': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:52.083 Capture 'app-extensions-category-icons' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-extensions-category-icons.png (exit=0)
+2026-11-07 10:58:52.093 Hash check for 'Extensions chip Icons': prev=390AC0DD9781E6DC2CC183F79617293267ED3B1F39B4653F96D9EE090FD5397C, curr=A3AC7D53FEDEE4358D4A61CA6C4399DBDCCC5718062FBF8035A035F62DB5700A (Changed=True)
+2026-11-07 10:58:52.095 Clicking 'All' category chip at (815,270)...
+2026-11-07 10:58:52.840 Clicking Extensions search input at (880,220)...
+2026-11-07 10:58:54.335 Foreground check for 'Capture app-extensions-search-zed': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:55.995 Capture 'app-extensions-search-zed' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-extensions-search-zed.png (exit=0)
+2026-11-07 10:58:55.999 Hash check for 'Extensions search Zed': prev=A3AC7D53FEDEE4358D4A61CA6C4399DBDCCC5718062FBF8035A035F62DB5700A, curr=BAB4FB6A95B207D950AB49DADE27DEA8EDE22B09CB9023705A01A088C384BA6B (Changed=True)
+2026-11-07 10:58:56.528 Closing Extensions tab via Ctrl-W...
+2026-11-07 10:58:57.056 Closing Keymap Editor tab via Ctrl-W...
+2026-11-07 10:58:57.591 [app] Step 'app-extensions' finished successfully.
+2026-11-07 10:58:57.593 [app] Step 'app-panel-layout' (Panel Layout: dock close -> Custom checked -> Classic -> dock restored) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 10:58:57.594 ==========================================================================
+2026-11-07 10:58:57.595 [app] Running step 'app-editor-layout': View -> Editor Layout submenu with Split Up/Down/Left/Right and shortcuts
+2026-11-07 10:58:57.597 ==========================================================================
+2026-11-07 10:58:57.805 Foreground check for 'app-editor-layout': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:58.008 Foreground check for 'Capture app-main-before-editor-layout': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:58:59.983 Capture 'app-main-before-editor-layout' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-main-before-editor-layout.png (exit=0)
+2026-11-07 10:58:59.998 Clicking app-menu-button at (559,106)...
+2026-11-07 10:59:00.756 Clicking View menu at (732,106)...
+2026-11-07 10:59:01.502 Hovering over 'Editor Layout' row at (772,261) to open submenu...
+2026-11-07 10:59:03.022 Foreground check for 'Capture app-menu-view-editor-layout': target=0x23305EE, foreground=0x23305EE
+2026-11-07 10:59:04.774 Capture 'app-menu-view-editor-layout' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\app-menu-view-editor-layout.png (exit=0)
+2026-11-07 10:59:04.776 Hash check for 'View Editor Layout submenu open': prev=793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2, curr=793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2 (Changed=False)
+2026-11-07 10:59:04.778 ERROR in [app] step 'app-editor-layout': Assertion failed: View Editor Layout submenu open capture hash unchanged (793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2) - 입력 미전달!
+2026-11-07 10:59:04.779 [app] Step 'app-tab-cycle' (Tab cycling via Ctrl-PageDown and Ctrl-PageUp with 2 pinned tabs (double-clicked)) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 10:59:04.780 [app] Step 'app-relaunch-persistence' (Verify settings and keymap persistence across app relaunch and revert) -> SKIPPED (not in -Steps or marked in -Skip)
+2026-11-07 10:59:04.782 Closing auxiliary window HWND=0x700A76 via WM_CLOSE...
+2026-11-07 10:59:04.786 Cleaning up workbench-gpui process (PID=27672)...
+2026-11-07 10:59:04.982 Dedicated restore: settings.json created during test was safely removed.
+2026-11-07 10:59:04.985 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 10:59:06.276 Session Stop: {
+2026-11-07 10:59:06.277 Session Stop:   "exeUnchanged": true,
+2026-11-07 10:59:06.278 Session Stop:   "files": {
+2026-11-07 10:59:06.279 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 10:59:06.280 Session Stop:   },
+2026-11-07 10:59:06.281 Session Stop:   "restored": true,
+2026-11-07 10:59:06.282 Session Stop:   "fixtureRemoved": true
+2026-11-07 10:59:06.283 Session Stop: }
+2026-11-07 10:59:06.284 === ORDER-06-R1 V3 Capture Script Finished ===
+2026-11-07 10:59:06.295 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R1\summary.json ===

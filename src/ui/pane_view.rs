@@ -286,6 +286,7 @@ impl Workbench {
             .map_or_else(DividerSides::default, |(_, r)| divider_sides(r));
         let item: AnyElement = match (focused.then_some(&self.editor_poc).and_then(Option::as_ref), pane.active_tab()) {
             (Some(poc), _) => div().size_full().child(poc.clone()).into_any_element(),
+            (None, Some(t)) if t.tool.is_some() => div().size_full().child(t.tool.as_ref().unwrap().0.clone()).into_any_element(),
             (None, Some(t)) if t.markdown => markdown_preview::body(id, t.editor.read(cx).value(), cx).into_any_element(),
             (None, Some(t)) => {
                 let readonly = !group.docs.get(&t.path).is_some_and(|d| d.loaded);

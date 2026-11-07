@@ -11,17 +11,51 @@ use gpui_kit::{Pixels, Rems, Size, px};
 use super::rem::rems_from_px;
 
 pub mod settings_window {
-    use gpui_kit::{Length, Pixels, WindowBounds, px};
-    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
-    pub const WINDOW_BOUNDS: Option<WindowBounds> = None;
-    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
-    pub const SIDEBAR_WIDTH: Length = Length::Auto;
-    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
-    pub const CONTROL_WIDTH: Length = Length::Auto;
-    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
-    pub const PADDING: Pixels = px(0.);
-    // pending: tauri Zed Settings measurement (core-leader DECISION 2026-11-07)
-    pub const GAP: Pixels = px(0.);
+    use gpui_kit::{Pixels, Size, px};
+    // SPEC R-2, tauri Zed Settings measurement (2026-11-07), logical pixels.
+    pub const WINDOW_SIZE: Size<Pixels> = Size { width: px(900.), height: px(750.) };
+    pub const SIDEBAR_WIDTH: Pixels = px(226.);
+    pub const SIDEBAR_PADDING: Pixels = px(10.);
+    pub const CONTROL_HEIGHT: Pixels = px(28.);
+    pub const PADDING: Pixels = px(32.);
+    pub const GAP: Pixels = px(24.);
+    pub const CATEGORY_GAP: Pixels = px(12.);
+    pub const EDIT_BUTTON_HEIGHT: Pixels = px(22.);
+}
+
+// SPEC R-2, Zed v-button measurement (2026-11-07).
+pub const USER_BUTTON_SIZE: Pixels = px(22.);
+// SVG viewBox 16; path x=4.15186..11.8483 plus 1.2 round stroke. Target ink, not viewport.
+pub const USER_CHEVRON_SIZE: Pixels = px(8. * 16. / (11.8483 - 4.15186 + 1.2));
+pub const USER_BUTTON_MARGIN: Pixels = px(4.);
+
+pub mod keymap_editor {
+    use gpui_kit::{Pixels, px};
+    // keymap_editor padding/gap_vertical/top_row.gap/search_input.height (K-010..K-012).
+    pub const PADDING: Pixels = px(8.);
+    pub const GAP: Pixels = px(4.);
+    pub const TOP_GAP: Pixels = px(8.);
+    pub const SEARCH_HEIGHT: Pixels = px(32.);
+    // keymap_editor table.ratio_* (K-022).
+    pub const COLUMN_RATIOS: [f32; 5] = [0.25, 0.20, 0.14, 0.45, 0.08];
+}
+
+pub mod extensions {
+    use gpui_kit::{Pixels, px};
+    // extensions header.padding_*/row_gap (X-45), search_input.height (X-46).
+    pub const HEADER_PADDING: Pixels = px(16.);
+    pub const HEADER_GAP: Pixels = px(16.);
+    pub const SEARCH_HEIGHT: Pixels = px(32.);
+    // extensions category_bar.gap/padding_y/padding_x (X-48).
+    pub const CATEGORY_GAP: Pixels = px(8.);
+    pub const CATEGORY_PADDING_Y: Pixels = px(10.);
+    // extensions list.padding_x/padding_bottom, card.* (X-49).
+    pub const LIST_PADDING: Pixels = px(16.);
+    pub const CARD_MARGIN: Pixels = px(16.);
+    pub const CARD_HEIGHT: Pixels = px(110.);
+    pub const CARD_PADDING: Pixels = px(12.);
+    pub const CARD_GAP: Pixels = px(8.);
+    pub const CARD_RADIUS: Pixels = px(6.);
 }
 
 // ---- 타이틀 바·창 버튼 (px 예외, SPEC R-15 이후 변경) ----
@@ -178,8 +212,8 @@ pub mod menu {
     pub const NAME_TEXT: Rems = rems_from_px(12.);
     /// menu["horizontal.item_gap"] (I-321) 메뉴 이름 버튼 사이 4.
     pub const NAME_GAP: Rems = rems_from_px(4.);
-    // spec: none (app value) — 메뉴 이름 버튼 좌우 여백 6. 원문 값이 없다(I-321 "hitbox 는 아이콘 크기와 같지 않다").
-    pub const NAME_PAD_X: Rems = rems_from_px(6.);
+    // K-12: 4px gap + two 4px pads + font side bearings target a 13–14px ink gap (V3 pending).
+    pub const NAME_PAD_X: Rems = rems_from_px(4.);
     // spec: none (app value) — I-520 단축키로 실행할 때 선택 표시 시간 50ms(toml 에 없음).
     pub const SHORTCUT_FLASH: Duration = Duration::from_millis(50);
     // spec: none (app value) — chord 앞부분 대기 1초. gpui-pre 0.3.10 `PENDING_INPUT_TIMEOUT`(crate 비공개)과 같은 값.

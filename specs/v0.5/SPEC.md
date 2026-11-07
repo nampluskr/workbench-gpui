@@ -97,10 +97,10 @@ coder 보고 `cards/K-09.report.md`의 "v 메뉴 표"에서 옮겼다. 항목 �
 | 항목 | 단축키 표시 | 지금 동작 |
 |---|---|---|
 | Settings | `Ctrl-,` | Settings 창을 연다(K-11-R1). 이미 열려 있으면 앞으로 |
-| Keymap | `Ctrl-K Ctrl-S` | 비활성. K-12 |
+| Keymap | `Ctrl-K Ctrl-S` | Keymap Editor 탭을 연다. 이미 열려 있으면 그 탭으로(K-14) |
 | Themes… | `Ctrl-K Ctrl-T` | 비활성. Phase 7 |
 | Icon Themes… | 없음 | 비활성. Phase 7 |
-| Extensions | `Ctrl-Shift-X` | 비활성. K-12 |
+| Extensions | `Ctrl-Shift-X` | Extensions 탭을 연다. 이미 열려 있으면 그 탭으로(K-15) |
 | (구분선) | | |
 | Panel Layout | 없음 | 하위 메뉴를 연다(hover·클릭 또는 Enter·Right). K-11에서 하위 메뉴 동작 |
 | Panel Layout > Classic | 없음 | 왼쪽 dock 열기·기본 폭으로 되돌리기(K-11-R1) |
@@ -124,7 +124,9 @@ core D-15·ORDER-06-R1 2장, 이 레포 DECISIONS D-8·D-9에서 옮겼다. 두 
 | 범주 | `Appearance` 하나(이 앱 설정이 있는 Zed 범주만) |
 | 범위 | `User`만(프로젝트 범위 설정 기능이 없다) |
 | `Edit in settings.json` | 오른쪽 위 버튼. `%APPDATA%\workbench-gpui\settings.json`을 편집기 탭으로 연다. 파일이 없으면 `{}`로 만들어 연다 |
-| 저장 | 값을 바꾸면 바로 저장·바로 적용. Zed settings.json 형식(JSONC 허용) |
+| 저장 | 값을 바꾸면 바로 저장·바로 적용. Zed settings.json 형식(JSONC 허용). 바뀐 키의 값만 고치고 주석·다른 키·내용을 보존한다. 잘못된 값은 그 키만 기본값으로 쓰고 오류를 알린다(core 결정 2026-11-07, tauri 방식) |
+
+- 저장 방식 결과(K-13): 파일 전체를 다시 쓰지 않고 바꾼 키의 값 범위만 교체한다(jsonc-parser AST). 없는 키는 첫 속성 앞(빈 객체면 닫는 괄호 앞)에 더한다. 같은 키가 여러 번 있으면 모두 고친다. 주석·한글·CRLF·모르는 키·후행 쉼표를 보존하고, 원자 교체로 쓴다. 파일이 깨져 있으면 저장을 거부한다. 다른 키에 잘못된 값이 있어도 저장할 수 있고, 파일 안의 잘못된 값은 덮어쓰지 않는다. 시작할 때와 외부 변경 때 오류는 기존 앱 알림으로, Settings 저장 오류는 Settings 화면의 오류 자리에 보인다.
 
 | 행 | 키 | 컨트롤 | 기본값 | Zed 이름 | Zed 설명 |
 |---|---|---|---|---|---|
@@ -164,7 +166,7 @@ Settings 창 치수: tauri-leader가 2026-11-07 Zed 캡처 `D:\projects\workbenc
 | 드롭다운 | 높이 28, 폭은 글자에 맞춤(예 138) | 오른쪽 끝 = 내용 오른쪽 |
 | 숫자 컨트롤 | 높이 28 | Zed 캡처에 없어 드롭다운 높이에 맞춘다 |
 
-- 이 레포의 현재 상태: 위 치수는 아직 쓰지 않았다. `src/ui/metrics.rs` `settings_window`의 상수(창 크기·탐색 폭·컨트롤 폭·padding·gap)가 gpui-kit 기본값이고 `// pending: tauri Zed Settings measurement` 주석이 붙어 있다(K-11-R1).
+- 이 레포의 현재 상태(K-13): `src/ui/metrics.rs` `settings_window`의 pending 상수를 위 값으로 바꾸고 주석을 출처로 고쳤다 — 창 900×750, 탐색 폭 226(225 + 경계 1), 본문 padding 32, 탐색 padding 10, 범주 gap 12, 행 gap 24, 컨트롤 높이 28, `Edit in settings.json` 버튼 높이 22. 드롭다운 폭은 "글자에 맞춤"이라 고정 폭 상수(`CONTROL_WIDTH`)를 없애고 자동 폭으로 둔다. 화면 판정은 V3 남음.
 
 *"v" 버튼 치수*
 
@@ -173,6 +175,8 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 | 항목 | 값 | 비고 |
 |---|---|---|
 | 버튼 | 22×22, 둥근 모서리 | I-608·I-609와 같다 |
+
+- 이 레포의 현재 상태(K-13): 버튼 22×22, 오른쪽 여백 4. chevron은 SVG viewport 16에서 실제 path 폭이 8.89644(`11.8483−4.15186+1.2`)라 아이콘을 `8×16/8.89644 ≈ 14.388px`로 그려 잉크 폭 8을 목표로 한다. 실제 래스터 잉크 폭과 배치는 V3 남음.
 | chevron 잉크 폭 | 8 | |
 | 버튼 오른쪽 끝 ↔ 최소화 버튼 | 4 | |
 
@@ -187,7 +191,28 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 | `Edit in JSON` | 사용자 키맵 파일을 편집기 탭으로 연다 |
 | 저장 | `%APPDATA%\workbench-gpui\keymap.json`, Zed keymap.json 형식(섹션 배열, `context`·`bindings`, JSONC 허용) |
 
-- 이 레포의 현재 상태: 앱은 이미 이 파일을 사용자 키맵으로 읽는다. 경로는 `src/ui/keymap.rs` `keymap_path()`(`dirs::config_dir` + `workbench-gpui\keymap.json`), 읽기는 `src/keymap/file.rs`(JSONC, 오류 항목만 빼고 적용), 바뀌면 다시 읽는다(`src/ui/keymap.rs` 파일 감시). Keymap Editor 탭은 아직 없다.
+- 이 레포의 현재 상태: 앱은 이미 이 파일을 사용자 키맵으로 읽는다. 경로는 `src/ui/keymap.rs` `keymap_path()`(`dirs::config_dir` + `workbench-gpui\keymap.json`), 읽기는 `src/keymap/file.rs`(JSONC, 오류 항목만 빼고 적용), 바뀌면 다시 읽는다(`src/ui/keymap.rs` 파일 감시).
+
+실제 구성(K-14, `src/ui/keymap_editor.rs`):
+
+| 자리 | 지금 구성 |
+|---|---|
+| 열기 | "v" 메뉴 Keymap·`Ctrl-K Ctrl-S` → 편집 영역 새 탭 "Keymap Editor". 다른 폴더 workspace까지 찾아 이미 열려 있으면 그 workspace·pane·탭을 활성화. 폴더가 없어도 설정 workspace에서 연다. 도구 탭이라 문서(Docs)로 등록하지 않아 저장·감시 대상이 아니고, 닫을 때 저장 확인이 없다. 탭 이동·복제에서 내용을 유지한다 |
+| 위 줄 | 필터칸 "Filter action names…", `Edit in JSON  Ctrl-E`, `Create Keybinding  Ctrl-K` |
+| 필터 | Action 이름에서 대소문자 구분 없이 찾는다 |
+| 표 열 | Action, Arguments, Keystrokes, Context, Source |
+| Action | 원래 액션 이름(예 `workspace::Save`) |
+| Arguments | 비워 둔다(이 앱 액션은 인자가 없다) |
+| Keystrokes | gpui 표기(예 `ctrl-k ctrl-s`). 바인딩 없는 액션은 빈 칸 |
+| Context | 원문. 없으면 빈 칸 |
+| Source | `Default`(gpui-kit·앱 기본) 또는 `User`(사용자 키맵) |
+| 행 | 실행 중인 키맵의 gpui-kit·앱 기본·사용자 바인딩 전부 + 바인딩 없는 앱 액션. Action 이름순 |
+| 편집 | 행을 누르거나 `Create Keybinding`을 누르면 표 아래에 Action·Keystrokes·Context 입력칸과 Save·Cancel이 나온다. 저장 전에 gpui 파서로 액션·키·컨텍스트를 검사하고, 오류는 화면에 보인다 |
+| 저장 | 파일 전체를 다시 쓰지 않고 배열 끝에 override 섹션을 더한다. 키나 컨텍스트를 바꾸면 옛 키를 `null`로 푸는 섹션과 새 키 섹션을 더한다. 주석·키·내용·BOM·후행 쉼표를 보존하고 원자 교체로 쓴다. 파일이 깨져 있으면 저장을 거부한다. 저장 뒤 기존 load로 바로 적용한다. UI 기본 액션도 사용자 파일에서 쓸 수 있게 사용자 키맵 읽기가 등록 액션도 확인한다 |
+| `Edit in JSON` | 사용자 keymap.json을 일반 편집기 탭으로 연다. 파일이 없으면 `[]`로 만든다 |
+
+- Zed와 다른 점: 키 입력으로 찾기·필터 버튼이 없다(ORDER-06-R1 2.2 선택 사항). 편집은 Zed의 모달·키 녹화가 아니라 표 아래 입력칸에 gpui 표기(`ctrl-alt-k`)로 친다. 인자 편집이 없다. Action은 Zed의 읽기 쉬운 형식이 아니라 원래 이름이고, Arguments·Context의 빈 값 표시(Zed `<no arguments>`·`<global>`)가 없다. 반복 편집하면 override 섹션이 쌓인다(코드 `shortcut:` 주석). 후속 범위는 leader가 정한다(K-14 보고).
+- 확인: V1(K-14). 화면(K-010~K-022 필터·버튼·표, 행 선택·편집 영역 배치)과 메뉴·`Ctrl-K Ctrl-S` 진입, `Ctrl-E`·`Ctrl-K` 동작은 V3·입력 검증 남음.
 
 *Extensions — 편집 영역 새 탭 "Extensions" (`Ctrl-Shift-X`, "v" 메뉴 Extensions)*
 
@@ -203,6 +228,23 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 
 - Zed와 다른 점: 온라인 목록, 설치·제거, `Install Dev Extension`이 없다(core D-8, 실행 중 내려받기 없음). 카드 오른쪽 버튼 자리에는 설치 상태 표시만 둔다. 범주 칩은 Zed의 8개(All, Languages, Themes, Icon Themes, Language Servers, Debug Adapters, MCP Servers, Snippets) 가운데 셋만 둔다. 다운로드 수는 없다.
 - 이 화면은 Phase 7(테마 복사) 뒤에 내용이 채워진다. 이번에는 틀과 지금 있는 자원으로 채워지는 것까지 한다. Phase 7에서 목록이 늘어나는지 확인한다.
+
+실제 구성(K-15, `src/ui/extensions.rs`):
+
+| 자리 | 지금 구성 |
+|---|---|
+| 열기 | "v" 메뉴 Extensions·`Ctrl-Shift-X` → 편집 영역 새 탭 "Extensions". 이미 열려 있으면 그 workspace·pane·탭을 활성화(Keymap Editor와 같은 도구 탭 흐름 `open_tool`) |
+| 위 | 제목 "Extensions", 검색칸 "Search extensions…", 오른쪽에 `All`/`Installed`/`Not Installed` |
+| 범주 칩 | `All`, `Themes`, `Icon Themes` |
+| 카드 | 이름·버전, 태그(범주 이름), 설명, 작성자, 오른쪽 `Installed` 표시 |
+| 검색 | 이름·설명에서 대소문자 구분 없이. 작성자·버전은 찾지 않는다 |
+| 자원 목록 | `RESOURCES` 한 곳. 지금은 `Default Light`(Themes, gpui-kit 기본 테마)와 `Zed (Default)`(Icon Themes, `resources/zed-icons`) 둘. 이름은 settings의 실제 테마·아이콘 테마 이름 |
+| 카드 값 | 두 자원 모두 확장 manifest가 없어 버전·작성자·설명은 비워 둔다 |
+| 상태 전환 | 모든 자원이 번들이라 `All`과 `Installed`의 내용이 같고 `Not Installed`는 빈 목록 |
+| 치수 | `spec/zed-metrics.toml` extensions X-45~X-49를 `metrics.rs` 토큰으로 쓴다 |
+
+- Phase 7: 복사한 테마·아이콘 테마와 원본 메타데이터를 `RESOURCES`에 더하면 화면과 필터에 함께 반영된다. 복사 경로가 아직 미정이라 디렉터리 자동 탐색은 넣지 않았다.
+- 확인: V1(K-15). 화면(X-45~X-49 제목·검색·상태 전환·범주·카드)과 메뉴·`Ctrl-Shift-X` 진입, 기존 탭 활성화는 V3·입력 검증 남음.
 
 *Panel Layout — 하위 메뉴*
 
@@ -618,17 +660,18 @@ coder 보고 `cards/K-09.report.md`의 메뉴 표와 `## K-10`에서 옮겼다. 
 | File | (구분선) | | |
 | File | Save | `Ctrl-S` | 기존 `workspace::Save` |
 | File | (구분선) | | |
-| File | Close Editor | `Ctrl-W` / `Ctrl-F4` | 기존 활성 탭 닫기 |
+| File | Close Editor | `Ctrl-W`(`Ctrl-F4`도 동작) | 기존 활성 탭 닫기 |
 | File | Close Window | `Ctrl-Shift-W` | 기존 창 닫기 |
-| Edit | Undo | `Ctrl-Z` | 기존 `input::Undo` |
-| Edit | Redo | `Ctrl-Y` | 기존 `input::Redo` |
+| Edit | Undo | `Ctrl-Z` | 기존 `input::Undo`(앱 키맵에 Input 컨텍스트로 명시) |
+| Edit | Redo | `Ctrl-Y`(`Ctrl-Shift-Z`도 동작) | 기존 `input::Redo` |
 | View | Toggle Left Dock | `Ctrl-B` | 기존 dock 토글 |
 | View | Toggle Folder Sidebar | `Ctrl-Alt-J` | 기존 sidebar 토글 |
 | View | Focus Folder Sidebar | `Ctrl-Alt-;` | 기존 sidebar 포커스 |
-| View | Split Up | `Ctrl-K Up` | 기존 pane 분할 |
-| View | Split Down | `Ctrl-K Down` | 기존 pane 분할 |
-| View | Split Left | `Ctrl-K Left` | 기존 pane 분할 |
-| View | Split Right | `Ctrl-\` / `Ctrl-K Right` | 기존 pane 분할 |
+| View | Editor Layout | 없음 | 하위 메뉴(K-11) |
+| View → Editor Layout | Split Up | `Ctrl-K Up` | 기존 pane 분할 |
+| View → Editor Layout | Split Down | `Ctrl-K Down` | 기존 pane 분할 |
+| View → Editor Layout | Split Left | `Ctrl-K Left` | 기존 pane 분할 |
+| View → Editor Layout | Split Right | `Ctrl-\`(`Ctrl-K Right`도 동작) | 기존 pane 분할 |
 | View | Maximize Pane | `Shift-Escape` | 기존 pane 확대 토글 |
 | View | (구분선) | | |
 | View | Project Panel | `Ctrl-Shift-E` | 기존 패널 포커스 토글 |
@@ -647,10 +690,44 @@ coder 보고 `cards/K-09.report.md`의 메뉴 표와 `## K-10`에서 옮겼다. 
 
 - 메뉴 순서는 workbench-gpui·File·Edit·View·Go·Window·Help다. Selection·Run은 구현된 항목이 없어 메뉴째 뺐다.
 - Go의 탭 순환은 core-leader 결정(2026-11-07)으로 새로 만들었다. action은 Zed와 같은 `pane::ActivatePreviousItem`·`pane::ActivateNextItem`, 단축키는 tauri와 같게 Pane 컨텍스트의 `Ctrl-PageUp`·`Ctrl-PageDown`이다. 탭이 0개·1개면 아무 일 없다. Zed 기본 키맵의 RunModal 컨텍스트 `Ctrl-Tab`·`Ctrl-Shift-Tab` 바인딩은 넣지 않았다(K-10).
-- View의 Split Up/Down/Left/Right는 Zed처럼 View → `Editor Layout` 하위 메뉴로 옮긴다(core ORDER-06-R1 2.5, Zed `app_menus.rs:31~40`). K-11에서 옮기며, K-11은 지금 `[BLOCKED]`(Settings 창 치수 tauri 값 대기)라 위 표는 아직 옮기기 전이다.
+- View의 Split Up/Down/Left/Right는 Zed처럼 View → `Editor Layout` 하위 메뉴로 옮긴다(core ORDER-06-R1 2.5, Zed `app_menus.rs:31~40`). K-11-R1에서 옮겼다.
 - 메뉴 막대가 열려 있는 동안 타이틀 바의 폴더 이름을 그리지 않는다. 원인은 `title_bar::left_group`이 메뉴 열림과 상관없이 폴더 이름을 늘 더한 것이었다(K-09).
 - 메뉴 이름 사이 막대 gap은 `menu["horizontal.item_gap"]`(I-321) 4px다. 07:54 V3에서 4.0px로 쟀다(`verify/reviews/measure-ORDER-06/`, C-22).
-- Licenses 창: IBM Plex Sans `license.txt`, Lilex `OFL.txt`, Zed 아이콘 `LICENSES`·`LICENSE-APACHE`·`LICENSE-GPL` 원문을 컴파일할 때 넣어 별도 읽기 전용 스크롤 창에 보인다. 테마 라이선스는 Phase 7 대상이다(K-09).
+- Licenses 창: 앱에 들어간 자원의 라이선스 원문 여섯 개를 컴파일할 때 넣어 별도 읽기 전용 스크롤 창에 보인다 — IBM Plex Sans `license.txt`, Lilex `OFL.txt`, Zed 아이콘 `LICENSES`·`LICENSE-APACHE`·`LICENSE-GPL`, `vendor/gpui-base` `LICENSE-APACHE`(K-13에서 추가). `resources/`·`vendor/`를 ignored 파일까지 찾아 확인했다. 테마 라이선스는 Phase 7 대상이다(K-09, K-13).
+
+**메뉴 키 기준 (core-leader 결정 2026-11-07, 두 갈래 공통, K-12)**
+
+- 메뉴 항목의 키는 Zed Windows 기본 키맵 `assets/keymaps/default-windows.json`(커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`, 레포 밖 sparse checkout에서 읽기만)을 따른다. 한 액션에 키가 여럿이면 메뉴에는 그 파일의 첫 키를 보인다. Close Editor는 `Ctrl-W`를 보인다.
+- 표시 조회 함수는 고치지 않았다. 조회 함수가 마지막에 등록한 키를 보이므로 보일 키를 마지막에 등록한다. 사용자 바인딩·가려진 키 처리는 그대로다.
+
+| 항목 | 전 | 후 |
+|---|---|---|
+| Undo | gpui-kit `Ctrl-Z` | 앱 키맵에 `Ctrl-Z` 명시, Input 컨텍스트 |
+| Redo | gpui-kit `Ctrl-Y`만 | `Ctrl-Y` + `Ctrl-Shift-Z`, 표시 `Ctrl-Y`(원본 첫 키) |
+| Close Editor | `Ctrl-W` + `Ctrl-F4`, 표시 `Ctrl-F4` | 두 키 유지, 표시 `Ctrl-W` |
+| Split Right | `Ctrl-\` + `Ctrl-K Right`, 표시 `Ctrl-K Right` | 두 키 유지, 표시 `Ctrl-\`(원본 첫 키) |
+
+- 원본과 같아 그대로 둔 것: Save `Ctrl-S`, Previous/Next Tab `Ctrl-PageUp`/`Ctrl-PageDown`, Open Folder `Ctrl-K Ctrl-O`, Quit `Ctrl-Q`, Close Window `Ctrl-Shift-W`, Toggle Left Dock `Ctrl-B`, Project Panel `Ctrl-Shift-E`, Toggle/Focus Folder Sidebar `Ctrl-Alt-J`/`Ctrl-Alt-;`, Markdown Preview `Ctrl-Shift-V`/`Ctrl-K V`, Maximize Pane `Shift-Escape`, Split Up/Down/Left `Ctrl-K Up`/`Down`/`Left`.
+- Minimize·Zoom·Help 항목·Editor Layout은 원본에 대응 기본 키가 없어 키를 만들지 않았다.
+- 확인: V1(K-12), `keymap::` 17·`app_menu::tests` 4 통과, 바인딩·컨텍스트·표시 순서 회귀 테스트. 메뉴 키 표시 화면은 V3 남음.
+
+**메뉴 이름 간격 (K-12)**
+
+이름 사이 간격 = 앞 이름 마지막 글자의 오른쪽 측면 여백 + 오른쪽 padding + 막대 gap + 왼쪽 padding + 뒤 이름 첫 글자의 왼쪽 측면 여백. Zed 잉크 간격은 13~14px이고 허용은 1px다(DECISIONS D-9).
+
+- 막대 gap 4px(I-321)는 그대로 두고 이름 버튼 좌우 padding(`menu::NAME_*`)을 6 → 4px로 바꿨다(`src/ui/metrics.rs`).
+- 계산: IBM Plex Sans Regular(번들 TTF), 12px, fontTools로 글리프 외곽 경계와 advance를 읽었다.
+
+| 이름 경계 | 측면 여백 합(px) | 전 예상(px) | 후 예상(px) |
+|---|---:|---:|---:|
+| workbench-gpui / File | 2.028 | 18.028 | 14.028 |
+| File / Edit | 1.680 | 17.680 | 13.680 |
+| Edit / View | 0.768 | 16.768 | 12.768 |
+| View / Go | 1.068 | 17.068 | 13.068 |
+| Go / Window | 0.804 | 16.804 | 12.804 |
+| Window / Help | 1.488 | 17.488 | 13.488 |
+
+- 후 예상 12.768~14.028px로 13~14px에서 최대 0.232px 벗어난다(1px 이내). 글꼴 외곽 계산이라 래스터·힌팅·픽셀 반올림은 V3에서 판정한다.
 
 ---
 

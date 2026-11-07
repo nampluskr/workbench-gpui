@@ -555,6 +555,106 @@
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: 없음.
 
+- **Codex 한도 소진, 쿠폰 적용, coder 모델 되돌림** (2026-11-07)
+  - 무엇을 했나: K-11-R1을 끝낸 뒤 gpui-coder의 Codex 5시간 한도가 3% 남아 core-leader에게 `[BLOCKED]`로 알렸다. coder 모델이 GPT-6-Luna로 바뀌어 있었다.
+  - 결과: 사용자가 쿠폰 사용을 정하고 직접 적용했다(core `PROGRESS.md`, core D-2). core-leader가 알린 뒤 coder 모델을 GPT-6.1-Sol medium으로 되돌리고 K-12부터 이었다. HERDR 구성은 바꾸지 않았다.
+  - 검증: 해당 없음(운영 기록).
+  - 특이사항: 없음.
+
+- **core 결정: settings.json 처리를 tauri 방식으로** (2026-11-07, core-leader, 사용자 위임 core D-13)
+  - 무엇을 했나: 두 갈래 settings.json 처리 차이에 대한 결정을 받았다.
+  - 결과: 주석을 보존하고, 잘못된 값은 그 키만 기본값으로 쓰고 오류를 알린다. gpui가 맞춘다. gpui 카드 K-13.
+  - 검증: 해당 없음(결정 기록).
+  - 특이사항: 없음.
+
+- **K-12 메뉴 키를 Zed `default-windows.json`에, 메뉴 이름 간격** (2026-11-07, coder)
+  - 무엇을 했나: 메뉴 항목의 키를 Zed `default-windows.json`(커밋 `4304dec732`, 레포 밖 sparse checkout 읽기만)과 대조해 맞추고 메뉴에 첫 키를 보이게 했다. 이름 버튼 좌우 padding을 글자 잉크 간격 기준으로 정했다. 카드 `cards/K-12.md`, 보고 `cards/K-12.report.md`.
+  - 결과: `src/keymap/builtin.rs`, `src/keymap/mod.rs`, `src/ui/metrics.rs` 수정.
+    - 키 전후: Undo 앱 키맵에 `Ctrl-Z` 명시(Input), Redo `Ctrl-Shift-Z` 추가·표시 `Ctrl-Y`, Close Editor 표시 `Ctrl-F4` → `Ctrl-W`, Split Right 표시 `Ctrl-K Right` → `Ctrl-\`. 나머지 메뉴 키는 원본과 같아 그대로다. 표는 SPEC R-17 "메뉴 키 기준".
+    - 이름 간격: gap 4px(I-321)는 두고 좌우 padding 6 → 4px. IBM Plex Sans 12px 측면 여백을 넣은 예상 잉크 간격 12.768~14.028px(Zed 13~14px와 1px 이내). 표는 SPEC R-17 "메뉴 이름 간격".
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test keymap::` 17 passed, `app_menu::tests` 4 passed, clippy 통과, `git diff --check` 통과.
+  - 특이사항: 실측 필요 — I-321/R-17 메뉴를 펼친 상태의 이름 잉크 간격(V3).
+
+- **K-13 settings.json 바뀐 키만 저장, Settings 창·"v" 버튼 치수, Licenses 전부** (2026-11-07, coder)
+  - 무엇을 했나: core 결정대로 settings.json 저장을 tauri 방식으로 바꾸고, Settings 창·"v" 버튼 치수를 SPEC R-2의 Zed 실측값으로 넣고, Licenses에 빠진 자원을 더했다. 카드 `cards/K-13.md`, 보고 `cards/K-13.report.md`.
+  - 결과: `src/ui/settings.rs`, `src/ui/keymap.rs`, `src/ui/metrics.rs`, `src/ui/app_menu.rs` 수정.
+    - 저장: 전체 재직렬화를 없애고 바꾼 키의 값 범위만 교체한다(기존 jsonc-parser AST, 의존성 변경 없음). 주석·한글·CRLF·모르는 키·후행 쉼표를 보존하고, 깨진 파일은 저장을 거부한다. 잘못된 키만 기본값으로 쓰고 다른 키는 적용하며, 파일의 잘못된 값은 덮어쓰지 않는다. 오류는 기존 앱 알림과 Settings 화면 오류 자리에 보인다.
+    - Settings 창: pending 상수를 900×750, 탐색 폭 226, 본문 padding 32, 탐색 padding 10, 범주 gap 12, 행 gap 24, 컨트롤 높이 28, 버튼 높이 22로 바꿨다. 드롭다운은 자동 폭(고정 `CONTROL_WIDTH` 제거).
+    - "v" 버튼: 22×22, 오른쪽 여백 4, chevron 잉크 8 목표로 아이콘 ≈14.388px.
+    - Licenses: 여섯 개 — IBM Plex Sans, Lilex, Zed 아이콘 셋, `vendor/gpui-base` `LICENSE-APACHE`(빠졌던 것).
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test settings::tests` 4 passed, `app_menu::tests` 4 passed, clippy 통과, `git diff --check` 통과. 알림·컨트롤 연결은 코드 확인.
+  - 특이사항: K-11 특이사항의 "UI 저장은 JSONC 주석·서식을 유지하지 않는다"가 풀렸다. 실측 필요 — Settings 창 크기·탐색 폭·컨트롤 높이·간격, "v" 버튼 22×22·chevron 잉크 8·최소화까지 4(V3).
+
+- **K-14 Keymap Editor 탭** (2026-11-07, coder)
+  - 무엇을 했나: core ORDER-06-R1 2.2대로 Keymap Editor 탭을 만들었다. 카드 `cards/K-14.md`, 보고 `cards/K-14.report.md`.
+  - 결과: `src/ui/keymap_editor.rs` 신규, `src/keymap/{builtin,file,mod}.rs`, `src/ui/{app_menu,keymap,metrics,mod,pane,pane_group,pane_view,settings,tab_input}.rs` 수정.
+    - "v" 메뉴 Keymap·`Ctrl-K Ctrl-S`로 편집 영역 새 탭을 연다(이미 있으면 그 탭, 폴더가 없어도 열림). 도구 탭은 문서로 등록하지 않는다.
+    - 필터칸·`Edit in JSON`(`Ctrl-E`)·`Create Keybinding`(`Ctrl-K`), 열 Action·Arguments·Keystrokes·Context·Source(Default/User). 행은 실행 중 키맵의 바인딩 전부와 바인딩 없는 앱 액션.
+    - 편집·새로 만들기는 표 아래 입력칸, 저장 전 gpui 파서로 검사, 사용자 keymap.json 끝에 override 섹션을 더해 주석·BOM·후행 쉼표 보존, 바로 적용. 구성은 SPEC R-2 Keymap "실제 구성".
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test` keymap 19·`pane_group::tests` 37·`pane::tests` 47·`tab_input::tests` 3·`app_menu::tests` 4·`settings::tests` 4 = 114 passed, clippy 통과, `git diff --check` 통과. 입력 이벤트·액션 연결은 코드 확인(gpui 입력 시뮬레이션 안 함).
+  - 특이사항: 키 입력 찾기·필터 버튼(선택 사항), 키 녹화·모달 편집, 인자 편집은 하지 않았다(SPEC R-2 "Zed와 다른 점", 후속 범위는 leader 판정). 반복 편집하면 override 섹션이 쌓인다. 실측 필요 — Keymap Editor 탭 전체, K-010~K-022, 행 선택·편집 영역 배치, 메뉴·`Ctrl-K Ctrl-S` 진입, `Ctrl-E`·`Ctrl-K` 동작.
+
+- **K-15 Extensions 탭** (2026-11-07, coder)
+  - 무엇을 했나: core ORDER-06-R1 2.3대로 Extensions 탭을 만들었다. 카드 `cards/K-15.md`, 보고 `cards/K-15.report.md`.
+  - 결과: `src/ui/extensions.rs` 신규, `src/ui/{keymap_editor,app_menu,keymap,metrics,mod}.rs`, `src/keymap/{builtin,mod}.rs` 수정.
+    - "v" 메뉴 Extensions·`Ctrl-Shift-X`로 새 탭(이미 있으면 그 탭, K-14의 `open_tool` 공유).
+    - 제목·검색칸 "Search extensions…"·`All`/`Installed`/`Not Installed`·범주 칩 `All`/`Themes`/`Icon Themes`·카드(이름·버전·태그·설명·작성자·오른쪽 `Installed`). 검색은 이름·설명.
+    - 자원 목록은 `RESOURCES` 한 곳: `Default Light`(테마), `Zed (Default)`(아이콘 테마). manifest가 없어 버전·작성자·설명은 비웠다. 지금은 모두 번들이라 `Not Installed`는 빈 목록이다. 치수는 X-45~X-49.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test extensions::tests` 2 passed, `keymap` 19 passed, `app_menu::tests` 4 passed, clippy 통과, `git diff --check` 통과. 입력·액션 연결은 코드 확인.
+  - 특이사항: Phase 7에서 복사한 자원과 원본 메타데이터를 `RESOURCES`에 더하고 목록이 늘어나는지 확인한다(복사 경로 미정). 실측 필요 — Extensions 탭, X-45~X-49, 메뉴·`Ctrl-Shift-X` 진입과 기존 탭 활성화.
+
+- **W-23 K-12~K-15 기록** (2026-11-07)
+  - 무엇을 했나: 위 K-12~K-15와 쿠폰·settings.json 결정을 적고, SPEC R-2(Settings 저장·치수 현재 상태, "v" 버튼, Keymap·Extensions 실제 구성과 Zed와 다른 점)·R-17(메뉴 표, 메뉴 키 전후 표, 이름 간격, Licenses)을 갱신했다. 카드 `cards/W-23.md`, 보고 `cards/W-23.report.md`.
+  - 결과: `SPEC.md`, `PROGRESS.md` 수정. tauri SPEC과 다른 곳은 보고에 목록으로 적었다.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+- **커밋 `c723b7e`** (2026-11-07, leader)
+  - 무엇을 했나: ORDER-06 1단계와 K-11-R1(Settings 창·settings.json·Panel Layout·Editor Layout)을 커밋했다.
+  - 결과: 측정 폴더의 사용자 앱 데이터 백업 `session-backup/`이 실수로 커밋에 들어가, push 전에 amend로 빼고 `.gitignore`에 `specs/v0.5/verify/reviews/*/session-backup/`을 더했다.
+  - 검증: `.gitignore` 7행 확인.
+  - 특이사항: K-12~K-16, C-26 리뷰, `tools/measure/order06-r1-v3.ps1`은 아직 커밋하지 않았다(작업 트리).
+
+- **C-26 K-12~K-15 리뷰, R1 V3 스크립트** (2026-11-07, checker)
+  - 무엇을 했나: K-12~K-15 코드를 리뷰하고 `tools/measure/order06-r1-v3.ps1`을 11단계(메뉴 이름 잉크 간격, "v" 버튼 확대, Settings 창 치수, settings.json 주석 보존, Edit in settings.json, Keymap Editor, Extensions, Panel Layout, Editor Layout, 탭 순환, 재실행 유지)로 보강했다. 측정 앞뒤로 `%APPDATA%\workbench-gpui`의 settings.json·keymap.json을 백업·복원한다. 카드 `cards/C-26.md`, 보고 `cards/C-26.report.md`.
+  - 결과: 리뷰 PASS(K-12 키가 Zed `default-windows.json`과 같음, K-13 값 범위만 교체·원자 교체, K-14 도구 탭이 문서·감시에서 빠짐, K-15 다운로드·설치 없음). 지적 — K-14 반복 편집 때 override 섹션이 쌓인다(`shortcut:` 주석 있음).
+  - 검증: `cargo build`, `apply-manifest.ps1`, `cargo test` settings 4·keymap 19·extensions 2·app_menu 4 passed, clippy 통과, 스크립트 문법 검사, `-DryRunStdout` 정상.
+  - 특이사항: 없음.
+
+- **ORDER-06-R1 V3 1차** (2026-11-07 09:44, leader 실행, checker 판정 C-27)
+  - 무엇을 했나: 화면 차례에서 `order06-r1-v3.ps1`을 실행하고, checker가 결과 파일만으로 판정했다(캡처 20장 해시 대조, 픽셀 실측, layout 대조). 자료 `verify/reviews/measure-ORDER-06-R1/`, 판정 `verify/reviews/measure-ORDER-06-R1.md`, 보고 `cards/C-27.report.md`.
+  - 결과:
+    - PASS: 메뉴 이름 잉크 간격 13px(목표 13~14 ±1), "v" 버튼 chevron 잉크 8px, Settings 창 클라이언트 900×750, 재실행 뒤 유지, settings.json 주석·다른 키 보존(값 변경 자체는 입력 미전달).
+    - 앱 결함 2건: Settings 창 컨트롤이 세로 가운데로 몰림(최외곽 `h_flex`가 `items_center`), "v" 버튼 컨테이너 26×22(안쪽 오른쪽 여백 4 포함) → K-16으로 고쳤다.
+    - 스크립트 결함: Keymap Save 클릭 좌표가 사이드바 폭(300) 오프셋을 반영하지 않음, 탭 순환 단계가 도구 탭 뒤 폴더 목록 상태를 처리하지 못하고 dock을 닫음, 여러 단계에서 입력이 전달되지 않음(Extensions 칩·Panel Layout·Editor Layout·Settings 검색 등 캡처 해시 동일 → 측정 불가). checker가 고치는 중.
+    - summary.json의 메뉴 간격 FAIL은 스크립트가 박스 간격 4.0px를 목표와 비교한 오류다.
+  - 검증: V3(일부). 판정 REWORK.
+  - 특이사항: 사용자 데이터 — 측정 앞뒤로 `%APPDATA%\workbench-gpui\state.json` 동일, settings.json·keymap.json은 원래대로(없음).
+
+- **K-16 Settings 창 위 정렬, "v" 버튼 22×22** (2026-11-07, coder)
+  - 무엇을 했나: C-27 앱 결함 2건을 고쳤다. 카드 `cards/K-16.md`, 보고 `cards/K-16.report.md`.
+  - 결과: `src/ui/settings.rs`, `src/ui/app_menu.rs`, `src/ui/title_bar.rs` 수정. Settings 최외곽 `h_flex`에 `items_start`(기존 padding 그대로). "v" 버튼 안쪽 오른쪽 여백을 없애고 타이틀 바에 폭 4px 요소를 따로 넣어 user-menu가 버튼 영역(22×22)만 차지하게 했다. layout probe에 `user-menu-gap`을 더했다. chevron 크기는 그대로.
+  - 검증: V1. `cargo build`, `apply-manifest.ps1`, `cargo test settings::tests` 4·`app_menu::tests` 4 passed, clippy 통과, `git diff --check` 통과. 정렬·간격은 코드 확인.
+  - 특이사항: 실측 필요 — Settings 창 위 정렬·padding 위치, "v" 버튼 22×22·최소화까지 4px(C-27 불일치 항목만 재측정).
+
+- **Codex 한도와 core D-16** (2026-11-07)
+  - 무엇을 했나: 쿠폰(1차) 적용 뒤 coder Codex 5시간 한도가 48% 남았다. core D-16(사용자 결정)을 받았다.
+  - 결과: 다시 바닥나면 기다리거나 쿠폰을 쓰지 않고, coder를 Claude Code Sonnet 5.5 high로 바꿔(같은 pane, 이름 `gpui-coder`) 잇는다. 바꾼 시각·모델을 HERDR-SETUP·PROGRESS에 적는다. HERDR-SETUP 2.1에 이 규칙을 적었다.
+  - 검증: 해당 없음(결정 기록).
+  - 특이사항: 아직 바꾸지 않았다.
+
+- **ORDER-06-R1 지금 상태와 남은 일** (2026-11-07, W-24 작성, W-25 갱신)
+  - 무엇을 했나: core-leader NOTICE(D-3)대로 다음 세션이 이 문서만 보고 이어 가도록 상태를 적었다(카드 `cards/W-24.md`). V3 2·3차 결과로 갱신했다(카드 `cards/W-25.md`). 판정 `verify/reviews/measure-ORDER-06-R1.md`(checker, C-28), 스크립트 수정 `cards/C-28.report.md`.
+  - 결과:
+    - V3 2차(10:37, 자료 `verify/reviews/measure-ORDER-06-R1-run2/`): PASS — Keymap Editor 필터·바인딩 저장(`keymap.json` 내용 일치), Panel Layout(dock 닫힘 → Custom → Classic 복원), 탭 순환(고정 탭 2개 Ctrl-PageDown/PageUp), 재실행 유지. 측정 불가 — Settings 세 단계(창·주석 보존·Edit in settings.json)는 스크립트 구문 오류(식 안의 `if`)로 중단, Extensions `Icon Themes` 칩과 Editor Layout 하위 메뉴는 캡처 해시가 그대로여서 입력 미전달. K-16은 layout probe로 user-menu 22×22·`user-menu-gap` 4px, Settings `isCentered=False` 확인. checker가 C-28로 스크립트를 고쳤다.
+    - V3 3차(10:58, 자료 `verify/reviews/measure-ORDER-06-R1/`, 남은 6단계만): PASS — "v" 버튼 크롭(22×22, chevron 잉크 8px, 오른쪽 여백 4px), Extensions(Themes·Icon Themes 칩, 검색 "Zed" 모두 캡처 해시 변경). Settings 창 클라이언트 900×750은 다시 확인. 측정 불가 — Settings 창 안 조작(검색 입력, Buffer Font Size 값 변경과 주석 보존, Edit in settings.json)과 Editor Layout 하위 메뉴는 입력이 전달되지 않았다(캡처 해시 불변). 이 항목은 화면 실측 대신 V1 테스트를 근거로 둔다 — Settings 저장·주석 보존은 K-13 `settings::tests`, Editor Layout은 `app_menu::tests`(View 메뉴에 항목이 있는지까지, 하위 메뉴 전개는 코드 확인).
+    - 사용자 앱 데이터: 2·3차 모두 측정 뒤 `%APPDATA%\workbench-gpui\state.json` 해시가 같고(`D2C22F71…`), settings.json·keymap.json은 원래대로(없음)로 돌렸다.
+    - 커밋됨: `c723b7e`(1단계 + K-11-R1).
+    - 커밋 안 됨(작업 트리): K-12~K-16 코드, C-26 리뷰(PASS), `tools/measure/order06-r1-v3.ps1`, 카드·보고, V3 1~3차 자료와 판정.
+    - 남은 일: 커밋 → `specs/v0.5/reports/ORDER-06-R1.md`.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: `measure-ORDER-06-R1.md`는 2차까지만 반영돼 있고 3차 결과는 `measure-ORDER-06-R1/summary.json`·`log.txt`에 있다. 2차 자료가 `-run2/`로 옮겨져 판정 파일의 "2차 `measure-ORDER-06-R1/`" 경로 표기와 어긋난다.
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |

@@ -41,6 +41,8 @@ pub struct Tab<E = Entity<EditorState>> {
     /// equal to the file like any other view, and the tab draws that text rendered. Never a preview tab (I-064).
     pub markdown: bool,
     pub editor: E,
+    /// Non-file tool content and its keyboard focus; never part of Docs or disk I/O.
+    pub tool: Option<(AnyView, FocusHandle)>,
 }
 
 /// The disk and edit state of one open file, shared by all its views (P4-3).
@@ -766,7 +768,7 @@ mod tests {
 
     /// A new tab (view) in `pane`.
     fn view(pane: &mut Pane<()>, path: &str, preview: bool) {
-        pane.place(Tab { path: path.into(), preview, markdown: false, editor: () }, false);
+        pane.place(Tab { path: path.into(), preview, markdown: false, editor: (), tool: None }, false);
     }
 
     /// A forgotten doc (replaced preview, I-062: `PaneGroup::open_in`) drops its earlier load.

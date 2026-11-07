@@ -59,7 +59,7 @@ impl Parsed {
     }
 }
 
-fn options() -> ParseOptions {
+pub(crate) fn options() -> ParseOptions {
     ParseOptions {
         allow_comments: true,
         allow_trailing_commas: true,

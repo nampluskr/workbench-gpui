@@ -1,0 +1,34 @@
+{
+  "app": {
+    "app-menu-names-gap": "SKIPPED",
+    "app-v-button-crop": "SKIPPED",
+    "settings_client_size": {
+      "actual_width": 900,
+      "spec_target": "900x750",
+      "actual_height": 750
+    },
+    "settings_dimensions": {
+      "window_size": "900x750",
+      "sidebar_width": 226,
+      "sidebar_padding": 10,
+      "control_height": 28,
+      "body_padding": 32,
+      "row_gap": 24,
+      "category_gap": 12,
+      "edit_button_height": 22
+    },
+    "app-settings-window": "FAIL: 'if' 용어는 cmdlet, 함수, 스크립트 파일 또는 실행 프로그램의 이름으로 인식되지 않습니다.\r\n이름의 철자를 확인하거나 경로가 포함되어 있으면 경로가 올바른지 확인하고 다시 시도합니다.",
+    "app-settings-comments": "FAIL: 'if' 용어는 cmdlet, 함수, 스크립트 파일 또는 실행 프로그램의 이름으로 인식되지 않습니다.\r\n이름의 철자를 확인하거나 경로가 포함되어 있으면 경로가 올바른지 확인하고 다시 시도합니다.",
+    "app-settings-edit-json": "FAIL: 'if' 용어는 cmdlet, 함수, 스크립트 파일 또는 실행 프로그램의 이름으로 인식되지 않습니다.\r\n이름의 철자를 확인하거나 경로가 포함되어 있으면 경로가 올바른지 확인하고 다시 시도합니다.",
+    "keymap_json_content": "[\n{\n  \"context\": \"Workspace\",\n  \"bindings\": {\n    \"ctrl-alt-s\": \"workspace::Save\"\n  }\n}\n]",
+    "keymap_binding_saved": "PASS",
+    "app-keymap-editor": "PASS",
+    "app-extensions": "FAIL: Assertion failed: Extensions chip Icons capture hash unchanged (FD1D6995B882F2D00C6F1F9AD3328F6864D7F3410A20157104F2653D9B69DD46) - 입력 미전달!",
+    "app-panel-layout": "PASS",
+    "app-editor-layout": "FAIL: Assertion failed: View Editor Layout submenu open capture hash unchanged (FD1D6995B882F2D00C6F1F9AD3328F6864D7F3410A20157104F2653D9B69DD46) - 입력 미전달!",
+    "app-tab-cycle": "PASS",
+    "app-relaunch-persistence": "PASS"
+  },
+  "crops": {},
+  "gaps": {}
+}

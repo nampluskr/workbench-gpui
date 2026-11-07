@@ -266,6 +266,7 @@ const LICENSES: &[(&str, &str)] = &[
     ("Zed icons — Lucide", include_str!("../../resources/zed-icons/LICENSES")),
     ("Zed Apache license", include_str!("../../resources/zed-icons/LICENSE-APACHE")),
     ("Zed GPL license", include_str!("../../resources/zed-icons/LICENSE-GPL")),
+    ("gpui-base Apache license", include_str!("../../vendor/gpui-base/LICENSE-APACHE")),
 ];
 
 struct Licenses;
@@ -343,7 +344,8 @@ impl Render for UserMenu {
                 let _ = weak.update(cx, |this, _| this.button_bounds = bounds.first().copied());
             }).id("user-menu").relative().child(
             div().id("user-menu-button").flex().items_center().justify_center()
-                .size(BUTTON_DEFAULT).text_color(muted).hover(move |s| s.bg(hover))
+                .size(super::metrics::USER_BUTTON_SIZE)
+                .rounded(ROW_RADIUS).text_color(muted).hover(move |s| s.bg(hover))
                 .on_click(cx.listener(|this, _, window, cx| {
                     if this.open { this.close(window, cx); } else {
                         this.previous = window.focused(cx);
@@ -353,23 +355,27 @@ impl Render for UserMenu {
                         cx.notify();
                     }
                 }))
-                .child(super::zed_icons::icon("chevron_down").size(ICON_SMALL)),
+                .child(super::zed_icons::icon("chevron_down").size(super::metrics::USER_CHEVRON_SIZE)),
         );
         if self.open {
             let mut list = menu_common::list(v_flex(), "user-menu-list", window.viewport_size().height * MAX_HEIGHT_RATIO);
             for (i, (label, shortcut)) in USER_ITEMS.iter().enumerate() {
-                list = list.child(menu_common::row(("user-menu-item", i)).text_color(if i == 0 { cx.theme().foreground } else { muted })
-                    .when(i == 0 && self.selected == 0, |row| row.bg(hover))
-                    .when(i == 0, |row| row.on_click(cx.listener(|this, _, window, cx| {
+                let enabled = matches!(i, 0 | 1 | 4);
+                let selection = if i == 4 { 2 } else { i };
+                list = list.child(menu_common::row(("user-menu-item", i)).text_color(if enabled { cx.theme().foreground } else { muted })
+                    .when(enabled && self.selected == selection, |row| row.bg(hover))
+                    .when(enabled, |row| row.on_click(cx.listener(move |this, _, window, cx| {
                         this.close(window, cx);
-                        window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx);
+                        if i == 0 { window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx); }
+                        else if i == 1 { window.dispatch_action(Box::new(super::keymap::zed::OpenKeymap), cx); }
+                        else { window.dispatch_action(Box::new(super::keymap::zed::Extensions), cx); }
                     })))
                     .child(*label).child(menu_common::shortcut_cell().child(*shortcut)));
             }
             list = list.child(menu_common::separator(cx.theme().border)).child(
-                menu_common::row("panel-layout").relative().when(self.selected == 1, |row| row.bg(hover))
+                menu_common::row("panel-layout").relative().when(self.selected == 3, |row| row.bg(hover))
                     .on_hover(cx.listener(|this, hovered: &bool, _, cx| {
-                        if *hovered { this.selected = 1; this.panel = true; cx.notify(); }
+                        if *hovered { this.selected = 3; this.panel = true; cx.notify(); }
                     }))
                     .on_click(cx.listener(|this, _, _, cx| { this.panel = !this.panel; cx.notify(); }))
                     .child("Panel Layout")
@@ -404,11 +410,17 @@ impl Render for UserMenu {
                     } else if this.selected == 0 {
                         this.close(window, cx);
                         window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx);
+                    } else if this.selected == 1 {
+                        this.close(window, cx);
+                        window.dispatch_action(Box::new(super::keymap::zed::OpenKeymap), cx);
+                    } else if this.selected == 2 {
+                        this.close(window, cx);
+                        window.dispatch_action(Box::new(super::keymap::zed::Extensions), cx);
                     } else { this.panel = true; cx.notify(); }
                 }))
-                .on_action(cx.listener(|this, _: &menu_actions::SelectNext, _, cx| { this.selected = 1 - this.selected; this.panel = false; cx.notify(); }))
-                .on_action(cx.listener(|this, _: &menu_actions::SelectPrevious, _, cx| { this.selected = 1 - this.selected; this.panel = false; cx.notify(); }))
-                .on_action(cx.listener(|this, _: &menu_actions::SelectChild, _, cx| { if this.selected == 1 { this.panel = true; cx.notify(); } }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectNext, _, cx| { this.selected = (this.selected + 1) % 4; this.panel = false; cx.notify(); }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectPrevious, _, cx| { this.selected = (this.selected + 3) % 4; this.panel = false; cx.notify(); }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectChild, _, cx| { if this.selected == 3 { this.panel = true; cx.notify(); } }))
                 .on_action(cx.listener(|this, _: &menu_actions::SelectParent, _, cx| { this.panel = false; cx.notify(); }))
                 .on_mouse_down_out(cx.listener(|this, event: &MouseDownEvent, w, cx| {
                     if !this.button_bounds.is_some_and(|bounds| bounds.contains(&event.position))
@@ -1116,7 +1128,7 @@ mod tests {
         assert_eq!(super::help_url("help::RequestFeature"), super::help_url("help::FileBugReport"));
         assert_eq!(super::help_url("help::Repository"), Some("https://github.com/nampluskr/workbench-gpui"));
         assert_eq!(super::help_url("workspace::Save"), None);
-        assert_eq!(super::LICENSES.len(), 5);
+        assert_eq!(super::LICENSES.len(), 6);
         assert!(super::LICENSES.iter().all(|(_, text)| text.contains("License") || text.contains("LICENSE")));
         assert_eq!(super::PANEL_LAYOUTS, ["Classic"]);
         assert_eq!(super::EDITOR_LAYOUT, [("Split Up", "pane::SplitUp"), ("Split Down", "pane::SplitDown"), ("Split Left", "pane::SplitLeft"), ("Split Right", "pane::SplitRight")]);

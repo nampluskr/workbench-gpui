@@ -136,7 +136,7 @@ pub fn title_bar(
     };
 
     h_flex()
-        .on_children_prepainted(probe(&["title-left", "title-bar-drag", "user-menu", "window-controls"]))
+        .on_children_prepainted(probe(&["title-left", "title-bar-drag", "user-menu", "user-menu-gap", "window-controls"]))
         .id("title-bar")
         .flex_shrink_0()
         .w_full()
@@ -150,6 +150,7 @@ pub fn title_bar(
                 .window_control_area(WindowControlArea::Drag),
         )
         .child(user_menu)
+        .child(div().w(super::metrics::USER_BUTTON_MARGIN).flex_shrink_0())
         .child(
             h_flex()
                 .on_children_prepainted(probe(&[

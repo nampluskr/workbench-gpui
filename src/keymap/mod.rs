@@ -14,6 +14,8 @@ pub mod file;
 ///
 /// `(이름, 우리가 지었나)`. 두 번째 값이 true 면 01-zed·02-gpui 에 이름이 없어 우리가 지은 이름이다(D-2 이후 변경, D-027 ②).
 pub const ACTIONS: &[(&str, bool)] = &[
+    ("input::Undo", false),
+    ("input::Redo", false),
     ("workspace::ToggleLeftDock", false),
     ("workspace::Open", false),
     ("workspace::CopyPath", false),
@@ -22,6 +24,10 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("workspace::Save", false),
     ("workspace::UseClassicLayout", false),
     ("zed::OpenSettings", false),
+    ("zed::OpenKeymap", false),
+    ("zed::Extensions", false),
+    ("keymap_editor::EditJson", true),
+    ("keymap_editor::Create", true),
     ("pane::CloseActiveItem", false),
     ("pane::ActivatePreviousItem", false),
     ("pane::ActivateNextItem", false),
@@ -121,6 +127,23 @@ mod tests {
         assert_eq!(context("ctrl-k ctrl-left"), Some(builtin::WORKSPACE_CONTEXT));
         let project_panel = builtin::BUILTIN.iter().find(|b| b.keys == "ctrl-k ctrl-shift-c").map(|b| b.context);
         assert_eq!(project_panel, Some(builtin::PROJECT_PANEL_CONTEXT));
+    }
+
+    #[test]
+    fn k12_menu_keys_keep_zed_first_key_for_display() {
+        for (action, context, keys) in [
+            ("input::Undo", "Input", vec!["ctrl-z"]),
+            ("input::Redo", "Input", vec!["ctrl-shift-z", "ctrl-y"]),
+            ("pane::CloseActiveItem", "Workspace", vec!["ctrl-f4", "ctrl-w"]),
+            ("pane::SplitRight", "Pane", vec!["ctrl-k right", "ctrl-\\"]),
+            ("workspace::Save", "Workspace", vec!["ctrl-s"]),
+            ("pane::ActivatePreviousItem", "Pane", vec!["ctrl-pageup"]),
+            ("pane::ActivateNextItem", "Pane", vec!["ctrl-pagedown"]),
+        ] {
+            let bindings: Vec<_> = builtin::BUILTIN.iter().filter(|b| b.action == action).collect();
+            assert!(bindings.iter().all(|b| b.context == context), "{action}");
+            assert_eq!(bindings.iter().map(|b| b.keys).collect::<Vec<_>>(), keys, "{action}");
+        }
     }
 
     #[test]

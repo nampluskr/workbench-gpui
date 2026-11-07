@@ -64,6 +64,7 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
 - checker는 사용자 승인("checker가 승인 창 없이 명령을 실행하게 하는 설정하도록 승인합니다", core-leader 전달 2026-11-06)으로 leader가 위 명령으로 다시 띄웠다. 이번에는 거부되지 않았다(leader 2026-11-06, W-08).
 - 허용 목록이 동작한다. 목록에 정확한 명령 모양으로 있는 명령은 승인 창 없이 돈다. 대체 방식(출력 파일)은 끝냈다. 목록 밖 명령은 승인 창이 뜨고 leader가 판단한다(5.6 현재 상태, leader 2026-11-06, W-09).
 
+- Codex 한도가 다시 바닥나면 기다리거나 쿠폰을 쓰지 않고 coder를 Claude Code Sonnet 5.5 high(`claude --model sonnet --effort high`)로 바꿔 같은 pane·이름 `gpui-coder`로 잇는다. 바꾼 시각·모델을 이 절과 PROGRESS에 적는다(core D-16, 사용자 결정 2026-11-07).
 - coder는 컨텍스트를 비운(`/clear`) 뒤에는 `/model`로 Sol medium을 다시 고른다. `/clear` 뒤 기본값(GPT-6.1 Terra high)으로 돌아가 K-02가 Terra high로 실행된 일이 있다(leader 2026-11-07, W-10).
 - leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).

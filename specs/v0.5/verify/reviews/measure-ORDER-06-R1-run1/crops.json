@@ -1,0 +1,11 @@
+{
+  "v-button": {
+    "button_width": 26,
+    "button_height": 22,
+    "target_button_size": "22x22",
+    "target_ink_width": "8px",
+    "target_margin_right": "4px",
+    "crop_normal": "app-v-button-normal.png",
+    "crop_4x": "app-v-button-crop-4x.png"
+  }
+}

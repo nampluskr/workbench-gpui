@@ -1,0 +1,42 @@
+{
+  "app": {
+    "app-menu-names-gap": "SKIPPED",
+    "app-v-button-crop": "PASS",
+    "settings_client_size": {
+      "actual_height": 750,
+      "spec_target": "900x750",
+      "actual_width": 900
+    },
+    "settings_dimensions": {
+      "window_size": "900x750",
+      "sidebar_width": 226,
+      "sidebar_padding": 10,
+      "control_height": 28,
+      "body_padding": 32,
+      "row_gap": 24,
+      "category_gap": 12,
+      "edit_button_height": 22
+    },
+    "app-settings-window": "FAIL: Assertion failed: Settings search font capture hash unchanged (22BB7DB970F4408FEA1A26C9FD94C1A08ED03BFCDF2D40CF9712FAD24F446E64) - 입력 미전달!",
+    "app-settings-comments": "FAIL: Assertion failed: JSONC comments or custom fields were modified or discarded during settings save!",
+    "app-settings-edit-json": "FAIL: Assertion failed: Edit in settings.json tab open capture hash unchanged (793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2) - 입력 미전달!",
+    "app-keymap-editor": "SKIPPED",
+    "app-extensions": "PASS",
+    "app-panel-layout": "SKIPPED",
+    "app-editor-layout": "FAIL: Assertion failed: View Editor Layout submenu open capture hash unchanged (793501645192C4F2EA5CFA19CB751D258EA4534E1D5381BD0549895ED54258D2) - 입력 미전달!",
+    "app-tab-cycle": "SKIPPED",
+    "app-relaunch-persistence": "SKIPPED"
+  },
+  "crops": {
+    "v-button": {
+      "button_width": 22,
+      "button_height": 22,
+      "target_button_size": "22x22",
+      "target_ink_width": "8px",
+      "target_margin_right": "4px",
+      "crop_normal": "app-v-button-normal.png",
+      "crop_4x": "app-v-button-crop-4x.png"
+    }
+  },
+  "gaps": {}
+}

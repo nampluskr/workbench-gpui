@@ -1,0 +1,87 @@
+{
+  "app": {
+    "app-menu-names-gap": "PASS",
+    "app-v-button-crop": "PASS",
+    "settings_client_size": {
+      "actual_width": 900,
+      "actual_height": 750,
+      "spec_target": "900x750"
+    },
+    "settings_dimensions": {
+      "window_size": "900x750",
+      "sidebar_width": 226,
+      "sidebar_padding": 10,
+      "control_height": 28,
+      "body_padding": 32,
+      "row_gap": 24,
+      "category_gap": 12,
+      "edit_button_height": 22
+    },
+    "app-settings-window": "PASS",
+    "app-settings-comments": "FAIL: Assertion failed: JSONC comments or custom fields were modified or discarded during settings save!",
+    "app-settings-edit-json": "PASS",
+    "app-keymap-editor": "FAIL: Assertion failed: keymap.json was not created on disk after save!",
+    "app-extensions": "PASS",
+    "app-panel-layout": "PASS",
+    "app-editor-layout": "PASS",
+    "app-tab-cycle": "FAIL: Step 'project-tree-open' assertion failed: tree-row-01 must appear in layout dump after opening project tree",
+    "app-relaunch-persistence": "PASS"
+  },
+  "crops": {
+    "v-button": {
+      "button_width": 26,
+      "button_height": 22,
+      "target_button_size": "22x22",
+      "target_ink_width": "8px",
+      "target_margin_right": "4px",
+      "crop_normal": "app-v-button-normal.png",
+      "crop_4x": "app-v-button-crop-4x.png"
+    }
+  },
+  "gaps": {
+    "menu_names": [
+      {
+        "From": "menu-name-0",
+        "To": "menu-name-1",
+        "Gap": 4.0,
+        "Target": "13~14px ±1",
+        "Pass": false
+      },
+      {
+        "From": "menu-name-1",
+        "To": "menu-name-2",
+        "Gap": 4.0,
+        "Target": "13~14px ±1",
+        "Pass": false
+      },
+      {
+        "From": "menu-name-2",
+        "To": "menu-name-3",
+        "Gap": 4.0,
+        "Target": "13~14px ±1",
+        "Pass": false
+      },
+      {
+        "From": "menu-name-3",
+        "To": "menu-name-4",
+        "Gap": 4.0,
+        "Target": "13~14px ±1",
+        "Pass": false
+      },
+      {
+        "From": "menu-name-4",
+        "To": "menu-name-5",
+        "Gap": 4.0,
+        "Target": "13~14px ±1",
+        "Pass": false
+      },
+      {
+        "From": "menu-name-5",
+        "To": "menu-name-6",
+        "Gap": 4.0,
+        "Target": "13~14px ±1",
+        "Pass": false
+      }
+    ]
+  }
+}

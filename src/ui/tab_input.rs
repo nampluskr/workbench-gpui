@@ -63,6 +63,10 @@ impl Workbench {
 
     /// Keyboard focus to the active pane's active editor, else the center area.
     pub(super) fn focus_active_pane(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if let Some(focus) = self.active_ws().and_then(|ws| ws.read(cx).group.active_tab().and_then(|t| t.tool.as_ref().map(|t| t.1.clone()))) {
+            focus.focus(window, cx);
+            return;
+        }
         // A Markdown preview tab shows no editor, so the center area keeps the keys (its editor is hidden).
         let active = self.active_ws().and_then(|ws| ws.read(cx).group.active_tab().map(|t| (t.markdown, t.editor.focus_handle(cx))));
         match (focus_target(active.as_ref().map(|a| a.0)), active) {

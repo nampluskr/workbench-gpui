@@ -5,9 +5,11 @@
 mod app_menu;
 mod context_menu;
 mod editor_poc;
+mod extensions;
 mod folders;
 mod fonts;
 mod keymap;
+mod keymap_editor;
 mod markdown_preview;
 mod layout;
 mod layout_probe;
@@ -585,6 +587,8 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_close_window))
             .on_action(cx.listener(Self::on_save))
             .on_action(cx.listener(Self::on_open_settings))
+            .on_action(cx.listener(Self::on_open_keymap))
+            .on_action(cx.listener(Self::on_open_extensions))
             .on_action(cx.listener(Self::on_use_classic_layout))
             .on_action(cx.listener(Self::on_close_active_item))
             .on_action(cx.listener(Self::on_activate_previous_item))

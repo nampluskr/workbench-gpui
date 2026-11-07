@@ -60,7 +60,7 @@ pub mod markdown {
 }
 
 pub mod zed {
-    gpui_kit::actions!(zed, [Quit, Minimize, Zoom, OpenSettings]);
+    gpui_kit::actions!(zed, [Quit, Minimize, Zoom, OpenSettings, OpenKeymap, Extensions]);
 }
 
 pub mod multi_workspace {
@@ -139,6 +139,24 @@ impl Global for KeymapState {}
 /// `%APPDATA%\workbench-gpui\keymap.json` (D-11, `dirs::config_dir` = Windows 의 `FOLDERID_RoamingAppData`).
 pub fn keymap_path() -> Option<PathBuf> {
     dirs::config_dir().map(|dir| dir.join(APP_DIR).join(KEYMAP_FILE))
+}
+
+pub fn editor_rows(cx: &App) -> Vec<super::keymap_editor::Row> {
+    let keymap = cx.key_bindings();
+    let keymap = keymap.borrow();
+    let mut rows: Vec<_> = keymap.bindings().map(|b| super::keymap_editor::Row {
+        action: b.action().name().into(),
+        keys: b.keystrokes().iter().map(|k| keystroke_notation(k.inner())).collect::<Vec<_>>().join(" "),
+        context: b.predicate().map(|p| p.to_string()).unwrap_or_default(),
+        user: b.meta() == Some(USER_META),
+    }).collect();
+    for (name, _) in ACTIONS {
+        if !rows.iter().any(|row| row.action == *name) {
+            rows.push(super::keymap_editor::Row { action: (*name).into(), keys: String::new(), context: String::new(), user: false });
+        }
+    }
+    rows.sort_by(|a, b| a.action.cmp(&b.action));
+    rows
 }
 
 /// `gpui_kit::init` 바로 뒤에 한 번 부른다. 액션 처리기와 키 입력 관찰을 붙인다. 바인딩은 `load` 가 넣는다.
@@ -292,6 +310,7 @@ pub fn log_handled(action: &dyn Action, focus: &str, cx: &App) {
 
 /// 세 층을 모두 다시 넣고, 오류가 있으면 알림 하나로 보인다(D-14 이후 변경). 창이 열린 뒤에 부른다.
 pub fn load(window: &mut Window, cx: &mut App) {
+    super::settings::reload(Some(window), cx);
     let errors = apply(cx);
     if !errors.is_empty() {
         let text = errors.join("\n");
@@ -328,7 +347,7 @@ fn apply(cx: &mut App) -> Vec<String> {
     }
 
     if let Some(path) = cx.global::<KeymapState>().path.clone() {
-        let parsed = file::read(&path, &is_known_action);
+        let parsed = file::read(&path, &|name| is_known_action(name) || cx.build_action(name, None).is_ok());
         for entry in parsed.entries {
             let user = match entry {
                 Ok(user) => user,
@@ -537,7 +556,7 @@ pub fn watch(window: &mut Window, cx: &mut App) {
                         break;
                     }
                 }
-                if cx.update(|window, cx| { load(window, cx); super::settings::reload(cx); }).is_err() {
+                if cx.update(load).is_err() {
                     break;
                 }
             }
