@@ -532,6 +532,29 @@ fn refresh(
     }
 }
 
+/// The layer tree of `text`: the file's own syntax tree (reparsed from `old` when there is one) and its injected layers.
+fn build_root(
+    parsers: &mut HashMap<&'static str, Parser>,
+    resources: &'static QueryResources,
+    id: &'static str,
+    text: &Rope,
+    old: Option<Layer>,
+    edited: &[Range<usize>],
+) -> Option<Layer> {
+    let tree = parse_layer(parsers, id, text, &[], old.as_ref().map(|l| &l.tree))?;
+    let changed = changed_bytes(old.as_ref().map(|l| &l.tree), &tree, edited, &(0..text.len()));
+    let mut root = Layer {
+        id,
+        depth: 0,
+        tree,
+        host: 0..usize::MAX,
+        combined: false,
+        children: old.map(|old| old.children).unwrap_or_default(),
+    };
+    refresh(parsers, resources, text, &mut root, &changed, edited);
+    Some(root)
+}
+
 /// The bytes of `new` that may differ from `old`: where the trees differ plus the edited bytes (Zed joins the edits
 /// with the tree changes: a change that only lengthens a leaf is not a tree change). A layer with no old tree is new
 /// from start to end.
@@ -551,10 +574,10 @@ fn collect_layers<'a>(layer: &'a Layer, range: &Range<usize>, out: &mut Vec<&'a 
 
 /// Tree-sitter highlighter for one editor: the file's own syntax tree plus a layer per injected language, the shared
 /// per-language queries.
-// shortcut: parses on the UI thread (incremental after the first parse, so typing stays cheap; the first parse of a
-// very large file, with every injected layer, blocks one frame). Zed parses in the background; move `reparse` to a
-// task if big files stall. K-49 (release, one character in the middle): 12k-45k-line TypeScript/Rust 3-26 ms, a 10k-line
-// Markdown about 14 ms (60 ms for the first edit after opening); the first parse of a 45k-line .d.ts takes 1.4 s.
+// shortcut: edits are parsed incrementally on the UI thread; only the first parse of a file runs on a background thread
+// (K-50, `run_full_parse`). Zed parses every change in the background; move `reparse` to a task too if typing stalls.
+// K-49 (release, one character in the middle): 12k-45k-line TypeScript/Rust 3-26 ms, a 10k-line Markdown about 14 ms
+// (60 ms for the first edit after opening).
 struct SyntaxHighlighter {
     id: &'static str,
     resources: &'static QueryResources,
@@ -565,7 +588,44 @@ struct SyntaxHighlighter {
     edited: Vec<Range<usize>>,
     /// Theme id and, per language, the resolved style of every capture index of its highlights query.
     colors: RefCell<Option<(u64, CaptureStyles)>>,
+    parse: ParseState,
 }
+
+/// K-50: the first parse of a file runs off the UI thread. Until it is back the highlighter has no tree and gives plain
+/// text and no symbols.
+#[derive(Default)]
+struct ParseState {
+    generation: u64,
+    /// The full parse in flight: its generation and the edits made to the text since it started, in order.
+    flight: Option<(u64, Vec<InputEdit>)>,
+    /// The foreground task that waits for the full parse; dropping it (with the highlighter) abandons the wait.
+    task: Option<gpui_kit::Task<()>>,
+}
+
+/// A full parse of a text (root and injected layers), everything it needs owned so it can run on a background thread.
+struct FullParse {
+    resources: &'static QueryResources,
+    id: &'static str,
+    text: Rope,
+    generation: u64,
+}
+
+struct Parsed {
+    generation: u64,
+    root: Option<Layer>,
+    parsers: HashMap<&'static str, Parser>,
+}
+
+impl FullParse {
+    fn run(self) -> Parsed {
+        let mut parsers = HashMap::new();
+        let root = build_root(&mut parsers, self.resources, self.id, &self.text, None, &[]);
+        Parsed { generation: self.generation, root, parsers }
+    }
+}
+
+/// Zed `buffer.rs` 1177: how long the UI thread waits for a parse before it goes on without one.
+const SYNC_PARSE_TIMEOUT: std::time::Duration = std::time::Duration::from_millis(1);
 
 /// Per language id, the style of every capture index of its highlights query under one theme.
 type CaptureStyles = HashMap<&'static str, Vec<Option<HighlightStyle>>>;
@@ -578,7 +638,7 @@ impl SyntaxHighlighter {
         let spec = LANGUAGES.iter().find(|language| language.id == id)?;
         grammar(spec.id)?;
         resources.queries(spec.id)?.first()?;
-        Some(Self { id: spec.id, resources, parsers: HashMap::new(), root: None, text: Rope::new(), edited: Vec::new(), colors: RefCell::new(None) })
+        Some(Self { id: spec.id, resources, parsers: HashMap::new(), root: None, text: Rope::new(), edited: Vec::new(), colors: RefCell::new(None), parse: ParseState::default() })
     }
 
     fn edit(&mut self, edit: &InputEdit) {
@@ -593,18 +653,56 @@ impl SyntaxHighlighter {
         self.text = text.clone();
         let old = self.root.take();
         let edited = std::mem::take(&mut self.edited);
-        let Some(tree) = parse_layer(&mut self.parsers, self.id, text, &[], old.as_ref().map(|l| &l.tree)) else { return };
-        let changed = changed_bytes(old.as_ref().map(|l| &l.tree), &tree, &edited, &(0..text.len()));
-        let mut root = Layer {
-            id: self.id,
-            depth: 0,
-            tree,
-            host: 0..usize::MAX,
-            combined: false,
-            children: old.map(|old| old.children).unwrap_or_default(),
-        };
-        refresh(&mut self.parsers, self.resources, text, &mut root, &changed, &edited);
-        self.root = Some(root);
+        self.root = build_root(&mut self.parsers, self.resources, self.id, text, old, &edited);
+    }
+
+    /// K-50: a change of the text. Returns the full parse to start off the UI thread when there is no tree to edit yet
+    /// (the first parse of a file). While such a parse is in flight the edits are only logged; `finish` replays them on
+    /// the tree it gets.
+    fn changed(&mut self, edits: &[(InputEdit, Rope)]) -> Option<FullParse> {
+        let (_, last) = edits.last()?;
+        if let Some((_, log)) = &mut self.parse.flight {
+            log.extend(edits.iter().map(|(edit, _)| *edit));
+            self.text = last.clone();
+            return None;
+        }
+        if self.root.is_none() { return Some(self.start_full(last)); }
+        for (edit, _) in edits { self.edit(edit); }
+        self.reparse(last);
+        None
+    }
+
+    /// Forgets the tree and starts a full parse of `text`; an earlier one in flight is abandoned (its result no longer
+    /// matches the generation).
+    fn start_full(&mut self, text: &Rope) -> FullParse {
+        self.root = None;
+        self.edited.clear();
+        self.text = text.clone();
+        self.parse.generation += 1;
+        self.parse.flight = Some((self.parse.generation, Vec::new()));
+        self.parse.task = None;
+        FullParse { resources: self.resources, id: self.id, text: text.clone(), generation: self.parse.generation }
+    }
+
+    /// Installs the result of a full parse when it is still the one in flight (false: it was abandoned, nothing
+    /// changes). Edits made meanwhile are applied to the new tree and reparsed incrementally, as if it had been there.
+    fn finish(&mut self, done: Parsed) -> bool {
+        match self.parse.flight.take() {
+            Some((generation, log)) if generation == done.generation => {
+                self.parsers.extend(done.parsers);
+                self.root = done.root;
+                if self.root.is_some() && !log.is_empty() {
+                    for edit in &log { self.edit(edit); }
+                    let text = self.text.clone();
+                    self.reparse(&text);
+                }
+                true
+            }
+            other => {
+                self.parse.flight = other;
+                false
+            }
+        }
     }
 
     fn runs(&self, range: &Range<usize>, theme: Option<&SyntaxTheme>) -> Vec<(Range<usize>, HighlightStyle)> {
@@ -744,35 +842,6 @@ impl SyntaxHighlighter {
     }
 }
 
-impl InputHighlighter for SyntaxHighlighter {
-    fn language(&self) -> gpui_kit::SharedString {
-        self.id.into()
-    }
-
-    fn update(&mut self, edit: Option<InputEdit>, text: &Rope, _folding: bool, _window: &mut Window, _cx: &mut Context<EditorState>) {
-        match edit {
-            Some(edit) => self.edit(&edit),
-            None => self.root = None,
-        }
-        self.reparse(text);
-    }
-
-    /// One reparse for the whole change; every edit still reaches the tree in the order it was made.
-    fn update_batch(&mut self, edits: &[(InputEdit, Rope)], _folding: bool, _window: &mut Window, _cx: &mut Context<EditorState>) {
-        let Some((_, last)) = edits.last() else { return };
-        for (edit, _) in edits { self.edit(edit); }
-        self.reparse(last);
-    }
-
-    fn styles(&self, range: &Range<usize>, _resolver: &dyn HighlightStyleResolver) -> Vec<(Range<usize>, HighlightStyle)> {
-        self.runs(range, current_theme().as_deref())
-    }
-
-    // Folding is not part of this card.
-    fn fold_ranges(&self, _text: &Rope) -> Vec<FoldRange> {
-        Vec::new()
-    }
-}
 
 /// The editor owns its highlighter as a `Box<dyn InputHighlighter>`; this shares the parse state with the app so the
 /// breadcrumb can ask for symbols without a change in the editor crate (K-45-R1).
@@ -782,23 +851,53 @@ struct SharedHighlighter(Shared);
 
 impl InputHighlighter for SharedHighlighter {
     fn language(&self) -> gpui_kit::SharedString {
-        self.0.borrow().language()
+        self.0.borrow().id.into()
     }
 
-    fn update(&mut self, edit: Option<InputEdit>, text: &Rope, folding: bool, window: &mut Window, cx: &mut Context<EditorState>) {
-        self.0.borrow_mut().update(edit, text, folding, window, cx);
+    /// `None` is a full reset (the text was replaced); `Some` is an edit of the text the highlighter has seen, or, for a
+    /// new highlighter, the first look at the text.
+    fn update(&mut self, edit: Option<InputEdit>, text: &Rope, _folding: bool, _window: &mut Window, cx: &mut Context<EditorState>) {
+        let job = match edit {
+            Some(edit) => self.0.borrow_mut().changed(&[(edit, text.clone())]),
+            None => Some(self.0.borrow_mut().start_full(text)),
+        };
+        if let Some(job) = job { run_full_parse(&self.0, job, cx); }
     }
 
-    fn update_batch(&mut self, edits: &[(InputEdit, Rope)], folding: bool, window: &mut Window, cx: &mut Context<EditorState>) {
-        self.0.borrow_mut().update_batch(edits, folding, window, cx);
+    /// One reparse for the whole change; every edit still reaches the tree in the order it was made.
+    fn update_batch(&mut self, edits: &[(InputEdit, Rope)], _folding: bool, _window: &mut Window, cx: &mut Context<EditorState>) {
+        let job = self.0.borrow_mut().changed(edits);
+        if let Some(job) = job { run_full_parse(&self.0, job, cx); }
     }
 
-    fn styles(&self, range: &Range<usize>, resolver: &dyn HighlightStyleResolver) -> Vec<(Range<usize>, HighlightStyle)> {
-        self.0.borrow().styles(range, resolver)
+    fn styles(&self, range: &Range<usize>, _resolver: &dyn HighlightStyleResolver) -> Vec<(Range<usize>, HighlightStyle)> {
+        self.0.borrow().runs(range, current_theme().as_deref())
     }
 
-    fn fold_ranges(&self, text: &Rope) -> Vec<FoldRange> {
-        self.0.borrow().fold_ranges(text)
+    // Folding is not part of this card.
+    fn fold_ranges(&self, _text: &Rope) -> Vec<FoldRange> {
+        Vec::new()
+    }
+}
+
+/// K-50, Zed `buffer.rs` 1943-2010: parses on a background thread and waits `SYNC_PARSE_TIMEOUT` for it; a small file is
+/// done by then and nothing flickers. A big one goes on in the background: until it is back the file is plain text; when
+/// it arrives (and was not abandoned by a restart) the highlighter takes the tree and the editor repaints. The wait holds
+/// the highlighter only weakly, so closing the file or giving the editor another highlighter drops the result.
+fn run_full_parse(shared: &Shared, job: FullParse, cx: &mut Context<EditorState>) {
+    let work = cx.background_executor().spawn(async move { job.run() });
+    match cx.foreground_executor().block_with_timeout(SYNC_PARSE_TIMEOUT, work) {
+        Ok(done) => { shared.borrow_mut().finish(done); }
+        Err(rest) => {
+            let weak = Rc::downgrade(shared);
+            let task = cx.spawn(async move |editor, cx| {
+                let done = rest.await;
+                let Some(shared) = weak.upgrade() else { return };
+                let applied = shared.borrow_mut().finish(done);
+                if applied { editor.update(cx, |editor, cx| editor.refresh(cx)).ok(); }
+            });
+            shared.borrow_mut().parse.task = Some(task);
+        }
     }
 }
 
@@ -1624,6 +1723,118 @@ mod tests {
         let keys = ["keyword", "tag", "attribute"];
         check_layers("typescript", "/** @param {string} a */\nfunction f(a: string) {}\nconst t = /* html */ `<b class=\"x\">y</b>`;\n", &keys,
             &[("@param", Some("keyword")), ("class", Some("attribute"))]);
+    }
+
+    /// K-50: the first parse runs as a `FullParse` on another thread; the colours that arrive equal a synchronous parse,
+    /// and until then the file is plain text with no symbols.
+    #[test]
+    fn first_parse_runs_off_thread_and_equals_a_synchronous_parse() {
+        let text = "// c\npub struct Counter { n: u32 }\nimpl Counter {\n    pub fn bump(&mut self) -> u32 { self.n += 1; self.n }\n}\n".repeat(50);
+        let rope = Rope::from_str(&text);
+        let Some(mut h) = SyntaxHighlighter::new(resources(), "rust") else { return };
+        let theme = theme(&[("keyword", style(1)), ("function", style(2)), ("type", style(3)), ("comment", style(4))]);
+        let range = 0..text.len();
+        let job = h.changed(&[(replacement_edit(&rope), rope.clone())]).expect("a highlighter without a tree starts a full parse");
+        // Waiting: plain text, no symbols, and a further change is only logged.
+        assert_eq!(h.runs(&range, Some(&theme)), vec![(range.clone(), HighlightStyle::default())]);
+        assert!(h.symbols(text.find("n += 1").unwrap(), Some(&theme)).is_empty());
+        let done = std::thread::spawn(move || job.run()).join().expect("the parse thread");
+        assert!(h.finish(done));
+        let mut sync = SyntaxHighlighter::new(resources(), "rust").unwrap();
+        sync.reparse(&rope);
+        assert_eq!(h.runs(&range, Some(&theme)), sync.runs(&range, Some(&theme)));
+        assert!(h.runs(&range, Some(&theme)).iter().any(|(_, s)| *s != HighlightStyle::default()));
+        assert!(!h.symbols(text.find("n += 1").unwrap(), Some(&theme)).is_empty());
+    }
+
+    /// K-50 races: an edit while the parse is in flight is replayed on the tree that arrives (the colours then equal a
+    /// parse of the new text); a restart (the text was replaced) or a second full parse abandons the first result.
+    #[test]
+    fn edits_during_the_first_parse_are_replayed_and_restarts_discard_the_result() {
+        use gpui_kit::base::input::RopeExt;
+        let theme = theme(&[("keyword", style(1)), ("function", style(2)), ("string", style(3)), ("comment", style(4))]);
+        let text = "fn a() {}\nfn b() { let s = \"x\"; }\n".repeat(40);
+        let Some(mut h) = SyntaxHighlighter::new(resources(), "rust") else { return };
+        let old = Rope::from_str(&text);
+        let job = h.changed(&[(replacement_edit(&old), old.clone())]).unwrap();
+        // Two edits while it is parsing (the second one after the first, one batch and one single).
+        let first = text.find("fn b").unwrap();
+        let mut now = text.clone();
+        let mut before = old.clone();
+        for (at, inserted) in [(first, "// note\n"), (0, "pub ")] {
+            now.insert_str(at, inserted);
+            let after = Rope::from_str(&now);
+            let edit = InputEdit {
+                start_byte: at, old_end_byte: at, new_end_byte: at + inserted.len(),
+                start_position: before.offset_to_point(at), old_end_position: before.offset_to_point(at), new_end_position: after.offset_to_point(at + inserted.len()),
+            };
+            assert!(h.changed(&[(edit, after.clone())]).is_none(), "no second parse while one is in flight");
+            before = after;
+        }
+        let done = std::thread::spawn(move || job.run()).join().unwrap();
+        assert!(h.finish(done));
+        let mut fresh = SyntaxHighlighter::new(resources(), "rust").unwrap();
+        fresh.reparse(&before);
+        let range = 0..now.len();
+        assert_eq!(h.runs(&range, Some(&theme)), fresh.runs(&range, Some(&theme)));
+        // A restart while parsing: the first result is thrown away, the second one counts.
+        let mut h = SyntaxHighlighter::new(resources(), "rust").unwrap();
+        let (first_job, second_job) = (h.start_full(&old), h.start_full(&old));
+        let (first_done, second_done) = (first_job.run(), second_job.run());
+        assert!(!h.finish(first_done), "an abandoned parse is discarded");
+        assert_eq!(h.runs(&(0..old.len()), Some(&theme)).len(), 1, "still plain text");
+        assert!(h.finish(second_done));
+        // Nothing in flight (the file was closed or reloaded and a later result arrives): discarded too.
+        let late = h.start_full(&old).run();
+        let current = h.start_full(&old).run();
+        assert!(h.finish(current));
+        assert!(!h.finish(late), "a result with no parse in flight changes nothing");
+    }
+
+    /// An edit as the editor makes it for the first look at a text (a zero-length replacement).
+    fn replacement_edit(text: &Rope) -> InputEdit {
+        use gpui_kit::base::input::RopeExt;
+        let origin = text.offset_to_point(0);
+        InputEdit { start_byte: 0, old_end_byte: 0, new_end_byte: 0, start_position: origin, old_end_position: origin, new_end_position: origin }
+    }
+
+    /// K-50 measurement (not run by default): what the UI thread spends when a big file is opened, and when the background
+    /// parse is done. `K49_FILE=<path> K49_LANG=<id>` or `K49_SYNTH=markdown|html`, `--release`. Before the change the
+    /// UI thread ran the whole parse (`reparse`); now it clones the text, waits `SYNC_PARSE_TIMEOUT` for the thread and
+    /// installs the result.
+    #[test]
+    #[ignore]
+    fn k50_measure() {
+        use std::time::Instant;
+        let (name, lang, text) = match (std::env::var("K49_FILE"), std::env::var("K49_SYNTH")) {
+            (Ok(path), _) => (path.clone(), std::env::var("K49_LANG").expect("K49_LANG"), std::fs::read_to_string(&path).unwrap()),
+            (_, Ok(kind)) => (format!("synthetic {kind}"), kind.clone(), k49_synthetic(&kind)),
+            _ => return,
+        };
+        let rope = Rope::from_str(&text);
+        let mut before = SyntaxHighlighter::new(resources(), &lang).expect("language and queries");
+        let started = Instant::now();
+        before.reparse(&rope);
+        let sync_ms = started.elapsed().as_secs_f64() * 1000.0;
+        let mut h = SyntaxHighlighter::new(resources(), &lang).unwrap();
+        let t0 = Instant::now();
+        let job = h.changed(&[(replacement_edit(&rope), rope.clone())]).unwrap();
+        let (sender, receiver) = std::sync::mpsc::channel();
+        std::thread::spawn(move || { sender.send(job.run()).ok(); });
+        let waited = receiver.recv_timeout(super::SYNC_PARSE_TIMEOUT);
+        let t1 = Instant::now();
+        let (done, early) = match waited {
+            Ok(done) => (done, true),
+            Err(_) => (receiver.recv().unwrap(), false),
+        };
+        let background_ms = t0.elapsed().as_secs_f64() * 1000.0;
+        let t2 = Instant::now();
+        assert!(h.finish(done));
+        let finish_ms = t2.elapsed().as_secs_f64() * 1000.0;
+        // The UI thread: start + wait (at most the timeout) + installing the result; the thread's own parse is not it.
+        let blocked_ms = t1.duration_since(t0).as_secs_f64() * 1000.0 + finish_ms;
+        println!("K50 | {name} | {} lines | before: UI thread {sync_ms:.1} ms | after: UI thread {blocked_ms:.1} ms (finish {finish_ms:.2} ms, parse done within the wait: {early}) | background parse done after {background_ms:.1} ms",
+            text.lines().count());
     }
 
     /// K-45: the texts of the symbols around the first byte of `marker` (one byte in), under distinct colours per key.

@@ -973,6 +973,10 @@
   - 백그라운드 파싱은 하지 않음: 고친 뒤 막은 최장이 한 프레임 안팎(TS 3.6~8.3ms, Rust 4~26ms, HTML 8ms). 남은 값 — 합성 마크다운 연 뒤 첫 편집 61ms(이후 반복 없음, tree-sitter-md 블록 파서), ash 5.7만 줄 26ms, 첫 파싱은 UI 스레드(TS 4.5만 줄 1.4초, 1.5만 줄 0.4초). 더 줄이려면 첫 파싱 background + 그동안 평문(별도 카드 후보, V4-LIST "결정" 행).
   - 결과: 완료(`src/ui/syntax.rs`, 측정 테스트 `#[ignore]`). 검증: V1, 전체 `cargo test` 316 passed(2 ignored)·clippy 0, vendor/gpui-base 변경 없음.
 - **W-56 K-49 기록, V4-LIST 큰 파일 행** (2026-11-08): 위 K-49를 기록하고 `reports/V4-LIST.md`의 "큰 파일 입력 지연" 상태를 K-49 결과로, 남은 값(마크다운 첫 편집 61ms, 첫 파싱 UI 스레드)을 "결정" 종류 "백그라운드 파싱" 행으로 더했다. 결과: `PROGRESS.md`·`reports/V4-LIST.md` 수정, `cards/W-56.report.md`. 검증: V0(표 열 수).
+- **K-50 첫 파싱 background** (2026-11-08, core ORDER-11-R2 [DECISION]: 처음 열 때 전체 파싱만 background, 편집 중 증분은 동기): 새 하이라이터(파일 열기·다시 읽기)의 첫 전체 파싱을 `background_executor`로 보내고 `SYNC_PARSE_TIMEOUT` 1ms(Zed `sync_parse_timeout`)만 기다린다 — 그 안에 끝나면 바로 반영, 아니면 그동안 평문·심볼 빈 목록, 결과가 오면 `EditorState::refresh`. 파싱 중 편집은 로그에 쌓았다가 결과 트리에 재생 + 증분 `reparse` 한 번. 재시작(텍스트 교체)은 세대 번호로, 닫기·다른 파일은 `Weak`로 결과를 버린다(이미 도는 파싱은 끝까지 돌고 결과만 버림). Zed `buffer.rs` 1177·1943~2010 규칙.
+  - 전/후(release, UI 스레드 막은 최장 ms, 괄호는 background 완료까지): TS `lib.webworker.d.ts` 402.5 → 5.0(404.6), TS `lib.dom.d.ts` 4.5만 줄 1,353.4 → 1.9(1,376.5), ash `native.rs` 302.8 → 12.4(308.6), ash `definitions.rs` 380.5 → 11.3(393.8), 합성 마크다운 223.4 → 15.9(234.8), 합성 HTML 111.9 → 11.9(112.0). "후"의 2~16ms에는 측정 방법(`recv_timeout` 1ms가 Windows 타이머 틱으로 올림)의 한계가 섞여 있다.
+  - 결과: 완료(`src/ui/syntax.rs`, 테스트 2 + 측정 `#[ignore]`). 검증: V1, 전체 `cargo test` 318 passed(3 ignored)·clippy 0, vendor/gpui-base 변경 없음. 실측 필요: 앱에서 평문 → 색 전환, 파싱 중 입력·탭 닫기·파일 바꾸기(V3).
+- **W-57 K-50 기록, V4-LIST 백그라운드 파싱 행** (2026-11-08): 위 K-50을 기록하고 `reports/V4-LIST.md` "백그라운드 파싱" 결정 행의 상태를 core 결정(ORDER-11-R2)과 K-50 결과로 바꿨다(마크다운 첫 편집 61ms는 기록만, 화면 모습은 V3/Phase 12). 결과: `PROGRESS.md`·`reports/V4-LIST.md` 수정, `cards/W-57.report.md`. 검증: V0(표 열 수).
 
 #### 지금 상태 요약(2026-11-08, ORDER-11 진행 중)
 
