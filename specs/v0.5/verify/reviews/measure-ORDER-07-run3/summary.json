@@ -1,0 +1,130 @@
+{
+  "app": {
+    "app-default-onedark": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-default-onedark.png",
+    "theme_modal": {
+      "capture": "app-theme-modal-open.png",
+      "shortcut": "Ctrl-K Ctrl-T"
+    },
+    "app-theme-modal-open": "PASS",
+    "theme_preview": {
+      "capture": "app-theme-modal-preview-down.png"
+    },
+    "app-theme-modal-preview-down": "PASS",
+    "theme_restore": {
+      "capture": "app-theme-modal-esc-restore.png",
+      "restored_editor_bg": "#282c33"
+    },
+    "app-theme-modal-esc-restore": "PASS",
+    "app-theme-apply-onelight": "PASS",
+    "app-theme-apply-ayudark": "PASS",
+    "app-theme-apply-gruvbox": "PASS",
+    "app-theme-apply-catppuccin": "PASS",
+    "app-theme-apply-macosclassic": "PASS",
+    "app-icon-theme-catppuccin": "PASS",
+    "app-settings-window": "PASS",
+    "app-extensions-tab": "PASS",
+    "app-keymap-editor-hover": "PASS",
+    "app-v-button-crop": "FAIL: System.Management.Automation.MethodInvocationException: \"Save\"을(를) \"2\"개의 인수와 함께 호출하는 동안 예외가 발생함: \"A generic error occurred in GDI+.\"\r\n ---> System.Runtime.InteropServices.ExternalException (0x80004005): A generic error occurred in GDI+.\r\n   at Windows.Win32.Graphics.GdiPlus.StatusExtensions.ThrowIfFailed(Status status)\r\n   at System.Drawing.Image.Save(String filename, Guid encoder, EncoderParameters encoderParams)\r\n   at System.Drawing.Image.Save(String filename, ImageFormat format)\r\n   at CallSite.Target(Closure, CallSite, Object, String, ImageFormat)\r\n   --- End of inner exception stack trace ---\r\n   at System.Management.Automation.ExceptionHandlingOps.CheckActionPreference(FunctionContext funcContext, Exception exception)\r\n   at System.Management.Automation.Interpreter.ActionCallInstruction`2.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)\r\n   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)"
+  },
+  "zed": {
+    "prerequisite": "PASS",
+    "zed-default-onedark": "PASS",
+    "zed-theme-modal": "PASS",
+    "zed-tree-icons": "PASS",
+    "config_integrity": "PASS: Config files 100% intact"
+  },
+  "theme_colors": {
+    "One Light": {
+      "capture": "app-theme-onelight.png",
+      "editor_bg": "#fafafa",
+      "expected_editor_bg": "#fafafa",
+      "status_bg": "#dcdcdd",
+      "expected_status_bg": "#dcdcdd",
+      "panel_bg": "#ebebec",
+      "expected_panel_bg": "#ebebec",
+      "title_bg": "#dcdcdd",
+      "expected_title_bg": "#dcdcdd"
+    },
+    "Ayu Dark": {
+      "capture": "app-theme-ayudark.png",
+      "editor_bg": "#0d1016",
+      "expected_editor_bg": "#0d1016",
+      "status_bg": "#313337",
+      "expected_status_bg": "#313337",
+      "panel_bg": "#1f2127",
+      "expected_panel_bg": "#1f2127",
+      "title_bg": "#313337",
+      "expected_title_bg": "#313337"
+    },
+    "Gruvbox Dark": {
+      "capture": "app-theme-gruvbox.png",
+      "editor_bg": "#282828",
+      "expected_editor_bg": "#282828",
+      "status_bg": "#4c4642",
+      "expected_status_bg": "#4c4642",
+      "panel_bg": "#3a3735",
+      "expected_panel_bg": "#3a3735",
+      "title_bg": "#4c4642",
+      "expected_title_bg": "#4c4642"
+    },
+    "Catppuccin Latte": {
+      "capture": "app-theme-catppuccin.png",
+      "editor_bg": "#eff1f5",
+      "expected_editor_bg": "#eff1f5",
+      "status_bg": "#dce0e8",
+      "expected_status_bg": "#dce0e8",
+      "panel_bg": "#e6e9ef",
+      "expected_panel_bg": "#e6e9ef",
+      "title_bg": "#dce0e8",
+      "expected_title_bg": "#dce0e8"
+    },
+    "macOS Classic Light": {
+      "capture": "app-theme-macosclassic.png",
+      "editor_bg": "#ffffff",
+      "expected_editor_bg": "#ffffff",
+      "status_bg": "#e9e9e9",
+      "expected_status_bg": "#e9e9e9",
+      "panel_bg": "#f9f9f9",
+      "expected_panel_bg": "#f9f9f9",
+      "title_bg": "#fefefe",
+      "expected_title_bg": "#fefefe"
+    }
+  },
+  "crops": {
+    "zed-tree-icon": {
+      "crop": "zed-tree-icon-crop-4x.png",
+      "icon_theme": "Catppuccin Latte"
+    }
+  },
+  "config_hashes": {
+    "before": {
+      "settings.json": {
+        "Exists": true,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\settings.json",
+        "Sha256": "C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2",
+        "Length": 1031
+      },
+      "keymap.json": {
+        "Exists": false,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\keymap.json",
+        "Sha256": "ABSENT",
+        "Length": 0
+      }
+    },
+    "after": {
+      "settings.json": {
+        "Exists": true,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\settings.json",
+        "Sha256": "C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2",
+        "Length": 1031
+      },
+      "keymap.json": {
+        "Exists": false,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\keymap.json",
+        "Sha256": "ABSENT",
+        "Length": 0
+      }
+    },
+    "intact": true
+  }
+}

@@ -1,0 +1,353 @@
+2026-11-07T04:34:08.814Z === ORDER-07 V3 Measure Script Initialized ===
+2026-11-07T04:34:08.858Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07
+2026-11-07T04:34:08.860Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T04:34:08.862Z ZedExe: C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe
+2026-11-07T04:34:09.256Z === Starting ORDER-07 V3 App Measurement Session ===
+2026-11-07T04:34:09.279Z Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07T04:34:11.559Z Session started: appPid=44352
+2026-11-07T04:34:13.259Z Main window HWND: 0x2FF0012, Title: 'workbench-gpui'
+2026-11-07T04:34:15.275Z Resize: {
+2026-11-07T04:34:15.278Z Resize:   "hwnd": "0x2FF0012",
+2026-11-07T04:34:15.279Z Resize:   "desktop": "Default",
+2026-11-07T04:34:15.280Z Resize:   "title": "",
+2026-11-07T04:34:15.282Z Resize:   "className": "workbench-gpui",
+2026-11-07T04:34:15.283Z Resize:   "workArea_SPI": {
+2026-11-07T04:34:15.284Z Resize:     "left": 0,
+2026-11-07T04:34:15.285Z Resize:     "top": 0,
+2026-11-07T04:34:15.287Z Resize:     "right": 1920,
+2026-11-07T04:34:15.288Z Resize:     "bottom": 1032,
+2026-11-07T04:34:15.289Z Resize:     "width": 1920,
+2026-11-07T04:34:15.290Z Resize:     "height": 1032
+2026-11-07T04:34:15.291Z Resize:   },
+2026-11-07T04:34:15.292Z Resize:   "workArea_Monitor": {
+2026-11-07T04:34:15.294Z Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07T04:34:15.295Z Resize:     "left": 0,
+2026-11-07T04:34:15.296Z Resize:     "top": 0,
+2026-11-07T04:34:15.297Z Resize:     "right": 1920,
+2026-11-07T04:34:15.299Z Resize:     "bottom": 1032,
+2026-11-07T04:34:15.300Z Resize:     "width": 1920,
+2026-11-07T04:34:15.302Z Resize:     "height": 1032
+2026-11-07T04:34:15.303Z Resize:   },
+2026-11-07T04:34:15.304Z Resize:   "workAreaCenter": {
+2026-11-07T04:34:15.305Z Resize:     "x": 960.0,
+2026-11-07T04:34:15.307Z Resize:     "y": 516.0
+2026-11-07T04:34:15.309Z Resize:   },
+2026-11-07T04:34:15.310Z Resize:   "windowRect": {
+2026-11-07T04:34:15.311Z Resize:     "left": 232,
+2026-11-07T04:34:15.313Z Resize:     "top": 90,
+2026-11-07T04:34:15.314Z Resize:     "right": 1688,
+2026-11-07T04:34:15.315Z Resize:     "bottom": 950,
+2026-11-07T04:34:15.317Z Resize:     "width": 1456,
+2026-11-07T04:34:15.320Z Resize:     "height": 860
+2026-11-07T04:34:15.322Z Resize:   },
+2026-11-07T04:34:15.323Z Resize:   "windowCenter": {
+2026-11-07T04:34:15.324Z Resize:     "x": 960.0,
+2026-11-07T04:34:15.325Z Resize:     "y": 520.0
+2026-11-07T04:34:15.326Z Resize:   },
+2026-11-07T04:34:15.327Z Resize:   "windowCenterDiff": {
+2026-11-07T04:34:15.329Z Resize:     "dx": 0.0,
+2026-11-07T04:34:15.330Z Resize:     "dy": 4.0
+2026-11-07T04:34:15.332Z Resize:   },
+2026-11-07T04:34:15.333Z Resize:   "clientRect": {
+2026-11-07T04:34:15.334Z Resize:     "width": 1440,
+2026-11-07T04:34:15.335Z Resize:     "height": 852
+2026-11-07T04:34:15.337Z Resize:   },
+2026-11-07T04:34:15.338Z Resize:   "clientToScreen": {
+2026-11-07T04:34:15.339Z Resize:     "x": 240,
+2026-11-07T04:34:15.340Z Resize:     "y": 90
+2026-11-07T04:34:15.341Z Resize:   },
+2026-11-07T04:34:15.342Z Resize:   "clientScreenRect": {
+2026-11-07T04:34:15.344Z Resize:     "left": 240,
+2026-11-07T04:34:15.345Z Resize:     "top": 90,
+2026-11-07T04:34:15.346Z Resize:     "right": 1680,
+2026-11-07T04:34:15.347Z Resize:     "bottom": 942,
+2026-11-07T04:34:15.348Z Resize:     "width": 1440,
+2026-11-07T04:34:15.349Z Resize:     "height": 852
+2026-11-07T04:34:15.351Z Resize:   },
+2026-11-07T04:34:15.352Z Resize:   "clientCenter": {
+2026-11-07T04:34:15.353Z Resize:     "x": 960.0,
+2026-11-07T04:34:15.354Z Resize:     "y": 516.0
+2026-11-07T04:34:15.355Z Resize:   },
+2026-11-07T04:34:15.356Z Resize:   "clientCenterDiff": {
+2026-11-07T04:34:15.358Z Resize:     "dx": 0.0,
+2026-11-07T04:34:15.359Z Resize:     "dy": 0.0
+2026-11-07T04:34:15.360Z Resize:   },
+2026-11-07T04:34:15.361Z Resize:   "capture": {
+2026-11-07T04:34:15.362Z Resize:     "ok": false,
+2026-11-07T04:34:15.363Z Resize:     "path": ""
+2026-11-07T04:34:15.364Z Resize:   }
+2026-11-07T04:34:15.366Z Resize: }
+2026-11-07T04:34:15.987Z Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07T04:34:16.515Z Foreground check for 'Initial': target=0x2FF0012, foreground=0x1990492
+2026-11-07T04:34:16.517Z Warning: Foreground window (26805394) != target (50266130) during Initial
+2026-11-07T04:34:16.558Z Project tree not visible. Ensuring left dock is open and project folder active...
+2026-11-07T04:34:16.600Z =====================================================================
+2026-11-07T04:34:16.602Z [app] Running Step: 'app-default-onedark' - Default startup in One Dark (no settings.json theme key)
+2026-11-07T04:34:16.604Z =====================================================================
+2026-11-07T04:34:17.125Z Foreground check for 'app-default-onedark': target=0x2FF0012, foreground=0x1990492
+2026-11-07T04:34:17.127Z Warning: Foreground window (26805394) != target (50266130) during app-default-onedark
+2026-11-07T04:34:18.167Z Foreground check for 'Capture app-default-onedark': target=0x2FF0012, foreground=0x1990492
+2026-11-07T04:34:18.169Z Warning: Foreground window (26805394) != target (50266130) during Capture app-default-onedark
+2026-11-07T04:34:19.695Z Capture 'app-default-onedark' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-default-onedark.png (exit=1)
+2026-11-07T04:34:19.709Z [app] Step 'app-default-onedark' -> FAIL at line 287 (3099 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-default-onedark.png
+2026-11-07T04:34:19.712Z =====================================================================
+2026-11-07T04:34:19.713Z [app] Running Step: 'app-theme-modal-open' - Select Theme modal open (Ctrl-K Ctrl-T, search, list, checkmark)
+2026-11-07T04:34:19.714Z =====================================================================
+2026-11-07T04:34:20.232Z Foreground check for 'app-theme-modal-open': target=0x2FF0012, foreground=0x1990492
+2026-11-07T04:34:20.233Z Warning: Foreground window (26805394) != target (50266130) during app-theme-modal-open
+2026-11-07T04:34:20.235Z Sending Ctrl-K Ctrl-T...
+2026-11-07T04:34:21.864Z Foreground check for 'Capture app-theme-modal-open': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:23.502Z Capture 'app-theme-modal-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-open.png (exit=0)
+2026-11-07T04:34:23.504Z Captured Select Theme modal: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-open.png
+2026-11-07T04:34:23.511Z [app] Step 'app-theme-modal-open' -> PASS (3795 ms)
+2026-11-07T04:34:23.512Z =====================================================================
+2026-11-07T04:34:23.513Z [app] Running Step: 'app-theme-modal-preview-down' - Down arrow preview next theme in modal
+2026-11-07T04:34:23.514Z =====================================================================
+2026-11-07T04:34:23.720Z Foreground check for 'app-theme-modal-preview-down': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:23.721Z Pressing Down arrow (VK_DOWN=0x28)...
+2026-11-07T04:34:24.537Z Foreground check for 'Capture app-theme-modal-preview-down': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:26.193Z Capture 'app-theme-modal-preview-down' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-preview-down.png (exit=0)
+2026-11-07T04:34:26.195Z Captured theme preview down: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-preview-down.png
+2026-11-07T04:34:26.196Z [app] Step 'app-theme-modal-preview-down' -> PASS (2680 ms)
+2026-11-07T04:34:26.197Z =====================================================================
+2026-11-07T04:34:26.198Z [app] Running Step: 'app-theme-modal-esc-restore' - Esc closes modal and restores original theme
+2026-11-07T04:34:26.199Z =====================================================================
+2026-11-07T04:34:26.416Z Foreground check for 'app-theme-modal-esc-restore': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:26.417Z Pressing Esc (VK_ESCAPE=0x1B)...
+2026-11-07T04:34:27.324Z Foreground check for 'Capture app-theme-modal-esc-restore': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:29.070Z Capture 'app-theme-modal-esc-restore' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-esc-restore.png (exit=0)
+2026-11-07T04:34:29.072Z Captured Esc restored theme: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-esc-restore.png
+2026-11-07T04:34:29.103Z [app] Step 'app-theme-modal-esc-restore' -> PASS (2902 ms)
+2026-11-07T04:34:29.107Z =====================================================================
+2026-11-07T04:34:29.108Z [app] Running Step: 'app-theme-apply-onelight' - Apply theme 'One Light' via selector and sample pixels
+2026-11-07T04:34:29.109Z =====================================================================
+2026-11-07T04:34:29.315Z Foreground check for 'Apply One Light': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:29.316Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:34:32.278Z Foreground check for 'Capture app-theme-onelight': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:33.922Z Capture 'app-theme-onelight' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-onelight.png (exit=0)
+2026-11-07T04:34:33.924Z Captured theme applied 'One Light': D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-onelight.png
+2026-11-07T04:34:33.963Z One Light pixel colors: Editor=#fafafa (exp #fafafa), Status=#dcdcdd (exp #dcdcdd)
+2026-11-07T04:34:33.965Z [app] Step 'app-theme-apply-onelight' -> PASS (4854 ms)
+2026-11-07T04:34:33.966Z =====================================================================
+2026-11-07T04:34:33.968Z [app] Running Step: 'app-theme-apply-ayudark' - Apply theme 'Ayu Dark' via selector and sample pixels
+2026-11-07T04:34:33.970Z =====================================================================
+2026-11-07T04:34:34.180Z Foreground check for 'Apply Ayu Dark': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:34.181Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:34:37.148Z Foreground check for 'Capture app-theme-ayudark': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:38.756Z Capture 'app-theme-ayudark' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-ayudark.png (exit=0)
+2026-11-07T04:34:38.757Z Captured theme applied 'Ayu Dark': D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-ayudark.png
+2026-11-07T04:34:38.774Z Ayu Dark pixel colors: Editor=#0d1016 (exp #0d1016), Status=#313337 (exp #313337)
+2026-11-07T04:34:38.775Z [app] Step 'app-theme-apply-ayudark' -> PASS (4804 ms)
+2026-11-07T04:34:38.777Z =====================================================================
+2026-11-07T04:34:38.778Z [app] Running Step: 'app-theme-apply-gruvbox' - Apply theme 'Gruvbox Dark' via selector and sample pixels
+2026-11-07T04:34:38.779Z =====================================================================
+2026-11-07T04:34:38.980Z Foreground check for 'Apply Gruvbox Dark': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:38.982Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:34:41.942Z Foreground check for 'Capture app-theme-gruvbox': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:43.649Z Capture 'app-theme-gruvbox' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-gruvbox.png (exit=0)
+2026-11-07T04:34:43.651Z Captured theme applied 'Gruvbox Dark': D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-gruvbox.png
+2026-11-07T04:34:43.672Z Gruvbox Dark pixel colors: Editor=#282828 (exp #282828), Status=#4c4642 (exp #4c4642)
+2026-11-07T04:34:43.673Z [app] Step 'app-theme-apply-gruvbox' -> PASS (4892 ms)
+2026-11-07T04:34:43.674Z =====================================================================
+2026-11-07T04:34:43.675Z [app] Running Step: 'app-theme-apply-catppuccin' - Apply theme 'Catppuccin Latte' via selector and sample pixels
+2026-11-07T04:34:43.677Z =====================================================================
+2026-11-07T04:34:43.892Z Foreground check for 'Apply Catppuccin Latte': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:43.893Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:34:46.833Z Foreground check for 'Capture app-theme-catppuccin': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:48.423Z Capture 'app-theme-catppuccin' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-catppuccin.png (exit=0)
+2026-11-07T04:34:48.425Z Captured theme applied 'Catppuccin Latte': D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-catppuccin.png
+2026-11-07T04:34:48.451Z Catppuccin Latte pixel colors: Editor=#eff1f5 (exp #eff1f5), Status=#dce0e8 (exp #dce0e8)
+2026-11-07T04:34:48.454Z [app] Step 'app-theme-apply-catppuccin' -> PASS (4775 ms)
+2026-11-07T04:34:48.455Z =====================================================================
+2026-11-07T04:34:48.456Z [app] Running Step: 'app-theme-apply-macosclassic' - Apply theme 'macOS Classic Light' via selector and sample pixels
+2026-11-07T04:34:48.457Z =====================================================================
+2026-11-07T04:34:48.660Z Foreground check for 'Apply macOS Classic Light': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:48.661Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:34:51.596Z Foreground check for 'Capture app-theme-macosclassic': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:53.170Z Capture 'app-theme-macosclassic' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-macosclassic.png (exit=0)
+2026-11-07T04:34:53.172Z Captured theme applied 'macOS Classic Light': D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-macosclassic.png
+2026-11-07T04:34:53.187Z macOS Classic Light pixel colors: Editor=#ffffff (exp #ffffff), Status=#e9e9e9 (exp #e9e9e9)
+2026-11-07T04:34:53.188Z [app] Step 'app-theme-apply-macosclassic' -> PASS (4729 ms)
+2026-11-07T04:34:53.189Z =====================================================================
+2026-11-07T04:34:53.190Z [app] Running Step: 'app-icon-theme-catppuccin' - Select Icon Theme modal and apply Catppuccin Latte
+2026-11-07T04:34:53.191Z =====================================================================
+2026-11-07T04:34:53.400Z Foreground check for 'Icon theme modal': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:53.408Z Clicking v menu button at (1555, 106)...
+2026-11-07T04:34:55.964Z Foreground check for 'Capture app-icon-theme-modal-open': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:34:57.532Z Capture 'app-icon-theme-modal-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-icon-theme-modal-open.png (exit=0)
+2026-11-07T04:34:57.533Z Captured Icon Theme modal: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-icon-theme-modal-open.png
+2026-11-07T04:34:59.078Z Project tree not visible. Ensuring left dock is open and project folder active...
+2026-11-07T04:34:59.331Z Foreground check for 'Capture app-tree-catppuccin-latte': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:00.963Z Capture 'app-tree-catppuccin-latte' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-tree-catppuccin-latte.png (exit=0)
+2026-11-07T04:35:00.964Z Captured tree with Catppuccin Latte icons: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-tree-catppuccin-latte.png
+2026-11-07T04:35:01.016Z [app] Step 'app-icon-theme-catppuccin' -> PASS (7823 ms)
+2026-11-07T04:35:01.017Z =====================================================================
+2026-11-07T04:35:01.018Z [app] Running Step: 'app-settings-window' - Settings window dropdown list verification
+2026-11-07T04:35:01.020Z =====================================================================
+2026-11-07T04:35:01.229Z Foreground check for 'Settings window': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:01.233Z Sending Ctrl-, to open Settings...
+2026-11-07T04:35:02.904Z Foreground check for 'Capture app-settings-window': target=0xD61644, foreground=0xD61644
+2026-11-07T04:35:04.461Z Capture 'app-settings-window' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-settings-window.png (exit=0)
+2026-11-07T04:35:04.462Z Captured Settings window: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-settings-window.png
+2026-11-07T04:35:05.081Z [app] Step 'app-settings-window' -> PASS (4060 ms)
+2026-11-07T04:35:05.083Z =====================================================================
+2026-11-07T04:35:05.084Z [app] Running Step: 'app-extensions-tab' - Extensions tab (Ctrl-Shift-X) cards verification
+2026-11-07T04:35:05.085Z =====================================================================
+2026-11-07T04:35:05.294Z Foreground check for 'Extensions tab': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:05.295Z Sending Ctrl-Shift-X...
+2026-11-07T04:35:06.954Z Foreground check for 'Capture app-extensions-tab': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:08.586Z Capture 'app-extensions-tab' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-extensions-tab.png (exit=0)
+2026-11-07T04:35:08.603Z Captured Extensions tab: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-extensions-tab.png
+2026-11-07T04:35:08.605Z Closing Extensions tab with Ctrl-W...
+2026-11-07T04:35:09.235Z [app] Step 'app-extensions-tab' -> PASS (4149 ms)
+2026-11-07T04:35:09.236Z =====================================================================
+2026-11-07T04:35:09.237Z [app] Running Step: 'app-keymap-editor-hover' - Keymap Editor hover, <no arguments>, <global>, Edit column 36px
+2026-11-07T04:35:09.238Z =====================================================================
+2026-11-07T04:35:09.454Z Foreground check for 'Keymap Editor': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:09.455Z Sending Ctrl-K Ctrl-S...
+2026-11-07T04:35:11.883Z Foreground check for 'Capture app-keymap-editor-hover': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:13.510Z Capture 'app-keymap-editor-hover' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-keymap-editor-hover.png (exit=0)
+2026-11-07T04:35:13.511Z Captured Keymap Editor with hover: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-keymap-editor-hover.png
+2026-11-07T04:35:13.512Z Closing Keymap Editor with Ctrl-W...
+2026-11-07T04:35:14.157Z [app] Step 'app-keymap-editor-hover' -> PASS (4917 ms)
+2026-11-07T04:35:14.159Z =====================================================================
+2026-11-07T04:35:14.159Z [app] Running Step: 'app-v-button-crop' - v button probe measurement and 4x crop
+2026-11-07T04:35:14.160Z =====================================================================
+2026-11-07T04:35:14.367Z Foreground check for 'v-button': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:14.576Z Foreground check for 'Capture app-v-button-normal': target=0x2FF0012, foreground=0x2FF0012
+2026-11-07T04:35:16.196Z Capture 'app-v-button-normal' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-v-button-normal.png (exit=0)
+2026-11-07T04:35:16.246Z [app] Step 'app-v-button-crop' -> FAIL at line 315 (2083 ms): System.Management.Automation.MethodInvocationException: "Save"을(를) "2"개의 인수와 함께 호출하는 동안 예외가 발생함: "A generic error occurred in GDI+."
+ ---> System.Runtime.InteropServices.ExternalException (0x80004005): A generic error occurred in GDI+.
+   at Windows.Win32.Graphics.GdiPlus.StatusExtensions.ThrowIfFailed(Status status)
+   at System.Drawing.Image.Save(String filename, Guid encoder, EncoderParameters encoderParams)
+   at System.Drawing.Image.Save(String filename, ImageFormat format)
+   at CallSite.Target(Closure, CallSite, Object, String, ImageFormat)
+   --- End of inner exception stack trace ---
+   at System.Management.Automation.ExceptionHandlingOps.CheckActionPreference(FunctionContext funcContext, Exception exception)
+   at System.Management.Automation.Interpreter.ActionCallInstruction`2.Run(InterpretedFrame frame)
+   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)
+   at System.Management.Automation.Interpreter.EnterTryCatchFinallyInstruction.Run(InterpretedFrame frame)
+2026-11-07T04:35:16.251Z Cleaning up workbench-gpui process (PID=44352)...
+2026-11-07T04:35:16.344Z Restoring app data via session.ps1 -Action Stop...
+2026-11-07T04:35:17.689Z Session Stop: {
+2026-11-07T04:35:17.693Z Session Stop:   "fixtureRemoved": true,
+2026-11-07T04:35:17.694Z Session Stop:   "restored": true,
+2026-11-07T04:35:17.695Z Session Stop:   "files": {
+2026-11-07T04:35:17.696Z Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07T04:35:17.697Z Session Stop:   },
+2026-11-07T04:35:17.698Z Session Stop:   "exeUnchanged": true
+2026-11-07T04:35:17.699Z Session Stop: }
+2026-11-07T04:35:17.704Z === Starting ORDER-07 V3 Zed Measurement Session ===
+2026-11-07T04:35:17.720Z --- Zed Config Hash Status (BEFORE) ---
+2026-11-07T04:35:17.724Z   settings.json: Exists=True, Sha256=C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2, Length=1031
+2026-11-07T04:35:17.725Z   keymap.json: Exists=False, Sha256=ABSENT, Length=0
+2026-11-07T04:35:17.736Z Zed top-level HWNDs before launch: 0x15A0A7E
+2026-11-07T04:35:17.738Z Launching Zed (new window only, -a forbidden): C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe -n "D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\order07-fixture\00-order07.md"
+2026-11-07T04:35:19.514Z New Zed window found: HWND=0xD10B48
+2026-11-07T04:35:22.521Z Resizing Zed to 1440x852 client...
+2026-11-07T04:35:24.444Z Resize: {
+2026-11-07T04:35:24.445Z Resize:   "hwnd": "0xD10B48",
+2026-11-07T04:35:24.446Z Resize:   "desktop": "Default",
+2026-11-07T04:35:24.447Z Resize:   "title": "",
+2026-11-07T04:35:24.448Z Resize:   "className": "Zed",
+2026-11-07T04:35:24.448Z Resize:   "workArea_SPI": {
+2026-11-07T04:35:24.449Z Resize:     "left": 0,
+2026-11-07T04:35:24.450Z Resize:     "top": 0,
+2026-11-07T04:35:24.451Z Resize:     "right": 1920,
+2026-11-07T04:35:24.452Z Resize:     "bottom": 1032,
+2026-11-07T04:35:24.453Z Resize:     "width": 1920,
+2026-11-07T04:35:24.454Z Resize:     "height": 1032
+2026-11-07T04:35:24.455Z Resize:   },
+2026-11-07T04:35:24.456Z Resize:   "workArea_Monitor": {
+2026-11-07T04:35:24.456Z Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07T04:35:24.458Z Resize:     "left": 0,
+2026-11-07T04:35:24.459Z Resize:     "top": 0,
+2026-11-07T04:35:24.459Z Resize:     "right": 1920,
+2026-11-07T04:35:24.460Z Resize:     "bottom": 1032,
+2026-11-07T04:35:24.461Z Resize:     "width": 1920,
+2026-11-07T04:35:24.462Z Resize:     "height": 1032
+2026-11-07T04:35:24.462Z Resize:   },
+2026-11-07T04:35:24.463Z Resize:   "workAreaCenter": {
+2026-11-07T04:35:24.464Z Resize:     "x": 960.0,
+2026-11-07T04:35:24.465Z Resize:     "y": 516.0
+2026-11-07T04:35:24.465Z Resize:   },
+2026-11-07T04:35:24.466Z Resize:   "windowRect": {
+2026-11-07T04:35:24.467Z Resize:     "left": 232,
+2026-11-07T04:35:24.468Z Resize:     "top": 90,
+2026-11-07T04:35:24.469Z Resize:     "right": 1688,
+2026-11-07T04:35:24.470Z Resize:     "bottom": 950,
+2026-11-07T04:35:24.471Z Resize:     "width": 1456,
+2026-11-07T04:35:24.472Z Resize:     "height": 860
+2026-11-07T04:35:24.473Z Resize:   },
+2026-11-07T04:35:24.474Z Resize:   "windowCenter": {
+2026-11-07T04:35:24.475Z Resize:     "x": 960.0,
+2026-11-07T04:35:24.475Z Resize:     "y": 520.0
+2026-11-07T04:35:24.476Z Resize:   },
+2026-11-07T04:35:24.478Z Resize:   "windowCenterDiff": {
+2026-11-07T04:35:24.479Z Resize:     "dx": 0.0,
+2026-11-07T04:35:24.480Z Resize:     "dy": 4.0
+2026-11-07T04:35:24.481Z Resize:   },
+2026-11-07T04:35:24.481Z Resize:   "clientRect": {
+2026-11-07T04:35:24.482Z Resize:     "width": 1440,
+2026-11-07T04:35:24.483Z Resize:     "height": 852
+2026-11-07T04:35:24.484Z Resize:   },
+2026-11-07T04:35:24.485Z Resize:   "clientToScreen": {
+2026-11-07T04:35:24.486Z Resize:     "x": 240,
+2026-11-07T04:35:24.487Z Resize:     "y": 90
+2026-11-07T04:35:24.487Z Resize:   },
+2026-11-07T04:35:24.489Z Resize:   "clientScreenRect": {
+2026-11-07T04:35:24.490Z Resize:     "left": 240,
+2026-11-07T04:35:24.491Z Resize:     "top": 90,
+2026-11-07T04:35:24.492Z Resize:     "right": 1680,
+2026-11-07T04:35:24.492Z Resize:     "bottom": 942,
+2026-11-07T04:35:24.493Z Resize:     "width": 1440,
+2026-11-07T04:35:24.494Z Resize:     "height": 852
+2026-11-07T04:35:24.495Z Resize:   },
+2026-11-07T04:35:24.495Z Resize:   "clientCenter": {
+2026-11-07T04:35:24.496Z Resize:     "x": 960.0,
+2026-11-07T04:35:24.497Z Resize:     "y": 516.0
+2026-11-07T04:35:24.498Z Resize:   },
+2026-11-07T04:35:24.498Z Resize:   "clientCenterDiff": {
+2026-11-07T04:35:24.499Z Resize:     "dx": 0.0,
+2026-11-07T04:35:24.500Z Resize:     "dy": 0.0
+2026-11-07T04:35:24.501Z Resize:   },
+2026-11-07T04:35:24.502Z Resize:   "capture": {
+2026-11-07T04:35:24.502Z Resize:     "ok": false,
+2026-11-07T04:35:24.503Z Resize:     "path": ""
+2026-11-07T04:35:24.504Z Resize:   }
+2026-11-07T04:35:24.505Z Resize: }
+2026-11-07T04:35:25.111Z Client size check (Zed): target=1440x852, actual=1440x852
+2026-11-07T04:35:26.124Z Zed client origin=(240,90) size=1440x852
+2026-11-07T04:35:26.335Z Foreground check for 'Zed ready': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:26.337Z =====================================================================
+2026-11-07T04:35:26.338Z [zed] Running Step: 'zed-default-onedark' - Zed default One Dark main screen capture
+2026-11-07T04:35:26.339Z =====================================================================
+2026-11-07T04:35:26.546Z Foreground check for 'Zed One Dark': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:27.372Z Foreground check for 'Capture zed-default-onedark': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:28.938Z Capture 'zed-default-onedark' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\zed-default-onedark.png (exit=0)
+2026-11-07T04:35:28.940Z Captured Zed One Dark main screen: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\zed-default-onedark.png
+2026-11-07T04:35:28.941Z [zed] Step 'zed-default-onedark' -> PASS (2600 ms)
+2026-11-07T04:35:28.943Z =====================================================================
+2026-11-07T04:35:28.948Z [zed] Running Step: 'zed-theme-modal' - Zed theme picker modal (Ctrl-K Ctrl-T, Esc only, NO ENTER)
+2026-11-07T04:35:28.949Z =====================================================================
+2026-11-07T04:35:29.153Z Foreground check for 'Zed Theme Modal': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:29.154Z Sending Ctrl-K Ctrl-T to Zed...
+2026-11-07T04:35:31.479Z Foreground check for 'Capture zed-theme-modal-open': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:33.184Z Capture 'zed-theme-modal-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\zed-theme-modal-open.png (exit=0)
+2026-11-07T04:35:33.186Z Captured Zed theme picker modal: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\zed-theme-modal-open.png
+2026-11-07T04:35:33.188Z CRITICAL SAFETY: Dismissing Zed Theme Picker with ESC ONLY (Enter strictly forbidden)...
+2026-11-07T04:35:33.894Z [zed] Step 'zed-theme-modal' -> PASS (4943 ms)
+2026-11-07T04:35:33.896Z =====================================================================
+2026-11-07T04:35:33.897Z [zed] Running Step: 'zed-tree-icons' - Zed file tree icons (Catppuccin Latte icon theme)
+2026-11-07T04:35:33.898Z =====================================================================
+2026-11-07T04:35:34.110Z Foreground check for 'Zed Tree Icons': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:34.819Z Foreground check for 'Capture zed-tree-catppuccin-latte': target=0xD10B48, foreground=0xD10B48
+2026-11-07T04:35:36.334Z Capture 'zed-tree-catppuccin-latte' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\zed-tree-catppuccin-latte.png (exit=0)
+2026-11-07T04:35:36.336Z Captured Zed tree icons: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\zed-tree-catppuccin-latte.png
+2026-11-07T04:35:36.343Z [zed] Step 'zed-tree-icons' -> PASS (2444 ms)
+2026-11-07T04:35:36.344Z Closing target Zed window only (HWND=0xD10B48) via WM_CLOSE PostMessage...
+2026-11-07T04:35:38.350Z Target Zed window HWND=0xD10B48 successfully closed
+2026-11-07T04:35:38.354Z --- Zed Config Hash Status (AFTER) ---
+2026-11-07T04:35:38.355Z   settings.json: Exists=True, Sha256=C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2, Length=1031
+2026-11-07T04:35:38.355Z   keymap.json: Exists=False, Sha256=ABSENT, Length=0
+2026-11-07T04:35:38.368Z Summary JSON written to: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\summary.json

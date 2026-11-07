@@ -32,7 +32,9 @@ mod settings;
 mod shell;
 mod tab_close;
 mod task_dialog;
+mod icon_theme;
 mod theme;
+mod theme_selector;
 mod title_bar;
 mod tooltip;
 mod watch;
@@ -589,6 +591,8 @@ impl Render for Workbench {
             .on_action(cx.listener(Self::on_open_settings))
             .on_action(cx.listener(Self::on_open_keymap))
             .on_action(cx.listener(Self::on_open_extensions))
+            .on_action(cx.listener(Self::on_toggle_theme_selector))
+            .on_action(cx.listener(Self::on_toggle_icon_theme_selector))
             .on_action(cx.listener(Self::on_use_classic_layout))
             .on_action(cx.listener(Self::on_close_active_item))
             .on_action(cx.listener(Self::on_activate_previous_item))

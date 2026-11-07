@@ -75,6 +75,15 @@ scale_factor = 2.0
 unit_conversion = "1 physical px = 0.5 logical px"
 src = "04-APP-SPEC 7.1절 A-30.2"
 
+[conditions.desktop_measure_100]
+name = "데스크톱 Zed 화면 실측 (v0.5 V3)"
+screen_size = "1920x1080"
+scale_factor = 1.0
+dpi = 96
+zed_build = "4304dec732a75505066de5ce2dbbfb2bec369498 (이 PC 설치본)"
+note = "원문 01-LAYOUT의 커밋(14b7b0e)과 Zed 빌드가 다르다. 앱 클라이언트 1440x852"
+src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
+
 # ==============================================================================
 # 1. 단위 체계 및 기본 토큰 (Units, Typography, Spacing, Icons, Buttons)
 # ==============================================================================
@@ -433,6 +442,25 @@ src = "04-APP-SPEC 7.1절 A-30.2"
 "theme_selector.footer_border_top" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-010" }
 "icon_theme_selector.width" = { value = 544, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-011" }
 "go_to_line.width" = { value = 384, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-012" }
+# W-30 (2026-11-07): selector values from 01-LAYOUT 4.13 body and gpui V3 Zed measurement
+"window_height_margin" = { value = 160, unit = "px", cond = "default", src = "01-LAYOUT 4.13.1절 P-002 (높이 제한 (창 높이 − 160) × 0.95)" }
+"shadow.1" = { value = "0 2px 3px rgba(0,0,0,0.12)", unit = "x y blur color", cond = "default", src = "01-LAYOUT 4.13.1절 P-002 elevation_3" }
+"shadow.2" = { value = "0 4px 8px rgba(0,0,0,0.08)", unit = "x y blur color", cond = "default", src = "01-LAYOUT 4.13.1절 P-002 elevation_3" }
+"shadow.3" = { value = "0 8px 16px rgba(0,0,0,0.04)", unit = "x y blur color", cond = "default", src = "01-LAYOUT 4.13.1절 P-002 elevation_3" }
+"shadow.4" = { value = "0 12px 24px rgba(0,0,0,0.12)", unit = "x y blur color", cond = "default", src = "01-LAYOUT 4.13.1절 P-002 elevation_3" }
+"item.font_size" = { value = 14, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004 행 높이" }
+"item.line_height_ratio" = { value = 1.618, unit = "ratio", cond = "default", src = "01-LAYOUT 4.13.3절 P-004 행 높이" }
+"item.height" = { value = 30.65, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004 행 높이 (소스 계산 14×1.618+8, 실측 피치와 차이는 ambiguous.md)" }
+"empty.padding_y" = { value = 8, unit = "px", cond = "default", src = "01-LAYOUT 4.13.3절 P-004 빈 결과" }
+"theme_selector.check_icon_size" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 4.13.5절 P-010" }
+"theme_selector.measured.width" = { value = 544, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (Zed 테마 선택기, X=449..992)" }
+"theme_selector.measured.modal_height" = { value = 462, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (Y=80..541)" }
+"theme_selector.measured.search_height" = { value = 38, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (Y=80..117, 테두리·구분선 포함, 내부 36)" }
+"theme_selector.measured.list_height" = { value = 384, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (Y=118..501)" }
+"theme_selector.measured.list_rows" = { value = 12, unit = "count", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (행 피치 31~32)" }
+"theme_selector.measured.gap" = { value = 0, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (요소 사이 1px 경계로 접함)" }
+"theme_selector.measured.footer_divider" = { value = 1, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (Y=502)" }
+"theme_selector.measured.footer_height" = { value = 38, unit = "px", cond = "desktop_measure_100", src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 3.2 (Y=503..540, Install 행)" }
 
 [dialog]
 "about.width" = { value = 440, unit = "px", cond = "default", src = "01-LAYOUT 4.13.6절 P-018" }

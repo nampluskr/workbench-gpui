@@ -423,6 +423,53 @@ function Cap-Window([IntPtr]$hWnd, [string]$name, [string]$outDir) {
     return $png
 }
 
+function Ensure-ProjectTreeOpen([IntPtr]$hwnd, [string]$outDir) {
+    $snap = Get-LatestSnapshot $outDir
+    if ($snap -and ($snap.boxes.Contains('tree-row-01') -or $snap.boxes.Contains('tree-row-00'))) {
+        return $snap
+    }
+    L "Project tree not visible. Ensuring left dock is open and project folder active..."
+
+    # 1. Check if left dock is open. If not, open via Ctrl-B
+    $hasDock = $snap -and $snap.boxes.Contains('dock')
+    if (-not $hasDock) {
+        L "Left dock not open. Sending Ctrl-B (workspace::ToggleLeftDock)..."
+        [Order04Native]::KeyCombo(@([ushort]0x11), [ushort]0x42)
+        Start-Sleep -Milliseconds 800
+        $snap = Get-LatestSnapshot $outDir
+    }
+
+    # If tree-row is already visible after dock open, we're done
+    if ($snap -and ($snap.boxes.Contains('tree-row-01') -or $snap.boxes.Contains('tree-row-00'))) {
+        return $snap
+    }
+
+    # 2. If folder list is displayed, click folder-row-00 to activate folder and show tree
+    $folderRow0 = Get-BoxScreenCoord $hwnd $outDir 'folder-row-00'
+    if ($folderRow0) {
+        L ("Clicking folder-row-00 at ({0},{1}) to activate folder and display file tree..." -f $folderRow0.X, $folderRow0.Y)
+        [Order04Native]::Click($folderRow0.X, $folderRow0.Y)
+        Start-Sleep -Milliseconds 800
+    } else {
+        $emptyOpen = Get-BoxScreenCoord $hwnd $outDir 'project-empty-open'
+        if ($emptyOpen) {
+            L "Clicking 'project-empty-open'..."
+            [Order04Native]::Click($emptyOpen.X, $emptyOpen.Y)
+            Start-Sleep -Milliseconds 800
+        }
+    }
+
+    for ($i = 0; $i -lt 15; $i++) {
+        $snap = Get-LatestSnapshot $outDir
+        if ($snap -and ($snap.boxes.Contains('tree-row-01') -or $snap.boxes.Contains('tree-row-00'))) {
+            return $snap
+        }
+        Start-Sleep -Milliseconds 300
+    }
+    L "Warning: tree-row did not appear in layout dump after opening project tree"
+    return $snap
+}
+
 function Invoke-MeasureStep([string]$stepKey, [string]$description, [scriptblock]$action) {
     if (Should-Skip $stepKey) {
         L "[app] Step '$stepKey' ($description) -> SKIPPED (-Steps / -Skip filter)"
@@ -543,7 +590,7 @@ $backupDir = Join-Path (Split-Path $Out -Parent) ('_' + (Split-Path $Out -Leaf) 
 try {
     # 1. Start Session
     L "Calling session.ps1 -Action Start..."
-    & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Start -Out $Out -Exe $AppExe -Json -FixtureFile $FixturePath
+    & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Start -Out $Out -Exe $AppExe -Backup $backupDir -Json -FixtureFile $FixturePath
 
     $sessionFile = Join-Path $Out 'session.json'
     if (-not (Test-Path $sessionFile)) { throw "session.json not found after session start" }
@@ -577,16 +624,8 @@ try {
     Start-Sleep -Milliseconds 400
     Ensure-Foreground $appHwnd "After resize"
 
-    # Click project-empty-open if present
-    $snap = Get-LatestSnapshot $Out
-    if ($snap -and $snap.boxes.Contains('project-empty-open')) {
-        $openBtn = Get-BoxScreenCoord $appHwnd $Out 'project-empty-open'
-        if ($openBtn) {
-            L "Clicking 'project-empty-open' button to load project tree..."
-            [Order04Native]::Click($openBtn.X, $openBtn.Y)
-            Start-Sleep -Milliseconds 600
-        }
-    }
+    # Ensure project tree is open as common prerequisite before any step
+    Ensure-ProjectTreeOpen $appHwnd $Out | Out-Null
 
     # Wait for tree rows to load
     Start-Sleep -Milliseconds 800
@@ -864,7 +903,8 @@ except Exception as e:
         }
     }
     L "Restoring app data via session.ps1 -Action Stop..."
-    & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Stop -Out $Out -Backup $backupDir 2>&1 | ForEach-Object { L "Session Stop: $_" }
+    $stopOutput = & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Stop -Out $Out -Backup $backupDir 2>&1
+    foreach ($line in $stopOutput) { L "Session Stop: $line" }
 
     # Save summary
     $summaryFile = Join-Path $Out 'summary.json'

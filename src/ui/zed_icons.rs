@@ -29,6 +29,18 @@ impl AssetSource for Assets {
                 Err(error) => Err(error.into()),
             };
         }
+        if let Some(relative) = path.strip_prefix("res/") {
+            // Icon theme files: any `.svg` below resources/, plain names only (no `..`, no drive or root parts).
+            let plain = std::path::Path::new(relative).components().all(|c| matches!(c, std::path::Component::Normal(_)));
+            if !plain || !relative.ends_with(".svg") {
+                return Ok(None);
+            }
+            return match std::fs::read(self.root.parent().unwrap_or(&self.root).join(relative)) {
+                Ok(bytes) => Ok(Some(Cow::Owned(bytes))),
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+                Err(error) => Err(error.into()),
+            };
+        }
         gpui_kit::assets::Assets.load(path)
     }
 
@@ -64,5 +76,18 @@ mod tests {
         assert!(assets.list("zed-icons/").unwrap().is_empty());
         assert!(assets.load("zed-icons/../LICENSE-GPL.svg").unwrap().is_none());
         assert!(assets.load("icons/close.svg").unwrap().is_some());
+        assert!(assets.load("res/zed-icons/file_icons/rust.svg").unwrap().is_none());
+        for escape in ["res/../Cargo.toml", "res/zed-icons/../../Cargo.svg", "res//etc/x.svg", "res/C:/x.svg"] {
+            assert!(assets.load(escape).unwrap().is_none(), "{escape}");
+        }
+    }
+
+    #[test]
+    fn k20_res_prefix_serves_resources_svg_only() {
+        let assets = Assets::new();
+        if assets.root.join("file_icons/rust.svg").is_file() {
+            assert!(assets.load("res/zed-icons/file_icons/rust.svg").unwrap().is_some());
+        }
+        assert!(assets.load("res/fonts/lilex/OFL.txt").unwrap().is_none());
     }
 }

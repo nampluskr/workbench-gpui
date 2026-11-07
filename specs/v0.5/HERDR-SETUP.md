@@ -24,7 +24,7 @@
 |---|---|---|---|
 | `gpui-leader` | 카드 지시, 판정, 커밋, core-leader와 화면 차례 조율(core D-4). 코드·문서는 쓰지 않는다 | Claude Code Opus 5.5 (기존 세션) | 상시 |
 | `gpui-writer` | v0.5 문서(INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP)와 PROGRESS | Claude Code Opus 5.5 medium | 문서 단계와 Phase 끝 |
-| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium | 구현 Phase 동안 |
+| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium (2026-11-07 12:14~14:05 Claude Code Sonnet 5.5 high, 2.1) | 구현 Phase 동안 |
 | `gpui-checker` | 카드 리뷰(정확성, 카드 검증 수준만큼 빌드·테스트), 화면 검증(V2·V3)과 측정. src는 고치지 않는다 | agy gemini-3.8-flash-high | 리뷰·검증 카드가 있을 때 |
 
 - herdr 에이전트 이름은 세션 안에서 유일해야 하므로 `gpui-` 접두사를 붙인다(`herdr agent rename`).
@@ -65,6 +65,8 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
 - 허용 목록이 동작한다. 목록에 정확한 명령 모양으로 있는 명령은 승인 창 없이 돈다. 대체 방식(출력 파일)은 끝냈다. 목록 밖 명령은 승인 창이 뜨고 leader가 판단한다(5.6 현재 상태, leader 2026-11-06, W-09).
 
 - Codex 한도가 다시 바닥나면 기다리거나 쿠폰을 쓰지 않고 coder를 Claude Code Sonnet 5.5 high(`claude --model sonnet --effort high`)로 바꿔 같은 pane·이름 `gpui-coder`로 잇는다. 바꾼 시각·모델을 이 절과 PROGRESS에 적는다(core D-16, 사용자 결정 2026-11-07).
+  - 2026-11-07 12:14: `gpui-coder`를 Codex(GPT-6.1-Sol medium, 5시간 한도 6% 남음)에서 Claude Code Sonnet 5.5 high로 바꿨다. pane `wD:pE`, 이름 그대로(D-16, leader W-28).
+  - 되돌리기: 14:00 Codex 한도 초기화 뒤, 그때 진행 중인 카드가 끝나는 때에 Codex(GPT-6.1-Sol medium)로 되돌리고 시각을 여기에 적는다(사용자 결정). 되돌린 시각: 2026-11-07 14:05. K-20이 끝난 카드 경계에서 Codex GPT-6.1-Sol medium으로 되돌렸다. Codex가 시작할 때 자체 업데이트로 한 번 종료돼 다시 띄웠다(leader W-29).
 - coder는 컨텍스트를 비운(`/clear`) 뒤에는 `/model`로 Sol medium을 다시 고른다. `/clear` 뒤 기본값(GPT-6.1 Terra high)으로 돌아가 K-02가 Terra high로 실행된 일이 있다(leader 2026-11-07, W-10).
 - leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).
@@ -154,6 +156,7 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
 - **입력이 필요한 확인**: checker(agy)는 격리된 가상 데스크톱에서 돌아 `SetCursorPos`·`SendInput`이 실패한다(C-08). 마우스·키 입력이 필요한 확인(호버, 스크롤, 커서 이동 등)은 leader가 화면 차례 안에서 `tools/`의 입력 스크립트를 실행하고 출력·캡처 파일을 남기며, checker는 그 파일로 판정한다. (core-leader DECISION 2026-11-07, D-13)
 - **화면 확인 캡처**: `tools/capture.ps1 -Method Screen`을 쓴다. PrintWindow는 DirectComposition 오버레이(스크롤바 등)를 빠뜨린다(C-09).
 - **창 크기**: 측정 스크립트는 창 크기를 `Ensure-ClientSize`로 맞추고 `GetClientRect`로 클라이언트 1440×852를 확인한다. 바깥 크기(1442×853 등)로 `SetWindowPos` 하지 않는다. 계기: ORDER-04 `order04-v3.ps1`이 `SetWindowPos(1442,853)`을 넣어 클라이언트가 1426×845가 됐다(ORDER-05 I-6 재측정으로 앱 퇴행 아님을 확인, 2026-11-07).
+- **측정 세션 도구**: checker는 `tools/measure/session.ps1`과 측정 스크립트를 직접 실행하지 않는다(Start·Stop 모두, 시험용도 금지). `-DryRunStdout` 모드만 실행한다. 실제 실행은 leader가 화면 차례 안에서 한다. 계기: ORDER-06-R2 V3 시도 (2)에서 세션이 멈춰 사용자 `state.json`이 잠시 없었고, checker가 실제 실행 시험을 하려 했다(백업 삭제 위험). (core ORDER-07 추가 (b), C-30)
 - **Zed 창**: Zed는 `zed -n`으로 연 자기 창 안에서만 파일을 연다. `-a`는 쓰지 않는다(V3에서 `zed -a`로 사용자 Zed 창에 탭이 추가된 사고, C-15).
 
 ### 5.5 그 밖

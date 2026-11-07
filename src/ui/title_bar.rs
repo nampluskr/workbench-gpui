@@ -138,6 +138,7 @@ pub fn title_bar(
     h_flex()
         .on_children_prepainted(probe(&["title-left", "title-bar-drag", "user-menu", "user-menu-gap", "window-controls"]))
         .id("title-bar")
+        .bg(theme.title_bar)
         .flex_shrink_0()
         .w_full()
         .h(TITLE_BAR_HEIGHT)

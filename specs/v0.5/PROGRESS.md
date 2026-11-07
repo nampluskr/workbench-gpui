@@ -688,6 +688,140 @@
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: 없음.
 
+- **Phase 6 종료 판정** (2026-11-07)
+  - 무엇을 했나: core-leader가 ORDER-06-R2 보고를 보고 Phase 6을 판정했다(core-leader 2026-11-07, 사용자 위임 core D-13).
+  - 결과: "ORDER-06-R2 충족. Phase 6 종료 판정: 충족(I-2·I-17, D-15 범위, 두 갈래 세부 일치)". R2 커밋 `271ebf6`, push 완료.
+  - 검증: core-leader 판정(gpui-leader 전달, W-27).
+  - 특이사항: ORDER-06-R2 V3 캡처(Keymap Editor·Extensions·"v" 버튼)는 Phase 7 V3에서 함께 한다(ORDER-07 추가 (a)).
+
+### Phase 7 — 테마·아이콘 테마
+
+- **ORDER-07 받음** (2026-11-07)
+  - 무엇을 했나: core-leader의 ORDER-07(R-3·R-4, I-3·I-4, core D-8)을 받았다.
+  - 결과:
+    - 추가 지시 (a): ORDER-06-R2 Keymap Editor·Extensions·"v" 버튼 V3 캡처를 Phase 7 V3에서 함께 한다.
+    - 추가 지시 (b): 측정 세션 도구를 단단히 한다(C-30). checker는 `tools/measure/session.ps1`을 직접 실행하지 않는다(HERDR-SETUP 5.4).
+    - 버전 고정: 이 PC 설치 확장 catppuccin 0.2.27, catppuccin-icons 1.24.0, macos-classic 0.4.0(leader가 `extension.toml`을 읽기만 해서 확인). Zed 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`.
+    - 복사본 위치·다시 채우기·없을 때 모습·기본값은 DECISIONS D-11.
+  - 검증: 해당 없음(지시 기록).
+  - 특이사항: 없음.
+
+- **W-27 Phase 6 종료, Phase 7 시작 기록** (2026-11-07)
+  - 무엇을 했나: PLAN 진행 현황 Phase 6을 done(커밋 `271ebf6`), Phase 7을 doing으로 바꾸고, 위 Phase 6 종료 판정·ORDER-07 추가 지시를 적었다. DECISIONS D-11(테마·아이콘 테마 복사본)과 HERDR-SETUP 5.4 측정 세션 규칙을 더했다. 카드 `cards/W-27.md`.
+  - 결과: `PLAN.md`, `PROGRESS.md`, `DECISIONS.md`, `HERDR-SETUP.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: `.gitignore`에 두 폴더를 넣는 것과 `tools/fetch-zed-themes.ps1`은 아직 없다(writer 소유 아님).
+
+- **coder 모델 교체 기록** (2026-11-07, W-28, core D-16)
+  - 무엇을 했나: 2026-11-07 12:14에 `gpui-coder`를 Codex(GPT-6.1-Sol medium, 5시간 한도 6% 남음)에서 Claude Code Sonnet 5.5 high로 바꿨다. pane `wD:pE`, 이름 그대로.
+  - 결과: 사용자 결정 — 14:00 Codex 초기화 뒤 그때 진행 중인 카드가 끝나는 때에 Codex로 되돌리고 시각을 `HERDR-SETUP.md` 2.1과 이 문서에 적는다. 되돌린 시각: 2026-11-07 14:05(아래 W-29 기록).
+  - 검증: 해당 없음(구성 기록).
+  - 특이사항: K-20은 Sonnet으로 했다.
+
+- **K-19 테마 복사본과 테마 적용** (2026-11-07)
+  - 무엇을 했나: `tools/fetch-zed-themes.ps1`로 테마 복사본을 `resources/zed-themes/`(git 제외)에 채우고, 복사한 Zed 테마 JSON을 gpui-kit 테마와 앱 토큰에 대응했다. 기본 테마 One Dark. 테마 이름 목록 API(`theme::names()`). K-04-R1·K-07의 고정 One Light 색은 테마 JSON에서 읽는다. 변경 `.gitignore`, `tools/fetch-zed-themes.ps1`, `src/ui/theme.rs`·`settings.rs`·`title_bar.rs`. 카드 `cards/K-19.md`.
+  - 결과: 완료. 21개 테마(Zed `4304dec` 11, catppuccin/zed v0.2.27 → `83fe57b` 8, macos-classic v0.4.0 → `22266e1` 2), JSON 17개. 대응 표는 SPEC R-4. 복사본이 없으면 gpui-kit 초기 테마로 뜨고 stderr 경고 한 번.
+  - 검증: V2. build·apply-manifest PASS, theme 테스트 4/4·settings 테스트 5/5 PASS, clippy PASS. 21개 테마 전부 주요 토큰 → 적용 색 비교.
+  - 특이사항: 실측 필요(Phase 7 V3) — One Dark 전체 UI, 테마 전환 뒤 폰트·배치 유지, 현재 줄 T-05.05, 줄 번호 T-05.07/08. 사용자 확인 — 대표 밝은·어두운 테마의 대비·인상. 깨끗한 checkout에서는 fetch 스크립트를 먼저 돌려야 색 테스트가 통과한다.
+
+- **K-20 선택기 두 개·아이콘 테마·Settings/Extensions 연결** (2026-11-07, Sonnet 5.5 high로 수행)
+  - 무엇을 했나: "Select Theme…"(`Ctrl-K Ctrl-T`, v → Themes…)·"Select Icon Theme…"(v → Icon Themes…) 모달(검색, 현재 테마 체크, 이동 시 미리 보기, Enter·클릭 적용과 `settings.json` 저장, 확정 전 닫으면 원래 테마로, `Install …` → Extensions 범주). 아이콘 테마 복사본(`catppuccin/zed-icons` v1.24.0 → `fe864c9`, `resources/zed-icon-themes/`, git 제외)과 Zed (Default) 연결표 JSON. 파일 트리 아이콘을 아이콘 테마로. Settings 드롭다운을 전체 목록으로, Extensions 탭을 복사본 manifest로. 신규 `src/ui/theme_selector.rs`·`icon_theme.rs`, 그 밖 `src/ui/`·`src/keymap/` 여러 파일, fetch 스크립트, `.gitignore`. 카드 `cards/K-20.md`.
+  - 결과: 완료. 아이콘 대응은 SPEC R-3.
+  - 검증: V1. build·apply-manifest PASS, `cargo test` 243/243 PASS, clippy PASS. 미리 보기·Esc 복원의 App 경로는 `gpui::test`를 쓸 수 없어(`test-support` 없음, 의존성 변경 금지) 코드 확인, 로직은 순수 함수로 테스트.
+  - 특이사항:
+    - 탭 아이콘은 바꾸지 않았다(Zed 기본값은 탭에 파일 아이콘 없음). leader 판단 필요.
+    - 스펙에 없는 값(`spec: none (app value)`): 선택기 너비 544px, 목록 최대 높이 320px, 간격 8px(`metrics::selector`). Zed 값 확인 카드 필요.
+    - 실측 필요(Phase 7 V3): 선택기 모달 크기·목록 높이·행 간격·체크 위치, 미리 보기 때 모달 색 갱신, 트리 아이콘 16px와 Catppuccin 컬러 렌더링, v 메뉴 6행 키보드 이동, Dialog 안 Esc·바깥 클릭·↑↓/Enter 동작.
+    - 사용자 확인: Catppuccin 컬러 아이콘 인상, Monochrome 대비, 미리 보기 중 깜박임.
+
+- **C-30 측정 세션 도구 단단히** (2026-11-07, ORDER-07 추가 (b))
+  - 무엇을 했나: checker가 `tools/measure/session.ps1`과 측정 스크립트(order03·04·05·06·06-r1·06-r2)를 고쳤다. Start는 앱이 떠 있으면 아무것도 건드리지 않고 오류, 백업 해시·길이 검증 뒤에만 초기화, 초기화·픽스처·기동 실패 시 원래 데이터로 되돌림. Stop은 앱이 떠 있으면 오류, 복원 뒤 바이트 동일 확인이 된 때만 `Remove-BackupSafely`로 백업을 지운다. settings.json·keymap.json을 session.ps1 백업으로 모았다. session 호출을 파이프 없는 변수 캡처로 통일하고, 단계 생략 때도 프로젝트 열기를 먼저 한다. 카드 `cards/C-30.md`.
+  - 결과: 완료. 실패 시나리오 표(`cards/C-30.report.md` 3장):
+
+    | # | 실패 시나리오 | 앱 데이터 | 백업 폴더 |
+    |---|---|---|---|
+    | S-1 | Start 때 앱이 떠 있음 | 그대로 | 만들지 않음 |
+    | S-2 | Start 때 이전 백업 폴더가 있음 | 그대로 | 기존 것 보존 |
+    | S-3 | 백업 복사 실패·해시 불일치 | 그대로 | 불완전 백업 남김 |
+    | S-4 | 픽스처 생성 실패·실행 파일 없음 | 원래대로 되돌림 | 보존 |
+    | S-5 | 기동 직후 앱 비정상 종료 | 원래대로 되돌림 | 보존 |
+    | S-6 | 측정 스크립트 단계 실패 | `finally`의 Stop으로 복원 | 보존 |
+    | S-7 | Stop 때 앱이 떠 있음 | 복원 보류 | 보존 |
+    | S-8 | 복원 뒤 해시·바이트 불일치 | 불일치 감지·오류 | 영구 보존 |
+    | S-9 | 바이트 동일 미확인 상태에서 백업 정리 | 그대로 | 삭제 거부 |
+
+  - 검증: V0 정적 점검. 7개 스크립트 문법 OK, 6개 측정 스크립트 `-DryRunStdout` PASS. session.ps1 Start/Stop은 카드 규칙대로 실행하지 않았다.
+  - 특이사항: 실제 Start/Stop 동작은 다음 V3 세션에서 처음 돈다.
+
+- **버전 고정** (2026-11-07, ORDER-07 2장, D-11)
+  - 무엇을 했나: 복사 출처를 아래로 고정했다. 다른 버전은 쓰지 않는다.
+  - 결과: Zed 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`, catppuccin/zed v0.2.27(commit `83fe57ba356a3b4dc4ac78b8d98d8ae95e093e45`), huacnlee/zed-theme-macos-classic v0.4.0(`22266e11c4b8962be2e259011251b4016ff00552`), catppuccin/zed-icons v1.24.0(`fe864c992c5da1e417e5897b741b7de9b90830e0`). 확장 셋은 이 PC 설치 버전과 같다.
+  - 검증: K-19·K-20 보고의 실제 checkout commit.
+  - 특이사항: 없음.
+
+- **W-28 Phase 7 기록** (2026-11-07)
+  - 무엇을 했나: HERDR-SETUP 1장·2.1에 coder 모델 교체, PROGRESS에 위 기록, SPEC R-4에 테마 대응 표·기본 테마, R-3에 아이콘 테마 대응을 적었다. tauri SPEC과의 차이는 `cards/W-28.report.md`. 카드 `cards/W-28.md`.
+  - 결과: `HERDR-SETUP.md`, `PROGRESS.md`, `SPEC.md` 수정, `cards/W-28.report.md` 작성.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+- **coder 모델 되돌림** (2026-11-07, 사용자 결정)
+  - 무엇을 했나: 2026-11-07 14:05에 `gpui-coder`를 Claude Code Sonnet 5.5 high에서 Codex GPT-6.1-Sol medium으로 되돌렸다. 14:00 한도 초기화 뒤, K-20이 끝난 카드 경계다.
+  - 결과: 완료. `HERDR-SETUP.md` 1장·2.1에 시각을 적었다.
+  - 검증: 해당 없음(구성 기록).
+  - 특이사항: Codex가 시작할 때 자체 업데이트로 한 번 종료돼 다시 띄웠다.
+
+- **Phase 7 V3 시도** (2026-11-07, C-32)
+  - 무엇을 했나: 테마·아이콘 테마와 ORDER-06-R2 화면을 V3로 측정했다. 세 번 시도했다.
+  - 결과:
+    - 1차(13:02): 스크립트가 `session.json`에 없는 hwnd를 읽었고, 그 줄이 `try` 밖이라 앱 데이터가 복원되지 않았다. leader가 앱 PID를 닫고 복원했다(바이트 동일).
+    - 2차(13:19): 캡처 함수 결함으로 앱 캡처가 전부 실패했고 Zed 새 창을 못 찾았다. 앱 데이터·Zed 설정은 바뀌지 않았다.
+    - 3차(13:35): 대부분 PASS. 판정 `verify/reviews/measure-ORDER-07.md`.
+      - 테마: 21개 테마 토큰 대응 불일치 0(V1, 캡처한 6개 테마는 V2).
+      - Zed 선택기 실측: 모달 너비 544(앱과 같음), 검색칸 38, 목록 384, 요소 사이 간격 0. 앱 값(검색 32·목록 320·간격 8)은 K-21로 맞춘다. 치수는 SPEC R-4.
+      - 측정 불가: 앱 선택기 열림·미리 보기·Esc(포커스 문제), 아이콘 테마 트리(단일 파일만 열림). V1 근거로 두고 재측정 예정.
+  - 검증: checker V3(C-32).
+  - 특이사항: 측정 불가 항목은 다음 화면 차례에 재측정한다.
+
+- **W-29 Phase 7 기록** (2026-11-07)
+  - 무엇을 했나: HERDR-SETUP 1장·2.1에 coder 되돌림 시각, PROGRESS에 위 두 기록, SPEC R-4에 선택기 Zed 실측 치수를 적었다. 카드 `cards/W-29.md`.
+  - 결과: `HERDR-SETUP.md`, `PROGRESS.md`, `SPEC.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
+- **W-30 선택기 치수 spec ID 추가** (2026-11-07, core-leader DECISION, ORDER-07 공통 3)
+  - 무엇을 했나: `spec/zed-metrics.toml` `[picker]`에 선택기 치수 새 ID를 더했다. `01-LAYOUT.md` 4.13 본문 값(창 높이 마진 160, 그림자 4겹, 행 글자 14·줄 높이 1.618·행 높이 30.65, 빈 결과 위아래 8, 체크 16)과 gpui V3 Zed 실측(`theme_selector.measured.*`: 너비 544, 모달 462, 검색칸 38, 목록 384·12행, 간격 0, 구분선 1, 푸터 38). 실측 조건 `conditions.desktop_measure_100`을 새로 두었다. 기존 ID는 바꾸지 않았다. `spec/INDEX.md`에 색인. 카드 `cards/W-30.md`.
+  - 결과: 새 ID 목록과 coder에게 넘길 `metrics::selector` 주석 대응은 `cards/W-30.report.md`. 두 출처가 다른 2건(384가 모달인지 목록인지, 행 높이 30.65와 실측 피치 31~32)을 `spec/ambiguous.md` 5절에 올렸다(미결).
+  - 검증: V0. `tomllib`로 toml 파싱 OK.
+  - 특이사항: 행 높이(`ROW_HEIGHT` 32)는 전용 ID가 없고 ambiguous 결정을 기다린다.
+
+- **K-21 선택기 치수를 Zed 실측으로** (2026-11-07)
+  - 무엇을 했나: 테마·아이콘 테마 선택기 두 개에 Zed 실측 치수(`measure-ORDER-07.md` 3.2)를 적용했다. 너비 544, 검색칸 외곽 38, 목록 최대 384, 간격 0, 구분선 1, 푸터 38, 다이얼로그 기본 패딩 0. 행은 선택기에만 32px 높이·축소 금지. 변경 `src/ui/metrics.rs`·`theme_selector.rs`. 카드 `cards/K-21.md`.
+  - 결과: 완료.
+  - 검증: V1. build·apply-manifest PASS, `theme_selector::tests` 4/4 PASS(치수 상수·12행 높이), clippy PASS.
+  - 특이사항: 기존 행은 14 × 1.618 ≈ 22.65px로 Zed 피치 31~32와 달랐다. gpui-kit Input의 사용자 지정 크기가 24px로 처리돼 `Styled::h`로 38px을 줬다. 실측 필요 — 두 선택기의 치수와 경계 접합.
+
+- **K-22 core 공통 결정 반영** (2026-11-07, core-leader DECISION, ORDER-07 공통)
+  - 무엇을 했나: 공통 결정 다섯 가지를 반영했다. (1) 탭에 파일 아이콘 없음(코드 확인만, 변경 없음). (2) Extensions 탭은 `extension.toml`이 있는 확장만 카드 3장(Catppuccin 0.2.27, Catppuccin Icons 1.24.0, macOS Classic 0.4.0). (3) 토큰 대체 순서 JSON → T-26 파생 → 같은 appearance One → T-26 고정값(tauri D-8과 같게). (4) 목록 순서 dark 이름순 → light 이름순, 아이콘 테마 9개(Monochrome 4 포함). (5) 선택기 스크롤바는 목록 위 포인터 때만. 변경 `src/ui/extensions.rs`·`theme.rs`·`icon_theme.rs`·`theme_selector.rs`. 카드 `cards/K-22.md`.
+  - 결과: 완료. SPEC R-3·R-4에 반영.
+  - 검증: V1. build·apply-manifest PASS, 관련 테스트 26/26 PASS(theme 6, icon_theme 5, extensions 5, theme_selector 4, settings 6), clippy PASS.
+  - 특이사항: One에도 없는 일반 토큰은 gpui-kit 초기값을 유지한다(Zed fallback 테마의 완전 재현이 아님). 실측 필요 — 선택기 Hover 스크롤바 표시·숨김.
+
+- **Phase 7 V3 4·5차** (2026-11-07)
+  - 무엇을 했나: 3차에서 측정 불가였던 항목을 다시 측정했다.
+  - 결과:
+    - 4차(14:29): 앱 6단계 PASS — 기본 One Dark, 선택기 열림, 미리 보기(↓), Esc 복원, 아이콘 테마 Catppuccin, v 버튼 크롭(`verify/reviews/measure-ORDER-07-run4/summary.json`).
+    - 5차(Zed 트리만): 스크립트가 fixture를 앱 단계에서만 만들어 시작 전에 끝났다. Zed 설정·창은 바뀌지 않았다(`verify/reviews/measure-ORDER-07-run5-zedonly/`).
+    - Zed 트리 아이콘 비교는 측정 불가로 두고 V1 근거로 판정한다. 판정 `verify/reviews/measure-ORDER-07.md`.
+  - 검증: checker V3.
+  - 특이사항: Zed 트리 아이콘 비교는 재측정 예정.
+
+- **W-31 Phase 7 마무리 기록** (2026-11-07)
+  - 무엇을 했나: PROGRESS에 K-21·K-22·V3 4·5차, SPEC R-3·R-4에 K-21·K-22·W-30 결과(목록 순서, 아이콘 테마 9개, Extensions 카드 3장, 토큰 대체 순서, 선택기 spec ID·스크롤바, 탭 아이콘 없음)를 적고 PLAN Phase 7을 review로 바꿨다. 카드 `cards/W-31.md`.
+  - 결과: `PROGRESS.md`, `SPEC.md`, `PLAN.md` 수정.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: R-3 판정 방법의 "탭의 파일 아이콘"은 core ITEMS 문구라 바꾸지 않았다(core D-11). 탭에 아이콘이 없다는 공통 결정과 어긋나므로 core-leader 확인이 필요하다. `measure-ORDER-07.md`는 3차 기준이며 4·5차 결과는 아직 담고 있지 않다.
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |

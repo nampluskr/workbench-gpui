@@ -1,0 +1,169 @@
+2026-11-07T05:29:21.860Z === ORDER-07 V3 Measure Script Initialized ===
+2026-11-07T05:29:21.912Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07
+2026-11-07T05:29:21.914Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T05:29:21.915Z ZedExe: C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe
+2026-11-07T05:29:21.918Z Steps Filter: app-default-onedark,app-theme-modal-open,app-theme-modal-preview-down,app-theme-modal-esc-restore,app-icon-theme-catppuccin,app-v-button-crop,zed-tree-icons
+2026-11-07T05:29:22.752Z === Starting ORDER-07 V3 App Measurement Session ===
+2026-11-07T05:29:22.788Z Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07T05:29:24.899Z Session started: appPid=3064, fixtureDir='D:\projects\workbench-gpui\target\measure-57ca816677cc4ccfb2ef6de215820f78'
+2026-11-07T05:29:26.392Z Main window HWND: 0xDB1644, Title: 'workbench-gpui'
+2026-11-07T05:29:28.355Z Resize: {
+2026-11-07T05:29:28.357Z Resize:   "hwnd": "0xDB1644",
+2026-11-07T05:29:28.358Z Resize:   "desktop": "Default",
+2026-11-07T05:29:28.359Z Resize:   "title": "",
+2026-11-07T05:29:28.361Z Resize:   "className": "workbench-gpui",
+2026-11-07T05:29:28.362Z Resize:   "workArea_SPI": {
+2026-11-07T05:29:28.364Z Resize:     "left": 0,
+2026-11-07T05:29:28.365Z Resize:     "top": 0,
+2026-11-07T05:29:28.366Z Resize:     "right": 1920,
+2026-11-07T05:29:28.368Z Resize:     "bottom": 1032,
+2026-11-07T05:29:28.369Z Resize:     "width": 1920,
+2026-11-07T05:29:28.370Z Resize:     "height": 1032
+2026-11-07T05:29:28.371Z Resize:   },
+2026-11-07T05:29:28.373Z Resize:   "workArea_Monitor": {
+2026-11-07T05:29:28.374Z Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07T05:29:28.375Z Resize:     "left": 0,
+2026-11-07T05:29:28.376Z Resize:     "top": 0,
+2026-11-07T05:29:28.377Z Resize:     "right": 1920,
+2026-11-07T05:29:28.378Z Resize:     "bottom": 1032,
+2026-11-07T05:29:28.380Z Resize:     "width": 1920,
+2026-11-07T05:29:28.381Z Resize:     "height": 1032
+2026-11-07T05:29:28.382Z Resize:   },
+2026-11-07T05:29:28.387Z Resize:   "workAreaCenter": {
+2026-11-07T05:29:28.388Z Resize:     "x": 960.0,
+2026-11-07T05:29:28.389Z Resize:     "y": 516.0
+2026-11-07T05:29:28.390Z Resize:   },
+2026-11-07T05:29:28.392Z Resize:   "windowRect": {
+2026-11-07T05:29:28.393Z Resize:     "left": 232,
+2026-11-07T05:29:28.394Z Resize:     "top": 90,
+2026-11-07T05:29:28.395Z Resize:     "right": 1688,
+2026-11-07T05:29:28.396Z Resize:     "bottom": 950,
+2026-11-07T05:29:28.398Z Resize:     "width": 1456,
+2026-11-07T05:29:28.399Z Resize:     "height": 860
+2026-11-07T05:29:28.400Z Resize:   },
+2026-11-07T05:29:28.401Z Resize:   "windowCenter": {
+2026-11-07T05:29:28.402Z Resize:     "x": 960.0,
+2026-11-07T05:29:28.403Z Resize:     "y": 520.0
+2026-11-07T05:29:28.405Z Resize:   },
+2026-11-07T05:29:28.406Z Resize:   "windowCenterDiff": {
+2026-11-07T05:29:28.407Z Resize:     "dx": 0.0,
+2026-11-07T05:29:28.408Z Resize:     "dy": 4.0
+2026-11-07T05:29:28.409Z Resize:   },
+2026-11-07T05:29:28.410Z Resize:   "clientRect": {
+2026-11-07T05:29:28.411Z Resize:     "width": 1440,
+2026-11-07T05:29:28.412Z Resize:     "height": 852
+2026-11-07T05:29:28.413Z Resize:   },
+2026-11-07T05:29:28.415Z Resize:   "clientToScreen": {
+2026-11-07T05:29:28.416Z Resize:     "x": 240,
+2026-11-07T05:29:28.417Z Resize:     "y": 90
+2026-11-07T05:29:28.418Z Resize:   },
+2026-11-07T05:29:28.419Z Resize:   "clientScreenRect": {
+2026-11-07T05:29:28.420Z Resize:     "left": 240,
+2026-11-07T05:29:28.422Z Resize:     "top": 90,
+2026-11-07T05:29:28.423Z Resize:     "right": 1680,
+2026-11-07T05:29:28.424Z Resize:     "bottom": 942,
+2026-11-07T05:29:28.425Z Resize:     "width": 1440,
+2026-11-07T05:29:28.426Z Resize:     "height": 852
+2026-11-07T05:29:28.427Z Resize:   },
+2026-11-07T05:29:28.428Z Resize:   "clientCenter": {
+2026-11-07T05:29:28.429Z Resize:     "x": 960.0,
+2026-11-07T05:29:28.430Z Resize:     "y": 516.0
+2026-11-07T05:29:28.432Z Resize:   },
+2026-11-07T05:29:28.433Z Resize:   "clientCenterDiff": {
+2026-11-07T05:29:28.434Z Resize:     "dx": 0.0,
+2026-11-07T05:29:28.435Z Resize:     "dy": 0.0
+2026-11-07T05:29:28.436Z Resize:   },
+2026-11-07T05:29:28.437Z Resize:   "capture": {
+2026-11-07T05:29:28.439Z Resize:     "ok": false,
+2026-11-07T05:29:28.440Z Resize:     "path": ""
+2026-11-07T05:29:28.441Z Resize:   }
+2026-11-07T05:29:28.442Z Resize: }
+2026-11-07T05:29:29.067Z Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07T05:29:29.234Z Foreground check for 'Initial': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:29.288Z Project tree not visible. Ensuring left dock is open and project folder active...
+2026-11-07T05:29:29.358Z Clicking 'project-empty-open' to open project folder...
+2026-11-07T05:29:30.826Z Step 'project-tree-open' confirmed in layout snapshot (seq=2)
+2026-11-07T05:29:30.829Z =====================================================================
+2026-11-07T05:29:30.831Z [app] Running Step: 'app-default-onedark' - Default startup in One Dark (no settings.json theme key)
+2026-11-07T05:29:30.832Z =====================================================================
+2026-11-07T05:29:31.001Z Foreground check for 'app-default-onedark': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:31.002Z Waiting for initial render and window settling...
+2026-11-07T05:29:32.371Z Foreground check for 'Capture app-default-onedark': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:33.934Z Capture 'app-default-onedark' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-default-onedark.png (exit=0)
+2026-11-07T05:29:33.937Z Captured default One Dark startup: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-default-onedark.png
+2026-11-07T05:29:33.982Z One Dark pixel colors: Editor=#282c33, Status=#3b414d, Panel=#2f343e, Title=#3b90c3
+2026-11-07T05:29:33.987Z [app] Step 'app-default-onedark' -> PASS (3151 ms)
+2026-11-07T05:29:33.993Z =====================================================================
+2026-11-07T05:29:33.997Z [app] Running Step: 'app-theme-modal-open' - Select Theme modal open (Ctrl-K Ctrl-T, search, list, checkmark)
+2026-11-07T05:29:33.999Z =====================================================================
+2026-11-07T05:29:34.167Z Foreground check for 'app-theme-modal-open': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:34.328Z Foreground check for 'Capture app-theme-modal-before': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:36.025Z Capture 'app-theme-modal-before' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-before.png (exit=0)
+2026-11-07T05:29:36.194Z Foreground check for 'app-theme-modal-open (attempt 1)': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:36.196Z Sending Ctrl-K Ctrl-T (attempt 1)...
+2026-11-07T05:29:37.979Z Foreground check for 'Capture app-theme-modal-open': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:39.546Z Capture 'app-theme-modal-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-open.png (exit=0)
+2026-11-07T05:29:39.549Z Theme selector modal successfully opened (hash changed: D303E9B972364037D10862E0BB857F50A8BC677C73B6F7891C006631146C2D26 -> 14ABF5A97D879A096AEB4BBA4206012BA8431108444831FC33173F066506546A)
+2026-11-07T05:29:39.550Z [app] Step 'app-theme-modal-open' -> PASS (5550 ms)
+2026-11-07T05:29:39.552Z =====================================================================
+2026-11-07T05:29:39.553Z [app] Running Step: 'app-theme-modal-preview-down' - Down arrow preview next theme in modal
+2026-11-07T05:29:39.554Z =====================================================================
+2026-11-07T05:29:39.722Z Foreground check for 'app-theme-modal-preview-down': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:39.724Z Pressing Down arrow (VK_DOWN=0x28)...
+2026-11-07T05:29:40.783Z Foreground check for 'Capture app-theme-modal-preview-down': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:42.370Z Capture 'app-theme-modal-preview-down' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-preview-down.png (exit=0)
+2026-11-07T05:29:42.372Z Captured theme preview down: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-preview-down.png (hash: 0D9616D322273719628EA50A8CFCD92E03576A21C2639E6296F62067A70AE657)
+2026-11-07T05:29:42.373Z [app] Step 'app-theme-modal-preview-down' -> PASS (2817 ms)
+2026-11-07T05:29:42.375Z =====================================================================
+2026-11-07T05:29:42.376Z [app] Running Step: 'app-theme-modal-esc-restore' - Esc closes modal and restores original theme
+2026-11-07T05:29:42.377Z =====================================================================
+2026-11-07T05:29:42.534Z Foreground check for 'app-theme-modal-esc-restore': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:42.535Z Pressing Esc (VK_ESCAPE=0x1B)...
+2026-11-07T05:29:43.585Z Foreground check for 'Capture app-theme-modal-esc-restore': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:45.206Z Capture 'app-theme-modal-esc-restore' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-esc-restore.png (exit=0)
+2026-11-07T05:29:45.207Z Captured Esc restored theme: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-esc-restore.png
+2026-11-07T05:29:45.212Z [app] Step 'app-theme-modal-esc-restore' -> PASS (2833 ms)
+2026-11-07T05:29:45.215Z [app] Step 'app-theme-apply-onelight' (Apply theme 'One Light' via selector and sample pixels) -> SKIPPED
+2026-11-07T05:29:45.217Z [app] Step 'app-theme-apply-ayudark' (Apply theme 'Ayu Dark' via selector and sample pixels) -> SKIPPED
+2026-11-07T05:29:45.218Z [app] Step 'app-theme-apply-gruvbox' (Apply theme 'Gruvbox Dark' via selector and sample pixels) -> SKIPPED
+2026-11-07T05:29:45.222Z [app] Step 'app-theme-apply-catppuccin' (Apply theme 'Catppuccin Latte' via selector and sample pixels) -> SKIPPED
+2026-11-07T05:29:45.223Z [app] Step 'app-theme-apply-macosclassic' (Apply theme 'macOS Classic Light' via selector and sample pixels) -> SKIPPED
+2026-11-07T05:29:45.224Z =====================================================================
+2026-11-07T05:29:45.225Z [app] Running Step: 'app-icon-theme-catppuccin' - Select Icon Theme modal and apply Catppuccin Latte
+2026-11-07T05:29:45.226Z =====================================================================
+2026-11-07T05:29:45.397Z Foreground check for 'Icon theme modal': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:45.399Z Clicking v menu button at (1555, 106)...
+2026-11-07T05:29:47.930Z Foreground check for 'Capture app-icon-theme-modal-open': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:49.482Z Capture 'app-icon-theme-modal-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-icon-theme-modal-open.png (exit=0)
+2026-11-07T05:29:49.484Z Captured Icon Theme modal: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-icon-theme-modal-open.png
+2026-11-07T05:29:51.866Z Foreground check for 'Capture app-tree-catppuccin-latte': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:53.440Z Capture 'app-tree-catppuccin-latte' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-tree-catppuccin-latte.png (exit=0)
+2026-11-07T05:29:53.442Z Captured tree with Catppuccin Latte icons: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-tree-catppuccin-latte.png
+2026-11-07T05:29:53.510Z [app] Step 'app-icon-theme-catppuccin' -> PASS (8283 ms)
+2026-11-07T05:29:53.512Z [app] Step 'app-settings-window' (Settings window dropdown list verification) -> SKIPPED
+2026-11-07T05:29:53.513Z [app] Step 'app-extensions-tab' (Extensions tab (Ctrl-Shift-X) cards verification) -> SKIPPED
+2026-11-07T05:29:53.514Z [app] Step 'app-keymap-editor-hover' (Keymap Editor hover, <no arguments>, <global>, Edit column 36px) -> SKIPPED
+2026-11-07T05:29:53.515Z =====================================================================
+2026-11-07T05:29:53.516Z [app] Running Step: 'app-v-button-crop' - v button probe measurement and 4x crop
+2026-11-07T05:29:53.518Z =====================================================================
+2026-11-07T05:29:53.677Z Foreground check for 'v-button': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:53.842Z Foreground check for 'Capture app-v-button-window': target=0xDB1644, foreground=0xDB1644
+2026-11-07T05:29:55.424Z Capture 'app-v-button-window' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-v-button-window.png (exit=0)
+2026-11-07T05:29:55.435Z v button 4x crop saved: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-v-button-crop-4x.png
+2026-11-07T05:29:55.437Z [app] Step 'app-v-button-crop' -> PASS (1917 ms)
+2026-11-07T05:29:55.444Z Cleaning up workbench-gpui process (PID=3064)...
+2026-11-07T05:29:55.561Z Restoring app data via session.ps1 -Action Stop...
+2026-11-07T05:29:56.816Z Session Stop: {
+2026-11-07T05:29:56.817Z Session Stop:   "exeUnchanged": true,
+2026-11-07T05:29:56.818Z Session Stop:   "files": {
+2026-11-07T05:29:56.819Z Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07T05:29:56.821Z Session Stop:   },
+2026-11-07T05:29:56.822Z Session Stop:   "restored": true,
+2026-11-07T05:29:56.822Z Session Stop:   "fixtureRemoved": true
+2026-11-07T05:29:56.823Z Session Stop: }
+2026-11-07T05:29:56.843Z === Starting ORDER-07 V3 Zed Measurement Session ===
+2026-11-07T05:29:56.858Z [TOP-LEVEL FATAL] Measurement execution failed at line 1043:5: System.Management.Automation.PropertyNotFoundException: 이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.
+StackTrace:
+Run-ZedMeasure에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 1043
+<ScriptBlock>에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 1303
+2026-11-07T05:29:56.875Z Summary JSON written to: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\summary.json

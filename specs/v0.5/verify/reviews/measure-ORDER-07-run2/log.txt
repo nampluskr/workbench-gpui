@@ -1,0 +1,177 @@
+2026-11-07T04:18:07.510Z === ORDER-07 V3 Measure Script Initialized ===
+2026-11-07T04:18:07.561Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07
+2026-11-07T04:18:07.563Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T04:18:07.564Z ZedExe: C:\Users\nampl\AppData\Local\Programs\Zed\Zed.exe
+2026-11-07T04:18:07.996Z === Starting ORDER-07 V3 App Measurement Session ===
+2026-11-07T04:18:08.019Z Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07T04:18:09.987Z Session started: appPid=9112
+2026-11-07T04:18:12.117Z Main window HWND: 0x12004A, Title: 'workbench-gpui'
+2026-11-07T04:18:14.519Z Resize: {
+2026-11-07T04:18:14.521Z Resize:   "hwnd": "0x12004A",
+2026-11-07T04:18:14.522Z Resize:   "desktop": "Default",
+2026-11-07T04:18:14.523Z Resize:   "title": "",
+2026-11-07T04:18:14.524Z Resize:   "className": "workbench-gpui",
+2026-11-07T04:18:14.525Z Resize:   "workArea_SPI": {
+2026-11-07T04:18:14.525Z Resize:     "left": 0,
+2026-11-07T04:18:14.527Z Resize:     "top": 0,
+2026-11-07T04:18:14.528Z Resize:     "right": 1920,
+2026-11-07T04:18:14.529Z Resize:     "bottom": 1032,
+2026-11-07T04:18:14.530Z Resize:     "width": 1920,
+2026-11-07T04:18:14.531Z Resize:     "height": 1032
+2026-11-07T04:18:14.532Z Resize:   },
+2026-11-07T04:18:14.534Z Resize:   "workArea_Monitor": {
+2026-11-07T04:18:14.535Z Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07T04:18:14.536Z Resize:     "left": 0,
+2026-11-07T04:18:14.537Z Resize:     "top": 0,
+2026-11-07T04:18:14.538Z Resize:     "right": 1920,
+2026-11-07T04:18:14.540Z Resize:     "bottom": 1032,
+2026-11-07T04:18:14.541Z Resize:     "width": 1920,
+2026-11-07T04:18:14.542Z Resize:     "height": 1032
+2026-11-07T04:18:14.543Z Resize:   },
+2026-11-07T04:18:14.544Z Resize:   "workAreaCenter": {
+2026-11-07T04:18:14.545Z Resize:     "x": 960.0,
+2026-11-07T04:18:14.546Z Resize:     "y": 516.0
+2026-11-07T04:18:14.548Z Resize:   },
+2026-11-07T04:18:14.549Z Resize:   "windowRect": {
+2026-11-07T04:18:14.551Z Resize:     "left": 232,
+2026-11-07T04:18:14.552Z Resize:     "top": 90,
+2026-11-07T04:18:14.553Z Resize:     "right": 1688,
+2026-11-07T04:18:14.554Z Resize:     "bottom": 950,
+2026-11-07T04:18:14.555Z Resize:     "width": 1456,
+2026-11-07T04:18:14.559Z Resize:     "height": 860
+2026-11-07T04:18:14.560Z Resize:   },
+2026-11-07T04:18:14.560Z Resize:   "windowCenter": {
+2026-11-07T04:18:14.561Z Resize:     "x": 960.0,
+2026-11-07T04:18:14.562Z Resize:     "y": 520.0
+2026-11-07T04:18:14.564Z Resize:   },
+2026-11-07T04:18:14.565Z Resize:   "windowCenterDiff": {
+2026-11-07T04:18:14.566Z Resize:     "dx": 0.0,
+2026-11-07T04:18:14.567Z Resize:     "dy": 4.0
+2026-11-07T04:18:14.568Z Resize:   },
+2026-11-07T04:18:14.569Z Resize:   "clientRect": {
+2026-11-07T04:18:14.570Z Resize:     "width": 1440,
+2026-11-07T04:18:14.571Z Resize:     "height": 852
+2026-11-07T04:18:14.572Z Resize:   },
+2026-11-07T04:18:14.573Z Resize:   "clientToScreen": {
+2026-11-07T04:18:14.574Z Resize:     "x": 240,
+2026-11-07T04:18:14.575Z Resize:     "y": 90
+2026-11-07T04:18:14.575Z Resize:   },
+2026-11-07T04:18:14.576Z Resize:   "clientScreenRect": {
+2026-11-07T04:18:14.577Z Resize:     "left": 240,
+2026-11-07T04:18:14.578Z Resize:     "top": 90,
+2026-11-07T04:18:14.579Z Resize:     "right": 1680,
+2026-11-07T04:18:14.581Z Resize:     "bottom": 942,
+2026-11-07T04:18:14.582Z Resize:     "width": 1440,
+2026-11-07T04:18:14.583Z Resize:     "height": 852
+2026-11-07T04:18:14.584Z Resize:   },
+2026-11-07T04:18:14.585Z Resize:   "clientCenter": {
+2026-11-07T04:18:14.587Z Resize:     "x": 960.0,
+2026-11-07T04:18:14.588Z Resize:     "y": 516.0
+2026-11-07T04:18:14.589Z Resize:   },
+2026-11-07T04:18:14.590Z Resize:   "clientCenterDiff": {
+2026-11-07T04:18:14.591Z Resize:     "dx": 0.0,
+2026-11-07T04:18:14.591Z Resize:     "dy": 0.0
+2026-11-07T04:18:14.592Z Resize:   },
+2026-11-07T04:18:14.593Z Resize:   "capture": {
+2026-11-07T04:18:14.594Z Resize:     "ok": false,
+2026-11-07T04:18:14.595Z Resize:     "path": ""
+2026-11-07T04:18:14.597Z Resize:   }
+2026-11-07T04:18:14.599Z Resize: }
+2026-11-07T04:18:15.225Z Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07T04:18:15.534Z Project tree not visible. Ensuring left dock is open and project folder active...
+2026-11-07T04:18:15.570Z =====================================================================
+2026-11-07T04:18:15.571Z [app] Running Step: 'app-default-onedark' - Default startup in One Dark (no settings.json theme key)
+2026-11-07T04:18:15.573Z =====================================================================
+2026-11-07T04:18:17.469Z [app] Step 'app-default-onedark' -> FAIL at line 274 (1889 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-default-onedark.png
+2026-11-07T04:18:17.472Z =====================================================================
+2026-11-07T04:18:17.473Z [app] Running Step: 'app-theme-modal-open' - Select Theme modal open (Ctrl-K Ctrl-T, search, list, checkmark)
+2026-11-07T04:18:17.474Z =====================================================================
+2026-11-07T04:18:17.739Z Sending Ctrl-K Ctrl-T...
+2026-11-07T04:18:20.145Z [app] Step 'app-theme-modal-open' -> FAIL at line 274 (2670 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-open.png
+2026-11-07T04:18:20.147Z =====================================================================
+2026-11-07T04:18:20.148Z [app] Running Step: 'app-theme-modal-preview-down' - Down arrow preview next theme in modal
+2026-11-07T04:18:20.149Z =====================================================================
+2026-11-07T04:18:20.401Z Pressing Down arrow (VK_DOWN=0x28)...
+2026-11-07T04:18:21.908Z [app] Step 'app-theme-modal-preview-down' -> FAIL at line 274 (1758 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-preview-down.png
+2026-11-07T04:18:21.909Z =====================================================================
+2026-11-07T04:18:21.910Z [app] Running Step: 'app-theme-modal-esc-restore' - Esc closes modal and restores original theme
+2026-11-07T04:18:21.911Z =====================================================================
+2026-11-07T04:18:22.172Z Pressing Esc (VK_ESCAPE=0x1B)...
+2026-11-07T04:18:24.018Z [app] Step 'app-theme-modal-esc-restore' -> FAIL at line 274 (2101 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-modal-esc-restore.png
+2026-11-07T04:18:24.022Z =====================================================================
+2026-11-07T04:18:24.023Z [app] Running Step: 'app-theme-apply-onelight' - Apply theme 'One Light' via selector and sample pixels
+2026-11-07T04:18:24.024Z =====================================================================
+2026-11-07T04:18:24.290Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:18:27.996Z [app] Step 'app-theme-apply-onelight' -> FAIL at line 274 (3970 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-onelight.png
+2026-11-07T04:18:27.997Z =====================================================================
+2026-11-07T04:18:27.998Z [app] Running Step: 'app-theme-apply-ayudark' - Apply theme 'Ayu Dark' via selector and sample pixels
+2026-11-07T04:18:27.999Z =====================================================================
+2026-11-07T04:18:28.257Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:18:31.926Z [app] Step 'app-theme-apply-ayudark' -> FAIL at line 274 (3926 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-ayudark.png
+2026-11-07T04:18:31.927Z =====================================================================
+2026-11-07T04:18:31.928Z [app] Running Step: 'app-theme-apply-gruvbox' - Apply theme 'Gruvbox Dark' via selector and sample pixels
+2026-11-07T04:18:31.929Z =====================================================================
+2026-11-07T04:18:32.189Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:18:35.832Z [app] Step 'app-theme-apply-gruvbox' -> FAIL at line 274 (3902 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-gruvbox.png
+2026-11-07T04:18:35.834Z =====================================================================
+2026-11-07T04:18:35.835Z [app] Running Step: 'app-theme-apply-catppuccin' - Apply theme 'Catppuccin Latte' via selector and sample pixels
+2026-11-07T04:18:35.835Z =====================================================================
+2026-11-07T04:18:36.090Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:18:39.749Z [app] Step 'app-theme-apply-catppuccin' -> FAIL at line 274 (3913 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-catppuccin.png
+2026-11-07T04:18:39.751Z =====================================================================
+2026-11-07T04:18:39.752Z [app] Running Step: 'app-theme-apply-macosclassic' - Apply theme 'macOS Classic Light' via selector and sample pixels
+2026-11-07T04:18:39.752Z =====================================================================
+2026-11-07T04:18:40.006Z Opening theme selector (Ctrl-K Ctrl-T)...
+2026-11-07T04:18:43.779Z [app] Step 'app-theme-apply-macosclassic' -> FAIL at line 274 (4025 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-theme-macosclassic.png
+2026-11-07T04:18:43.780Z =====================================================================
+2026-11-07T04:18:43.781Z [app] Running Step: 'app-icon-theme-catppuccin' - Select Icon Theme modal and apply Catppuccin Latte
+2026-11-07T04:18:43.789Z =====================================================================
+2026-11-07T04:18:44.056Z Clicking v menu button at (1555, 106)...
+2026-11-07T04:18:47.400Z [app] Step 'app-icon-theme-catppuccin' -> FAIL at line 274 (3609 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-icon-theme-modal-open.png
+2026-11-07T04:18:47.401Z =====================================================================
+2026-11-07T04:18:47.402Z [app] Running Step: 'app-settings-window' - Settings window dropdown list verification
+2026-11-07T04:18:47.403Z =====================================================================
+2026-11-07T04:18:47.665Z Sending Ctrl-, to open Settings...
+2026-11-07T04:18:49.994Z [app] Step 'app-settings-window' -> FAIL at line 274 (2590 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-settings-window.png
+2026-11-07T04:18:49.995Z =====================================================================
+2026-11-07T04:18:49.996Z [app] Running Step: 'app-extensions-tab' - Extensions tab (Ctrl-Shift-X) cards verification
+2026-11-07T04:18:49.997Z =====================================================================
+2026-11-07T04:18:50.254Z Sending Ctrl-Shift-X...
+2026-11-07T04:18:52.626Z [app] Step 'app-extensions-tab' -> FAIL at line 274 (2627 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-extensions-tab.png
+2026-11-07T04:18:52.627Z =====================================================================
+2026-11-07T04:18:52.628Z [app] Running Step: 'app-keymap-editor-hover' - Keymap Editor hover, <no arguments>, <global>, Edit column 36px
+2026-11-07T04:18:52.628Z =====================================================================
+2026-11-07T04:18:52.891Z Sending Ctrl-K Ctrl-S...
+2026-11-07T04:18:56.159Z [app] Step 'app-keymap-editor-hover' -> FAIL at line 274 (3529 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-keymap-editor-hover.png
+2026-11-07T04:18:56.160Z =====================================================================
+2026-11-07T04:18:56.161Z [app] Running Step: 'app-v-button-crop' - v button probe measurement and 4x crop
+2026-11-07T04:18:56.162Z =====================================================================
+2026-11-07T04:18:57.387Z [app] Step 'app-v-button-crop' -> FAIL at line 274 (1223 ms): System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\app-v-button-normal.png
+2026-11-07T04:18:57.395Z Cleaning up workbench-gpui process (PID=9112)...
+2026-11-07T04:18:57.731Z Restoring app data via session.ps1 -Action Stop...
+2026-11-07T04:18:59.013Z Session Stop: {
+2026-11-07T04:18:59.014Z Session Stop:   "files": {
+2026-11-07T04:18:59.016Z Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07T04:18:59.017Z Session Stop:   },
+2026-11-07T04:18:59.018Z Session Stop:   "fixtureRemoved": true,
+2026-11-07T04:18:59.019Z Session Stop:   "exeUnchanged": true,
+2026-11-07T04:18:59.019Z Session Stop:   "restored": true
+2026-11-07T04:18:59.020Z Session Stop: }
+2026-11-07T04:18:59.025Z === Starting ORDER-07 V3 Zed Measurement Session ===
+2026-11-07T04:18:59.044Z --- Zed Config Hash Status (BEFORE) ---
+2026-11-07T04:18:59.049Z   settings.json: Exists=True, Sha256=C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2, Length=1031
+2026-11-07T04:18:59.050Z   keymap.json: Exists=False, Sha256=ABSENT, Length=0
+2026-11-07T04:18:59.062Z Zed top-level HWNDs before launch: 0x15A0A7E
+2026-11-07T04:18:59.063Z Launching Zed (new window only, -a forbidden): C:\Users\nampl\AppData\Local\Programs\Zed\Zed.exe -n "D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\order07-fixture\00-order07.md"
+2026-11-07T04:19:30.026Z [FATAL ERROR] In Run-ZedMeasure at line 949:13: System.Management.Automation.RuntimeException: Newly created Zed window not found
+StackTrace:
+Run-ZedMeasure에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 949
+<ScriptBlock>에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 1111
+2026-11-07T04:19:30.030Z --- Zed Config Hash Status (AFTER) ---
+2026-11-07T04:19:30.031Z   settings.json: Exists=True, Sha256=C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2, Length=1031
+2026-11-07T04:19:30.032Z   keymap.json: Exists=False, Sha256=ABSENT, Length=0
+2026-11-07T04:19:30.038Z [TOP-LEVEL FATAL] Measurement execution failed at line 949:13: System.Management.Automation.RuntimeException: Newly created Zed window not found
+StackTrace:
+Run-ZedMeasure에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 949
+<ScriptBlock>에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 1111
+2026-11-07T04:19:30.052Z Summary JSON written to: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\summary.json

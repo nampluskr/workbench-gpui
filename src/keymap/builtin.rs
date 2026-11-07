@@ -72,6 +72,7 @@ pub const BUILTIN: &[Builtin] = &[
     b("ctrl-,", "", "zed::OpenSettings", "K-11, core ORDER-06-R1"),
     b("ctrl-k ctrl-s", "Workspace", "zed::OpenKeymap", "K-14, core ORDER-06-R1"),
     b("ctrl-shift-x", "Workspace", "zed::Extensions", "K-15, core ORDER-06-R1"),
+    b("ctrl-k ctrl-t", "Workspace", "theme_selector::Toggle", "K-20, core ORDER-07 I-4"),
     b("ctrl-e", "KeymapEditor", "keymap_editor::EditJson", "K-14, K-010"),
     b("ctrl-k", "KeymapEditor", "keymap_editor::Create", "K-14, K-010"),
     b("ctrl-shift-w", "", "workspace::CloseWindow", "I-358"),

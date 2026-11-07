@@ -1,0 +1,14 @@
+{
+  "app": {},
+  "zed": {},
+  "theme_colors": {},
+  "crops": {},
+  "config_hashes": {},
+  "fatal_error": {
+    "message": "'$global:activeFixtureDir' 변수는 설정되지 않았으므로 가져올 수 없습니다.",
+    "type": "System.Management.Automation.RuntimeException",
+    "line": 1050,
+    "offset": 25,
+    "stack": "Run-ZedMeasure에서 C:\\Users\\nampl\\AppData\\Local\\Temp\\claude\\17d49c999518e6e0\\197163dd-27a0-4cea-a9f0-18b54597e96e\\scratchpad\\order07.snap.ps1: 줄 1050\r\n<ScriptBlock>에서 C:\\Users\\nampl\\AppData\\Local\\Temp\\claude\\17d49c999518e6e0\\197163dd-27a0-4cea-a9f0-18b54597e96e\\scratchpad\\order07.snap.ps1: 줄 1303"
+  }
+}

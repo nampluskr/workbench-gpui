@@ -1,0 +1,7 @@
+2026-11-07T04:02:42.741Z === ORDER-07 V3 Measure Script Initialized ===
+2026-11-07T04:02:42.791Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07
+2026-11-07T04:02:42.793Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T04:02:42.795Z ZedExe: C:\Users\nampl\AppData\Local\Programs\Zed\Zed.exe
+2026-11-07T04:02:43.195Z === Starting ORDER-07 V3 App Measurement Session ===
+2026-11-07T04:02:43.213Z Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07T04:02:45.276Z Summary JSON written to: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\summary.json

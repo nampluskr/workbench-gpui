@@ -26,6 +26,8 @@ pub const ACTIONS: &[(&str, bool)] = &[
     ("zed::OpenSettings", false),
     ("zed::OpenKeymap", false),
     ("zed::Extensions", false),
+    ("theme_selector::Toggle", false),
+    ("icon_theme_selector::Toggle", false),
     ("keymap_editor::EditJson", true),
     ("keymap_editor::Create", true),
     ("pane::CloseActiveItem", false),

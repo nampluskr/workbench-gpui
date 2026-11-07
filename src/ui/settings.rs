@@ -13,18 +13,20 @@ use gpui_kit::component::WindowExt as _;
 
 use super::{Workbench, metrics::settings_window as layout};
 
-pub const THEME: &str = "Default Light";
+pub const THEME: &str = "One Dark";
 pub const ICON_THEME: &str = "Zed (Default)";
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Values {
+    pub theme: String,
+    pub icon_theme: String,
     pub ui_font_size: f32,
     pub buffer_font_size: f32,
 }
 
 impl Default for Values {
     fn default() -> Self {
-        Self { ui_font_size: f32::from(super::fonts::UI_SIZE), buffer_font_size: f32::from(super::metrics::BUFFER_FONT_SIZE) }
+        Self { theme: THEME.into(), icon_theme: ICON_THEME.into(), ui_font_size: f32::from(super::fonts::UI_SIZE), buffer_font_size: f32::from(super::metrics::BUFFER_FONT_SIZE) }
     }
 }
 
@@ -46,13 +48,15 @@ fn read(path: &Path) -> Result<Value, String> {
 
 fn values(raw: &Value) -> (Values, Vec<String>) {
     let mut errors = Vec::new();
-    for (key, supported) in [("theme", THEME), ("icon_theme", ICON_THEME)] {
-        if let Some(value) = raw.get(key).filter(|value| !value.is_null())
-            && value.as_str() != Some(supported) {
-            errors.push(format!("Unsupported {key}; using default"));
+    let mut result = Values::default();
+    for (key, target, names) in [("theme", &mut result.theme, super::theme::names as fn() -> Vec<String>),
+        ("icon_theme", &mut result.icon_theme, super::icon_theme::names)] {
+        if let Some(value) = raw.get(key).filter(|v| !v.is_null()) {
+            if let Some(name) = value.as_str().filter(|name| names().iter().any(|n| n == *name)) {
+                *target = name.into();
+            } else { errors.push(format!("Unsupported {key}; using default")); }
         }
     }
-    let mut result = Values::default();
     for (key, target) in [("ui_font_size", &mut result.ui_font_size), ("buffer_font_size", &mut result.buffer_font_size)] {
         if let Some(value) = raw.get(key).filter(|value| !value.is_null()) {
             match value.as_f64().map(|n| n as f32) {
@@ -112,18 +116,21 @@ struct Settings {
     path: Option<PathBuf>,
     values: Values,
     window: Option<WindowHandle<gpui_kit::base::Root>>,
+    /// Text last written by a selector, so an open Settings window can follow it instead of reporting a conflict.
+    selector_write: Option<String>,
 }
 impl Global for Settings {}
 
 pub fn init(cx: &mut App) {
     cx.set_global(Settings {
         path: dirs::config_dir().map(|dir| dir.join(super::keymap::APP_DIR).join("settings.json")),
-        values: Values::default(), window: None,
+        values: Values::default(), window: None, selector_write: None,
     });
     reload(None, cx);
 }
 
 fn apply(value: Values, cx: &mut App) {
+    super::theme::apply(&value.theme, cx);
     cx.global_mut::<Settings>().values = value.clone();
     Theme::update(cx, |theme| {
         theme.font_size = px(value.ui_font_size);
@@ -147,6 +154,35 @@ pub fn reload(window: Option<&mut Window>, cx: &mut App) {
         if let Some(window) = window { window.push_notification(message.as_str(), cx); }
         else { eprintln!("{message}"); }
     }
+}
+
+pub fn icon_theme_name(cx: &App) -> String {
+    cx.try_global::<Settings>().map_or_else(|| ICON_THEME.into(), |settings| settings.values.icon_theme.clone())
+}
+
+/// Currently applied `theme` or `icon_theme` name (selector start state).
+pub(super) fn current(key: &str, cx: &App) -> String {
+    let values = &cx.global::<Settings>().values;
+    if key == "theme" { values.theme.clone() } else { values.icon_theme.clone() }
+}
+
+/// Applies a theme or icon theme name without saving (selector preview and Esc restore).
+pub(super) fn preview(key: &str, name: &str, cx: &mut App) {
+    // try_global: the selector's release handler can run while the app shuts down.
+    let Some(settings) = cx.try_global::<Settings>() else { return };
+    let mut value = settings.values.clone();
+    if key == "theme" { value.theme = name.into(); } else { value.icon_theme = name.into(); }
+    apply(value, cx);
+}
+
+/// Saves `theme` or `icon_theme` to settings.json (same JSONC edit and validation as Settings) and applies the result.
+pub(super) fn choose(key: &str, name: &str, cx: &mut App) -> Result<(), String> {
+    let path = cx.global::<Settings>().path.clone().ok_or("Application data folder unavailable")?;
+    let mut expected = super::keymap_editor::read_snapshot(&path)?;
+    let (value, _) = save(&path, &mut expected, key, json!(name))?;
+    cx.global_mut::<Settings>().selector_write = expected;
+    apply(value, cx);
+    Ok(())
 }
 
 pub fn ui_size(cx: &App) -> Pixels {
@@ -195,8 +231,13 @@ impl SettingsView {
         let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search settings…"));
         let ui_font = cx.new(|cx| InputState::new(window, cx).default_value(value.ui_font_size.to_string()));
         let buffer_font = cx.new(|cx| InputState::new(window, cx).default_value(value.buffer_font_size.to_string()));
-        let theme = cx.new(|cx| SelectState::new(SearchableVec::new(vec![SharedString::from(THEME)]), Some(IndexPath::new(0)), window, cx));
-        let icons = cx.new(|cx| SelectState::new(SearchableVec::new(vec![SharedString::from(ICON_THEME)]), Some(IndexPath::new(0)), window, cx));
+        let mut select = |names: Vec<String>, current: &str, cx: &mut Context<Self>| {
+            let selected = names.iter().position(|name| name == current).map(IndexPath::new);
+            let items: Vec<SharedString> = names.into_iter().map(SharedString::from).collect();
+            cx.new(|cx| SelectState::new(SearchableVec::new(items), selected, window, cx))
+        };
+        let theme = select(super::theme::names(), &value.theme, cx);
+        let icons = select(super::icon_theme::names(), &value.icon_theme, cx);
         let mut subscriptions = vec![cx.subscribe(&search, |_, _, _: &InputEvent, cx| cx.notify())];
         for (key, input) in [("ui_font_size", &ui_font), ("buffer_font_size", &buffer_font)] {
             subscriptions.push(cx.subscribe_in(input, window, move |this, input, event: &InputEvent, window, cx| {
@@ -217,8 +258,13 @@ impl SettingsView {
     }
 
     fn change(&mut self, key: &str, value: Value, window: &mut Window, cx: &mut Context<Self>) {
+        let own = cx.global::<Settings>().selector_write.clone();
         let result = cx.global::<Settings>().path.as_ref().ok_or("Application data folder unavailable".into())
-            .and_then(|path| self.expected.as_mut().map_err(|e| e.clone()).and_then(|expected| save(path, expected, key, value)));
+            .and_then(|path| self.expected.as_mut().map_err(|e| e.clone()).and_then(|expected| {
+                // A theme selector saved the file since this window read it: follow that write instead of reporting a conflict.
+                if own.is_some() && super::keymap_editor::read_snapshot(path).ok().flatten() == own { *expected = own; }
+                save(path, expected, key, value)
+            }));
         match result {
             Ok((value, errors)) => { self.error = (!errors.is_empty()).then(|| errors.join("\n")); apply(value, cx); }
             Err(error) => { window.push_notification(error.as_str(), cx); self.error = Some(error); }
@@ -334,6 +380,27 @@ mod tests {
         expected = super::super::keymap_editor::read_snapshot(&path).unwrap();
         assert!(super::save(&path, &mut expected, "theme", serde_json::json!(super::THEME)).is_err());
         assert_eq!(std::fs::read_to_string(&path).unwrap(), "{ invalid");
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn k20_theme_and_icon_theme_save_validate_and_keep_other_text() {
+        let dir = std::env::temp_dir().join(format!("workbench-k20-{}", crate::state::win::new_uuid()));
+        let path = dir.join("settings.json");
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(&path, "{ // keep\n \"ui_font_size\": 18, }").unwrap();
+        let mut expected = super::super::keymap_editor::read_snapshot(&path).unwrap();
+        let (saved, errors) = super::save(&path, &mut expected, "theme", serde_json::json!("One Light")).unwrap();
+        assert_eq!((saved.theme.as_str(), saved.icon_theme.as_str(), saved.ui_font_size, errors.len()), ("One Light", super::ICON_THEME, 18., 0));
+        let (saved, _) = super::save(&path, &mut expected, "icon_theme", serde_json::json!("Catppuccin Mocha")).unwrap();
+        assert_eq!((saved.theme.as_str(), saved.icon_theme.as_str()), ("One Light", "Catppuccin Mocha"));
+        let before = std::fs::read(&path).unwrap();
+        assert!(super::save(&path, &mut expected, "icon_theme", serde_json::json!("No Such Icons")).is_err());
+        assert!(super::save(&path, &mut expected, "theme", serde_json::json!("No Such Theme")).is_err());
+        assert_eq!(std::fs::read(&path).unwrap(), before);
+        let text = String::from_utf8(before).unwrap();
+        assert!(text.contains("// keep") && text.contains("\"ui_font_size\": 18"));
+        assert_eq!(super::values(&super::read(&path).unwrap()).0, saved);
         std::fs::remove_dir_all(dir).unwrap();
     }
 

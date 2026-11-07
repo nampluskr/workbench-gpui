@@ -647,7 +647,7 @@ function Run-AppMeasure {
         try {
             # 1. Start Session
             L "Calling session.ps1 -Action Start..."
-            & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Start -Out $Out -Exe $AppExe -Json -FixtureFile $FixturePath
+            & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Start -Out $Out -Exe $AppExe -Backup $backupDir -Json -FixtureFile $FixturePath
             
             $sessionFile = Join-Path $Out 'session.json'
             if (-not (Test-Path $sessionFile)) { throw "session.json not found after session start" }
@@ -1103,7 +1103,8 @@ function Run-AppMeasure {
             }
         }
         L "Restoring app data via session.ps1 -Action Stop..."
-        & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Stop -Out $Out -Backup $backupDir 2>&1 | ForEach-Object { L "Session Stop: $_" }
+        $stopOutput = & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Stop -Out $Out -Backup $backupDir 2>&1
+        foreach ($line in $stopOutput) { L "Session Stop: $line" }
     }
 }
 

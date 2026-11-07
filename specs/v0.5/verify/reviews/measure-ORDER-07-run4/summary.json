@@ -1,0 +1,76 @@
+{
+  "app": {
+    "app-default-onedark": "PASS",
+    "theme_modal": {
+      "capture": "app-theme-modal-open.png",
+      "shortcut": "Ctrl-K Ctrl-T",
+      "hash_before": "D303E9B972364037D10862E0BB857F50A8BC677C73B6F7891C006631146C2D26",
+      "hash_open": "14ABF5A97D879A096AEB4BBA4206012BA8431108444831FC33173F066506546A"
+    },
+    "app-theme-modal-open": "PASS",
+    "theme_preview": {
+      "capture": "app-theme-modal-preview-down.png",
+      "hash_preview": "0D9616D322273719628EA50A8CFCD92E03576A21C2639E6296F62067A70AE657",
+      "preview_changed": true
+    },
+    "app-theme-modal-preview-down": "PASS",
+    "theme_restore": {
+      "capture": "app-theme-modal-esc-restore.png",
+      "restored_editor_bg": "#282c33"
+    },
+    "app-theme-modal-esc-restore": "PASS",
+    "app-theme-apply-onelight": "SKIPPED",
+    "app-theme-apply-ayudark": "SKIPPED",
+    "app-theme-apply-gruvbox": "SKIPPED",
+    "app-theme-apply-catppuccin": "SKIPPED",
+    "app-theme-apply-macosclassic": "SKIPPED",
+    "app-icon-theme-catppuccin": "PASS",
+    "app-settings-window": "SKIPPED",
+    "app-extensions-tab": "SKIPPED",
+    "app-keymap-editor-hover": "SKIPPED",
+    "app-v-button-crop": "PASS"
+  },
+  "zed": {},
+  "theme_colors": {
+    "One Dark (Default)": {
+      "capture": "app-default-onedark.png",
+      "editor_bg": "#282c33",
+      "expected_editor_bg": "#282c33",
+      "status_bg": "#3b414d",
+      "expected_status_bg": "#3b414d",
+      "panel_bg": "#2f343e",
+      "expected_panel_bg": "#2f343e",
+      "title_bg": "#3b90c3",
+      "expected_title_bg": "#3b414d"
+    }
+  },
+  "crops": {
+    "app-tree-icon": {
+      "crop": "app-tree-icon-crop-4x.png",
+      "icon_theme": "Catppuccin Latte",
+      "tree_coord": {
+        "X": 660,
+        "Y": 162
+      }
+    },
+    "v-button": {
+      "normal": "app-v-button-normal.png",
+      "crop_4x": "app-v-button-crop-4x.png",
+      "target_button_size": "22x22",
+      "target_icon_size": "14px",
+      "target_margin_right": "4px",
+      "button_x": 1306,
+      "button_y": 5,
+      "button_w": 22,
+      "button_h": 22
+    }
+  },
+  "config_hashes": {},
+  "fatal_error": {
+    "message": "이 개체에서 'Count' 속성을 찾을 수 없습니다. 속성이 있는지 확인하세요.",
+    "type": "System.Management.Automation.PropertyNotFoundException",
+    "line": 1043,
+    "offset": 5,
+    "stack": "Run-ZedMeasure에서 C:\\Users\\nampl\\AppData\\Local\\Temp\\claude\\17d49c999518e6e0\\197163dd-27a0-4cea-a9f0-18b54597e96e\\scratchpad\\order07.snap.ps1: 줄 1043\r\n<ScriptBlock>에서 C:\\Users\\nampl\\AppData\\Local\\Temp\\claude\\17d49c999518e6e0\\197163dd-27a0-4cea-a9f0-18b54597e96e\\scratchpad\\order07.snap.ps1: 줄 1303"
+  }
+}

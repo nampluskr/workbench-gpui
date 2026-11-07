@@ -31,6 +31,18 @@ pub const USER_BUTTON_SIZE: Pixels = px(22.);
 pub const USER_CHEVRON_SIZE: Pixels = px(14.);
 pub const USER_BUTTON_MARGIN: Pixels = px(4.);
 
+pub mod selector {
+    use gpui_kit::{Pixels, px};
+    // Zed measurement: measure-ORDER-07 section 3.2, installed build 4304dec732.
+    pub const MODAL_WIDTH: Pixels = px(544.);
+    pub const SEARCH_HEIGHT: Pixels = px(38.);
+    pub const LIST_MAX_HEIGHT: Pixels = px(384.);
+    pub const ROW_HEIGHT: Pixels = px(32.);
+    pub const GAP: Pixels = px(0.);
+    pub const SEPARATOR_HEIGHT: Pixels = px(1.);
+    pub const FOOTER_HEIGHT: Pixels = px(38.);
+}
+
 pub mod keymap_editor {
     use gpui_kit::{Pixels, px};
     // keymap_editor padding/gap_vertical/top_row.gap/search_input.height (K-010..K-012).

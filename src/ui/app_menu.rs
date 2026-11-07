@@ -289,6 +289,20 @@ const USER_ITEMS: &[(&str, &str)] = &[
     ("Icon Themes…", ""),
     ("Extensions", "Ctrl-Shift-X"),
 ];
+/// Rows of the v menu: the items plus Panel Layout.
+const ROWS: usize = USER_ITEMS.len() + 1;
+
+fn user_action(index: usize) -> Box<dyn Action> {
+    use super::keymap::{icon_theme_selector, theme_selector, zed};
+    match index {
+        0 => Box::new(zed::OpenSettings),
+        1 => Box::new(zed::OpenKeymap),
+        2 => Box::new(theme_selector::Toggle),
+        3 => Box::new(icon_theme_selector::Toggle),
+        _ => Box::new(zed::Extensions),
+    }
+}
+
 const PANEL_LAYOUTS: &[&str] = &["Classic"];
 const EDITOR_LAYOUT: &[(&str, &str)] = &[
     ("Split Up", "pane::SplitUp"), ("Split Down", "pane::SplitDown"),
@@ -360,22 +374,18 @@ impl Render for UserMenu {
         if self.open {
             let mut list = menu_common::list(v_flex(), "user-menu-list", window.viewport_size().height * MAX_HEIGHT_RATIO);
             for (i, (label, shortcut)) in USER_ITEMS.iter().enumerate() {
-                let enabled = matches!(i, 0 | 1 | 4);
-                let selection = if i == 4 { 2 } else { i };
-                list = list.child(menu_common::row(("user-menu-item", i)).text_color(if enabled { cx.theme().foreground } else { muted })
-                    .when(enabled && self.selected == selection, |row| row.bg(hover))
-                    .when(enabled, |row| row.on_click(cx.listener(move |this, _, window, cx| {
+                list = list.child(menu_common::row(("user-menu-item", i)).text_color(cx.theme().foreground)
+                    .when(self.selected == i, |row| row.bg(hover))
+                    .on_click(cx.listener(move |this, _, window, cx| {
                         this.close(window, cx);
-                        if i == 0 { window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx); }
-                        else if i == 1 { window.dispatch_action(Box::new(super::keymap::zed::OpenKeymap), cx); }
-                        else { window.dispatch_action(Box::new(super::keymap::zed::Extensions), cx); }
-                    })))
+                        window.dispatch_action(user_action(i), cx);
+                    }))
                     .child(*label).child(menu_common::shortcut_cell().child(*shortcut)));
             }
             list = list.child(menu_common::separator(cx.theme().border)).child(
-                menu_common::row("panel-layout").relative().when(self.selected == 3, |row| row.bg(hover))
+                menu_common::row("panel-layout").relative().when(self.selected == USER_ITEMS.len(), |row| row.bg(hover))
                     .on_hover(cx.listener(|this, hovered: &bool, _, cx| {
-                        if *hovered { this.selected = 3; this.panel = true; cx.notify(); }
+                        if *hovered { this.selected = USER_ITEMS.len(); this.panel = true; cx.notify(); }
                     }))
                     .on_click(cx.listener(|this, _, _, cx| { this.panel = !this.panel; cx.notify(); }))
                     .child("Panel Layout")
@@ -407,20 +417,15 @@ impl Render for UserMenu {
                     if this.panel {
                         this.close(window, cx);
                         window.dispatch_action(Box::new(super::keymap::workspace::UseClassicLayout), cx);
-                    } else if this.selected == 0 {
+                    } else if this.selected < USER_ITEMS.len() {
+                        let selected = this.selected;
                         this.close(window, cx);
-                        window.dispatch_action(Box::new(super::keymap::zed::OpenSettings), cx);
-                    } else if this.selected == 1 {
-                        this.close(window, cx);
-                        window.dispatch_action(Box::new(super::keymap::zed::OpenKeymap), cx);
-                    } else if this.selected == 2 {
-                        this.close(window, cx);
-                        window.dispatch_action(Box::new(super::keymap::zed::Extensions), cx);
+                        window.dispatch_action(user_action(selected), cx);
                     } else { this.panel = true; cx.notify(); }
                 }))
-                .on_action(cx.listener(|this, _: &menu_actions::SelectNext, _, cx| { this.selected = (this.selected + 1) % 4; this.panel = false; cx.notify(); }))
-                .on_action(cx.listener(|this, _: &menu_actions::SelectPrevious, _, cx| { this.selected = (this.selected + 3) % 4; this.panel = false; cx.notify(); }))
-                .on_action(cx.listener(|this, _: &menu_actions::SelectChild, _, cx| { if this.selected == 3 { this.panel = true; cx.notify(); } }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectNext, _, cx| { this.selected = (this.selected + 1) % ROWS; this.panel = false; cx.notify(); }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectPrevious, _, cx| { this.selected = (this.selected + ROWS - 1) % ROWS; this.panel = false; cx.notify(); }))
+                .on_action(cx.listener(|this, _: &menu_actions::SelectChild, _, cx| { if this.selected == USER_ITEMS.len() { this.panel = true; cx.notify(); } }))
                 .on_action(cx.listener(|this, _: &menu_actions::SelectParent, _, cx| { this.panel = false; cx.notify(); }))
                 .on_mouse_down_out(cx.listener(|this, event: &MouseDownEvent, w, cx| {
                     if !this.button_bounds.is_some_and(|bounds| bounds.contains(&event.position))

@@ -376,68 +376,57 @@ function Ensure-Foreground([IntPtr]$hwnd, [string]$context = '') {
     Start-Sleep -Milliseconds 250
 }
 
-# ---------------------------------------------------------------------------
-# 5. Backup & Restore Helpers (Zero User Data Loss)
-# ---------------------------------------------------------------------------
-$global:backupState = [ordered]@{
-    settingsExisted = $false
-    settingsContent = $null
-    keymapExisted = $false
-    keymapContent = $null
+function Ensure-ProjectTreeOpen([IntPtr]$hwnd, [string]$outDir) {
+    $snap = Get-LatestSnapshot $outDir
+    if ($snap -and ($snap.boxes.Contains('tree-row-01') -or $snap.boxes.Contains('tree-row-00'))) {
+        return $snap
+    }
+    L "Project tree not visible. Ensuring left dock is open and project folder active..."
+
+    # 1. Check if left dock is open. If not, open via Ctrl-B
+    $hasDock = $snap -and $snap.boxes.Contains('dock')
+    if (-not $hasDock) {
+        L "Left dock not open. Sending Ctrl-B (workspace::ToggleLeftDock)..."
+        [Order06R2Native]::KeyCombo(@([ushort]0x11), [ushort]0x42)
+        Start-Sleep -Milliseconds 800
+        $snap = Get-LatestSnapshot $outDir
+    }
+
+    # If tree-row is already visible after dock open, we're done
+    if ($snap -and ($snap.boxes.Contains('tree-row-01') -or $snap.boxes.Contains('tree-row-00'))) {
+        return $snap
+    }
+
+    # 2. If folder list is displayed, click folder-row-00 to activate folder and show tree
+    $folderRow0 = Get-BoxScreenCoord $hwnd $outDir 'folder-row-00'
+    if ($folderRow0) {
+        L ("Clicking folder-row-00 at ({0},{1}) to activate folder and display file tree..." -f $folderRow0.X, $folderRow0.Y)
+        [Order06R2Native]::Click($folderRow0.X, $folderRow0.Y)
+        Start-Sleep -Milliseconds 800
+    } else {
+        $emptyOpen = Get-BoxScreenCoord $hwnd $outDir 'project-empty-open'
+        if ($emptyOpen) {
+            L "Clicking 'project-empty-open'..."
+            [Order06R2Native]::Click($emptyOpen.X, $emptyOpen.Y)
+            Start-Sleep -Milliseconds 800
+        }
+    }
+
+    return Assert-LayoutCondition $hwnd $outDir "project-tree-open" {
+        param($s) $s.boxes.Contains('tree-row-01') -or $s.boxes.Contains('tree-row-00')
+    } "tree-row must appear in layout dump after opening project tree" 15
 }
 
+# ---------------------------------------------------------------------------
+# 5. Backup & Restore Helpers (Delegated to session.ps1)
+# ---------------------------------------------------------------------------
+# Note: session.ps1 now centrally manages settings.json and keymap.json backup/restore.
 function Backup-AllAppData() {
-    $appData = Join-Path $env:APPDATA 'workbench-gpui'
-    $sFile = Join-Path $appData 'settings.json'
-    $kFile = Join-Path $appData 'keymap.json'
-
-    if (Test-Path -LiteralPath $sFile) {
-        $global:backupState.settingsExisted = $true
-        $global:backupState.settingsContent = [System.IO.File]::ReadAllText($sFile, [System.Text.Encoding]::UTF8)
-        L "Backed up existing settings.json ($($global:backupState.settingsContent.Length) chars)"
-    } else {
-        $global:backupState.settingsExisted = $false
-        L "settings.json does not exist initially (will be removed on restore)"
-    }
-
-    if (Test-Path -LiteralPath $kFile) {
-        $global:backupState.keymapExisted = $true
-        $global:backupState.keymapContent = [System.IO.File]::ReadAllText($kFile, [System.Text.Encoding]::UTF8)
-        L "Backed up existing keymap.json ($($global:backupState.keymapContent.Length) chars)"
-    } else {
-        $global:backupState.keymapExisted = $false
-        L "keymap.json does not exist initially (will be removed on restore)"
-    }
+    L "AppData backup (settings.json, keymap.json, state) is handled centrally by session.ps1 -Action Start."
 }
 
 function Restore-AllAppData() {
-    $appData = Join-Path $env:APPDATA 'workbench-gpui'
-    $sFile = Join-Path $appData 'settings.json'
-    $kFile = Join-Path $appData 'keymap.json'
-
-    try {
-        if ($global:backupState.settingsExisted) {
-            [System.IO.File]::WriteAllText($sFile, $global:backupState.settingsContent, [System.Text.Encoding]::UTF8)
-            L "Restored original settings.json"
-        } elseif (Test-Path -LiteralPath $sFile) {
-            Remove-Item -LiteralPath $sFile -Force -ErrorAction SilentlyContinue
-            L "Removed temporary settings.json created during testing"
-        }
-    } catch {
-        L "Warning restoring settings.json: $_"
-    }
-
-    try {
-        if ($global:backupState.keymapExisted) {
-            [System.IO.File]::WriteAllText($kFile, $global:backupState.keymapContent, [System.Text.Encoding]::UTF8)
-            L "Restored original keymap.json"
-        } elseif (Test-Path -LiteralPath $kFile) {
-            Remove-Item -LiteralPath $kFile -Force -ErrorAction SilentlyContinue
-            L "Removed temporary keymap.json created during testing"
-        }
-    } catch {
-        L "Warning restoring keymap.json: $_"
-    }
+    L "AppData restore is handled centrally by session.ps1 -Action Stop."
 }
 
 # ---------------------------------------------------------------------------
@@ -454,28 +443,9 @@ function Run-AppMeasure() {
         throw "session.ps1 script not found at: $sessionScript"
     }
 
-    $sessionStartLog = Join-Path $Out 'session-start.log'
-    $startArgs = @('-NoProfile', '-File', $sessionScript, '-Action', 'Start', '-Out', $Out, '-Exe', $AppExe, '-Backup', $backupDir, '-Json')
-    if ($FixturePath) {
-        $startArgs += @('-FixtureFile', $FixturePath)
-    }
-
-    # Start session via session.ps1 without piping, redirecting output to session-start.log
-    L "Launching app via session.ps1 -Action Start (Backup=$backupDir)..."
-    & pwsh @startArgs *> $sessionStartLog
-    $startExit = $LASTEXITCODE
-
-    if (Test-Path -LiteralPath $sessionStartLog) {
-        $startLines = @(Get-Content -LiteralPath $sessionStartLog -Encoding utf8)
-        foreach ($line in $startLines) {
-            L "session.ps1 [Start]: $line"
-        }
-    }
-    L "session.ps1 [Start] exit code: $startExit"
-
-    if ($startExit -ne 0) {
-        throw "session.ps1 -Action Start failed with exit code $startExit (see $sessionStartLog)"
-    }
+    # Start session via session.ps1 without piping (order06-r1-v3.ps1 unified style)
+    L "Calling session.ps1 -Action Start (Exe=$AppExe)..."
+    & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Start -Out $Out -Exe $AppExe -Backup $backupDir -Json $(if ($FixturePath) { @('-FixtureFile', $FixturePath) } else { @() })
 
     $sessionJson = Join-Path $Out 'session.json'
     for ($w = 0; $w -lt 25; $w++) {
@@ -487,7 +457,8 @@ function Run-AppMeasure() {
     }
     $sessData = Get-Content -LiteralPath $sessionJson -Raw | ConvertFrom-Json
     $appPid = [uint32]$sessData.pid
-    L "Session started: appPid=$appPid, fixtureDir=$($sessData.fixture_dir)"
+    $fixtureInfo = if ($sessData.PSObject.Properties['fixture']) { $sessData.fixture } else { '' }
+    L "Session started: appPid=$appPid, fixture=$fixtureInfo"
 
     # Identify main window HWND with polling loop
     $openedWindows = [System.Collections.Generic.List[IntPtr]]::new()
@@ -511,13 +482,8 @@ function Run-AppMeasure() {
     & pwsh -NoProfile -File 'tools/measure/window-rect.ps1' -EnsureClient -Hwnd $appHwnd -ClientWidth 1440 -ClientHeight 852
     Start-Sleep -Milliseconds 500
 
-    # If folder list is displayed, activate first folder to display tree
-    $folderRow0 = Get-BoxScreenCoord $appHwnd $Out 'folder-row-00'
-    if ($folderRow0) {
-        L ("Clicking folder-row-00 at ({0},{1}) to show tree..." -f $folderRow0.X, $folderRow0.Y)
-        [Order06R2Native]::Click($folderRow0.X, $folderRow0.Y)
-        Start-Sleep -Milliseconds 800
-    }
+    # Ensure project tree is open as common prerequisite before any step
+    Ensure-ProjectTreeOpen $appHwnd $Out | Out-Null
 
     $settingsHwnd = [IntPtr]::Zero
 
@@ -726,23 +692,20 @@ function Run-AppMeasure() {
             [void][Order06R2Native]::PostMessage($settingsHwnd, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
         }
 
-        # Stop session cleanly via session.ps1, passing matching -Backup and logging stdout/stderr
-        L "Stopping app via session.ps1 -Action Stop (Backup=$backupDir)..."
-        $sessionStopLog = Join-Path $Out 'session-stop.log'
-        $stopArgs = @('-NoProfile', '-File', $sessionScript, '-Action', 'Stop', '-Out', $Out, '-Backup', $backupDir)
-        & pwsh @stopArgs *> $sessionStopLog
-        $stopExit = $LASTEXITCODE
-
-        if (Test-Path -LiteralPath $sessionStopLog) {
-            $stopLines = @(Get-Content -LiteralPath $sessionStopLog -Encoding utf8)
-            foreach ($line in $stopLines) {
-                L "session.ps1 [Stop]: $line"
+        # Clean up workbench-gpui main process before session.ps1 Stop
+        if ($appPid) {
+            L ("Cleaning up workbench-gpui process (PID={0})..." -f $appPid)
+            $p = Get-Process -Id $appPid -ErrorAction SilentlyContinue
+            if ($p -and -not $p.HasExited) {
+                try { [void]$p.CloseMainWindow(); [void]$p.WaitForExit(3000) } catch {}
+                if (-not $p.HasExited) { try { $p.Kill(); [void]$p.WaitForExit(2000) } catch {} }
             }
         }
-        L "session.ps1 [Stop] exit code: $stopExit"
 
-        # Restore original settings.json & keymap.json
-        Restore-AllAppData
+        # Restore app data via session.ps1 -Action Stop
+        L "Restoring app data via session.ps1 -Action Stop..."
+        $stopOutput = & pwsh -NoProfile -File 'tools/measure/session.ps1' -Action Stop -Out $Out -Backup $backupDir 2>&1
+        foreach ($line in $stopOutput) { L "Session Stop: $line" }
 
         # Write summary JSON
         $summaryJson = Join-Path $Out 'summary.json'

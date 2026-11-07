@@ -1,7 +1,9 @@
 target/
 resources/zed-icons/
+resources/zed-themes/
 .serena/
 .worktrees/
 specs/v0.3/verify/**/appdata/
 specs/v0.5/verify/reviews/_measure-*-backup/
 specs/v0.5/verify/reviews/*/session-backup/
+resources/zed-icon-themes/

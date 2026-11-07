@@ -293,7 +293,23 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 
 - 목록은 이 PC의 Zed에서 쓸 수 있는 아이콘 테마를 모두 복사한 것이다: Catppuccin Icons(MIT), Zed 기본 파일 아이콘(`zed/assets/icons/file_icons`, 96개, "Zed 기본"으로 다룬다)(core D-8·D-9).
 - 복사본은 전부 이 레포의 `.gitignore` 폴더에 두고, 원본의 라이선스 문서도 함께 둔다. 실행 중에 내려받지 않는다(core D-8).
-- 복사 폴더 경로, 복사 방법, 복사본이 없을 때의 모습: 미정(Phase 7).
+- 복사 폴더 경로, 복사 방법, 복사본이 없을 때의 모습, 기본값(Zed (Default)): `DECISIONS.md` D-11.
+
+**아이콘 테마 대응** (K-20, 2026-11-07)
+
+| 앱 자리 | 아이콘 테마 JSON에서 찾는 순서 |
+|---|---|
+| 파일 트리 파일 | 이름 전체 → 점으로 나눈 접미사 순서대로 → 첫 점 앞 stem 순서로 `file_stems`·`file_suffixes`, 없으면 `default`. 테마에 없는 키는 Zed (Default)로 |
+| 파일 트리 폴더 | `named_directory_icons[이름]`, 없으면 `directory_icons` |
+| 탭 | 파일 아이콘을 그리지 않는다. Zed 기본값 `tabs.file_icons=false`(core-leader DECISION 2026-11-07, K-22). 탭의 미리 보기 구분 아이콘은 UI 아이콘이라 아이콘 테마 대상이 아니다 |
+| UI 아이콘(R-1) | 바꾸지 않는다 |
+
+- 목록: 9개. Zed (Default)(D-6 복사본 아이콘, Zed 커밋 `4304dec`의 연결표를 데이터 JSON으로 다시 쓴 것: stem 5·suffix 291·아이콘 92), Catppuccin 4종(Latte·Frappé·Macchiato·Mocha), Catppuccin Monochrome 4종(v1.24.0)(K-20, 복사본 JSON 기준 개수 K-22).
+- 순서: dark 이름순 → light 이름순. 테마 선택기와 같은 규칙이다(K-22).
+- 그리기: Zed (Default)는 글자색 마스크, 그 밖의 테마는 SVG 자체 색. 아이콘 테마 데이터가 없으면 Phase 5 아이콘으로 그린다(K-20).
+- 선택기 모양·치수·스크롤바는 R-4의 "Select Theme…" 선택기와 같다(K-21·K-22).
+- Extensions 탭은 `extension.toml`이 있는 확장만 카드로 보인다: Catppuccin Icons 1.24.0(테마 카드는 R-4). 내장 Zed (Default)는 카드가 없다(K-22).
+- V3(2026-11-07): Zed 트리 아이콘 비교는 측정 불가(Zed가 단일 파일로만 열려 트리가 없음). V1 근거(`icon_theme` 테스트, 매핑·SVG 존재)로 판정한다. 재측정 예정(`verify/reviews/measure-ORDER-07.md` 4장).
 
 **판정 방법**
 
@@ -318,7 +334,56 @@ I-3, core D-8·D-9. 요청 원문 "zed와 같이 아이콘팩 추가 기능 구�
 - 목록은 이 PC의 Zed에서 쓸 수 있는 테마를 모두 복사한 것이다: Zed 기본 Ayu 3종, Gruvbox 6종, One Dark·Light, 설치된 확장 Catppuccin, macOS Classic(모두 MIT)(core D-8).
 - 복사본은 전부 이 레포의 `.gitignore` 폴더에 두고, 원본의 라이선스 문서도 함께 둔다(core D-8).
 - 두 앱의 테마가 다르게 보이는 것(gpui 밝은 테마, tauri 어두운 테마)은 이 요구에서 다룬다(ITEMS 사용자 답변 메모).
-- 복사 폴더 경로, 복사 방법, 복사본이 없을 때의 모습: 미정(Phase 7).
+- 기본 테마는 One Dark다(`settings.json`에 `theme`이 없을 때, `DECISIONS.md` D-11).
+
+**테마 대응 표** (K-19, 2026-11-07)
+
+복사한 Zed 테마 JSON의 토큰을 gpui-kit 테마(`cx.theme()`)와 앱 자리에 대응한다. 원본에 없는 선택적 색은 gpui-kit 모드 기본값을 쓰고 수치를 추정하지 않는다. 창 닫기 버튼의 Windows 빨강과 실측 그림자 값은 테마와 무관하다.
+
+| 앱 자리 | 원본 Zed 토큰 → 적용 대상 |
+|---|---|
+| 편집 영역·미리보기·Settings/Keymap/Extensions 배경 | `editor.background` → `background` |
+| UI 글자, 보조 글자 | `text`, `text.muted` → `foreground`, `muted_foreground` |
+| 경계·포커스 | `border`, `border.focused` → `border`, `ring` |
+| 강조·링크 | `text.accent` → `primary`, `accent`, `link` |
+| 타이틀 바 | `title_bar.background` → `title_bar` |
+| 탭 바 | `tab_bar.background` → `tab_bar` |
+| 상태 바 | `status_bar.background` → `status_bar` |
+| 패널·사이드바·목록 바탕 | `panel.background` → `sidebar`, `list` |
+| 메뉴·모달·툴팁 | `elevated_surface.background`, `text` → `popover`, `popover_foreground` |
+| 컨트롤·호버·선택 행 | `element.background`, `element.hover`, `element.selected` → `secondary` 계열, `list_hover`, `list_active` |
+| 보조 표면·미리보기 코드 배경 | `surface.background` → `muted` |
+| 편집 글자·바탕 | `editor.foreground`, `editor.background` → `editor_foreground`, `editor_background` |
+| 현재 줄 | `editor.active_line.background` → `editor_active_line` |
+| 거터 바탕 | `editor.gutter.background` → `editor_gutter_background` |
+| 줄 번호·현재 줄 번호 | `editor.line_number`, `editor.active_line_number` → 거터 테마(없으면 `muted_foreground`·`foreground`) |
+| 텍스트 선택 | `players[0].selection` → `selection` |
+| 스크롤바 | `scrollbar.track.background`, `scrollbar.thumb.background`, `scrollbar.thumb.hover_background` → `scrollbar` 계열 |
+| 드롭 영역·드래그 테두리 | `drop_target.background`, `border.selected` → `drop_target`, `drag_border` |
+| 오류·경고·성공 | `error`, `warning`, `success` → `danger`, `warning`, `success` |
+
+- K-04-R1·K-07에서 고정했던 One Light 색(현재 줄·줄 번호)은 이제 One Light 테마 JSON에서 읽는다(K-19).
+- 목록: 21개 테마(Zed 11, Catppuccin 8, macOS Classic 2). 선택기·Settings 드롭다운이 같은 이름 목록을 쓴다(K-19·K-20).
+- 순서: dark 이름순 → light 이름순(선택기·Settings 공통 `theme::names()`, core-leader DECISION 2026-11-07, K-22).
+- 토큰 대체 순서: 테마 JSON → T-26 파생(`docs/refs/01-zed/03-THEME-ICONS.md` T-26) → 같은 appearance의 One 값(One Dark/One Light) → T-26 고정값. tauri D-8과 같다(K-22). One에도 없는 일반 토큰은 gpui-kit 초기값을 유지한다(K-22 한계, Zed fallback 테마의 완전 재현은 아니다).
+- Extensions 탭은 `extension.toml`이 있는 확장만 카드로 보인다: Catppuccin 0.2.27, Catppuccin Icons 1.24.0, macOS Classic 0.4.0의 3장. 내장 테마(One·Ayu·Gruvbox)는 카드가 없다(K-22).
+- 복사 폴더 경로, 복사 방법, 복사본이 없을 때의 모습: `DECISIONS.md` D-11.
+
+**선택기 치수** (Zed 실측, `verify/reviews/measure-ORDER-07.md` 3.2, Zed `4304dec732` 설치본, 2026-11-07)
+
+테마·아이콘 테마 선택기 두 개에 쓴다(K-21). spec ID는 `spec/zed-metrics.toml` `[picker]`(W-30, 목록 `cards/W-30.report.md`).
+
+| 항목 | Zed 실측 | spec ID | 앱(K-21) |
+|---|---|---|---|
+| 모달 외곽 너비 | 544px | `picker["theme_selector.measured.width"]` | 544 |
+| 검색칸 높이 | 38px(테두리·패딩 포함, 내부 36px) | `picker["theme_selector.measured.search_height"]` | 38 |
+| 목록 높이 | 384px(12행, 행 피치 31~32px) | `picker["theme_selector.measured.list_height"]`·`["theme_selector.measured.list_rows"]` | 최대 384, 행 32 |
+| 요소 사이 간격 | 0(1px 경계로 접함) | `picker["theme_selector.measured.gap"]` | 0 |
+| 아래 푸터 | 1px 구분선 + 38px(Install 행) | `picker["theme_selector.measured.footer_divider"]`·`["theme_selector.measured.footer_height"]` | 1 + 38 |
+
+- 원문 `01-LAYOUT.md` 4.13(P-002·P-004)과 다른 2건(384가 모달인지 목록인지, 행 높이 30.65와 실측 피치)은 `spec/ambiguous.md` 5절에 미결로 있다(W-30).
+- 스크롤바: 목록 위에 포인터가 있을 때만 보인다(편집 영역의 Always와 다르다, core-leader DECISION 2026-11-07, K-22).
+- V3(2026-11-07): 앱 선택기 열림·미리 보기·Esc 복원은 4차에서 PASS(`verify/reviews/measure-ORDER-07-run4/summary.json`).
 
 **판정 방법**
 

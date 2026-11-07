@@ -63,6 +63,14 @@ pub mod zed {
     gpui_kit::actions!(zed, [Quit, Minimize, Zoom, OpenSettings, OpenKeymap, Extensions]);
 }
 
+pub mod theme_selector {
+    gpui_kit::actions!(theme_selector, [Toggle]);
+}
+
+pub mod icon_theme_selector {
+    gpui_kit::actions!(icon_theme_selector, [Toggle]);
+}
+
 pub mod multi_workspace {
     gpui_kit::actions!(
         multi_workspace,

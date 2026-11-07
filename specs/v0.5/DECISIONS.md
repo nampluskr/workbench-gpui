@@ -17,7 +17,7 @@
 | D-5 ITEMS.md | `SPEC.md` |
 | D-6 core에는 core-leader 하나 | 없음(이 레포에 적용할 것 없음) |
 | D-7 자기 워크스페이스만 쓴다 | `AGENTS.md` 레포 규칙 |
-| D-8 Zed 테마·아이콘 테마 복사 | `SPEC.md` R-3·R-4, `PLAN.md` Phase 7 |
+| D-8 Zed 테마·아이콘 테마 복사 | 이 문서 D-11, `SPEC.md` R-3·R-4, `PLAN.md` Phase 7 |
 | D-9 Zed UI 아이콘 복사 | 이 문서 D-6·D-7, `SPEC.md` R-1·R-18, `PLAN.md` Phase 5 |
 | D-10 IBM Plex Sans·Lilex 커밋 | `SPEC.md` R-14, `PLAN.md` Phase 3 |
 | D-11 ITEMS가 SPEC 역할 | `SPEC.md` 판정 방법 |
@@ -242,8 +242,37 @@
 
 ---
 
+## D-11. 테마·아이콘 테마 복사본은 고정 버전에서 `resources/zed-themes/`·`resources/zed-icon-themes/`로 받고 커밋하지 않는다
+
+**선택**
+
+- 출처(core ORDER-07 2장, 두 갈래 같은 버전):
+  - Zed 기본 테마: `zed-industries/zed` 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498`의 `assets/themes/`(라이선스 `assets/themes/LICENSES`).
+  - Catppuccin 테마: `catppuccin/zed` 0.2.27.
+  - macOS Classic 테마: `huacnlee/zed-theme-macos-classic` 0.4.0.
+  - Catppuccin Icons 아이콘 테마: `catppuccin/zed-icons` 1.24.0.
+  - Zed (Default) 아이콘 테마: D-6 복사본(`resources/zed-icons/file_icons/`, 같은 커밋).
+  - 확장 셋의 라이선스는 각 저장소 LICENSE다.
+- 두는 곳: 테마는 `resources/zed-themes/`, 아이콘 테마는 `resources/zed-icon-themes/`. 둘 다 `.gitignore`에 넣고 커밋하지 않는다.
+- 다시 채우기: 저장소 루트에서 `pwsh -NoProfile -File tools/fetch-zed-themes.ps1`. 위 고정 커밋·버전만 받는다.
+- 복사본이 없을 때: 앱은 죽지 않는다. gpui-kit 기본 테마로 뜨고 경고를 낸다.
+- 기본값: `settings.json`에 값이 없으면 테마 One Dark, 아이콘 테마 Zed (Default)(core ORDER-07 3.1·3.2).
+
+**근거**
+
+- core D-8을 이 레포에 적용했다. 폴더·다시 채우기·없을 때 모습·기본값은 leader가 정했다(W-27).
+- 확장 버전은 이 PC에 설치된 버전이다. leader가 `%LOCALAPPDATA%\Zed\extensions\installed\<확장>\extension.toml`을 읽기만 해서 확인했다(core ORDER-07 2장 버전 고정).
+- 아이콘 복사본과 같은 방식이다(D-6).
+
+**배제한 대안**
+
+- **이 PC의 Zed 설치 폴더에서 실행 중에 읽는다** — 버전이 고정되지 않는다. core ORDER-07 2장·6장이 금지했다.
+- **복사본을 커밋한다** — core D-8이 `.gitignore` 폴더에 두기로 했다.
+
+---
+
 ## 미결 사항
 
 - SPEC 요구 번호를 core I-n과 같은 번호의 R-n으로 매기는 것(R-1 = I-1 … R-23 = I-23). writer 초안이다. 번호 체계는 갈래가 정한다(ORDER-01 3.1). 정할 사람: leader(사용자 확정).
-- core D-8의 복사본(테마·아이콘 테마)을 둘 `.gitignore` 폴더 경로, 복사 출처 Zed 커밋, 복사본이 없을 때 앱이 어떻게 보일지, 다시 채우는 방법. 정할 사람: leader(Phase 7 카드). core D-9 쪽은 D-6으로 정했다.
+- (해소) core D-8의 복사본 경로·출처·없을 때 모습·다시 채우기 — D-11로 정했다. core D-9 쪽은 D-6으로 정했다.
 - core D-10에서 넣을 글꼴 굵기·스타일 파일과 글꼴 버전. 정할 사람: leader(Phase 3 카드).

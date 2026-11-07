@@ -1,0 +1,61 @@
+{
+  "app": {
+    "app-default-onedark": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-default-onedark.png",
+    "app-theme-modal-open": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-modal-open.png",
+    "app-theme-modal-preview-down": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-modal-preview-down.png",
+    "app-theme-modal-esc-restore": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-modal-esc-restore.png",
+    "app-theme-apply-onelight": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-onelight.png",
+    "app-theme-apply-ayudark": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-ayudark.png",
+    "app-theme-apply-gruvbox": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-gruvbox.png",
+    "app-theme-apply-catppuccin": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-catppuccin.png",
+    "app-theme-apply-macosclassic": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-theme-macosclassic.png",
+    "app-icon-theme-catppuccin": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-icon-theme-modal-open.png",
+    "app-settings-window": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-settings-window.png",
+    "app-extensions-tab": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-extensions-tab.png",
+    "app-keymap-editor-hover": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-keymap-editor-hover.png",
+    "app-v-button-crop": "FAIL: System.Management.Automation.RuntimeException: Capture failed to produce output image: D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-07\\app-v-button-normal.png"
+  },
+  "zed": {
+    "config_integrity": "PASS: Config files 100% intact"
+  },
+  "theme_colors": {},
+  "crops": {},
+  "config_hashes": {
+    "before": {
+      "settings.json": {
+        "Exists": true,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\settings.json",
+        "Sha256": "C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2",
+        "Length": 1031
+      },
+      "keymap.json": {
+        "Exists": false,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\keymap.json",
+        "Sha256": "ABSENT",
+        "Length": 0
+      }
+    },
+    "after": {
+      "settings.json": {
+        "Exists": true,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\settings.json",
+        "Sha256": "C3D27B0537167B6B7039D58091BF1BD73ACF63F19F15FDA50D62D7473B22A6A2",
+        "Length": 1031
+      },
+      "keymap.json": {
+        "Exists": false,
+        "Path": "C:\\Users\\nampl\\AppData\\Roaming\\Zed\\keymap.json",
+        "Sha256": "ABSENT",
+        "Length": 0
+      }
+    },
+    "intact": true
+  },
+  "fatal_error": {
+    "message": "Newly created Zed window not found",
+    "type": "System.Management.Automation.RuntimeException",
+    "line": 949,
+    "offset": 13,
+    "stack": "Run-ZedMeasure에서 C:\\Users\\nampl\\AppData\\Local\\Temp\\claude\\17d49c999518e6e0\\197163dd-27a0-4cea-a9f0-18b54597e96e\\scratchpad\\order07.snap.ps1: 줄 949\r\n<ScriptBlock>에서 C:\\Users\\nampl\\AppData\\Local\\Temp\\claude\\17d49c999518e6e0\\197163dd-27a0-4cea-a9f0-18b54597e96e\\scratchpad\\order07.snap.ps1: 줄 1111"
+  }
+}

@@ -1,0 +1,13 @@
+2026-11-07T05:38:02.215Z === ORDER-07 V3 Measure Script Initialized ===
+2026-11-07T05:38:02.265Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07
+2026-11-07T05:38:02.266Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T05:38:02.268Z ZedExe: C:\Users\nampl\AppData\Local\Programs\Zed\bin\zed.exe
+2026-11-07T05:38:02.270Z Steps Filter: zed-tree-icons
+2026-11-07T05:38:02.611Z === Starting ORDER-07 V3 App Measurement Session ===
+2026-11-07T05:38:02.641Z No app steps selected in -Steps. Skipping Run-AppMeasure.
+2026-11-07T05:38:02.660Z === Starting ORDER-07 V3 Zed Measurement Session ===
+2026-11-07T05:38:02.677Z [TOP-LEVEL FATAL] Measurement execution failed at line 1050:25: System.Management.Automation.RuntimeException: '$global:activeFixtureDir' 변수는 설정되지 않았으므로 가져올 수 없습니다.
+StackTrace:
+Run-ZedMeasure에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 1050
+<ScriptBlock>에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order07.snap.ps1: 줄 1303
+2026-11-07T05:38:02.694Z Summary JSON written to: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-07\summary.json

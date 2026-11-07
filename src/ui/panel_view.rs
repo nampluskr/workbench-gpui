@@ -217,6 +217,17 @@ fn with_press<E: InteractiveElement>(el: E, path: PathBuf, weak: &WeakEntity<Wor
     })
 }
 
+/// Folder or file icon from the selected icon theme; Zed's folder/file glyphs when no icon theme data is available.
+fn row_icon(row: &Row, cx: &App) -> AnyElement {
+    let is_dir = row.is_dir || row.new_entry == Some(true);
+    let expanded = row.expanded && row.new_entry != Some(true);
+    super::icon_theme::icon(&row.path, is_dir, expanded, ICON, cx).unwrap_or_else(|| if is_dir {
+        super::zed_icons::icon(if expanded { "folder_open" } else { "folder" }).size(ICON).flex_shrink_0().into_any_element()
+    } else {
+        Icon::new(IconName::File).size(ICON).flex_shrink_0().into_any_element()
+    })
+}
+
 fn render_row(
     ix: usize,
     v: &RowView,
@@ -267,12 +278,7 @@ fn render_row(
         .px(ROW_PAD_X)
         .gap(ROW_GAP)
         .items_center()
-        .child(if row.is_dir || row.new_entry == Some(true) {
-            super::zed_icons::icon(if row.expanded && row.new_entry != Some(true) { "folder_open" } else { "folder" }).size(ICON)
-        } else {
-            // File icons remain unchanged until Phase 7.
-            Icon::new(IconName::File).size(ICON)
-        }.flex_shrink_0())
+        .child(row_icon(row, _cx))
         .child(label);
 
     let highlighted = v.selected || v.marked;

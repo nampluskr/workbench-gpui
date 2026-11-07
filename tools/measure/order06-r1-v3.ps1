@@ -608,65 +608,15 @@ function Ensure-ProjectTreeOpen([IntPtr]$hwnd, [string]$outDir) {
 }
 
 # ---------------------------------------------------------------------------
-# 3. Dedicated Settings.json & Keymap.json Backup & Restore (Zero Data Loss)
+# 3. Settings.json & Keymap.json Backup & Restore (Delegated to session.ps1)
 # ---------------------------------------------------------------------------
-$appDataDir = Join-Path $env:APPDATA 'workbench-gpui'
-$settingsJsonPath = Join-Path $appDataDir 'settings.json'
-$keymapJsonPath = Join-Path $appDataDir 'keymap.json'
-
-$script:settingsExistedBefore = $false
-$script:settingsContentBefore = $null
-$script:keymapExistedBefore = $false
-$script:keymapContentBefore = $null
-
+# Note: session.ps1 now centrally manages settings.json and keymap.json backup/restore.
 function Backup-AllAppData {
-    # 1. settings.json backup
-    $script:settingsExistedBefore = Test-Path -LiteralPath $settingsJsonPath
-    if ($script:settingsExistedBefore) {
-        $script:settingsContentBefore = Get-Content -LiteralPath $settingsJsonPath -Raw -Encoding utf8
-        L "Dedicated backup: Existing settings.json backed up ($($script:settingsContentBefore.Length) chars)."
-    } else {
-        $script:settingsContentBefore = $null
-        L "Dedicated backup: No previous settings.json found."
-    }
-
-    # 2. keymap.json backup
-    $script:keymapExistedBefore = Test-Path -LiteralPath $keymapJsonPath
-    if ($script:keymapExistedBefore) {
-        $script:keymapContentBefore = Get-Content -LiteralPath $keymapJsonPath -Raw -Encoding utf8
-        L "Dedicated backup: Existing keymap.json backed up ($($script:keymapContentBefore.Length) chars)."
-    } else {
-        $script:keymapContentBefore = $null
-        L "Dedicated backup: No previous keymap.json found."
-    }
+    L "AppData backup (settings.json, keymap.json, state) is handled centrally by session.ps1 -Action Start."
 }
 
 function Restore-AllAppData {
-    # 1. settings.json restore
-    if ($script:settingsExistedBefore) {
-        if ($script:settingsContentBefore -ne $null) {
-            $script:settingsContentBefore | Set-Content -LiteralPath $settingsJsonPath -Encoding utf8 -Force
-            L "Dedicated restore: settings.json restored to original content."
-        }
-    } else {
-        if (Test-Path -LiteralPath $settingsJsonPath) {
-            Remove-Item -LiteralPath $settingsJsonPath -Force
-            L "Dedicated restore: settings.json created during test was safely removed."
-        }
-    }
-
-    # 2. keymap.json restore
-    if ($script:keymapExistedBefore) {
-        if ($script:keymapContentBefore -ne $null) {
-            $script:keymapContentBefore | Set-Content -LiteralPath $keymapJsonPath -Encoding utf8 -Force
-            L "Dedicated restore: keymap.json restored to original content."
-        }
-    } else {
-        if (Test-Path -LiteralPath $keymapJsonPath) {
-            Remove-Item -LiteralPath $keymapJsonPath -Force
-            L "Dedicated restore: keymap.json created during test was safely removed."
-        }
-    }
+    L "AppData restore is handled centrally by session.ps1 -Action Stop."
 }
 
 # ---------------------------------------------------------------------------
