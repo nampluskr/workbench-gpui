@@ -424,6 +424,26 @@ fn insert_newlines(text: &Rope, ranges: &mut Vec<TsRange>) {
     }
 }
 
+/// The children of `root` that touch `window`, or `root` itself when it has none there. An injection query runs on each of
+/// them instead of on the root: a pattern like `(comment) @c [(string) ...]` looks at every later sibling of each
+/// comment, which on the root of a big file (thousands of top-level nodes) costs tens of ms per edited byte and
+/// quadratic time in the first parse. A pattern that needs the root itself or two top-level siblings would be missed;
+/// none of the injection queries has one (K-49 measured and compared the colours of the sample files).
+fn top_level_nodes<'t>(root: Node<'t>, window: &Range<usize>) -> Vec<Node<'t>> {
+    let mut nodes = Vec::new();
+    let mut walker = root.walk();
+    if walker.goto_first_child_for_byte(window.start).is_some() {
+        loop {
+            let node = walker.node();
+            if node.start_byte() > window.end { break; }
+            nodes.push(node);
+            if !walker.goto_next_sibling() { break; }
+        }
+    }
+    if nodes.is_empty() { nodes.push(root); }
+    nodes
+}
+
 /// Runs `layer`'s injection query over the `changed` bytes (the whole layer if it has combined patterns) and rebuilds
 /// the child layers those bytes touch. A rebuilt child reuses the old child's tree of the same language, so editing
 /// inside a code block reparses it incrementally.
@@ -452,34 +472,37 @@ fn refresh(
     let mut seen = std::collections::HashSet::new();
     let mut cursor = QueryCursor::new();
     for range in changed {
-        cursor.set_byte_range(range.start.saturating_sub(1)..range.end.saturating_add(1));
-        let mut matches = cursor.matches(query, layer.tree.root_node(), RopeText(text));
-        while let Some(found) = matches.next() {
-            let Some(content) = config.content else { continue };
-            let nodes: Vec<TsRange> = found.nodes_for_capture_index(content).map(|node| node.range()).collect();
-            let (Some(first), Some(last)) = (nodes.first(), nodes.last()) else { continue };
-            if !seen.insert((found.pattern_index, first.start_byte, last.end_byte)) { continue; }
-            let pattern = &config.patterns[found.pattern_index];
-            let mut host = first.start_byte..last.end_byte;
-            let name = match (&pattern.language, config.language) {
-                (Some(name), _) => name.clone(),
-                (None, Some(language)) => {
-                    let Some(node) = found.nodes_for_capture_index(language).next() else { continue };
-                    host = host.start.min(node.start_byte())..host.end.max(node.end_byte());
-                    // A path ending in a language's suffix names that language: "foo/bar/baz.rs" -> "rs".
-                    let name = text.slice(node.byte_range()).to_string();
-                    name.rsplit_once('.').map_or(name.clone(), |(_, suffix)| suffix.to_string())
+        let window = range.start.saturating_sub(1)..range.end.saturating_add(1);
+        cursor.set_byte_range(window.clone());
+        for top in top_level_nodes(layer.tree.root_node(), &window) {
+            let mut matches = cursor.matches(query, top, RopeText(text));
+            while let Some(found) = matches.next() {
+                let Some(content) = config.content else { continue };
+                let nodes: Vec<TsRange> = found.nodes_for_capture_index(content).map(|node| node.range()).collect();
+                let (Some(first), Some(last)) = (nodes.first(), nodes.last()) else { continue };
+                if !seen.insert((found.pattern_index, first.start_byte, last.end_byte)) { continue; }
+                let pattern = &config.patterns[found.pattern_index];
+                let mut host = first.start_byte..last.end_byte;
+                let name = match (&pattern.language, config.language) {
+                    (Some(name), _) => name.clone(),
+                    (None, Some(language)) => {
+                        let Some(node) = found.nodes_for_capture_index(language).next() else { continue };
+                        host = host.start.min(node.start_byte())..host.end.max(node.end_byte());
+                        // A path ending in a language's suffix names that language: "foo/bar/baz.rs" -> "rs".
+                        let name = text.slice(node.byte_range()).to_string();
+                        name.rsplit_once('.').map_or(name.clone(), |(_, suffix)| suffix.to_string())
+                    }
+                    (None, None) => continue,
+                };
+                let Some(id) = injection_language(resources, &name) else { continue };
+                if pattern.combined {
+                    match combined.iter_mut().find(|(language, _)| *language == id) {
+                        Some((_, ranges)) => ranges.extend(nodes),
+                        None => combined.push((id, nodes)),
+                    }
+                } else {
+                    candidates.push(Candidate { id, ranges: nodes, host, combined: false });
                 }
-                (None, None) => continue,
-            };
-            let Some(id) = injection_language(resources, &name) else { continue };
-            if pattern.combined {
-                match combined.iter_mut().find(|(language, _)| *language == id) {
-                    Some((_, ranges)) => ranges.extend(nodes),
-                    None => combined.push((id, nodes)),
-                }
-            } else {
-                candidates.push(Candidate { id, ranges: nodes, host, combined: false });
             }
         }
     }
@@ -530,7 +553,8 @@ fn collect_layers<'a>(layer: &'a Layer, range: &Range<usize>, out: &mut Vec<&'a 
 /// per-language queries.
 // shortcut: parses on the UI thread (incremental after the first parse, so typing stays cheap; the first parse of a
 // very large file, with every injected layer, blocks one frame). Zed parses in the background; move `reparse` to a
-// task if big files stall.
+// task if big files stall. K-49 (release, one character in the middle): 12k-45k-line TypeScript/Rust 3-26 ms, a 10k-line
+// Markdown about 14 ms (60 ms for the first edit after opening); the first parse of a 45k-line .d.ts takes 1.4 s.
 struct SyntaxHighlighter {
     id: &'static str,
     resources: &'static QueryResources,
@@ -1414,6 +1438,192 @@ mod tests {
         // The info string is `lang` plus `meta` of the parsed fence.
         let block = gpui_kit::base::text::CodeBlock::from_code(code, Some("rust")).with_meta(Some("no_run".into()));
         assert_eq!(code_block_highlighter()(&block), super::code_block_runs("rust no_run", code));
+    }
+
+    /// K-49 measurement (not run by default; numbers go to the card report, files stay out of the repo): the first parse
+    /// and the cost of typing one character in the middle of a big file, through the editor's own `SyntaxHighlighter`.
+    /// `K49_FILE=<path> K49_LANG=<id>` or `K49_SYNTH=markdown|html`; `K49_VERIFY=1` also compares the viewport colours
+    /// of every edit with a full parse. Run: `cargo test --release k49_measure -- --ignored --nocapture`.
+    #[test]
+    #[ignore]
+    fn k49_measure() {
+        use gpui_kit::base::input::RopeExt;
+        use std::time::Instant;
+        let (name, lang, mut text) = match (std::env::var("K49_FILE"), std::env::var("K49_SYNTH")) {
+            (Ok(path), _) => (path.clone(), std::env::var("K49_LANG").expect("K49_LANG"), std::fs::read_to_string(&path).unwrap()),
+            (_, Ok(kind)) => (format!("synthetic {kind}"), kind.clone(), k49_synthetic(&kind)),
+            _ => return,
+        };
+        let theme = theme(&[("keyword", style(1)), ("function", style(2)), ("type", style(3)), ("string", style(4)), ("comment", style(5)),
+            ("number", style(6)), ("property", style(7)), ("tag", style(8)), ("attribute", style(9)), ("variable", style(10)),
+            ("constant", style(11)), ("punctuation.bracket", style(12)), ("operator", style(13)), ("title", style(14)), ("boolean", style(15))]);
+        let lines = text.lines().count();
+        let mut h = SyntaxHighlighter::new(resources(), &lang).expect("language and queries");
+        let started = Instant::now();
+        h.reparse(&Rope::from_str(&text));
+        let first = started.elapsed().as_secs_f64() * 1000.0;
+        // The 40 visible lines starting at `line`.
+        let viewport = |text: &str, line: usize| {
+            let starts: Vec<usize> = std::iter::once(0).chain(text.match_indices('\n').map(|(i, _)| i + 1)).collect();
+            starts[line.min(starts.len() - 1)]..starts[(line + 40).min(starts.len() - 1)]
+        };
+        let verify = std::env::var("K49_VERIFY").is_ok();
+        let (mut totals, mut parts_max, mut blocked) = (Vec::new(), (0f64, 0f64, 0f64), Vec::new());
+        for i in 0..10 {
+            let line = lines / 2 + i * 7;
+            let at = viewport(&text, line).start;
+            let old = Rope::from_str(&text);
+            text.insert(at, 'x');
+            let new = Rope::from_str(&text);
+            let edit = InputEdit {
+                start_byte: at, old_end_byte: at, new_end_byte: at + 1,
+                start_position: old.offset_to_point(at), old_end_position: old.offset_to_point(at), new_end_position: new.offset_to_point(at + 1),
+            };
+            let range = viewport(&text, line);
+            let t0 = Instant::now();
+            h.edit(&edit);
+            let t1 = Instant::now();
+            h.reparse(&new);
+            let t2 = Instant::now();
+            let runs = h.runs(&range, Some(&theme));
+            let t3 = Instant::now();
+            let ms = |a: Instant, b: Instant| b.duration_since(a).as_secs_f64() * 1000.0;
+            let (e, r, v) = (ms(t0, t1), ms(t1, t2), ms(t2, t3));
+            totals.push(e + r + v);
+            parts_max = (parts_max.0.max(e), parts_max.1.max(r), parts_max.2.max(v));
+            blocked.push((e + r).max(v));
+            if verify {
+                let mut full = SyntaxHighlighter::new(resources(), &lang).unwrap();
+                full.reparse(&new);
+                assert_eq!(runs, full.runs(&range, Some(&theme)), "edit {i} at line {line}");
+            }
+        }
+        totals.sort_by(f64::total_cmp);
+        blocked.sort_by(f64::total_cmp);
+        println!("K49 | {name} | {lines} lines | first parse {first:.1} ms | edit total median {:.1} / max {:.1} ms | edit {:.1} reparse {:.1} runs {:.1} (max each) | blocked longest {:.1} ms",
+            totals[5], totals[9], parts_max.0, parts_max.1, parts_max.2, blocked[9]);
+    }
+
+    /// K-49 synthetic files: Markdown with 330 fenced blocks in 10,000 lines (a heading, a paragraph and a block of 20..
+    /// lines of rotating languages per unit), HTML with 600 `<style>`/`<script>` blocks in 10,013 lines.
+    fn k49_synthetic(kind: &str) -> String {
+        let mut out = String::new();
+        match kind {
+            "markdown" => {
+                let samples: [(&str, &str); 8] = [
+                    ("rust", "fn add(a: i32, b: i32) -> i32 {\n    // sum\n    a + b\n}"),
+                    ("typescript", "const greet = (name: string): string => `Hello, ${name}!`;\nconsole.log(greet(\"world\"), 42);"),
+                    ("python", "def area(r: float) -> float:\n    \"\"\"Circle area.\"\"\"\n    return 3.14159 * r ** 2"),
+                    ("json", "{\"name\": \"x\", \"items\": [1, 2, 3], \"ok\": true}"),
+                    ("bash", "for f in *.txt; do\n  echo \"$f\" | wc -l\ndone"),
+                    ("css", "a:hover { color: #3b82f6; margin: 0 auto; }"),
+                    ("html", "<div class=\"a\"><p id=\"x\">hi</p></div>"),
+                    ("yaml", "name: demo\nitems:\n  - one\n  - two"),
+                ];
+                let mut block = 0;
+                while out.lines().count() < 10_000 {
+                    out.push_str(&format!("## Section {block}\n\nSome text with `code` and a [link](http://x.y).\n\n"));
+                    if block < 330 {
+                        let (lang, code) = samples[block % samples.len()];
+                        out.push_str(&format!("```{lang}\n"));
+                        // Pad every block to the same size with repeated lines of its sample.
+                        for _ in 0..4 { out.push_str(code); out.push('\n'); }
+                        out.push_str("```\n\n");
+                    } else {
+                        out.push_str("Plain paragraph.\n\n");
+                    }
+                    block += 1;
+                }
+            }
+            _ => {
+                out.push_str("<!DOCTYPE html>\n<html>\n<body>\n");
+                for block in 0..600 {
+                    if block % 2 == 0 {
+                        out.push_str("<style>\n");
+                        for r in 0..8 { out.push_str(&format!(".c{block}-{r} {{ color: #{:06x}; margin: {r}px; }}\n", block * 997 + r)); }
+                        out.push_str("</style>\n");
+                    } else {
+                        out.push_str("<script>\n");
+                        for r in 0..8 { out.push_str(&format!("const v{block}_{r} = {r} + \"s\"; // c\n")); }
+                        out.push_str("</script>\n");
+                    }
+                    out.push_str("<div class=\"x\">text</div>\n");
+                }
+                while out.lines().count() < 10_013 { out.push_str("<p>filler</p>\n"); }
+                out.push_str("</body>\n</html>\n");
+            }
+        }
+        out
+    }
+
+    /// K-49: a hash of the colours of whole files, to compare before and after a change of the injection pass: every
+    /// file of `K49_DIR` (by its name's language) and the two synthetic files, each parsed whole and after one edit.
+    #[test]
+    #[ignore]
+    fn k49_dump() {
+        use gpui_kit::base::input::RopeExt;
+        use std::hash::{Hash, Hasher};
+        let theme = theme(&[("keyword", style(1)), ("function", style(2)), ("type", style(3)), ("string", style(4)), ("comment", style(5)),
+            ("number", style(6)), ("property", style(7)), ("tag", style(8)), ("attribute", style(9)), ("variable", style(10)),
+            ("constant", style(11)), ("punctuation.bracket", style(12)), ("operator", style(13)), ("title", style(14)), ("boolean", style(15)),
+            ("emphasis", style(16)), ("link_text", style(17)), ("text.literal", style(18)), ("punctuation.special", style(19))]);
+        let mut files: Vec<(String, String, String)> = Vec::new();
+        if let Ok(dir) = std::env::var("K49_DIR") {
+            for entry in std::fs::read_dir(dir).unwrap().flatten() {
+                let path = entry.path();
+                let Ok(text) = std::fs::read_to_string(&path) else { continue };
+                let Some(language) = language_for_path(&path, text.lines().next().unwrap_or("")) else { continue };
+                files.push((path.file_name().unwrap().to_string_lossy().into_owned(), language.id.to_string(), text));
+            }
+        }
+        for kind in ["markdown", "html"] { files.push((format!("synthetic-{kind}"), kind.to_string(), k49_synthetic(kind))); }
+        if let Ok(path) = std::env::var("K49_FILE") {
+            files.push((path.clone(), std::env::var("K49_LANG").unwrap(), std::fs::read_to_string(path).unwrap()));
+        }
+        files.sort();
+        for (name, lang, mut text) in files {
+            let Some(mut h) = SyntaxHighlighter::new(resources(), &lang) else { continue };
+            let hash = |h: &SyntaxHighlighter, len: usize| {
+                let mut hasher = std::collections::hash_map::DefaultHasher::new();
+                // Whole file in 4 KiB pieces, so the layers a piece touches decide (as the editor asks line groups).
+                let mut start = 0;
+                while start < len {
+                    let end = (start + 4096).min(len);
+                    format!("{:?}", h.runs(&(start..end), Some(&theme))).hash(&mut hasher);
+                    start = end;
+                }
+                hasher.finish()
+            };
+            h.reparse(&Rope::from_str(&text));
+            let first = hash(&h, text.len());
+            let old = Rope::from_str(&text);
+            let at = text.len() / 2 - text[..text.len() / 2].chars().rev().take_while(|c| *c != '\n').count();
+            text.insert(at, 'x');
+            let new = Rope::from_str(&text);
+            h.edit(&InputEdit { start_byte: at, old_end_byte: at, new_end_byte: at + 1,
+                start_position: old.offset_to_point(at), old_end_position: old.offset_to_point(at), new_end_position: new.offset_to_point(at + 1) });
+            h.reparse(&new);
+            println!("DUMP {name} {lang} {first:016x} {:016x}", hash(&h, text.len()));
+        }
+    }
+
+    /// K-49: the injection query runs on the top-level nodes that touch the changed bytes, not on the root.
+    #[test]
+    fn top_level_nodes_touch_the_window_and_injections_are_still_found() {
+        use super::top_level_nodes;
+        let rust = "fn a() {}\n\nfn b() {}\n\nfn c() {}\n";
+        let Some(h) = parsed("rust", rust) else { return };
+        let root = h.root.as_ref().unwrap().tree.root_node();
+        let b = rust.find("fn b").unwrap();
+        let kinds = |window: std::ops::Range<usize>| top_level_nodes(root, &window).iter().map(|n| n.byte_range()).collect::<Vec<_>>();
+        let holding = kinds(b + 1..b + 2);
+        assert!(holding.len() == 1 && holding[0] == (b..b + 9), "only the item holding the byte: {holding:?}");
+        assert_eq!(kinds(0..rust.len()).len(), 3, "a whole-file window takes every item");
+        assert_eq!(kinds(b + 9..b + 10).len(), 1, "a window in the gap after an item still has a node");
+        // JSDoc and a tagged template come through the per-node query (K-44 layers, now one query per top-level node).
+        let keys = ["keyword", "tag", "attribute"];
+        check_layers("typescript", "/** @param {string} a */\nfunction f(a: string) {}\nconst t = /* html */ `<b class=\"x\">y</b>`;\n", &keys,
+            &[("@param", Some("keyword")), ("class", Some("attribute"))]);
     }
 
     /// K-45: the texts of the symbols around the first byte of `marker` (one byte in), under distinct colours per key.

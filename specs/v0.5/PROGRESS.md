@@ -966,6 +966,13 @@
   - 범위 밖 차이: 미리보기 중첩 번호 목록 `A.`/`B.`(Zed `1.`/`2.`), 제목 밑줄·본문 가운데 정렬 없음.
   - 2·3차 캡처 일부에 다른 앱 오버레이 창이 찍혀 그 캡처는 커밋하지 않는다.
 - **W-54 R-15 git-firefly 칸 채우기** (2026-11-08): W-53의 미정 칸(언어 이름·`path_suffixes`·쿼리)을 복사본 `resources/zed-languages/<id>/`(K-48)로 채우고, R-15에 gpui 문법 방식 표(vendor: html·toml·git-config·gitignore / crate git rev: gitattributes·git-rebase)를 더했다. 위 K-45~K-48-R1과 V3 2·3차를 기록. 결과: `SPEC.md`·`PROGRESS.md` 수정, `cards/W-54.report.md`. 검증: V0(표 열 수 확인).
+- **W-55 Phase 12 V4 목록 초안** (2026-11-08, core ORDER-11-R1 (2)): `specs/v0.5/reports/V4-LIST.md`(leader가 맡긴 파일)를 tauri V4-LIST 형식(머리 설명, 종류 V4·측정 못 함·결정·범위 밖, 표 6열)으로 썼다. ORDER-01~11(R 절 포함)·PROGRESS에서 37행, 근거는 보고 파일·줄 번호, 상태는 보고·PROGRESS로 확인되는 것만(없으면 "기록 없음"). 큰 파일 입력 지연은 K-49 진행 중. 결과: `reports/V4-LIST.md` 새로, `PROGRESS.md`, `cards/W-55.report.md`. 검증: V0(표 열 수).
+- **K-49 큰 파일 입력 지연** (2026-11-08, core ORDER-11-R1 (1)): release 측정(i7-8700K, 편집기와 같은 `edit`·`reparse`·`runs`). 원인: 주입 질의를 루트에 돌려 "앞 주석 + 뒤 문자열" 꼴 패턴(html·sql·graphql 등 6개)이 주석마다 최상위 형제 전부를 훑음(TS `program` 아래 수천 개) — 바뀐 범위가 1바이트여도 비쌌다. 고침: 바뀐 범위에 닿는 **최상위 노드마다** 질의(`top_level_nodes`). 루트·최상위 형제 둘에 걸친 패턴은 못 잡지만 24개 언어 injections.scm에 그런 패턴이 없다.
+  - 전/후(편집 한 글자 중앙/최대 ms, 첫 파싱 ms): TS `lib.webworker.d.ts` 1.56만 줄 189.2/195.6 → 3.4/3.8, 5,759 → 416. TS `lib.dom.d.ts` 4.5만 줄 726.7/1,450.8 → 7.3/8.7, 37,711 → 1,395. Rust ash `native.rs` 1.25만 줄 3.3/4.3 → 4.1/4.6, 296 → 306. ash `definitions.rs` 5.7만 줄 24.4/29.9 → 25.2/26.2, 385 → 386. 합성 마크다운 1만 줄 19.8/61.9 → 19.9/61.7, 223 → 224. 합성 HTML 1만 줄 6.1/7.1 → 6.4/7.9, 156 → 109.
+  - 강조 결과 전/후 같음(샘플 18개·합성·큰 파일 해시, `K49_VERIFY=1` 불일치 0).
+  - 백그라운드 파싱은 하지 않음: 고친 뒤 막은 최장이 한 프레임 안팎(TS 3.6~8.3ms, Rust 4~26ms, HTML 8ms). 남은 값 — 합성 마크다운 연 뒤 첫 편집 61ms(이후 반복 없음, tree-sitter-md 블록 파서), ash 5.7만 줄 26ms, 첫 파싱은 UI 스레드(TS 4.5만 줄 1.4초, 1.5만 줄 0.4초). 더 줄이려면 첫 파싱 background + 그동안 평문(별도 카드 후보, V4-LIST "결정" 행).
+  - 결과: 완료(`src/ui/syntax.rs`, 측정 테스트 `#[ignore]`). 검증: V1, 전체 `cargo test` 316 passed(2 ignored)·clippy 0, vendor/gpui-base 변경 없음.
+- **W-56 K-49 기록, V4-LIST 큰 파일 행** (2026-11-08): 위 K-49를 기록하고 `reports/V4-LIST.md`의 "큰 파일 입력 지연" 상태를 K-49 결과로, 남은 값(마크다운 첫 편집 61ms, 첫 파싱 UI 스레드)을 "결정" 종류 "백그라운드 파싱" 행으로 더했다. 결과: `PROGRESS.md`·`reports/V4-LIST.md` 수정, `cards/W-56.report.md`. 검증: V0(표 열 수).
 
 #### 지금 상태 요약(2026-11-08, ORDER-11 진행 중)
 

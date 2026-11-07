@@ -85,3 +85,26 @@ tree-sitter core 0.28(git 803c6eb), 모두 Zed `Cargo.lock`·확장 고정 커�
 
 ## BLOCKED
 없음
+
+## ORDER-11-R1 (core 마무리 2건, 2026-11-08)
+### (1) 큰 파일 입력 지연 (V1, 화면 없음, K-49)
+- 조건: i7-8700K, Windows 11, `--release`, 앱의 `SyntaxHighlighter`(편집기가 부르는 `edit`·`reparse`·`runs` 그대로)를 `#[ignore]` 측정 테스트에서 호출. 파일은 tauri와 같은 것: TS `lib.webworker.d.ts`·`lib.dom.d.ts`(tauri `node_modules`의 typescript, 줄 수는 `wc -l` 기준으로 tauri 표보다 1 작음 — 마지막 줄바꿈), Rust `ash 0.38.0` `native.rs`·`definitions.rs`(cargo 레지스트리), 합성 마크다운(코드 블록 330개, 8개 언어 돌아가며)·HTML(style·script 600개). 생성 규칙은 tauri와 같은 모양이지만 같은 바이트는 아님(`cards/K-49.report.md` 1절). 중간 줄 근처에 한 글자 → 증분 파싱 + 주입 층 갱신 + 보이는 40줄 강조, 10회 중앙/최대. 측정 파일은 레포에 넣지 않음(환경 변수 경로).
+- 수정 전: TypeScript만 한 글자에 0.2~1.5초 입력이 멈췄다(첫 파싱 5.8~37.7초). 원인은 주입 쿼리를 루트(`program`)에 돌린 것 — "앞 주석 + 뒤 문자열" 꼴 패턴 6개(html·sql·graphql 등)가 주석마다 최상위 형제 수천 개를 훑었다. 바뀐 범위만 질의하고 안 바뀐 층을 재사용하는 것(Zed `changed_ranges` 방식)은 K-44부터 이미 있었다.
+- 고침: 주입 질의를 바뀐 범위에 닿는 **최상위 노드마다** 돈다(형제 탐색이 한 노드 안에 갇힘). 루트나 최상위 형제 둘에 걸친 주입 패턴은 24개 언어 `injections.scm`에 없음(coder 확인, C-44 재확인).
+
+| 파일 | 줄 | 편집 합계 중앙/최대(ms) 전 → 후 | 한 번에 막은 최장(ms) 전 → 후 | 첫 파싱(ms) 전 → 후 |
+| --- | ---: | --- | --- | --- |
+| TypeScript `lib.webworker.d.ts` | 15,606 | 189.2 / 195.6 → 3.4 / 3.8 | 195.3 → 3.6 | 5,759 → 416 |
+| TypeScript `lib.dom.d.ts` | 45,125 | 726.7 / 1,450.8 → 7.3 / 8.7 | 1,450.1 → 8.3 | 37,711 → 1,395 |
+| Rust ash `native.rs` | 12,478 | 3.3 / 4.3 → 4.1 / 4.6 | 3.7 → 4.2 | 296 → 306 |
+| Rust ash `definitions.rs` | 57,432 | 24.4 / 29.9 → 25.2 / 26.2 | 29.6 → 25.8 | 385 → 386 |
+| Markdown(코드 블록 330, 합성) | 10,004 | 19.8 / 61.9 → 19.9 / 61.7 | 61.5 → 61.3 | 223 → 224 |
+| HTML(style·script 600, 합성) | 10,015 | 6.1 / 7.1 → 6.4 / 7.9 | 6.7 → 7.6 | 156 → 109 |
+
+- 강조 결과 전/후 같음: 샘플 18개·합성 2개·큰 파일 2개의 전체 강조 해시 같음, 큰 파일 4종·합성 2종에서 모든 편집의 보이는 40줄 색이 같은 텍스트의 전체 파싱과 같음(불일치 0).
+- background executor로 옮기지 않음: 고친 뒤 입력을 막는 최장이 TS 3.6~8.3ms, HTML 7.6ms, Rust 1.25만 줄 4.2ms로 한 프레임 안, ash 5.7만 줄 25.8ms. 남은 큰 값은 루트 문법의 증분 파싱 자체 — 합성 마크다운은 파일을 연 뒤 **첫 편집 한 번만 61ms**(이후 중앙 19.9ms, tree-sitter-md 블록 파서), ash 5.7만 줄 루트 파싱 약 25ms. 첫 파싱도 UI 스레드(TS 4.5만 줄 1.4초). tauri(최장 26ms 이하, 시간 쪼개기)와 비교해 마크다운 첫 편집만 크다. Zed식 1ms 동기 + background 이동을 할지는 core 결정으로 V4-LIST "백그라운드 파싱" 행에 둠.
+- tauri와 측정 방법 차이: gpui는 단일 호출(`edit`+`reparse` 또는 `runs`)을 "막은 시간"으로 잼(양보 없음), tauri는 8ms 양보 조각 중 최장.
+- 확인: 전체 `cargo test` 316 passed / 0 failed (2 ignored = 측정), clippy 0, vendor/gpui-base 변경 없음(C-44 PASS).
+
+### (2) Phase 12 V4 목록
+- `specs/v0.5/reports/V4-LIST.md` — tauri 형식(Phase·항목·종류·내용·근거·상태), ORDER-01~11 보고·PROGRESS에서 38행. 상태는 보고·커밋으로 확인되는 것만, 없으면 "기록 없음".
