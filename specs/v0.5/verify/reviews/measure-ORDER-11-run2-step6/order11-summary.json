@@ -1,0 +1,32 @@
+{
+  "app": {},
+  "crops": {
+    "step6-md-preview": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step6\\app-step6-md-preview-crop.png"
+  },
+  "captures": {
+    "step6-md-preview": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step6\\app-step6-md-preview.png"
+  },
+  "hashes": {
+    "step6-md-preview-cap": "C736A84528CDEC4AEE201FEB7BC63543317D48EEEBA92B5F56752A7F0822876B",
+    "step6-md-preview-crop": "3617A8BE2C048211D6B9345226D7981020FBDD1A3DF94FF12DFA088BD1D1D688"
+  },
+  "dump": {
+    "step6-md-preview": {
+      "active_tab": "sample.md",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "Preview"
+    }
+  },
+  "tauri_refs": {
+    "step6-md-preview": {
+      "ref_file": "zed-md-preview.png",
+      "exists": true,
+      "hash": "9F9734C6ADA8986069C0EDFB9DA8FBBF72007D699C9CB19DFC5AD9D901116201"
+    }
+  },
+  "results": {
+    "setup": "PASS - Syntax fixture folder loaded into workspace",
+    "step6-md-preview": "캡처 OK (탭=sample.md, 커서=1:1, ref=zed-md-preview.png, ref존재=True)"
+  }
+}

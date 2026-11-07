@@ -697,6 +697,18 @@ I-12. 요청 원문 "문서의 편집창 상단에 파일 경로/제목이 보�
 - 툴바 오른쪽 버튼: Zed는 미리보기(마크다운만)·검색·AI·커서·설정이다. 이 앱은 미리보기만 둔다(core ORDER-09).
 - Phase 9 범위(core [DECISION] 2026-11-07): 경로 + 마크다운 제목 계층까지 한다. 코드 파일의 심볼 계층은 Phase 11(ORDER-11)에서 한다. Phase 9에서 코드 파일은 경로만 보인다.
 
+
+**코드 파일 심볼 기대값(core [NOTICE] 2026-11-07, Zed 캡처)**
+
+같은 파일·커서에서 경로 줄 글자가 Zed와 같아야 한다. 캡처 `D:\projects\workbench-tauri\specs\v0.5\verify\ORDER-11\`(`zed-rs-sym.png`·`zed-ts-sym.png`·`zed-py-sym.png`), 샘플은 tauri `test-fixtures/syntax/`. 조건 1920×1080 100%, 클라이언트 1440×852, One Dark.
+
+| 파일 | 커서 | 경로 줄의 심볼 글자 |
+|---|---|---|
+| `sample.rs` | 21행 | `impl Counter › pub fn bump › fn clamp` |
+| `sample.ts` | 18행 | `class Inventory › add( ) › function normalize( )` |
+| `sample.py` | 21행 | `class Library › def add › def normalize` |
+
+- 심볼 글자는 문법 색(One Dark에서 keyword #b477cf, type, function)이다(tauri ORDER-11 보고 3행). 심볼 밖(예: `sample.html` 1행)은 경로만 보인다. 규칙은 R-15 "I-12 코드 파일 심볼(outline)".
 ---
 
 ## R-13. 커서가 있는 줄의 배경과 줄 번호를 강조한다
@@ -782,8 +794,10 @@ I-14, core D-10. 요청 원문 "편집 기능일 때의 글꼴을 zed와 일치�
 **정해진 결과**
 
 - 지원할 파일 형식은 Zed가 지원하는 형식 전체다(사용자 2026-11-06).
-- 형식 목록: 미정(Zed에서 확인, Phase 11).
+- 형식 목록: 아래 "Zed 확인(tauri, 2026-11-07)"의 언어 목록(Zed 커밋 `4304dec732` 내장 언어 23개 + HTML 확장, W-48, 그리고 core 결정으로 Zed 확장 TOML v1.1.0과 git-firefly 0.1.9의 4개 언어, W-53). 옛 줄 "미정(Zed에서 확인, Phase 11)"은 이것으로 풀렸다.
 - 강조 색은 테마(R-4)에서 온다(core PLAN Phase 순서의 이유).
+- core D-18: Zed 커밋 `4304dec732` 내장 언어 전부를 Zed와 같은 문법 저장소·버전으로 한다(gpui는 tree-sitter crate를 정확한 버전으로 고정). 색은 Zed 쿼리(highlights·outline·injections 등)로 맞추고, 쿼리는 레포에 커밋하지 않고 `.gitignore` 폴더에 고정 커밋으로 복사한다. 다시 채우는 스크립트는 커밋한다. I-12 코드 파일 심볼 계층도 같은 outline 쿼리로 한다.
+- core ORDER-11 2장: 실행 중에 이 PC의 Zed 설치 폴더나 확장 폴더를 읽지 않는다(core D-8). 쿼리 복사본이 없으면 강조 없이 평문으로 보이고 앱은 죽지 않는다. 두 갈래의 언어 목록과 하이라이트 이름 → 테마 `syntax` 토큰 대응은 같아야 하고, 언어 주입은 Zed와 같게 한다. 문법 라이선스를 Licenses 창에 넣는다.
 
 **판정 방법**
 
@@ -793,6 +807,177 @@ Zed가 지원하는 파일 형식마다 샘플 파일을 열면 구문 강조가
 
 I-15. 요청 원문 "마크다운 문서의 하이라이트가 되지 않습니다. 하이라이트 기능 필요. html 포함 코드별 하이라이트 필요"(사용자 2026-11-06).
 
+**Zed 확인(tauri, 2026-11-07)**
+
+tauri `D:\projects\workbench-tauri\specs\v0.5\SPEC.md` R-15(읽기만, 커밋 `208b900` 기준 — 카드의 `5dbf6d9` 뒤 라이선스 열·빌드 출처·쿼리 정규식이 더해졌다)에서 옮겼다. 표와 규칙은 글자까지 같게 두었다(두 갈래 목록이 같아야 함, core ORDER-11 2장). tauri 구현에만 해당하는 줄은 아래 "tauri 구현(참고)"로 묶었다.
+
+**언어 목록 (ORDER-11, Zed 4304dec)**
+
+출처: Zed 커밋 `4304dec732`. 언어 설정 `crates/grammars/src/<이름>/config.toml`, 내장 등록 `crates/languages/src/lib.rs` 91~229행 `built_in_languages`(23개, 아래 표와 같음), 문법 등록 `crates/grammars/src/grammars.rs` `native_grammars`(문법 이름 → crate), 버전 루트 `Cargo.toml` 947~968행과 `Cargo.lock`. 문법 열은 config.toml `grammar` 키다. 숨김(`hidden = true`)은 사용자가 고르는 언어 목록에 없고 주입이나 내부에만 쓰인다. 문법 라이선스는 K-49에서 문법 저장소 LICENSE 본문으로 확인했다(24행 모두 MIT). crate에 LICENSE가 없는 css·diff·jsdoc·json·regex는 crate의 `.cargo_vcs_info.json` 게시 커밋 archive에서 parser.c SHA256이 crate와 같은지 대조한 뒤 LICENSE만 가져왔다(열에 게시 커밋). 쿼리 라이선스는 문법과 따로다: Zed 쿼리(`crates/grammars`) GPL-3.0, HTML 확장 쿼리(`extensions/html`) Apache-2.0.
+
+| 언어 이름(`name`) | 확장자·파일 이름(`path_suffixes`), `first_line_pattern` | 문법 → crate·저장소 | 버전/rev | 쿼리 파일 | 문법 라이선스 |
+| --- | --- | --- | --- | --- | --- |
+| Shell Script | sh bash bashrc bash_profile bash_aliases bash_login bash_logout brushrc bats envrc profile zsh zshrc zshenv zsh_profile zsh_aliases zsh_histfile zlogin zprofile PKGBUILD APKBUILD ebuild; `^#!.*\b(?:ash\|bash\|bats\|dash\|sh\|zsh)\b` | `bash` → tree-sitter-bash (crates.io) | 0.25.1 (Cargo.toml 947) | brackets · highlights · indents · injections · overrides · redactions · runnables · textobjects | MIT |
+| C | c | `c` → tree-sitter-c (crates.io) | 0.24.1 (948) | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| C++ | cc ccm hh cpp cppm h hpp cxx cxxm hxx c++ c++m h++ hip ipp inl ino ixx cu cuh C H; `^//.*-\*-\s*C\+\+\s*-\*-` | `cpp` → tree-sitter-cpp, git https://github.com/tree-sitter/tree-sitter-cpp | 0.23.4, rev 5cb9b693cfd7bfacab1d9ff4acac1a4150700609 (949) | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| CSS | css postcss pcss | `css` → tree-sitter-css (crates.io) | 0.23.2 (950, `"0.23"`) | brackets · highlights · indents · injections · outline · overrides · textobjects | MIT (crate에 LICENSE 없음, 게시 커밋 c0d581e32d183a536731ed6c3a72758b27e20411) |
+| Diff | diff patch | `diff` → tree-sitter-diff (crates.io) | 0.1.0 (951) | highlights · injections | MIT (crate에 LICENSE 없음, 게시 커밋 4867e8470e1b0ad7364c4e3ffab762c361bbb635) |
+| Env | .env | `bash` → tree-sitter-bash (Shell Script와 같은 문법) | 0.25.1 (947) | brackets · highlights · injections · overrides · redactions | MIT |
+| Git Commit | TAG_EDITMSG MERGE_MSG COMMIT_EDITMSG NOTES_EDITMSG EDIT_DESCRIPTION | `gitcommit` → tree-sitter-gitcommit, git https://github.com/zed-industries/tree-sitter-git-commit | 0.0.1, rev 88309716a69dd13ab83443721ba6e0b491d37ee9 (954) | highlights · injections | MIT |
+| Go | go; `^//.*\bgo run\b` | `go` → tree-sitter-go, git https://github.com/zed-industries/tree-sitter-go | 0.25.0, rev 6862a49e3c5a7567a6c576420e9a8f944e198a85 (955) | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| Go Mod | mod | `gomod` → tree-sitter-gomod(package 이름, 의존성 이름 tree-sitter-go-mod), git https://github.com/camdencheek/tree-sitter-go-mod | 1.1.1, rev 2e886870578eeba1927a2dc4bd2e2b3f598c5f9a (956) | highlights · injections · structure | MIT |
+| Go Work | work | `gowork` → tree-sitter-gowork, git https://github.com/zed-industries/tree-sitter-go-work | 0.0.1, rev acb0617bf7f4fda02c6217676cc64acb89536dc7 (957) | highlights · injections | MIT |
+| JavaScript | js jsx mjs cjs; `^#!.*\b(?:[/ ]node\|deno run.*--ext[= ]js)\b` | `tsx` → tree-sitter-typescript의 TSX 문법(TSX와 같은 문법, 쿼리는 javascript 폴더 것) | TypeScript 행과 같음 | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| JSDoc (주입 전용/내부, hidden) | 없음 | `jsdoc` → tree-sitter-jsdoc (crates.io) | 0.23.2 (960, `"0.23"`) | brackets · highlights | MIT (crate에 LICENSE 없음, 게시 커밋 b253abf68a73217b7a52c0ec254f4b6a7bb86665) |
+| JSON | json flake.lock geojson topojson prettierrc json.dist deno.lock | `json` → tree-sitter-json (crates.io) | 0.24.8 (961, `"0.24"`) | brackets · highlights · indents · outline · overrides · redactions · runnables · textobjects | MIT (crate에 LICENSE 없음, 게시 커밋 ee35a6ebefcef0c5c416c0d1ccec7370cfca5a24) |
+| JSONC | jsonc bun.lock devcontainer.json pyrightconfig.json tsconfig.json luaurc swcrc babelrc eslintrc stylelintrc jshintrc | `jsonc` → tree-sitter-json(JSON과 같은 crate, `grammars.rs`에서 jsonc 이름으로 한 번 더 등록) | 0.24.8 (961) | brackets · highlights · indents · injections · outline · overrides · redactions · textobjects | MIT (crate에 LICENSE 없음, 게시 커밋 ee35a6ebefcef0c5c416c0d1ccec7370cfca5a24) |
+| Markdown | md mdx mdwn mdc markdown MD | `markdown` → tree-sitter-md 블록 문법(`LANGUAGE`), git https://github.com/zed-industries/tree-sitter-markdown (9a23c1a 포크, serialize 버퍼 넘침 수정) | 0.3.2, rev b596e737286780d7bfa9fcddceaeeb754574b352 (962) | brackets · highlights · indents · injections · outline · textobjects | MIT |
+| Markdown-Inline (주입 전용/내부, hidden) | 없음 | `markdown-inline` → tree-sitter-md 인라인 문법(`INLINE_LANGUAGE`) | Markdown 행과 같음 | highlights · injections | MIT |
+| Python | py pyi mpy; `^#!.*((\bpython[0-9.]*\b)\|(\buv run\b))` | `python` → tree-sitter-python (crates.io) | 0.25.0 (963, `"0.25"`) | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| Regex (주입 전용/내부, hidden) | 없음 | `regex` → tree-sitter-regex (crates.io) | 0.24.3 (964, `"0.24"`) | brackets · highlights | MIT (crate에 LICENSE 없음, 게시 커밋 4470c59041416e8a2a9fa343595ca28ed91f38b8) |
+| Rust | rs | `rust` → tree-sitter-rust (crates.io) | 0.24.2 (966) | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| TSX | tsx | `tsx` → tree-sitter-typescript의 TSX 문법(`LANGUAGE_TSX`) | TypeScript 행과 같음 | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| TypeScript | ts cts mts; `^#!.*\b(?:deno run\|ts-node\|bun\|tsx\|[/ ]node)\b` | `typescript` → tree-sitter-typescript(`LANGUAGE_TYPESCRIPT`), git https://github.com/zed-industries/tree-sitter-typescript (upstream PR 347 반영) | 0.23.2, rev e2c53597d6a5d9cf7bbe8dccde576fe1e46c5899 (967) | brackets · debugger · highlights · indents · injections · outline · overrides · runnables · textobjects | MIT |
+| YAML | yml yaml pixi.lock clang-format clangd bst | `yaml` → tree-sitter-yaml, git https://github.com/zed-industries/tree-sitter-yaml | 0.6.1, rev baff0b51c64ef6a1fb1f8390f3ad6015b83ec13a (968) | brackets · highlights · injections · outline · overrides · redactions · textobjects | MIT |
+| Zed Keybind Context (주입 전용/내부, hidden) | 없음 | `rust` → tree-sitter-rust(Rust와 같은 문법) | 0.24.2 (966) | brackets · highlights | MIT |
+| HTML (Zed 레포 안 확장, 내장 아님) | html htm shtml (`extensions/html/languages/html/config.toml`) | `html` → https://github.com/tree-sitter/tree-sitter-html (`extensions/html/extension.toml` `[grammars.html]`, 확장 버전 0.3.2) | commit bfa075d83c6b97cd48440b3829ab8d24a2319809 | brackets · highlights · indents · injections · outline · overrides (`extensions/html/languages/html/`) | MIT |
+| TOML (Zed 확장, 설치본과 같은 버전) | Cargo.lock toml Pipfile uv.lock | `toml` → https://github.com/tree-sitter/tree-sitter-toml (확장 https://github.com/zed-extensions/toml v1.1.0, 커밋 8e18e5045841f0f265f9c8b89f138c7f7dd09e2e의 `[grammars.toml]`) | rev 342d9be207c2dba869b9967124c679b5e6fd0ebe | brackets · highlights · indents · injections · outline · overrides · redactions · textobjects (확장 `languages/toml/`) | MIT (확장은 Apache-2.0) |
+| Git Attributes (git-firefly 확장, 설치본과 같은 버전) | gitattributes .gitattributes | `gitattributes` → https://github.com/tree-sitter-grammars/tree-sitter-gitattributes (확장 https://github.com/d1y/git_firefly v0.1.9, 커밋 c63c6c0287ab5c8eb3872cf2bc8803e21c7a9675) | rev 1b7af09d45b579f9f288453b95ad555f1f431645 | highlights · injections (확장 `languages/gitattributes/`) | MIT (확장은 Apache-2.0) |
+| Git Config (git-firefly 확장, 설치본과 같은 버전) | config.worktree .gitconfig .gitmodules .lfsconfig | `git_config` → https://github.com/the-mikedavis/tree-sitter-git-config (확장 https://github.com/d1y/git_firefly v0.1.9, 커밋 c63c6c0287ab5c8eb3872cf2bc8803e21c7a9675) | rev 3a61756a81a86291a0f48e3eeeaa0692b9981aa9 | highlights · injections (확장 `languages/gitconfig/`) | MIT (확장은 Apache-2.0) |
+| Git Ignore (git-firefly 확장, 설치본과 같은 버전) | .containerignore .cursorignore .dockerignore .eslintignore .fdignore .gitignore .gitignore_global .git-blame-ignore-revs .ignore .npmignore .prettierignore .rgignore .vscodeignore | `gitignore` → https://github.com/shunsambongi/tree-sitter-gitignore (확장 https://github.com/d1y/git_firefly v0.1.9, 커밋 c63c6c0287ab5c8eb3872cf2bc8803e21c7a9675) | rev f4685bf11ac466dd278449bcfe5fd014e94aa504 | highlights · injections (확장 `languages/gitignore/`) | MIT (확장은 Apache-2.0) |
+| Git Rebase (git-firefly 확장, 설치본과 같은 버전) | git-rebase-todo | `git_rebase` → https://github.com/the-mikedavis/tree-sitter-git-rebase (확장 https://github.com/d1y/git_firefly v0.1.9, 커밋 c63c6c0287ab5c8eb3872cf2bc8803e21c7a9675) | rev 39bf3b7566c86ccffd70aaa5105c7c8b76788975 | highlights · injections (확장 `languages/gitrebase/`) | MIT (확장은 Apache-2.0) |
+
+- TOML 행(core 결정 2026-11-07, K-54): Zed 4304dec에 내장이 아니고 Zed 확장 `zed-extensions/toml`이다. 설치본 버전 확인은 개발 때 한 번만 했다(2026-11-07, `%LOCALAPPDATA%\Zed\extensions\installed\toml` 1.1.0). 실행 중에는 읽지 않는다(core D-8). 설치본과 대조하면 언어 config와 쿼리 9개(config.toml + .scm 8개)가 바이트 단위로 같다. `extension.toml`만 원시 해시가 다르다: 설치본은 필드 순서·표현이 다르고 themes·languages·capabilities·`[lib]` 등이 더 있다. 원본에는 `language_servers.taplo`의 name·opt_in_languages가 있다. 문법 필드는 원본 `commit`, 설치본 `rev`이고 값은 같다. 앱은 이 확장의 LSP·lib를 쓰지 않고 문법·쿼리만 쓴다.
+- git-firefly 행(core 결정 2026-11-07, tauri K-55): 확장 `d1y/git_firefly` v0.1.9(커밋 c63c6c0287ab5c8eb3872cf2bc8803e21c7a9675), 문법 git_config 3a61756a·git_rebase 39bf3b75·gitattributes 1b7af09d·gitignore f4685bf1(전체 커밋은 표). 확장 Apache-2.0, 문법 MIT. tauri 보고: 설치본과 언어 파일 12/12 같고 `extension.toml` 원시 해시만 다르다. `.git/config`는 확장 config에 `config` 이름이 없어 고르지 않는다(Zed config대로, core 확인 요청). 실행 중에는 읽지 않는다(core D-8). 언어 이름(`name`)·`path_suffixes`·쿼리 파일은 tauri SPEC 표에 행이 없어 이 레포 복사본 `resources/zed-languages/<id>/config.toml`과 `.scm` 파일 이름(확장 고정 커밋 c63c6c02, K-48)으로 채웠다(W-54). 첫 줄 패턴·숨김은 없다.
+- gpui 문법 방식(K-48 보고 2절, K-43A-R1): 위 표의 crate·저장소 열은 tauri와 같게 두고, 이 레포가 문법을 넣는 방식만 따로 적는다. 나머지 행은 표의 crate를 그대로 쓴다.
+
+  | 언어(id) | 문법 저장소·커밋 | ABI | gpui 방식 |
+  |---|---|---|---|
+  | HTML (`html`) | tree-sitter/tree-sitter-html bfa075d8 | 14 | vendor(C 소스, `vendor/tree-sitter-html/`, `build.rs`) — crate 0.20.2가 core 0.28과 맞지 않음(K-43A-R1) |
+  | TOML (`toml`) | tree-sitter/tree-sitter-toml 342d9be2 | 13 | vendor(C 소스, `vendor/tree-sitter-toml/`, `build.rs`) — crate `tree-sitter-toml 0.5.1`이 `tree-sitter ~0.20`·`cc ~1.0` 의존 |
+  | Git Config (`gitconfig`) | the-mikedavis/tree-sitter-git-config 3a61756a | 14 | vendor(C 소스, `vendor/tree-sitter-git-config/`, `build.rs`) — `~0.20` 의존 |
+  | Git Ignore (`gitignore`) | shunsambongi/tree-sitter-gitignore f4685bf1 | 13 | vendor(C 소스, `vendor/tree-sitter-gitignore/`, `build.rs`) — `~0.20` 의존 |
+  | Git Attributes (`gitattributes`) | tree-sitter-grammars/tree-sitter-gitattributes 1b7af09d | 14 | crate git rev(`Cargo.toml` rev 1b7af09d45b579f9f288453b95ad555f1f431645, lock 0.2.0) — `tree-sitter-language 0.1`만 의존 |
+  | Git Rebase (`gitrebase`) | the-mikedavis/tree-sitter-git-rebase 39bf3b75 | 15 | crate git rev(`Cargo.toml` rev 39bf3b7566c86ccffd70aaa5105c7c8b76788975, lock 0.1.0) — `tree-sitter-language 0.1`만 의존 |
+
+- `crates/languages/src/lib.rs`에서 위 23개 밖에 내장으로 등록되는 언어는 없다. 같은 커밋 레포 안 확장은 `extensions/html`·`glsl`·`proto`·`test-extension` 넷이고 내장이 아니다(ORDER-11이 명시한 HTML만 표에 넣었다). 그 밖에 core 결정(ORDER-11 [DECISION], 2026-11-07)으로 Zed 확장 TOML(v1.1.0)과 git-firefly 0.1.9의 4개 언어(gitattributes·gitconfig·gitignore·gitrebase)를 설치본과 같은 버전·고정 커밋으로 넣는다(위 표 끝 5행, W-53).
+- 루트 Cargo.toml에 있지만 `native_grammars`에 없는 문법:
+  - tree-sitter-html 0.23(959, lock 0.23.2): `crates/editor`(테스트 지원 기능·dev-dependencies)와 `crates/language` dev-dependencies에서 테스트에만 쓴다. 앱의 HTML 강조는 위 확장의 문법(commit bfa075d)을 쓴다.
+  - tree-sitter-elixir 0.3(952, lock 0.3.4), tree-sitter-heex(958, rev 1dd45142fbb05562e35b2040c6129c9bca346592), tree-sitter-embedded-template 0.23.0(953, lock 0.23.2), tree-sitter-ruby 0.23(965, lock 0.23.1): `crates/language` dev-dependencies에서 테스트에만 쓴다. 목록 밖.
+- 쿼리 열의 이름 가운데 색에 쓰는 것은 `highlights`(강조)·`injections`(주입)·`outline`(경로 줄 심볼)이다. 나머지(brackets·indents·overrides·textobjects 등)는 편집 기능용이다.
+
+**하이라이트 이름 → 테마 syntax 토큰**
+
+- Zed: 테마 `syntax` 키를 정렬된 맵(`BTreeMap`)에 넣고, 캡처 이름마다 "첫 마디(`.` 앞) 이상, 캡처 이름 이하" 범위를 뒤에서부터 보며 "캡처 이름이 그 키로 시작하고 남은 부분이 없거나 `.`으로 시작하는" 첫 키를 고른다(`crates/syntax_theme/src/syntax_theme.rs` 87~102 `highlight_id`). 점 경계 앞부분 가운데 가장 긴 키다. 예: `@keyword.control.import` → 테마에 `keyword.control`이 있으면 그것, 없으면 `keyword`, 둘 다 없으면 색 없음. 이 대응은 문법마다 캡처 이름 목록으로 한 번 만든다(`crates/language/src/language.rs` 1298~1301 `HighlightMap::from_ids`).
+- Zed: 한 글자 위에 캡처가 여럿 겹치면 시작 위치 순서로 쌓고 맨 위(마지막에 쌓인) 캡처 하나의 색만 쓴다. 테마 키가 없는 캡처는 쌓지 않아 바깥 캡처 색이 남는다(`crates/language/src/buffer.rs` 5909~5922 쌓기, 5967~5972 맨 위 하나).
+
+**주입(injection)**
+
+- 언어 결정(`crates/language/src/syntax_map.rs` 1720~1746, `crates/language/src/available_languages.rs` 218~239 `find_by_name_or_extension`):
+  - 쿼리에 `#set! injection.language "<이름>"`이 있으면 그 이름, 없으면 `@injection.language` 캡처 글자를 쓴다. 캡처 글자에 `.`이 있으면 마지막 `.` 뒤만 쓴다(예: "foo/bar/baz.rs" → "rs").
+  - 그 문자열을 대소문자 구분 없이 언어 이름(`name`) 또는 `path_suffixes`의 한 항목과 맞춘다. 맞는 언어가 없으면 주입하지 않는다(그 범위는 바깥 언어 색 그대로).
+  - `#set! injection.combined`은 같은 언어의 여러 조각을 한 문서처럼 묶어 파싱한다(1671~1686, 1755~1756).
+- 마크다운(`crates/grammars/src/markdown/injections.scm`): 코드 블록 `info_string`의 `language` 글자 → 코드 내용. 예: 언어 글자 `rust`는 이름 "Rust"와 대소문자 무시로 맞고, `ts`는 TypeScript의 확장자 `ts`로 맞는다. `inline`·`pipe_table_cell` → markdown-inline, `html_block` → html, `minus_metadata`(`---` 머리말) → yaml, `plus_metadata`(`+++`) → toml(목록에 없어 주입 안 됨). markdown-inline(`markdown-inline/injections.scm`): `html_tag` → html(combined), `latex_block` → latex(목록에 없어 주입 안 됨).
+- HTML(`extensions/html/languages/html/injections.scm`): `script_element` 안 `raw_text` → javascript, `style_element` 안 `raw_text` → css, `style="…"` 속성 값 → css, `on…="…"` 속성 값 → javascript, `comment` → comment(목록에 없어 주입 안 됨).
+- injections.scm이 있는 그 밖의 언어와 주입 대상(목록 밖 이름은 주입 안 됨): bash·css·diff·env·gitcommit·gomod·gowork·jsonc → comment만. c → c·comment·doxygen. cpp → c++·comment·doxygen과 `@injection.language` 캡처. go → bash·comment·css·csv·html·javascript·json·lua·regex·sql·xml·yaml. javascript·typescript → comment·css·glsl·graphql·html·isograph·javascript·jsdoc·json·regex·sql·typescript·WGSL/WESL·yaml(typescript는 angular도). tsx → comment·css·graphql·html·isograph·javascript·jsdoc·json·regex·sql·typescript·yaml. python → comment·sql. rust → comment·regex·rstml·rust·sql. yaml → comment·javascript. injections.scm이 없는 것: json·jsdoc·regex·zed-keybind-context.
+
+**I-12 코드 파일 심볼(outline)**
+
+- 쿼리: 언어마다 `outline.scm`(위 표 쿼리 열에 outline이 있는 c·cpp·css·go·javascript·json·jsonc·markdown·python·rust·tsx·typescript·yaml·html). 캡처 `@item`(심볼 범위), `@name`(필수), `@context`, `@context.extra`, `@open`·`@close`, `@annotation`(`crates/language_core/src/grammar.rs` 514~541).
+- 경로 줄로 가는 길: 커서(가장 새 선택의 head)가 바뀌면 `symbols_containing(cursor, 테마 syntax)`를 부른다(`crates/editor/src/editor.rs` 4021~4049). 기본 설정 `document_symbols: "off"`(`assets/settings/default.json` 1458)라 LSP가 아닌 tree-sitter outline 경로다. 경로 줄 글자는 파일 경로 하나 + 심볼 글자들이다(`editor.rs` 11682~11721 `breadcrumbs_inner`).
+- 심볼 고르기(`crates/language/src/buffer.rs` 4782~4797, 4890~4986):
+  - 범위 = 커서 - 1 ~ 커서 + 1. `@item` 노드가 이 범위와 닿는 outline 일치를 모두 모은다(주입된 언어의 outline도 포함).
+  - (시작 오름차순, 끝 내림차순)으로 정렬하고, 앞 항목 끝 안에 들어가면 한 단계 깊게 깊이를 매긴다.
+  - 앞에서부터 깊이가 바로 앞에 남긴 항목보다 클 때만 남긴다. 그래서 바깥에서 안쪽으로 이어지는 한 줄기만 남는다.
+- 심볼 글자(`buffer.rs` 4988~5110 `next_outline_item`): `@name`과 `@context` 캡처(경로 줄은 `@context.extra`를 빼고 부름) 노드를 소스 순서대로 잇는다. 사이에 소스상 틈이 있으면 공백 하나를 넣는다. 여러 줄 노드는 첫 줄 끝에서 자른다. 색은 편집기와 같은 하이라이트(위 "하이라이트 이름 → 테마 syntax 토큰")를 그대로 붙인다. `@name`이 없으면 항목이 아니다. 예: `src\App.tsx › function App()`(`zed-bc-code.png`, R-12).
+
+**gpui 구현 방침**
+
+- gpui: tree-sitter crate를 Zed `Cargo.lock`과 같은 버전으로 고정한다(core D-18). 위 표의 버전/rev 열이 기준이다.
+- gpui: TOML·git-firefly 문법은 tree-sitter 0.28 크레이트로 넣는다. 크레이트가 0.28과 맞지 않으면 HTML과 같은 방식(vendor C 소스 + `build.rs`, core 결정 안 A)으로 한다. 쿼리는 확장 저장소 고정 커밋(TOML `zed-extensions/toml` 8e18e5045841f0f265f9c8b89f138c7f7dd09e2e, git-firefly `d1y/git_firefly` c63c6c0287ab5c8eb3872cf2bc8803e21c7a9675)에서 `.gitignore` 복사본(`resources/zed-languages/`)으로 가져온다(`tools/fetch-zed-languages.ps1`)(core ORDER-11 [DECISION], W-53).
+- gpui: Rust `regex`라 쿼리 정규식 변환이 필요 없다(아래 tauri "쿼리 정규식"의 4개도 그대로 컴파일된다고 tauri가 적었다).
+- gpui: Zed 쿼리 복사본은 레포 안 `.gitignore` 폴더에 두고, 다시 채우는 스크립트를 커밋한다. 위치 `resources/zed-languages/`(`.gitignore`), 스크립트 `tools/fetch-zed-languages.ps1`(K-41 제안, leader W-49). 원본은 Zed `crates/grammars/src/<언어>/`(config.toml·highlights·injections·outline)와 HTML `extensions/html/languages/html/`·`extensions/html/extension.toml`.
+- gpui: 실행 중 config.toml을 읽지 않는다. 언어 표(이름·확장자·파일 이름·`first_line_pattern`·문법·쿼리 폴더)는 코드의 정적 표로 두고, 위 "언어 목록" 표와 같게 한다(leader W-49).
+- gpui: gpui-component의 `tree-sitter` feature는 켜지 않는다(그 feature의 core는 0.26.13이라 Zed 0.28.0과 다름). 앱이 Zed와 같은 core·문법으로 기존 `InputHighlighter` API에 연결한다(K-41).
+
+**gpui 의존성(Zed Cargo.lock 그대로)**
+
+K-41 보고 2절에서 옮겼다. 출처 Zed `4304dec732` `Cargo.lock` 18850–19074, `Cargo.toml` 944–968·1037–1042. registry crate는 `=정확버전`, git crate는 전체 rev로 고정한다. registry는 `registry+https://github.com/rust-lang/crates.io-index`이고 git 행에는 registry checksum이 없다. `tree-sitter-language`는 Zed처럼 `[patch.crates-io]`로 core와 같은 git rev로 맞춘다.
+
+| crate | 정확 버전 | registry checksum 또는 git 전체 rev |
+|---|---|---|
+| tree-sitter(core) | 0.28.0 | git `803c6ebaac27d69e1808b45058482e868d073ceb` |
+| tree-sitter-language | 0.1.8 | git `803c6ebaac27d69e1808b45058482e868d073ceb` |
+| tree-sitter-bash | 0.25.1 | `9e5ec769279cc91b561d3df0d8a5deb26b0ad40d183127f409494d6d8fc53062` |
+| tree-sitter-c | 0.24.1 | `1a3aad8f0129083a59fe8596157552d2bb7148c492d44c21558d68ca1c722707` |
+| tree-sitter-cpp | 0.23.4 | git `5cb9b693cfd7bfacab1d9ff4acac1a4150700609` |
+| tree-sitter-css | 0.23.2 | `5ad6489794d41350d12a7fbe520e5199f688618f43aace5443980d1ddcf1b29e` |
+| tree-sitter-diff | 0.1.0 | `dfe1e5ca280a65dfe5ba4205c1bcc84edf486464fed315db53dee6da9a335889` |
+| tree-sitter-gitcommit | 0.0.1 | git `88309716a69dd13ab83443721ba6e0b491d37ee9` |
+| tree-sitter-go | 0.25.0 | git `6862a49e3c5a7567a6c576420e9a8f944e198a85` |
+| tree-sitter-gomod | 1.1.1 | git `2e886870578eeba1927a2dc4bd2e2b3f598c5f9a` |
+| tree-sitter-gowork | 0.0.1 | git `acb0617bf7f4fda02c6217676cc64acb89536dc7` |
+| tree-sitter-jsdoc | 0.23.2 | `a3862dfcb1038fc5e7812d7df14190afdeb7e1415288fd5f51f58395f8cb0faf` |
+| tree-sitter-json | 0.24.8 | `4d727acca406c0020cffc6cf35516764f36c8e3dc4408e5ebe2cb35a947ec471` |
+| tree-sitter-md | 0.3.2 | git `b596e737286780d7bfa9fcddceaeeb754574b352` |
+| tree-sitter-python | 0.25.0 | `6bf85fd39652e740bf60f46f4cda9492c3a9ad75880575bf14960f775cb74a1c` |
+| tree-sitter-regex | 0.24.3 | `712656f8c262a5a4b7d6026e6246950787d178d613864952554e1516a33ab0c1` |
+| tree-sitter-rust | 0.24.2 | `439e577dbe07423ec2582ac62c7531120dbfccfa6e5f92406f93dd271a120e45` |
+| tree-sitter-typescript | 0.23.2 | git `e2c53597d6a5d9cf7bbe8dccde576fe1e46c5899` |
+| tree-sitter-yaml | 0.6.1 | git `baff0b51c64ef6a1fb1f8390f3ad6015b83ec13a` |
+
+| crate | repository |
+|---|---|
+| core / language | https://github.com/tree-sitter/tree-sitter |
+| cpp | https://github.com/tree-sitter/tree-sitter-cpp |
+| gitcommit | https://github.com/zed-industries/tree-sitter-git-commit |
+| go | https://github.com/zed-industries/tree-sitter-go |
+| gomod | https://github.com/camdencheek/tree-sitter-go-mod |
+| gowork | https://github.com/zed-industries/tree-sitter-go-work |
+| md | https://github.com/zed-industries/tree-sitter-markdown |
+| typescript | https://github.com/zed-industries/tree-sitter-typescript |
+| yaml | https://github.com/zed-industries/tree-sitter-yaml |
+
+- HTML: 앱은 확장 문법 https://github.com/tree-sitter/tree-sitter-html rev `bfa075d83c6b97cd48440b3829ab8d24a2319809`(확장 버전 0.3.2)를 쓴다. Zed lock의 tree-sitter-html 0.23.2(checksum `261b708e5d92061ede329babaaa427b819329a9d427a1d710abb0f67bbef63ee`)는 Zed 테스트 의존성이라 쓰지 않는다. 그 rev의 Rust binding 버전·빌드 경로: 미정(K-41 미확인, 다음 의존성 카드).
+- 문법 crate가 아닌 추가 후보 `streaming-iterator =0.1.9`, `toml =1.1.8`(dev → runtime)은 D-18 허락 범위인지 core 확인 필요(K-41). 위 정적 언어 표 방침이면 `toml` runtime 이동은 필요 없다.
+
+**tauri 구현(참고)**
+
+- tauri 지금(`src/syntax/grammar.ts` `themeKey`): 캡처 이름 끝에서 `.` 마디를 하나씩 떼며 테마 키를 찾는다. 점 경계 가장 긴 앞부분이라 Zed 규칙과 같다.
+- tauri 지금과 다른 점(코드는 고치지 않음):
+  - 겹침: tauri(`src/syntax/highlight.ts` `build`)는 일치하는 캡처마다 CM6 mark를 겹쳐 넣어 CSS 클래스가 함께 붙는다. 같은 범위의 두 캡처에서 보이는 색이 Zed의 "맨 위 캡처 하나"와 같은지는 보장되지 않는다. 확인 필요.
+  - 주입: tauri는 한 문법의 highlights만 쓰고 주입 언어를 강조하지 않는다.
+  - 문법 출처: tauri는 실행 중 설치된 Zed 확장 폴더에서 문법을 읽는다(`zlext` 스킴). ORDER-11(core D-8)대로 이 Phase에서 복사본으로 바꾼다.
+- tauri 지금: 경로 + 마크다운 ATX 제목만(K-40, `src/editor/breadcrumbs.ts`). 코드 심볼은 이 Phase(D-14).
+
+**빌드 출처 (사용자 허락 2026-11-07, core-leader 전달)**
+
+- 문법 wasm은 tree-sitter CLI로 문법 저장소의 parser.c(와 scanner)를 그대로 빌드한다. 문법을 재생성하지 않는다(parser.c 그대로). crate 문법은 Zed `Cargo.lock`의 버전·checksum으로 검증하고, git 문법은 lock의 저장소·rev, HTML은 `extensions/html/extension.toml`의 commit을 쓴다. 공유 문법을 합쳐 wasm 20개(언어 24개).
+- 빌드 도구(K-47·K-49):
+
+| 도구 | 버전 | URL | SHA256 |
+| --- | --- | --- | --- |
+| tree-sitter CLI Windows x64 (gzip) | 0.27.1 | https://github.com/tree-sitter/tree-sitter/releases/download/v0.27.1/tree-sitter-windows-x64.gz | e21184878f908f91c753b78a76a0766e61954e06627b46088d70d66233424531 (스크립트에 고정, 로컬 파일과 대조) |
+| wasi-sdk (CLI가 자동으로 받음) | 34.0 | https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-x86_64-windows.tar.gz | cccb5c323a9b34f0349a9b09e8804a0a7632c68c3310f4b5f437ed57d7e71d8f (GitHub 자산 메타데이터 값, 로컬 압축 해시는 확인 안 함) |
+| Binaryen (CLI가 자동으로 받음) | 132 | https://github.com/WebAssembly/binaryen/releases/download/version_132/binaryen-version_132-x86_64-windows.tar.gz | 2089428ec98c899b45ee5d00636ddd6e2da8636cc473ef50b165cc25793ef7cb (GitHub 자산 메타데이터 값, 로컬 압축 해시는 확인 안 함) |
+
+- CLI와 자동 도구 캐시는 실행마다 고유한 `%TEMP%` 폴더(`workbench-zed-grammars-*`)에 두고 끝나면 그 폴더만 지운다. `LOCALAPPDATA`·`XDG_CACHE_HOME`·`XDG_CONFIG_HOME`은 자식 프로세스에서만 바꾼다.
+- 복사본 위치 `src/assets/zed-grammars/`(`.gitignore`, wasm·쿼리·manifest·라이선스·빌드 로그). 다시 만들기 `tools/fetch-zed-grammars.ps1`(커밋 `bc95568`). 복사본이 없으면 강조 없이 평문(ORDER-11 2장).
+
+**쿼리 정규식**
+
+- Zed 쿼리 4개의 정규식을 web-tree-sitter(JavaScript RegExp)가 거부한다: `javascript/injections.scm`·`tsx/injections.scm`·`typescript/injections.scm` 5행 `(?s)`(dot-all), `python/injections.scm` 25행 `(?i:sql)`(범위 대소문자 무시). K-49에서 쿼리 58개 중 54개 컴파일, 이 4개 실패.
+- 로더가 같은 뜻의 JavaScript 정규식으로 바꿔 컴파일한다. 복사본 원문은 바꾸지 않는다(K-50).
+- gpui(Rust `regex`)는 이 문법을 받아들여 해당 없음.
+
+
+**미리보기 코드 블록(C-41, core [NOTICE] 2026-11-07)**
+
+- Zed 마크다운 미리보기도 코드 블록을 언어별로 강조한다(`zed-md-preview.png`, tauri ORDER-11 보고 9행). 색은 편집기와 같은 테마 `syntax`(`markdown_preview_view.rs` 1108~1114, `markdown.rs` 4224~4235)(C-41).
+- 언어 찾기: 펜스 info string을 다듬어(`trim`) 비면 언어 없음, `/`가 있으면 경로, 그 밖은 언어 이름 → `language_for_name_or_extension`(대소문자 무시, 이름 또는 확장자), 실패하고 공백이 있으면 첫 단어로 다시 찾는다(`parser.rs` 425~439, `markdown.rs` 1334~1345). 편집기 주입 규칙과 같다(C-41).
+- 언어가 없거나 모르는 언어, 들여쓰기 코드 블록은 강조 없이 `text` 색 평문이고 상자 모양은 같다(`markdown.rs` 1664~1673, 4246)(C-41).
+- 상자: 배경 `editor_background`(`markdown.rs` 288), 안쪽 12·위아래 margin 16·반경 6(`markdown_preview.code_block.*`), 테두리 1px `border_variant`(`code_block.border`·`code_block.border_color`, `markdown.rs` 272~279). C-41 보고의 "테두리 없음"은 렌더러의 추가 테두리만 끄는 `border: false`를 본 것이라 맞지 않는다(W-51, `spec/ambiguous.md` 1절 L-109).
+- 이 레포 지금(C-41): 미리보기 코드 블록에 강조 없음(`code_block_highlighter` 미연결), 배경 `theme.muted`(Zed는 `editor_background`), 글자 16(Zed `buffer_font_size` 15). 연결은 K-41 분할안 K-46.
 ---
 
 ## R-16. 탭이 탭 바보다 넘칠 때 Zed와 같게 처리한다

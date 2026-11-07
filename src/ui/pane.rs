@@ -258,10 +258,18 @@ pub fn editor_view(editor: &Entity<EditorState>, readonly: bool, bordered: bool,
                 // I-7: pane/tab/divider frames own the boundary, not the input control.
                 .border_0()
                 .rounded_none()
+                // I-15: text no syntax capture covers is `editor.foreground` (not the UI's `text`), as in Zed.
+                .when_some(editor_text_color(cx), |e, color| e.text_color(color))
                 .text_size(super::settings::buffer_size(cx))
                 .line_height(relative(metrics::BUFFER_LINE_HEIGHT_MULTIPLIER))
                 .h_full(),
         )
+}
+
+/// The theme's `editor.foreground` (with the usual fallbacks, `theme::project`); None before a theme is applied.
+fn editor_text_color(cx: &App) -> Option<Hsla> {
+    use gpui_kit::component::ActiveTheme as _;
+    cx.theme().highlight_theme.style.editor_foreground
 }
 
 /// Ctrl+Shift+left press → the same press with Alt+Shift (gpui-base's column selection); anything else → `None`.

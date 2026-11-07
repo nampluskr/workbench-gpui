@@ -205,6 +205,7 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "item.separator_width" = { value = 1, unit = "px", cond = "default", src = "Zed sidebar.rs:2297-2299 border_t_1(둘째 묶음부터 위 1px border), tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
 "item.icon_slot_size" = { value = 16, unit = "px", cond = "default", src = "Zed crates/ui/src/components/ai/thread_item.rs:291 size_4, tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
 "item.icon_gap" = { value = 6, unit = "px", cond = "default", src = "Zed thread_item.rs:461 gap_1p5, tauri SPEC R-21 Zed 확인(2026-11-07)·toml에 없는 값 표, Zed 4304dec732" }
+"item.font_size" = { value = 14, unit = "px", cond = "default", src = "tauri ORDER-10-R1(tauri reports/ORDER-11.md 23행 등록 요청), core-leader [NOTICE] 2026-11-07. 이 레포 V3 이름 잉크 폭 104 = Zed 104(verify/reviews/measure-ORDER-10.md)" }
 
 # ==============================================================================
 # 5. 왼쪽 Dock 및 프로젝트 패널 (Dock & Project Panel)
@@ -632,6 +633,8 @@ src = "specs/v0.5/verify/reviews/measure-ORDER-07.md 1절"
 "code_block.padding" = { value = 12, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
 "code_block.margin_y" = { value = 16, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
 "code_block.corner_radius" = { value = 6, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-109" }
+"code_block.border" = { value = 1, unit = "px", cond = "default", src = "Zed 4304dec732 crates/markdown/src/markdown.rs:272-279 code_block border_widths 1(미리보기 덮어쓰기 355-384는 padding·margin·반경만 바꾸고 테두리는 그대로), tauri reports/ORDER-11.md 9행 1px rgb(54,60,70). L-109의 '테두리 없음'을 정정(core 2026-11-07, spec/ambiguous.md 1절)" }
+"code_block.border_color" = { value = "border_variant", unit = "theme_token", cond = "default", src = "Zed 4304dec732 crates/markdown/src/markdown.rs:279 border_color colors.border_variant, tauri reports/ORDER-11.md 9행 rgb(54,60,70) = border_variant(One Dark)" }
 "frontmatter.border" = { value = 1, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
 "frontmatter.corner_radius" = { value = 4, unit = "px", cond = "default", src = "01-LAYOUT 5절 L-111" }
 "frontmatter.key_cell_font_weight" = { value = 600, unit = "weight", cond = "default", src = "01-LAYOUT 5절 L-111" }

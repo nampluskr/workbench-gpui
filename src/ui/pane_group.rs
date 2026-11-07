@@ -646,11 +646,16 @@ impl<E> PaneGroup<E> {
 impl PaneGroup {
     /// A tab editor whose user edits mark the file dirty and reach the file's other views (`edited`).
     fn new_editor(window: &mut Window, cx: &mut Context<FolderWorkspace>) -> Entity<EditorState> {
+        let extras = super::syntax::EditorExtras::default();
         let editor = cx.new(|cx| {
             let mut state = EditorState::new(window, cx);
             state.set_scrollbar_renderer(Some(Rc::new(editor_scrollbar)));
+            // I-15: the language (set per file by `syntax::set_language`) picks the highlighter through this factory.
+            state.set_highlighter_factory(super::syntax::highlighter_factory(&extras), cx);
             state
         });
+        // I-12, I-15: the path line asks this editor's highlighter for symbols; its language says how it wraps.
+        super::syntax::register_extras(&editor, extras, cx);
         // Only edits emit Change (`set_value` does not), so this tracks edits, not reads.
         // Every cursor move and edit notifies the editor: keep each pane's navigation history up to date (I-10).
         cx.observe(&editor, |ws, _, cx| {
@@ -665,6 +670,14 @@ impl PaneGroup {
         })
         .detach();
         editor
+    }
+
+    /// I-15: gives each shown editor tab the soft wrap its language wants (`syntax::sync_soft_wrap`). Called before each
+    /// frame, where a `Window` is at hand.
+    pub fn sync_soft_wrap(&self, window: &mut Window, cx: &mut App) {
+        for tab in self.panes.values().filter_map(|p| p.active_tab()).filter(|t| t.tool.is_none() && !t.markdown) {
+            super::syntax::sync_soft_wrap(&tab.editor, window, cx);
+        }
     }
 
     /// I-10: tells every pane's navigation history what its active editor tab and cursor are now, and finishes a
@@ -748,7 +761,19 @@ impl PaneGroup {
     pub fn fill(&self, path: &Path, text: &str, window: &mut Window, cx: &mut App) {
         let views: Vec<Entity<EditorState>> = self.views(path).cloned().collect();
         for v in views {
+            super::syntax::set_language(&v, path, text, cx);
             v.update(cx, |e, cx| e.set_value(text, window, cx));
+        }
+    }
+
+    /// I-15: a rename can change a file's language; selects it again for every file tab. A path the name does not
+    /// decide needs the first line of the text.
+    pub fn refresh_languages(&self, cx: &mut App) {
+        let tabs: Vec<_> = self.panes.values().flat_map(|p| p.tabs.iter())
+            .filter(|t| t.tool.is_none() && !t.markdown).map(|t| (t.path.clone(), t.editor.clone())).collect();
+        for (path, editor) in tabs {
+            let text = if super::syntax::language_id(&path, "").is_empty() { editor.read(cx).value() } else { SharedString::default() };
+            super::syntax::set_language(&editor, &path, &text, cx);
         }
     }
 
@@ -757,7 +782,11 @@ impl PaneGroup {
     /// pane shows gets a copy of that view's text.
     pub fn open(&mut self, path: &Path, preview: bool, window: &mut Window, cx: &mut Context<FolderWorkspace>) -> (usize, bool) {
         let pane = self.active;
-        let Some(o) = self.open_in(pane, path, preview, || Self::new_editor(window, cx)) else { return (0, false) };
+        let Some(o) = self.open_in(pane, path, preview, || {
+            let editor = Self::new_editor(window, cx);
+            super::syntax::set_language(&editor, path, "", cx);
+            editor
+        }) else { return (0, false) };
         if !o.created {
             return (o.ix, false);
         }
@@ -765,6 +794,7 @@ impl PaneGroup {
             // The new view is the editor just placed at `o.ix`; its text comes from any other view (P4-3-R1).
             let new = self.panes[&pane].tabs[o.ix].editor.clone();
             if let Some(text) = copy_source(self.views(path), &new).map(|src| src.read(cx).value()) {
+                super::syntax::set_language(&new, path, &text, cx);
                 new.update(cx, |e, cx| e.set_value(text, window, cx));
             }
             return (o.ix, true);
@@ -806,8 +836,10 @@ impl PaneGroup {
 
     /// A new editor with the text of tab `ix` of pane `from` (the copy of a Ctrl-drag, I-718).
     pub fn clone_view(&self, from: PaneId, ix: usize, window: &mut Window, cx: &mut Context<FolderWorkspace>) -> Option<Entity<EditorState>> {
-        let text = self.panes.get(&from)?.tabs.get(ix)?.editor.read(cx).value();
+        let tab = self.panes.get(&from)?.tabs.get(ix)?;
+        let (text, path) = (tab.editor.read(cx).value(), tab.path.clone());
         let editor = Self::new_editor(window, cx);
+        super::syntax::set_language(&editor, &path, &text, cx);
         editor.update(cx, |e, cx| e.set_value(text, window, cx));
         Some(editor)
     }
@@ -818,6 +850,7 @@ impl PaneGroup {
         let id = self.split(dir, mode, |tab| {
             let text = tab.editor.read(cx).value();
             let editor = Self::new_editor(window, cx);
+            super::syntax::set_language(&editor, &tab.path, &text, cx);
             editor.update(cx, |e, cx| e.set_value(text, window, cx));
             editor
         });

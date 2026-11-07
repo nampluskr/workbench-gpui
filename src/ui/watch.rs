@@ -459,6 +459,7 @@ impl Workbench {
                     ws.tree.follow_rename(from, to);
                     reread.extend(ws.group.rename_path(from, to));
                 }
+                ws.group.refresh_languages(cx);
                 ws.tree.refresh(cx);
                 reread
             });

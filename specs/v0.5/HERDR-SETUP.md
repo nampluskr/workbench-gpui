@@ -24,7 +24,7 @@
 |---|---|---|---|
 | `gpui-leader` | 카드 지시, 판정, 커밋, core-leader와 화면 차례 조율(core D-4). 코드·문서는 쓰지 않는다 | Claude Code Opus 5.5 (기존 세션) | 상시 |
 | `gpui-writer` | v0.5 문서(INTENT·DECISIONS·SPEC·PLAN·HERDR-SETUP)와 PROGRESS | Claude Code Opus 5.5 medium | 문서 단계와 Phase 끝 |
-| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium (2026-11-07 12:14~14:05, 15:52~19:27 Claude Code Sonnet 5.5 high, 2.1) | 구현 Phase 동안 |
+| `gpui-coder` | 구현 전부(UI·코어를 나누지 않는다) | Codex gpt-6.1-sol medium (2026-11-07 12:14~14:05, 15:52~19:27, 23:15~ Claude Code Sonnet 5.5 high, 2.1) | 구현 Phase 동안 |
 | `gpui-checker` | 카드 리뷰(정확성, 카드 검증 수준만큼 빌드·테스트), 화면 검증(V2·V3)과 측정. src는 고치지 않는다 | agy gemini-3.8-flash-high | 리뷰·검증 카드가 있을 때 |
 
 - herdr 에이전트 이름은 세션 안에서 유일해야 하므로 `gpui-` 접두사를 붙인다(`herdr agent rename`).
@@ -70,6 +70,8 @@ agy --model gemini-3.8-flash-high --settings D:\projects\workbench-gpui\.agents\
   - 2026-11-07 15:52: K-25 완료 직후 카드 경계에서 `gpui-coder`를 Codex GPT-6.1-Sol medium에서 Claude Code Sonnet 5.5 high로 다시 바꿨다. 사유: Codex 5시간 한도 5% 미만(D-16, leader W-35). 이름 그대로.
   - 되돌리기: 한도 초기화 뒤 카드 경계에서 leader가 따로 알린다. 되돌린 시각: 2026-11-07 19:27(아래 줄).
   - 2026-11-07 19:27: K-35 완료 뒤 카드 경계에서 `gpui-coder`를 Claude Code Sonnet 5.5 high에서 Codex GPT-6.1-Sol medium으로 되돌렸다(core [DECISION] 사용자 지시). 옛 pane `wD:pE`가 Claude 종료 뒤 응답하지 않아 닫았고(탭 t5도 함께 닫힘), 새 탭 `code`(`wD:t7`)의 pane `wD:pH`에 Codex를 띄워 이름 `gpui-coder`를 붙였다. Codex는 처음 GPT-6.1 Terra high로 떠서 `/model` → GPT-6.1-Sol → Medium → s(세션)로 맞췄다(leader W-43).
+  - 2026-11-07 23:15: K-42A 완료 뒤 카드 경계에서 `gpui-coder`를 Codex GPT-6.1-Sol medium(5시간 한도 11% 남음)에서 Claude Code Sonnet 5.5 high(`claude --model sonnet --effort high`)로 바꿨다(core-leader [NOTICE] 사용자 지시, D-16). 같은 pane `wD:pH`, 이름 그대로. `/model`로 Sonnet 5.5·High effort 확인(leader W-50).
+  - 되돌리기: Codex 한도 초기화 뒤 사용자·core 지시가 있을 때. 되돌린 시각: 미정.
 - coder는 컨텍스트를 비운(`/clear`) 뒤에는 `/model`로 Sol medium을 다시 고른다. `/clear` 뒤 기본값(GPT-6.1 Terra high)으로 돌아가 K-02가 Terra high로 실행된 일이 있다(leader 2026-11-07, W-10).
 - leader의 effort는 high다(v0.4와 같음, leader 2026-11-06 W-03). core D-2는 "Claude Code Opus 5.5 (기존 세션)"이라고만 적었다.
 - Git Bash에서 `/model`처럼 `/`로 시작하는 문자열을 herdr로 보낼 때는 `MSYS_NO_PATHCONV=1`을 붙인다(ORDER-01 3.3, v0.3 H-3).

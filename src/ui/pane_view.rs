@@ -331,12 +331,18 @@ impl Workbench {
                         this.open_markdown_preview(side, window, cx)
                     }))
                 });
-                // Each pane reads its own active tab's cursor (a split shows two different heading trails).
-                let headings = if markdown {
+                // Each pane reads its own active tab's cursor (a split shows two different trails). Markdown: the heading
+                // trail from a line scan (K-34; the outline query differs at heading boundaries, K-45 report); code: the
+                // symbols around the cursor from the syntax outline (I-12).
+                let title = cx.try_global::<super::theme::BreadcrumbColors>().and_then(|c| c.title);
+                let trail: Vec<super::breadcrumb::Crumb> = {
                     let editor = t.editor.read(cx);
-                    super::breadcrumb::heading_trail(&editor.value(), editor.cursor())
-                } else {
-                    Vec::new()
+                    if markdown {
+                        super::breadcrumb::heading_trail(&editor.value(), editor.cursor())
+                            .into_iter().map(|heading| super::breadcrumb::Crumb::colored(heading, title)).collect()
+                    } else {
+                        super::syntax::symbols_at(&t.editor, editor.cursor(), cx).into_iter().map(Into::into).collect()
+                    }
                 };
                 let path = self.folders.active_folder().map_or_else(
                     || t.path.display().to_string(),
@@ -345,7 +351,7 @@ impl Workbench {
                         super::breadcrumb::path_text(Path::new(&f.path), &crate::state::path::folder_name(&f.path), &t.path, several)
                     },
                 );
-                let crumbs = super::breadcrumb::segments(path, headings).into_iter().map(Into::into).collect();
+                let crumbs = super::breadcrumb::segments(super::breadcrumb::Crumb::plain(path), trail);
                 v_flex()
                     .size_full()
                     .child(layout::editor_toolbar(crumbs, on_preview, cx))

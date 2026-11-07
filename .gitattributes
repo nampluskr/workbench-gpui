@@ -1,3 +1,5 @@
 # R-9 줄 끝·인코딩 증거: 바이트 그대로 저장한다 (core.autocrlf 의 LF/CRLF 변환을 막는다).
 specs/v0.1/verify/phase2/r9/in-* -text
 specs/v0.1/verify/phase2/r9/out-* -text
+# Vendored tree-sitter grammar sources: keep bytes as upstream so SOURCE.md SHA256s hold on checkout.
+vendor/tree-sitter-*/** -text

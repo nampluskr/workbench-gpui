@@ -12,6 +12,7 @@
 |---|---|---|---|---|
 | `L-40` | 프로젝트 패널 파일·폴더 아이콘 크기 | Medium 16으로 보이지만, 소스 코드에서 크기를 별도로 명시하는지 미확인 (추정). | `01-LAYOUT.md` 4.3절, 9절 | 실제 렌더 아이콘 크기 측정 또는 소스 스타일 확인 필요 |
 | `L-104` | 마크다운 미리보기 제목 여백 | h1~h6 제목의 위 여백 24px, 아래 여백 12px가 최종 덮어쓰기 순서 기준 추정값임 (01-LAYOUT 5절·9절에서 최종 덮어쓰기 순서 기준 추정값으로 명시되어 toml에서 제외하고 ambiguous에 보존함). | `01-LAYOUT.md` 5절, 9절 | 마크다운 CSS/스타일 체인 최종 여백 렌더 확인 필요 |
+| `L-109` | 마크다운 미리보기 코드 블록 테두리 | L-109의 '테두리 없음'은 Zed 4304dec markdown.rs 272~279와 다름 — 테두리 border_variant 1px(core 정정 2026-11-07). 기본 `code_block` 스타일에 `border_widths` 1·`border_color` `border_variant`가 있고, 미리보기 덮어쓰기(markdown.rs 355~384)는 padding 12·margin 16·반경 6만 바꾼다. 미리보기 뷰의 `CodeBlockRenderer::Default { border: false }`(markdown_preview_view.rs 1124)는 렌더러가 덧붙이는 `border_1`(markdown.rs 2888~2894)만 끄는 것이라 스타일의 테두리는 남는다. checker C-41 보고의 "border: false(테두리 없음)"도 이 구분을 놓쳤다. | `01-LAYOUT.md` 5절 | 해소: toml `markdown_preview` `code_block.border` 1·`code_block.border_color` `border_variant`(W-51) |
 | `L-140` | `unstable.ui_density` 설정 키 | UI 밀도 설정 키 이름과 공개 여부가 `default.json`에서 확인되지 않음. | `01-LAYOUT.md` 8절, 9절 | gpui-kit 테마 밀도 설정 키 확인 필요 |
 | `L-152` | 기준 화면 사이드바 폭 관찰값 (200px) | Zed 기본값은 300px(하한 200px)이나, 두 기준 화면 모두 200px임 (사용자 조정값 추정). | `01-LAYOUT.md` 4.2절, 7절, 9절 | 초기 기본값은 300px로 하고, 200px는 사용자 조정값으로 분류 (스펙 toml에는 기본값 300 반영) |
 | `L-153` | 기준 화면 프로젝트 패널 폭 (284px / 215px) | Zed 기본값은 240px이나, Mocha 화면 약 284px, Latte 화면 약 215px로 다름 (사용자 조정값). | `01-LAYOUT.md` 4.3절, 7절, 9절 | 초기 기본값은 240px로 하고, 화면 관찰값은 사용자 조정값으로 분류 (스펙 toml에는 기본값 240 반영) |

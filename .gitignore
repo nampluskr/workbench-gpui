@@ -7,7 +7,11 @@ specs/v0.3/verify/**/appdata/
 specs/v0.5/verify/reviews/_measure-*-backup/
 specs/v0.5/verify/reviews/*/session-backup/
 resources/zed-icon-themes/
+resources/zed-languages/
 # measurement scratch: dry-runs copy other repos' files, generated fixtures, a capture of a foreign window
 specs/v0.5/verify/reviews/measure-*-dryrun*/
 specs/v0.5/verify/reviews/**/*-5digit-fixture.md
 specs/v0.5/verify/reviews/measure-ORDER-09-run4/app-step5-nav-step10-mouseback.png
+# ORDER-11 runs 2-3: a foreign overlay window shows in every full capture; keep only the clean breadcrumb crops
+specs/v0.5/verify/reviews/measure-ORDER-11-run[23]-*/*.png
+!specs/v0.5/verify/reviews/measure-ORDER-11-run2-step5/*-toolbar.png

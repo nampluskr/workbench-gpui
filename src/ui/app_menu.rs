@@ -264,8 +264,35 @@ fn help_url(action: &str) -> Option<&'static str> {
 }
 
 const LICENSES: &[(&str, &str)] = &[
+    ("tree-sitter 0.28.0 (803c6eba) — MIT", include_str!("../../resources/licenses/tree-sitter/LICENSE")),
+    ("tree-sitter-language 0.1.8 (803c6eba) — MIT", include_str!("../../resources/licenses/tree-sitter-language/LICENSE")),
+    ("tree-sitter-bash 0.25.1 — MIT", include_str!("../../resources/licenses/tree-sitter-bash/LICENSE")),
+    ("tree-sitter-diff 0.1.0 — MIT", include_str!("../../resources/licenses/tree-sitter-diff/LICENSE")),
+    ("tree-sitter-gitcommit 0.0.1 (88309716) — MIT", include_str!("../../resources/licenses/tree-sitter-gitcommit/LICENSE")),
+    ("tree-sitter-go 0.25.0 (6862a49e) — MIT", include_str!("../../resources/licenses/tree-sitter-go/LICENSE")),
+    ("tree-sitter-gomod 1.1.1 (2e886870) — MIT", include_str!("../../resources/licenses/tree-sitter-gomod/LICENSE")),
+    ("tree-sitter-gowork 0.0.1 (acb0617b) — MIT", include_str!("../../resources/licenses/tree-sitter-gowork/LICENSE")),
+    ("tree-sitter-html (bfa075d8, vendored C sources) — MIT", include_str!("../../resources/licenses/tree-sitter-html/LICENSE")),
+    ("tree-sitter-python 0.25.0 — MIT", include_str!("../../resources/licenses/tree-sitter-python/LICENSE")),
+    ("tree-sitter-typescript 0.23.2 (e2c53597) — MIT", include_str!("../../resources/licenses/tree-sitter-typescript/LICENSE")),
+    ("tree-sitter-yaml 0.6.1 (baff0b51) — MIT", include_str!("../../resources/licenses/tree-sitter-yaml/LICENSE")),
+    ("tree-sitter-jsdoc 0.23.2 — MIT", include_str!("../../resources/licenses/tree-sitter-jsdoc/LICENSE")),
+    ("tree-sitter-regex 0.24.3 — MIT", include_str!("../../resources/licenses/tree-sitter-regex/LICENSE")),
+    ("tree-sitter-c 0.24.1 — MIT", include_str!("../../resources/licenses/tree-sitter-c/LICENSE")),
+    ("tree-sitter-cpp 0.23.4 (5cb9b693) — MIT", include_str!("../../resources/licenses/tree-sitter-cpp/LICENSE")),
+    ("tree-sitter-css 0.23.2 — MIT", include_str!("../../resources/licenses/tree-sitter-css/LICENSE")),
+    ("tree-sitter-rust 0.24.2 — MIT", include_str!("../../resources/licenses/tree-sitter-rust/LICENSE")),
+    ("tree-sitter-json 0.24.8 — MIT", include_str!("../../resources/licenses/tree-sitter-json/LICENSE")),
+    ("tree-sitter-md 0.3.2 (b596e737) — MIT", include_str!("../../resources/licenses/tree-sitter-md/LICENSE")),
+    ("tree-sitter-toml (342d9be2, vendored C sources) — MIT", include_str!("../../resources/licenses/tree-sitter-toml/LICENSE")),
+    ("tree-sitter-git-config (3a61756a, vendored C sources) — MIT", include_str!("../../resources/licenses/tree-sitter-git-config/LICENSE")),
+    ("tree-sitter-gitignore (f4685bf1, vendored C sources) — MIT", include_str!("../../resources/licenses/tree-sitter-gitignore/LICENSE")),
+    ("tree-sitter-git-rebase 0.1.0 (39bf3b75) — MIT", include_str!("../../resources/licenses/tree-sitter-git-rebase/LICENSE")),
+    ("tree-sitter-gitattributes 0.2.0 (1b7af09d) — MIT", include_str!("../../resources/licenses/tree-sitter-gitattributes/LICENSE")),
     ("ignore 0.4.34 — MIT OR Unlicense", concat!(include_str!("../../resources/licenses/ignore/LICENSE-MIT"), "\n", include_str!("../../resources/licenses/ignore/UNLICENSE"))),
     ("regex 1.13.1 — MIT OR Apache-2.0", concat!(include_str!("../../resources/licenses/regex/LICENSE-MIT"), "\n", include_str!("../../resources/licenses/regex/LICENSE-APACHE"))),
+    ("Zed TOML extension 1.1.0 (8e18e504, queries) — Apache-2.0", include_str!("../../resources/licenses/zed-extension-toml/LICENSE")),
+    ("Git Firefly extension 0.1.9 (c63c6c02, queries) — Apache-2.0", include_str!("../../resources/licenses/git-firefly/LICENSE")),
     ("IBM Plex Sans", include_str!("../../resources/fonts/ibm-plex-sans/license.txt")),
     ("Lilex", include_str!("../../resources/fonts/lilex/OFL.txt")),
     ("Zed icons — Lucide", include_str!("../../resources/zed-icons/LICENSES")),
@@ -1138,7 +1165,12 @@ mod tests {
         assert_eq!(super::help_url("help::RequestFeature"), super::help_url("help::FileBugReport"));
         assert_eq!(super::help_url("help::Repository"), Some("https://github.com/nampluskr/workbench-gpui"));
         assert_eq!(super::help_url("workspace::Save"), None);
-        assert_eq!(super::LICENSES.len(), 8);
+        // The 10 other entries (K-48: the TOML and Git Firefly extensions, Apache-2.0) plus one per tree-sitter crate / grammar (core, language, 17 grammars incl. vendored
+        // HTML; K-42A..K-43C), each with a non-empty MIT text.
+        let (grammars, others): (Vec<_>, Vec<_>) = super::LICENSES.iter().partition(|(name, _)| name.starts_with("tree-sitter"));
+        assert_eq!(others.len(), 10);
+        assert_eq!(grammars.len(), 25);
+        assert!(grammars.iter().all(|(name, text)| name.ends_with("MIT") && text.contains("Permission is hereby granted")), "a grammar license is not MIT text");
         for (name, files) in [
             ("ignore 0.4.34", ["ignore/LICENSE-MIT", "ignore/UNLICENSE"]),
             ("regex 1.13.1", ["regex/LICENSE-MIT", "regex/LICENSE-APACHE"]),
@@ -1149,7 +1181,8 @@ mod tests {
                 assert!(std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/licenses").join(file).is_file(), "missing {file}");
             }
         }
-        assert!(super::LICENSES.iter().all(|(_, text)| text.contains("License") || text.contains("LICENSE")));
+        // Some upstream MIT files (tree-sitter-yaml) have no title line and start at the copyright notice.
+        assert!(super::LICENSES.iter().all(|(_, text)| text.contains("License") || text.contains("LICENSE") || text.contains("Permission is hereby granted")));
         assert_eq!(super::PANEL_LAYOUTS, ["Classic"]);
         assert_eq!(super::EDITOR_LAYOUT, [("Split Up", "pane::SplitUp"), ("Split Down", "pane::SplitDown"), ("Split Left", "pane::SplitLeft"), ("Split Right", "pane::SplitRight")]);
         assert_eq!(super::USER_ITEMS.iter().map(|(name, _)| *name).collect::<Vec<_>>(), ["Settings", "Keymap", "Themes…", "Icon Themes…", "Extensions"]);

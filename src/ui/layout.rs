@@ -644,15 +644,14 @@ const BREADCRUMB_GAP: Rems = rems_from_px(4.);
 /// Markdown, the preview button (`Eye`, Small, tooltip "Preview Markdown" with its key and the meta line, E-038, E-039).
 /// Buffer Search and Selection Controls are not built yet.
 // shortcut: takes the editor background for `toolbar_background`. Colours: the path is `Muted`, the `›` is the theme's
-// `text.placeholder` and a heading is its syntax `title` colour (`theme::BreadcrumbColors`, muted when the theme has none).
-pub fn editor_toolbar(segments: Vec<SharedString>, on_preview: Option<CloseHandler>, cx: &App) -> impl IntoElement {
+// `text.placeholder` (`theme::BreadcrumbColors`); a heading's `title` colour and a symbol's syntax colours arrive in the segments.
+pub fn editor_toolbar(segments: Vec<super::breadcrumb::Crumb>, on_preview: Option<CloseHandler>, cx: &App) -> impl IntoElement {
     const SEGMENT_PROBES: [&str; 7] =
         ["breadcrumb-path", "", "breadcrumb-seg-01", "", "breadcrumb-seg-02", "", "breadcrumb-seg-03"];
     let theme = cx.theme();
     let muted = theme.muted_foreground;
     let colors = cx.try_global::<super::theme::BreadcrumbColors>().copied();
     let separator = colors.and_then(|c| c.separator).unwrap_or(muted);
-    let title = colors.and_then(|c| c.title).unwrap_or(muted);
     let mut crumbs = h_flex()
         .on_children_prepainted(probe(&SEGMENT_PROBES))
         .flex_none()
@@ -666,8 +665,12 @@ pub fn editor_toolbar(segments: Vec<SharedString>, on_preview: Option<CloseHandl
         if i > 0 {
             crumbs = crumbs.child(div().text_color(separator).child("›"));
         }
-        // Segment 0 is the path (muted); the rest are headings.
-        crumbs = crumbs.child(div().whitespace_nowrap().font(super::fonts::editor()).when(i > 0, |d| d.text_color(title)).child(segment));
+        // Every segment is muted (Zed `render_breadcrumb_text`); a segment's highlight runs (symbol syntax colours, a
+        // heading's `title` colour) go over that. Zed shows a line break inside a segment as a space.
+        let text: SharedString = segment.text.replace('\n', " ").into();
+        crumbs = crumbs.child(
+            div().whitespace_nowrap().font(super::fonts::editor()).child(StyledText::new(text).with_highlights(segment.runs)),
+        );
     }
     let preview = on_preview.map(|on_preview| {
         let mut tip = Spec::one("toolbar-btn-preview", Line::action("Preview Markdown", "markdown::OpenPreview"));

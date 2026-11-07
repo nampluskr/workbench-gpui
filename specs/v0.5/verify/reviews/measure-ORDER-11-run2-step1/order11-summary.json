@@ -1,0 +1,64 @@
+{
+  "app": {},
+  "crops": {
+    "step1-rs": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step1\\app-step1-rs-editor.png",
+    "step1-json": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step1\\app-step1-json-editor.png",
+    "step1-md": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step1\\app-step1-md-editor.png"
+  },
+  "captures": {
+    "step1-rs": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step1\\app-step1-rs.png",
+    "step1-json": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step1\\app-step1-json.png",
+    "step1-md": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step1\\app-step1-md.png"
+  },
+  "hashes": {
+    "step1-rs-cap": "D195EEEE718004D3D327ABF81CE0BB4C0C499909A30C79282CFAEE5177014371",
+    "step1-rs-crop": "7777B170DC59AACE52F64A748ADCEF482B7BFD08798BB37A138D999C7E46DDE7",
+    "step1-json-cap": "F6BFC5F089F40EAB57A01972F19DF7B359865EF0D5697974C33BBA2111F70612",
+    "step1-json-crop": "C053AA32AE2A3B5A8AFC7F537DE778CE9403288C645EA7BA0DA8197DE126FD34",
+    "step1-md-cap": "F6DA4F29FA583755E449F15A3DC5D4DFFAD3FE84CAB086D7F76FEE228AD5D081",
+    "step1-md-crop": "D2259F7BAC3C931F63ECB65437BBEDC4BB89BBA49EDE950104EBC622D94EC7E7"
+  },
+  "dump": {
+    "step1-rs": {
+      "active_tab": "sample.rs",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step1-json": {
+      "active_tab": "sample.json",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step1-md": {
+      "active_tab": "sample.md",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    }
+  },
+  "tauri_refs": {
+    "step1-rs": {
+      "ref_file": "zed-rs.png",
+      "exists": true,
+      "hash": "719AEEE8F1A2A3E03E335076E1D049199E7565A1E794350D5BD7EB45B965AC59"
+    },
+    "step1-json": {
+      "ref_file": "zed-json.png",
+      "exists": true,
+      "hash": "AABF846967E793360BBC3D25048E69E3513F0C5AE12881C2377AEBD521E7CFA2"
+    },
+    "step1-md": {
+      "ref_file": "zed-md.png",
+      "exists": true,
+      "hash": "52A3D71D3408CB25BBBF5055E8CB27D90490273355189C3BB49D11BCD0AC8138"
+    }
+  },
+  "results": {
+    "setup": "PASS - Syntax fixture folder loaded into workspace",
+    "step1-rs": "캡처 OK (탭=sample.rs, 커서=1:1, ref=zed-rs.png, ref존재=True)",
+    "step1-json": "캡처 OK (탭=sample.json, 커서=1:1, ref=zed-json.png, ref존재=True)",
+    "step1-md": "캡처 OK (탭=sample.md, 커서=1:1, ref=zed-md.png, ref존재=True)"
+  }
+}

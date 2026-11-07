@@ -40,7 +40,12 @@ const CELL_PADDING_Y: Pixels = px(4.);
 /// `code_block.padding`, `margin_y`, `corner_radius` (L-109).
 const CODE_PADDING: Pixels = px(12.);
 const CODE_MARGIN_Y: Pixels = px(16.);
+/// The text view adds `paragraph_gap` under every block but the last. Zed measures 16 between two code blocks (V3), not
+/// margin + gap + margin (48), so a code block keeps `code_block.margin_y` above and takes the gap back below.
+const CODE_MARGIN_BOTTOM: Pixels = px(-PARAGRAPH_GAP);
 const CODE_RADIUS: Pixels = px(6.);
+/// `code_block.border` (the colour is `code_block.border_color`, `theme::CodeBlockBorder`).
+const CODE_BORDER: Pixels = px(1.);
 /// `frontmatter.corner_radius` (L-111).
 const FRONTMATTER_RADIUS: Pixels = px(4.);
 /// `inline_code.background_opacity` (L-109).
@@ -156,6 +161,8 @@ fn heading_style(level: u8) -> StyleRefinement {
 
 pub fn body(pane: PaneId, text: SharedString, editor: Entity<gpui_kit::component::input::EditorState>, cx: &App) -> impl IntoElement {
     let theme = cx.theme();
+    // K-46: `code_block.border_color` is `border.variant`; a theme without it keeps the general border.
+    let code_border = cx.try_global::<super::theme::CodeBlockBorder>().and_then(|b| b.0).unwrap_or(theme.border);
     let side = |s: StyleRefinement| s.border_t(TABLE_BORDER).border_b(TABLE_BORDER).border_l(TABLE_BORDER).border_r(TABLE_BORDER);
     let style = TextViewStyle::default()
         .with_foreground(theme.foreground)
@@ -170,7 +177,10 @@ pub fn body(pane: PaneId, text: SharedString, editor: Entity<gpui_kit::component
         .with_code_block(StyleRefinement::default().font(super::fonts::editor())
             .text_size(super::metrics::PREVIEW_CODE_FONT_SIZE)
             .line_height(relative(super::metrics::PREVIEW_CODE_LINE_HEIGHT_MULTIPLIER))
-            .p(CODE_PADDING).my(CODE_MARGIN_Y).rounded(CODE_RADIUS))
+            .p(CODE_PADDING).mt(CODE_MARGIN_Y).mb(CODE_MARGIN_BOTTOM).rounded(CODE_RADIUS)
+            // K-46-R1: Zed paints a preview code block with the editor background.
+            .bg(theme.background)
+            .border_t(CODE_BORDER).border_b(CODE_BORDER).border_l(CODE_BORDER).border_r(CODE_BORDER).border_color(code_border))
         .with_inline_code(HighlightStyle { background_color: Some(theme.foreground.opacity(INLINE_CODE_OPACITY)), ..Default::default() })
         .with_table(side(StyleRefinement::default()).border_color(theme.border).rounded(TABLE_RADIUS))
         .with_table_head(StyleRefinement::default().font_weight(FontWeight::SEMIBOLD).bg(theme.title_bar))
@@ -193,6 +203,7 @@ pub fn body(pane: PaneId, text: SharedString, editor: Entity<gpui_kit::component
         .child(
             div().mx_auto().max_w(MAX_WIDTH).child(with_frontmatter(
                 TextView::markdown(("markdown-text", pane as usize), text)
+                    .shared_code_block_highlighter(super::syntax::code_block_highlighter())
                     .style(style)
                     .blockquote_style(quote)
                     .markdown_extensions(MarkdownExtensions::default().frontmatter())
@@ -285,7 +296,7 @@ mod tests {
             assert_eq!(super::heading_style(level).text.font_weight, Some(gpui_kit::FontWeight::SEMIBOLD));
         }
     }
-    use super::{Frontmatter, classify, BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
+    use super::{Frontmatter, classify, BODY_FONT_SIZE, BODY_LINE_HEIGHT, CELL_PADDING_X, CELL_PADDING_Y, CODE_BORDER, CODE_MARGIN_BOTTOM, CODE_MARGIN_Y, CODE_PADDING, CODE_RADIUS, CONTAINER_PADDING, FRONTMATTER_RADIUS, HEADING_SIZES, INLINE_CODE_OPACITY, MAX_WIDTH, PARAGRAPH_GAP, QUOTE_BORDER_LEFT, QUOTE_PADDING_LEFT, TABLE_BORDER, TABLE_RADIUS, file_name, frontmatter_body, frontmatter_rows, preview_title};
     use crate::ui::metrics::spec::assert_spec;
     use std::path::Path;
 
@@ -310,7 +321,11 @@ mod tests {
         s("table.cell_padding_y", px(CELL_PADDING_Y));
         s("code_block.padding", px(CODE_PADDING));
         s("code_block.margin_y", px(CODE_MARGIN_Y));
+        // K-46-R1: two code blocks in a row are `margin_y` apart (V3 Zed: 16), however the gap and margins add up.
+        s("code_block.margin_y", px(CODE_MARGIN_BOTTOM) + PARAGRAPH_GAP + px(CODE_MARGIN_Y));
+        assert_eq!(f32::from(CODE_MARGIN_BOTTOM), -PARAGRAPH_GAP, "the bottom margin takes the paragraph gap back");
         s("code_block.corner_radius", px(CODE_RADIUS));
+        s("code_block.border", px(CODE_BORDER));
         // A ratio held as f32 against the spec's f64: the helper has no tolerance for ratios.
         let opacity = crate::ui::metrics::spec::lookup("markdown_preview[\"inline_code.background_opacity\"]").unwrap().value;
         assert!((opacity - f64::from(INLINE_CODE_OPACITY)).abs() < 1e-6);

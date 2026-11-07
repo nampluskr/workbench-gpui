@@ -32,6 +32,7 @@ mod project_panel;
 mod rem;
 mod settings;
 mod status;
+mod syntax;
 mod project_search;
 mod search_view;
 mod shell;
@@ -473,6 +474,8 @@ impl Render for Workbench {
         // I-10: a tab switch has no editor event, so each pane reports what it shows before the frame is built.
         if let Some(ws) = self.active_ws() {
             ws.update(cx, |ws, cx| ws.group.nav_sync(cx));
+            // I-15: the editors shown get the soft wrap their language wants (the editor crate asks for a Window).
+            ws.update(cx, |ws, cx| ws.group.sync_soft_wrap(window, cx));
         }
         // dev: 포커스 자리나 창 활성 상태가 바뀌면 낸다(키 판정에서 포커스가 어디로 갔는지 추적).
         if crate::ui::keymap::dev_flag() {
@@ -720,6 +723,7 @@ pub fn run(dev: DevOptions) {
             fonts::init(cx);
             theme::init(cx);
             settings::init(cx);
+            syntax::init();
             keymap::init(dev.keymap, cx);
             let glyph_font = title_bar::glyph_font(cx);
             let poc_options = dev.editor_poc.then(|| dev.clone());

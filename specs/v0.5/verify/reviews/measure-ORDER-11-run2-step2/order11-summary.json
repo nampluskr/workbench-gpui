@@ -1,0 +1,80 @@
+{
+  "app": {},
+  "crops": {
+    "step2-c": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-c-editor.png",
+    "step2-cpp": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-cpp-editor.png",
+    "step2-css": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-css-editor.png",
+    "step2-html": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-html-editor.png"
+  },
+  "captures": {
+    "step2-c": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-c.png",
+    "step2-cpp": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-cpp.png",
+    "step2-css": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-css.png",
+    "step2-html": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step2\\app-step2-html.png"
+  },
+  "hashes": {
+    "step2-c-cap": "5F381EB26B00EEFCC37A2401850FEB956365F3856E7D6C9E79D4DEAC7CE531AD",
+    "step2-c-crop": "8F5444920D74571D63612D66593B0B287A0F960AAF9E0613B53226D05E8AED17",
+    "step2-cpp-cap": "11FE48124E8A2C71C4636D84A0AD8026E93632413D0456FDE180FECAD1C39829",
+    "step2-cpp-crop": "49BA8847AA658E98116F6F77D997C475F72A873658309451247268156FD6164F",
+    "step2-css-cap": "8A38269069311406DF86D966062C85985BB43EF46BDA1F89215C6790106377EC",
+    "step2-css-crop": "A115DF7E6C35D55A3E4357C204F3C7AFDB347EF988FB3BAD024CDEF9698D2679",
+    "step2-html-cap": "33A0231BBACD3FF7E8F19B2CCADB7403EFFB22317AE36643EAF89982C6588B17",
+    "step2-html-crop": "71E3151808439A73C65223C0E523AC4A372A80D89156B7D9F0482A4160D3416E"
+  },
+  "dump": {
+    "step2-c": {
+      "active_tab": "sample.c",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step2-cpp": {
+      "active_tab": "sample.cpp",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step2-css": {
+      "active_tab": "sample.css",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    },
+    "step2-html": {
+      "active_tab": "sample.html",
+      "active_type": "normal",
+      "cursor_line": "1:1",
+      "mode": "EditorArea"
+    }
+  },
+  "tauri_refs": {
+    "step2-c": {
+      "ref_file": "zed-c.png",
+      "exists": true,
+      "hash": "35430FE208DD63A26EE0FC222D130C925A9D306369F5A6E1E1C7D1BB1699526C"
+    },
+    "step2-cpp": {
+      "ref_file": "zed-cpp.png",
+      "exists": true,
+      "hash": "16A514C79B9D4A6C345D97DBFCB598155C3FF2F0489666DB0DAA3398FEC3D6B7"
+    },
+    "step2-css": {
+      "ref_file": "zed-css.png",
+      "exists": true,
+      "hash": "A301773D2F6DBF8C3C78BF505307025EADCD672F62236D55B0F3CA2923DAF4A6"
+    },
+    "step2-html": {
+      "ref_file": "zed-html.png",
+      "exists": true,
+      "hash": "032A2CBBAE8CD5598161D647565D2373842DDE6474FF7D38B9ED0BEFE0EFF2CB"
+    }
+  },
+  "results": {
+    "setup": "PASS - Syntax fixture folder loaded into workspace",
+    "step2-c": "캡처 OK (탭=sample.c, 커서=1:1, ref=zed-c.png, ref존재=True)",
+    "step2-cpp": "캡처 OK (탭=sample.cpp, 커서=1:1, ref=zed-cpp.png, ref존재=True)",
+    "step2-css": "캡처 OK (탭=sample.css, 커서=1:1, ref=zed-css.png, ref존재=True)",
+    "step2-html": "캡처 OK (탭=sample.html, 커서=1:1, ref=zed-html.png, ref존재=True)"
+  }
+}

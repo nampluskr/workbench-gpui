@@ -1,0 +1,64 @@
+{
+  "app": {},
+  "crops": {
+    "step5-rs-sym": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step5\\app-step5-rs-sym-toolbar.png",
+    "step5-py-sym": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step5\\app-step5-py-sym-toolbar.png",
+    "step5-ts-sym": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step5\\app-step5-ts-sym-toolbar.png"
+  },
+  "captures": {
+    "step5-rs-sym": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step5\\app-step5-rs-sym.png",
+    "step5-py-sym": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step5\\app-step5-py-sym.png",
+    "step5-ts-sym": "D:\\projects\\workbench-gpui\\specs\\v0.5\\verify\\reviews\\measure-ORDER-11-run2-step5\\app-step5-ts-sym.png"
+  },
+  "hashes": {
+    "step5-rs-sym-cap": "231BB2D616F1954C48ED2920343ED356350A2D9DF104536D5466B083DF83497A",
+    "step5-rs-sym-crop": "19B6F71D014310D40361B11C3B0EF98C66408FBC1EE4276B75F096F96E85424B",
+    "step5-py-sym-cap": "219727B8EEC897C8792229BBBB9DFB9A91A92522A4F8D361DA08B63EDC9BAF43",
+    "step5-py-sym-crop": "83B1CA7D56B3AA74077C6ECE3349E59E30146AE0D82AB7DDCB48A3FCEA0C250C",
+    "step5-ts-sym-cap": "D5A6DC1ECCBC3D303E38310BF47AEB08F502FF5D6072953A06315C8EAF7E440D",
+    "step5-ts-sym-crop": "9F32BD50D95F7C05352071EA37D30CF1F58B33DE1CE33E9C499A3D13482AD4C0"
+  },
+  "dump": {
+    "step5-rs-sym": {
+      "active_tab": "sample.rs",
+      "active_type": "normal",
+      "cursor_line": "21:1",
+      "mode": "ToolbarSymbol"
+    },
+    "step5-py-sym": {
+      "active_tab": "sample.py",
+      "active_type": "normal",
+      "cursor_line": "21:1",
+      "mode": "ToolbarSymbol"
+    },
+    "step5-ts-sym": {
+      "active_tab": "sample.ts",
+      "active_type": "normal",
+      "cursor_line": "18:1",
+      "mode": "ToolbarSymbol"
+    }
+  },
+  "tauri_refs": {
+    "step5-rs-sym": {
+      "ref_file": "zed-rs-sym.png",
+      "exists": true,
+      "hash": "65553147A7D8FE1CAE6FC2FD206D2146FE659B69C26D27ED7706E6F6AA07F2E8"
+    },
+    "step5-py-sym": {
+      "ref_file": "zed-py-sym.png",
+      "exists": true,
+      "hash": "627EBC0119CF405F373076F024E239727ED8339CF9899D0B527B004C73715255"
+    },
+    "step5-ts-sym": {
+      "ref_file": "zed-ts-sym.png",
+      "exists": true,
+      "hash": "F17CCCF240DBFCD393AFFD12BFD2714805D4BA6A49129D15507A38FE1F0D685B"
+    }
+  },
+  "results": {
+    "setup": "PASS - Syntax fixture folder loaded into workspace",
+    "step5-rs-sym": "캡처 OK (탭=sample.rs, 커서=21:1, ref=zed-rs-sym.png, ref존재=True)",
+    "step5-py-sym": "캡처 OK (탭=sample.py, 커서=21:1, ref=zed-py-sym.png, ref존재=True)",
+    "step5-ts-sym": "캡처 OK (탭=sample.ts, 커서=18:1, ref=zed-ts-sym.png, ref존재=True)"
+  }
+}
