@@ -95,13 +95,16 @@ fn update_text(text: &str, key: &str, value: &Value) -> Result<String, String> {
     Ok(result)
 }
 
-fn save(path: &Path, key: &str, value: Value) -> Result<(Values, Vec<String>), String> {
+fn save(path: &Path, expected: &mut Option<String>, key: &str, value: Value) -> Result<(Values, Vec<String>), String> {
+    let current = super::keymap_editor::read_snapshot(path)?;
+    if &current != expected { return Err("Settings changed on disk. Reopen Settings before saving.".into()); }
     let (_, errors) = values(&json!({key: value.clone()}));
     if !errors.is_empty() { return Err(errors.join("\n")); }
-    let text = update_text(&read_text(path)?, key, &value)?;
+    let text = update_text(current.as_deref().unwrap_or("{}"), key, &value)?;
     let raw = jsonc_parser::parse_to_serde_value::<Value>(&text, &Default::default()).map_err(|e| e.to_string())?;
     let result = values(&raw);
     write(path, &text)?;
+    *expected = Some(text);
     Ok(result)
 }
 
@@ -158,11 +161,11 @@ pub fn is_classic(open: bool, width: Pixels, default: Pixels) -> bool {
 }
 
 // Titles and descriptions: Zed 4304dec7 crates/settings_ui/src/page_data.rs, appearance_page.
-const ROWS: &[(&str, &str, &str)] = &[
-    ("theme", "Theme Name", "The name of your selected theme."),
-    ("icon_theme", "Icon Theme Name", "The name of your selected icon theme."),
-    ("ui_font_size", "Font Size", "Font size for UI elements."),
-    ("buffer_font_size", "Font Size", "Font size for editor text."),
+const ROWS: &[(&str, &str, &str, &str)] = &[
+    ("theme", "Theme Name", "The name of your selected theme.", "Theme"),
+    ("icon_theme", "Icon Theme Name", "The name of your selected icon theme.", "Theme"),
+    ("buffer_font_size", "Font Size", "Font size for editor text.", "Buffer Font"),
+    ("ui_font_size", "Font Size", "Font size for UI elements.", "UI Font"),
 ];
 
 fn matches_query(key: &str, name: &str, description: &str, query: &str) -> bool {
@@ -179,12 +182,16 @@ struct SettingsView {
     owner: WeakEntity<Workbench>,
     owner_window: AnyWindowHandle,
     error: Option<String>,
+    expected: Result<Option<String>, String>,
     _subscriptions: Vec<Subscription>,
 }
 
 impl SettingsView {
     fn new(owner: WeakEntity<Workbench>, owner_window: AnyWindowHandle, window: &mut Window, cx: &mut Context<Self>) -> Self {
         let value = cx.global::<Settings>().values.clone();
+        let expected = cx.global::<Settings>().path.as_ref().ok_or("Application data folder unavailable".into())
+            .and_then(|path| super::keymap_editor::read_snapshot(path));
+        let error = expected.as_ref().err().cloned();
         let search = cx.new(|cx| InputState::new(window, cx).placeholder("Search settings…"));
         let ui_font = cx.new(|cx| InputState::new(window, cx).default_value(value.ui_font_size.to_string()));
         let buffer_font = cx.new(|cx| InputState::new(window, cx).default_value(value.buffer_font_size.to_string()));
@@ -192,29 +199,29 @@ impl SettingsView {
         let icons = cx.new(|cx| SelectState::new(SearchableVec::new(vec![SharedString::from(ICON_THEME)]), Some(IndexPath::new(0)), window, cx));
         let mut subscriptions = vec![cx.subscribe(&search, |_, _, _: &InputEvent, cx| cx.notify())];
         for (key, input) in [("ui_font_size", &ui_font), ("buffer_font_size", &buffer_font)] {
-            subscriptions.push(cx.subscribe(input, move |this, input, event: &InputEvent, cx| {
+            subscriptions.push(cx.subscribe_in(input, window, move |this, input, event: &InputEvent, window, cx| {
                 if matches!(event, InputEvent::Change) {
                     match input.read(cx).value().parse::<f64>() {
-                        Ok(value) if value.is_finite() && value > 0. => this.change(key, json!(value), cx),
+                        Ok(value) if value.is_finite() && value > 0. => this.change(key, json!(value), window, cx),
                         _ => { this.error = Some(format!("Invalid {key}")); cx.notify(); }
                     }
                 }
             }));
         }
         for (key, select) in [("theme", &theme), ("icon_theme", &icons)] {
-            subscriptions.push(cx.subscribe(select, move |this, _, event: &SelectEvent<SearchableVec<SharedString>>, cx| {
-                if let SelectEvent::Confirm(Some(value)) = event { this.change(key, json!(value.as_ref()), cx); }
+            subscriptions.push(cx.subscribe_in(select, window, move |this, _, event: &SelectEvent<SearchableVec<SharedString>>, window, cx| {
+                if let SelectEvent::Confirm(Some(value)) = event { this.change(key, json!(value.as_ref()), window, cx); }
             }));
         }
-        Self { search, ui_font, buffer_font, theme, icons, owner, owner_window, error: None, _subscriptions: subscriptions }
+        Self { search, ui_font, buffer_font, theme, icons, owner, owner_window, error, expected, _subscriptions: subscriptions }
     }
 
-    fn change(&mut self, key: &str, value: Value, cx: &mut Context<Self>) {
+    fn change(&mut self, key: &str, value: Value, window: &mut Window, cx: &mut Context<Self>) {
         let result = cx.global::<Settings>().path.as_ref().ok_or("Application data folder unavailable".into())
-            .and_then(|path| save(path, key, value));
+            .and_then(|path| self.expected.as_mut().map_err(|e| e.clone()).and_then(|expected| save(path, expected, key, value)));
         match result {
             Ok((value, errors)) => { self.error = (!errors.is_empty()).then(|| errors.join("\n")); apply(value, cx); }
-            Err(error) => self.error = Some(error),
+            Err(error) => { window.push_notification(error.as_str(), cx); self.error = Some(error); }
         }
         cx.notify();
     }
@@ -238,13 +245,18 @@ impl Render for SettingsView {
                     if let Err(error) = result { this.error = Some(error.to_string()); cx.notify(); }
                 })),
             ));
-        for (index, (key, name, description)) in ROWS.iter().enumerate() {
+        let mut previous_section = "";
+        for (key, name, description, section) in ROWS {
             if !matches_query(key, name, description, &query) { continue; }
-            let control = match index {
-                0 => Select::new(&self.theme).accessibility_label("Theme").into_any_element(),
-                1 => Select::new(&self.icons).accessibility_label("Icon Theme").into_any_element(),
-                2 => NumberInput::new(&self.ui_font).accessibility_label("UI Font Size").into_any_element(),
-                _ => NumberInput::new(&self.buffer_font).accessibility_label("Buffer Font Size").into_any_element(),
+            if previous_section != *section {
+                right = right.child(div().font(super::fonts::editor()).text_size(layout::SECTION_TEXT).text_color(cx.theme().muted_foreground).child(*section));
+                previous_section = section;
+            }
+            let control = match *key {
+                "theme" => Select::new(&self.theme).icon(super::zed_icons::icon("chevron_up_down")).accessibility_label("Theme").into_any_element(),
+                "icon_theme" => Select::new(&self.icons).icon(super::zed_icons::icon("chevron_up_down")).accessibility_label("Icon Theme").into_any_element(),
+                "ui_font_size" => NumberInput::new(&self.ui_font).h(layout::CONTROL_HEIGHT).accessibility_label("UI Font Size").into_any_element(),
+                _ => NumberInput::new(&self.buffer_font).h(layout::CONTROL_HEIGHT).accessibility_label("Buffer Font Size").into_any_element(),
             };
             right = right.child(h_flex().gap(layout::GAP).justify_between()
                 .child(v_flex().child(*name).child(div().text_color(cx.theme().muted_foreground).child(*description)))
@@ -310,15 +322,17 @@ mod tests {
         assert_eq!(super::values(&super::read(&path).unwrap()), (super::Values::default(), vec![]));
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(&path, "{ // comment\n \"unknown\": true, \"ui_font_size\": 18, }").unwrap();
-        let saved = super::save(&path, "buffer_font_size", serde_json::json!(20)).unwrap();
+        let mut expected = super::super::keymap_editor::read_snapshot(&path).unwrap();
+        let saved = super::save(&path, &mut expected, "buffer_font_size", serde_json::json!(20)).unwrap();
         assert_eq!((saved.0.ui_font_size, saved.0.buffer_font_size), (18., 20.));
         assert_eq!(super::values(&super::read(&path).unwrap()), saved);
         assert_eq!(super::read(&path).unwrap()["unknown"], true);
         let before = std::fs::read(&path).unwrap();
-        assert!(super::save(&path, "ui_font_size", serde_json::json!(-1)).is_err());
+        assert!(super::save(&path, &mut expected, "ui_font_size", serde_json::json!(-1)).is_err());
         assert_eq!(std::fs::read(&path).unwrap(), before);
         std::fs::write(&path, "{ invalid").unwrap();
-        assert!(super::save(&path, "theme", serde_json::json!(super::THEME)).is_err());
+        expected = super::super::keymap_editor::read_snapshot(&path).unwrap();
+        assert!(super::save(&path, &mut expected, "theme", serde_json::json!(super::THEME)).is_err());
         assert_eq!(std::fs::read_to_string(&path).unwrap(), "{ invalid");
         std::fs::remove_dir_all(dir).unwrap();
     }
@@ -364,10 +378,35 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("settings.json");
         std::fs::write(&path, raw.to_string()).unwrap();
-        let (saved, errors) = super::save(&path, "buffer_font_size", serde_json::json!(24)).unwrap();
+        let mut expected = super::super::keymap_editor::read_snapshot(&path).unwrap();
+        let (saved, errors) = super::save(&path, &mut expected, "buffer_font_size", serde_json::json!(24)).unwrap();
         assert_eq!(saved.buffer_font_size, 24.);
         assert_eq!(errors.len(), 1);
         assert_eq!(super::read(&path).unwrap()["ui_font_size"], "wrong");
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn k18_settings_conflicts_preserve_disk_and_own_saves_advance_snapshot() {
+        let dir = std::env::temp_dir().join(format!("workbench-k18-{}", crate::state::win::new_uuid()));
+        let path = dir.join("settings.json");
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut expected = None;
+        std::fs::write(&path, "{} // external").unwrap();
+        assert!(super::save(&path, &mut expected, "ui_font_size", serde_json::json!(18)).is_err());
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "{} // external");
+        expected = Some("{}".into());
+        assert!(super::save(&path, &mut expected, "ui_font_size", serde_json::json!(18)).is_err());
+        std::fs::remove_file(&path).unwrap();
+        assert!(super::save(&path, &mut expected, "ui_font_size", serde_json::json!(18)).is_err());
+        assert!(!path.exists());
+        expected = None;
+        super::save(&path, &mut expected, "ui_font_size", serde_json::json!(18)).unwrap();
+        assert_eq!(expected.as_deref(), Some(std::fs::read_to_string(&path).unwrap().as_str()));
+        super::save(&path, &mut expected, "buffer_font_size", serde_json::json!(20)).unwrap();
+        assert_eq!(super::read(&path).unwrap()["ui_font_size"], 18);
+        assert_eq!(super::read(&path).unwrap()["buffer_font_size"], 20);
+        assert_eq!(super::ROWS.iter().map(|r| r.3).collect::<Vec<_>>(), ["Theme", "Theme", "Buffer Font", "UI Font"]);
         std::fs::remove_dir_all(dir).unwrap();
     }
 }

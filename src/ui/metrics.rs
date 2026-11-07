@@ -21,12 +21,14 @@ pub mod settings_window {
     pub const GAP: Pixels = px(24.);
     pub const CATEGORY_GAP: Pixels = px(12.);
     pub const EDIT_BUTTON_HEIGHT: Pixels = px(22.);
+    // tauri SPEC R-2 Settings section titles (Zed page_data.rs, ORDER-06-R2).
+    pub const SECTION_TEXT: Pixels = px(12.);
 }
 
 // SPEC R-2, Zed v-button measurement (2026-11-07).
 pub const USER_BUTTON_SIZE: Pixels = px(22.);
-// SVG viewBox 16; path x=4.15186..11.8483 plus 1.2 round stroke. Target ink, not viewport.
-pub const USER_CHEVRON_SIZE: Pixels = px(8. * 16. / (11.8483 - 4.15186 + 1.2));
+// user_menu.button_icon_size (I-601), core ORDER-06-R2.
+pub const USER_CHEVRON_SIZE: Pixels = px(14.);
 pub const USER_BUTTON_MARGIN: Pixels = px(4.);
 
 pub mod keymap_editor {
@@ -38,6 +40,14 @@ pub mod keymap_editor {
     pub const SEARCH_HEIGHT: Pixels = px(32.);
     // keymap_editor table.ratio_* (K-022).
     pub const COLUMN_RATIOS: [f32; 5] = [0.25, 0.20, 0.14, 0.45, 0.08];
+    // keymap_editor table.icon_column_width / icon_column_button.size (K-022, K-036).
+    pub const EDIT_WIDTH: Pixels = px(36.);
+    pub const EDIT_SIZE: Pixels = px(18.);
+    // keymap_editor modal.* (K-080, K-082, K-083), record.max_keystrokes (K-055).
+    pub const MODAL_WIDTH: Pixels = px(544.);
+    pub const MODAL_GAP: Pixels = px(10.);
+    pub const FOOTER_GAP: Pixels = px(4.);
+    pub const MAX_STROKES: usize = 3;
 }
 
 pub mod extensions {

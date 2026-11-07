@@ -1,0 +1,8 @@
+2026-11-07T02:38:49.328Z === ORDER-06-R2 V3 Measure Script Initialized ===
+2026-11-07T02:38:49.384Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R2
+2026-11-07T02:38:49.385Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T02:38:50.210Z === Starting ORDER-06-R2 V3 Screen Measurement Session ===
+2026-11-07T02:38:50.223Z settings.json does not exist initially (will be removed on restore)
+2026-11-07T02:38:50.226Z keymap.json does not exist initially (will be removed on restore)
+2026-11-07T02:38:50.239Z Launching app via session.ps1 -Action Start...
+2026-11-07T02:38:52.753Z Fatal error during measurement session: session.json was not created at: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R2\session.json

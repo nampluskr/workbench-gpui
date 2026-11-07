@@ -1,0 +1,8 @@
+2026-11-07T02:45:17.907Z === ORDER-06-R2 V3 Measure Script Initialized ===
+2026-11-07T02:45:17.969Z Out Directory: D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R2
+2026-11-07T02:45:17.971Z AppExe: D:\projects\workbench-gpui\target\debug\workbench-gpui.exe
+2026-11-07T02:45:17.972Z Steps Filter: app-v-button-crop,app-settings-window,app-keymap-editor,app-extensions
+2026-11-07T02:45:18.396Z === Starting ORDER-06-R2 V3 Screen Measurement Session ===
+2026-11-07T02:45:18.418Z settings.json does not exist initially (will be removed on restore)
+2026-11-07T02:45:18.421Z keymap.json does not exist initially (will be removed on restore)
+2026-11-07T02:45:18.427Z Launching app via session.ps1 -Action Start (Backup=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\_measure-ORDER-06-R2-backup)...

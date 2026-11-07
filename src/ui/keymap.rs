@@ -144,15 +144,19 @@ pub fn keymap_path() -> Option<PathBuf> {
 pub fn editor_rows(cx: &App) -> Vec<super::keymap_editor::Row> {
     let keymap = cx.key_bindings();
     let keymap = keymap.borrow();
-    let mut rows: Vec<_> = keymap.bindings().map(|b| super::keymap_editor::Row {
+    let mut rows: Vec<_> = keymap.bindings().filter(|b| b.meta() != Some(USER_META)).map(|b| super::keymap_editor::Row {
         action: b.action().name().into(),
+        arguments: None,
         keys: b.keystrokes().iter().map(|k| keystroke_notation(k.inner())).collect::<Vec<_>>().join(" "),
         context: b.predicate().map(|p| p.to_string()).unwrap_or_default(),
         user: b.meta() == Some(USER_META),
     }).collect();
+    if let Some(path) = keymap_path()
+        && let Ok(Some(text)) = super::keymap_editor::read_snapshot(&path)
+        && let Ok(user) = super::keymap_editor::user_rows(&text) { rows.extend(user); }
     for (name, _) in ACTIONS {
         if !rows.iter().any(|row| row.action == *name) {
-            rows.push(super::keymap_editor::Row { action: (*name).into(), keys: String::new(), context: String::new(), user: false });
+            rows.push(super::keymap_editor::Row { action: (*name).into(), arguments: None, keys: String::new(), context: String::new(), user: false });
         }
     }
     rows.sort_by(|a, b| a.action.cmp(&b.action));
@@ -407,7 +411,7 @@ fn strokes(binding: &KeyBinding) -> Vec<Stroke<'_>> {
         .collect()
 }
 
-fn keystroke_notation(k: &Keystroke) -> String {
+pub(super) fn keystroke_notation(k: &Keystroke) -> String {
     display::binding_notation(&[Stroke {
         function: k.modifiers.function,
         control: k.modifiers.control,

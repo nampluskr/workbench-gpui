@@ -128,13 +128,18 @@ core D-15·ORDER-06-R1 2장, 이 레포 DECISIONS D-8·D-9에서 옮겼다. 두 
 
 - 저장 방식 결과(K-13): 파일 전체를 다시 쓰지 않고 바꾼 키의 값 범위만 교체한다(jsonc-parser AST). 없는 키는 첫 속성 앞(빈 객체면 닫는 괄호 앞)에 더한다. 같은 키가 여러 번 있으면 모두 고친다. 주석·한글·CRLF·모르는 키·후행 쉼표를 보존하고, 원자 교체로 쓴다. 파일이 깨져 있으면 저장을 거부한다. 다른 키에 잘못된 값이 있어도 저장할 수 있고, 파일 안의 잘못된 값은 덮어쓰지 않는다. 시작할 때와 외부 변경 때 오류는 기존 앱 알림으로, Settings 저장 오류는 Settings 화면의 오류 자리에 보인다.
 
-| 행 | 키 | 컨트롤 | 기본값 | Zed 이름 | Zed 설명 |
-|---|---|---|---|---|---|
-| Theme | `theme` | 드롭다운 | 지금 테마(`Default Light` 하나, Phase 7에서 늘어남) | Theme Name | The name of your selected theme. |
-| Icon Theme | `icon_theme` | 드롭다운 | `Zed (Default)` 하나 | Icon Theme Name | The name of your selected icon theme. |
-| UI Font Size | `ui_font_size` | 숫자 | 16 | Font Size | Font size for UI elements. |
-| Buffer Font Size | `buffer_font_size` | 숫자 | 15 | Font Size | Font size for editor text. |
+| 소제목 | 행 | 키 | 컨트롤 | 기본값 | Zed 이름 | Zed 설명 |
+|---|---|---|---|---|---|---|
+| Theme | Theme | `theme` | 드롭다운 | 지금 테마(`Default Light` 하나, Phase 7에서 늘어남) | Theme Name | The name of your selected theme. |
+| Theme | Icon Theme | `icon_theme` | 드롭다운 | `Zed (Default)` 하나 | Icon Theme Name | The name of your selected icon theme. |
+| Buffer Font | Buffer Font Size | `buffer_font_size` | 숫자 | 15 | Font Size | Font size for editor text. |
+| UI Font | UI Font Size | `ui_font_size` | 숫자 | 16 | Font Size | Font size for UI elements. |
 
+- 소제목 순서는 Zed 순서 Theme → Buffer Font → UI Font다(core-leader 결정 2026-11-07, ORDER-06-R2).
+- 컨트롤(ORDER-06-R2, tauri SPEC R-2 표와 같다): 숫자는 감소·증가 버튼이 붙은 형태(높이 28, 1 단위), 드롭다운은 `chevron_up_down` 버튼(높이 28).
+- 저장 충돌: 창을 연 뒤 디스크 settings.json이 바뀌었으면(변경·생성·삭제) 저장을 거부하고 알린다. 디스크 파일은 건드리지 않는다. 정상 저장 뒤에는 기준 원문을 갱신해 같은 창에서 이어서 바꿀 수 있다.
+- 이 레포의 현재 상태(K-18): 위 소제목·행 순서와 컨트롤, 저장 충돌 거부를 넣었다. 숫자는 gpui-kit NumberInput(높이 28 상수), 드롭다운은 Select 아이콘을 `chevron_up_down.svg`로 바꿨다. 확인 V1(`settings::tests` 5 passed, 충돌 거부·디스크 보존·연속 저장·섹션 순서), checker C-29 리뷰 PASS. 화면(소제목·행 순서, 컨트롤 배치)은 V3 남음. Settings 입력·드롭다운 동작은 Phase 12 V4(ORDER-06-R2).
+- tauri SPEC R-2 표와 남은 차이: Settings·"v" 버튼 모두 없음(C-29 대조 표 2.2·2.3 전 항목 일치).
 - 기본값은 지금 앱 상수다. 파일이나 키가 없으면 이 값을 쓴다(DECISIONS D-8).
 - Zed 이름·설명 출처: Zed 커밋 `4304dec732a75505066de5ce2dbbfb2bec369498` `crates/settings_ui/src/page_data.rs` `appearance_page`(`cards/K-11.report.md`). 두 글꼴 행은 Zed 원문 제목이 모두 `Font Size`라 원문을 쓰고, 컨트롤 접근성 이름만 UI Font Size·Buffer Font Size로 나눈다.
 
@@ -175,10 +180,11 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 | 항목 | 값 | 비고 |
 |---|---|---|
 | 버튼 | 22×22, 둥근 모서리 | I-608·I-609와 같다 |
-
-- 이 레포의 현재 상태(K-13): 버튼 22×22, 오른쪽 여백 4. chevron은 SVG viewport 16에서 실제 path 폭이 8.89644(`11.8483−4.15186+1.2`)라 아이콘을 `8×16/8.89644 ≈ 14.388px`로 그려 잉크 폭 8을 목표로 한다. 실제 래스터 잉크 폭과 배치는 V3 남음.
 | chevron 잉크 폭 | 8 | |
 | 버튼 오른쪽 끝 ↔ 최소화 버튼 | 4 | |
+| chevron 아이콘 크기 | 14 | `user_menu.button_icon_size`(I-601). ORDER-06-R2, tauri SPEC R-2 표와 같다 |
+
+- 이 레포의 현재 상태(K-13 → K-16 → K-18): 버튼 22×22, 최소화 버튼까지 4(K-16, 타이틀 바의 폭 4 요소). chevron은 K-13에서 잉크 8을 목표로 ≈14.388px로 그렸고(R1 V3 3차 잉크 8 PASS), K-18에서 I-601대로 14px(`USER_CHEVRON_SIZE`)로 바꿨다. 14px의 래스터 잉크 폭은 V3 남음.
 
 *Keymap — 편집 영역 새 탭 "Keymap Editor" (`Ctrl-K Ctrl-S`, "v" 메뉴 Keymap)*
 
@@ -193,26 +199,30 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 
 - 이 레포의 현재 상태: 앱은 이미 이 파일을 사용자 키맵으로 읽는다. 경로는 `src/ui/keymap.rs` `keymap_path()`(`dirs::config_dir` + `workbench-gpui\keymap.json`), 읽기는 `src/keymap/file.rs`(JSONC, 오류 항목만 빼고 적용), 바뀌면 다시 읽는다(`src/ui/keymap.rs` 파일 감시).
 
-실제 구성(K-14, `src/ui/keymap_editor.rs`):
+실제 구성(K-14 → K-17, `src/ui/keymap_editor.rs`). ORDER-06-R2 1장대로 tauri SPEC R-2 표(Zed 기준)와 같게 했다. 대조 표는 `cards/C-29.report.md` 2.1:
 
 | 자리 | 지금 구성 |
 |---|---|
-| 열기 | "v" 메뉴 Keymap·`Ctrl-K Ctrl-S` → 편집 영역 새 탭 "Keymap Editor". 다른 폴더 workspace까지 찾아 이미 열려 있으면 그 workspace·pane·탭을 활성화. 폴더가 없어도 설정 workspace에서 연다. 도구 탭이라 문서(Docs)로 등록하지 않아 저장·감시 대상이 아니고, 닫을 때 저장 확인이 없다. 탭 이동·복제에서 내용을 유지한다 |
+| 열기 | "v" 메뉴 Keymap·`Ctrl-K Ctrl-S` → 편집 영역 새 탭 "Keymap Editor". 같은 폴더(작업 공간)에 열려 있을 때만 그 탭을 앞으로 가져온다(K-17. Extensions의 기존 탭 찾기 범위는 그대로). 폴더가 없어도 설정 workspace에서 연다. 도구 탭이라 문서(Docs)로 등록하지 않아 저장·감시 대상이 아니고, 닫을 때 저장 확인이 없다. 탭 이동·복제에서 내용을 유지한다 |
 | 위 줄 | 필터칸 "Filter action names…", `Edit in JSON  Ctrl-E`, `Create Keybinding  Ctrl-K` |
-| 필터 | Action 이름에서 대소문자 구분 없이 찾는다 |
-| 표 열 | Action, Arguments, Keystrokes, Context, Source |
-| Action | 원래 액션 이름(예 `workspace::Save`) |
-| Arguments | 비워 둔다(이 앱 액션은 인자가 없다) |
-| Keystrokes | gpui 표기(예 `ctrl-k ctrl-s`). 바인딩 없는 액션은 빈 칸 |
-| Context | 원문. 없으면 빈 칸 |
+| 필터 | 원래 이름과 읽기 쉬운 이름 모두에서, 대소문자 구분 없이 찾는다. 공백으로 나눈 검색어가 모두 들어 있어야 한다(AND) |
+| 표 열 | Edit 아이콘, Action, Arguments, Keystrokes, Context, Source |
+| Edit 아이콘 | 맨 앞 열, 폭 36, `pencil.svg`. 행 hover·포커스에서 보인다 |
+| Action | 읽기 쉬운 형식(예 `pane::CloseActiveItem` → `pane: close active item`) |
+| Arguments | 인자 없음 `<no arguments>`, null 액션 `<null>`, 배열 인자는 JSON. 사용자 원문에서 읽으므로 실행 파서가 적용하지 않는 배열 인자도 보인다 |
+| Keystrokes | 표시 형식(예 `Ctrl-K Ctrl-S`). 바인딩 없는 액션은 빈 칸 |
+| Context | 원문. 없으면 `<global>` |
 | Source | `Default`(gpui-kit·앱 기본) 또는 `User`(사용자 키맵) |
 | 행 | 실행 중인 키맵의 gpui-kit·앱 기본·사용자 바인딩 전부 + 바인딩 없는 앱 액션. Action 이름순 |
-| 편집 | 행을 누르거나 `Create Keybinding`을 누르면 표 아래에 Action·Keystrokes·Context 입력칸과 Save·Cancel이 나온다. 저장 전에 gpui 파서로 액션·키·컨텍스트를 검사하고, 오류는 화면에 보인다 |
+| 편집 진입 | Edit 아이콘 클릭·행 더블클릭·Enter → 편집 모달. 단일 클릭은 행 포커스만 옮긴다. `Create Keybinding`도 모달을 연다 |
+| 편집 모달 | 폭 544, 본문 gap 10, 바닥 gap 4(K-080·K-082·K-083). Action은 등록 액션 자동완성(`<null>` 선택 가능). 키는 Record로 입력: 기존 키를 비우고 최대 3타(K-055), 수정자 키 단독은 무시, 포커스를 잃거나 모달을 닫으면 중단. 배열 인자의 GUI 편집은 거부하고 JSON 편집을 안내한다 |
+| 저장 충돌 | 모달을 열 때의 원문·파일 존재 여부를 보관하고, 저장 직전 디스크와 다르면(변경·생성·삭제) 저장을 거부하고 앱 알림과 모달 오류로 알린다. 디스크 파일은 건드리지 않는다 |
 | 저장 | 파일 전체를 다시 쓰지 않고 배열 끝에 override 섹션을 더한다. 키나 컨텍스트를 바꾸면 옛 키를 `null`로 푸는 섹션과 새 키 섹션을 더한다. 주석·키·내용·BOM·후행 쉼표를 보존하고 원자 교체로 쓴다. 파일이 깨져 있으면 저장을 거부한다. 저장 뒤 기존 load로 바로 적용한다. UI 기본 액션도 사용자 파일에서 쓸 수 있게 사용자 키맵 읽기가 등록 액션도 확인한다 |
 | `Edit in JSON` | 사용자 keymap.json을 일반 편집기 탭으로 연다. 파일이 없으면 `[]`로 만든다 |
 
-- Zed와 다른 점: 키 입력으로 찾기·필터 버튼이 없다(ORDER-06-R1 2.2 선택 사항). 편집은 Zed의 모달·키 녹화가 아니라 표 아래 입력칸에 gpui 표기(`ctrl-alt-k`)로 친다. 인자 편집이 없다. Action은 Zed의 읽기 쉬운 형식이 아니라 원래 이름이고, Arguments·Context의 빈 값 표시(Zed `<no arguments>`·`<global>`)가 없다. 반복 편집하면 override 섹션이 쌓인다(코드 `shortcut:` 주석). 후속 범위는 leader가 정한다(K-14 보고).
-- 확인: V1(K-14). 화면(K-010~K-022 필터·버튼·표, 행 선택·편집 영역 배치)과 메뉴·`Ctrl-K Ctrl-S` 진입, `Ctrl-E`·`Ctrl-K` 동작은 V3·입력 검증 남음.
+- Zed와 다른 점: 키 입력으로 찾기·필터 버튼이 없다(ORDER-06-R1 2.2 선택 사항). 배열 인자는 GUI로 편집하지 않고 JSON 편집을 안내한다(tauri와 같다). 반복 편집하면 override 섹션이 쌓인다(코드 `shortcut:` 주석).
+- tauri SPEC R-2 표와 남은 차이: 없음(C-29 대조 표 2.1 전 항목 일치).
+- 확인: V1(K-17, `cargo test keymap` 22 passed — 표시 형식·AND 검색·원래 이름 검색·JSON 인자·null·global, 녹화 최대 3타, 디스크 변경·생성·삭제 때 거부와 바이트 보존, 충돌 없는 저장), checker C-29 리뷰 PASS. 화면(K-010~K-022, Edit 열 K-022·K-036, 모달 K-080~K-083, hover·포커스 아이콘)은 V3 남음. 모달 포커스·Record·자동완성 입력은 Phase 12 V4(ORDER-06-R2).
 
 *Extensions — 편집 영역 새 탭 "Extensions" (`Ctrl-Shift-X`, "v" 메뉴 Extensions)*
 
@@ -237,14 +247,18 @@ tauri-leader 2026-11-07 Zed 캡처 `zed-v-menu.png`(1440×852·100%)에서 잰 �
 | 위 | 제목 "Extensions", 검색칸 "Search extensions…", 오른쪽에 `All`/`Installed`/`Not Installed` |
 | 범주 칩 | `All`, `Themes`, `Icon Themes` |
 | 카드 | 이름·버전, 태그(범주 이름), 설명, 작성자, 오른쪽 `Installed` 표시 |
-| 검색 | 이름·설명에서 대소문자 구분 없이. 작성자·버전은 찾지 않는다 |
+| 검색 | 이름·설명·작성자에서 대소문자 구분 없이. 공백으로 나눈 검색어가 모두 들어 있어야 한다(AND). 버전·태그는 찾지 않는다(K-18) |
+| 정렬 | 테마 파일 경로 순 → 같은 파일 안 `themes` 배열 순, 아이콘 테마는 맨 뒤. 필터 뒤에도 이 순서를 유지한다(K-18) |
+| 빈 상태 | `All` "No extensions", `Installed` "No installed extensions", `Not Installed` "No uninstalled extensions". 검색어가 있으면 ` that match "검색어"`를 붙인다(K-18) |
+| 버전 표시 | 있으면 `v` + 버전, muted 색. 없으면 버전 요소를 만들지 않는다(K-18) |
 | 자원 목록 | `RESOURCES` 한 곳. 지금은 `Default Light`(Themes, gpui-kit 기본 테마)와 `Zed (Default)`(Icon Themes, `resources/zed-icons`) 둘. 이름은 settings의 실제 테마·아이콘 테마 이름 |
-| 카드 값 | 두 자원 모두 확장 manifest가 없어 버전·작성자·설명은 비워 둔다 |
+| 카드 값 | 메타데이터 출처는 테마 JSON의 theme 필드 우선, 없거나 빈 값이면 family 루트 필드, 그것도 없으면 빈 값(지어내지 않는다)(K-18). 지금 두 자원은 해당 메타데이터가 없어 버전·작성자·설명이 비어 있다 |
 | 상태 전환 | 모든 자원이 번들이라 `All`과 `Installed`의 내용이 같고 `Not Installed`는 빈 목록 |
 | 치수 | `spec/zed-metrics.toml` extensions X-45~X-49를 `metrics.rs` 토큰으로 쓴다 |
 
 - Phase 7: 복사한 테마·아이콘 테마와 원본 메타데이터를 `RESOURCES`에 더하면 화면과 필터에 함께 반영된다. 복사 경로가 아직 미정이라 디렉터리 자동 탐색은 넣지 않았다.
-- 확인: V1(K-15). 화면(X-45~X-49 제목·검색·상태 전환·범주·카드)과 메뉴·`Ctrl-Shift-X` 진입, 기존 탭 활성화는 V3·입력 검증 남음.
+- tauri SPEC R-2 표와 남은 차이(tauri `reports/ORDER-06-R2.md` 3절 번호): 1·2·5·6·7·8은 K-18로 맞췄다(C-29 대조 표 2.4 일치). 3 자원 목록(gpui `Default Light`, tauri `One Dark`·`One Light`)과 4 목록 구성(gpui `RESOURCES` 고정, tauri 빌드 때 자동 읽기)은 Phase 7(ORDER-07)에서 맞춘다. 9 치수는 같은 스펙 ID 값이고 적어 둔 ID 범위만 다르다(tauri X-44~X-49·L-05~L-07).
+- 확인: V1(K-15, K-18 `extensions::tests` 3 passed — 검색·정렬·빈 상태·메타데이터 우선순위·버전 표시), checker C-29 리뷰 PASS. 화면(X-45~X-49 제목·검색·상태 전환·범주·카드, 빈 상태·카드 표시)과 메뉴·`Ctrl-Shift-X` 진입, 기존 탭 활성화는 V3·입력 검증 남음.
 
 *Panel Layout — 하위 메뉴*
 

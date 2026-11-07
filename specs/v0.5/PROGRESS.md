@@ -655,6 +655,39 @@
   - 검증: 문서만 바꿨다(V0).
   - 특이사항: `measure-ORDER-06-R1.md`는 2차까지만 반영돼 있고 3차 결과는 `measure-ORDER-06-R1/summary.json`·`log.txt`에 있다. 2차 자료가 `-run2/`로 옮겨져 판정 파일의 "2차 `measure-ORDER-06-R1/`" 경로 표기와 어긋난다.
 
+- **K-17 Keymap Editor를 tauri(=Zed 기준)와 같게** (2026-11-07, coder, core ORDER-06-R2 1장)
+  - 무엇을 했나: Edit 아이콘 열, 읽기 쉬운 Action·AND 필터, 빈 값 표시, 편집 모달·Record·자동완성, 저장 충돌 거부, 같은 작업 공간의 탭만 앞으로. 카드 `cards/K-17.md`, 보고 `cards/K-17.report.md`.
+  - 결과: `src/ui/keymap_editor.rs`, `src/ui/keymap.rs`, `src/ui/metrics.rs` 수정. 구성은 SPEC R-2 Keymap "실제 구성".
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test keymap` 22 passed, clippy 통과, `git diff --check` 통과. 이벤트·포커스 연결은 코드 확인(gpui 입력 시뮬레이션 안 함).
+  - 특이사항: 실측 필요 — K-022·K-036(Edit 열), K-080~K-083(모달), hover·포커스 아이콘. 모달 포커스·Record·자동완성 입력은 Phase 12 V4.
+
+- **K-18 Settings 행 구성·저장 충돌, "v" 아이콘 14px, Extensions** (2026-11-07, coder, core ORDER-06-R2 1장, core-leader 결정)
+  - 무엇을 했나: Settings 소제목 Theme → Buffer Font → UI Font(core-leader 결정), 숫자 감소·증가 버튼·드롭다운 `chevron_up_down`, 저장 충돌 거부, "v" chevron 14px(I-601). core-leader 결정으로 Extensions 차이 1·2·5·6·7·8(작성자 검색, AND, 정렬, 빈 상태 문구, 버전 `v`·빈 값 숨김, 메타데이터 출처)을 tauri SPEC R-2 표대로 맞췄다. 카드 `cards/K-18.md`, 보고 `cards/K-18.report.md`.
+  - 결과: `src/ui/settings.rs`, `src/ui/extensions.rs`, `src/ui/metrics.rs` 수정. SPEC R-2 Settings·"v" 버튼·Extensions 표에 반영.
+  - 검증: V1. `cargo build`, `tools/apply-manifest.ps1`, `cargo test settings::tests` 5·`extensions::tests` 3 passed, clippy 통과, `git diff --check` 통과. 컨트롤·알림 연결은 코드 확인.
+  - 특이사항: Extensions 차이 3·4(자원 목록·자동 읽기)는 Phase 7. 실측 필요 — Settings 소제목·행 순서와 컨트롤 배치, "v" 버튼 I-601 14px, Extensions 빈 상태·카드 표시. Settings 입력·드롭다운 동작은 Phase 12 V4.
+
+- **C-29 K-17·K-18 리뷰, tauri 대조, R2 V3 스크립트** (2026-11-07, checker)
+  - 무엇을 했나: K-17·K-18 코드를 리뷰하고 tauri SPEC R-2 표와 항목별로 대조했다. `tools/measure/order06-r1-v3.ps1`을 재사용해 `tools/measure/order06-r2-v3.ps1`(v 버튼 크롭, Settings 창, Keymap Editor, Extensions 4단계)을 만들었다. 카드 `cards/C-29.md`, 보고 `cards/C-29.report.md`.
+  - 결과: 리뷰 PASS. 대조 표(Keymap Editor 14항목, Settings 11항목, "v" 버튼 3항목, Extensions 차이 6항목) 전부 일치. 저장 충돌 거부는 Keymap·Settings 모두 디스크를 쓰지 않고 거부한다(테스트로 바이트 보존 확인).
+  - 검증: `cargo build`, `apply-manifest.ps1`, `cargo test keymap` 22·`settings::tests` 5·`extensions::tests` 3 passed, clippy 통과, 스크립트 문법 검사, `-DryRunStdout`·`-Steps` dry-run 정상.
+  - 특이사항: 1차 실행 실패(아래) 원인과 수정을 보고 4.3에 적었다.
+
+- **ORDER-06-R2 V3 시도 3번** (2026-11-07, leader 실행)
+  - 무엇을 했나: 화면 차례에서 R2 V3를 세 번 시도했다.
+  - 결과:
+    - (1) `order06-r2-v3.ps1` 세션 시작 실패 — `session.json`이 생기지 않았다(`verify/reviews/measure-ORDER-06-R2-run1-failed/`). 원인: 스크립트가 백업 폴더를 미리 만들어 `session.ps1`의 "기존 백업 덮어쓰지 않음" 검사에 걸렸고, 출력이 로그에 남지 않았다(C-29 보고 4.3). checker가 고쳤다.
+    - (2) 고친 스크립트로 세션 시작 뒤 멈춤(`measure-ORDER-06-R2-run2-hung/`). leader가 timeout으로 끊고 앱 PID 41412만 닫은 뒤 `session.ps1 -Action Stop`으로 앱 데이터를 복원했다. 복원본이 백업과 바이트 동일함을 확인했다. 그 사이 사용자 `state.json`이 잠시 없었다. checker가 `session.ps1` 실제 실행 시험을 하려던 것을 leader가 거절했다(백업 삭제 위험).
+    - (3) R1 스크립트(`order06-r1-v3.ps1`)를 `-Steps`로 다시 실행했으나 앞 단계를 건너뛰어 프로젝트가 열리지 않았고, 실행된 단계가 없었다(`measure-ORDER-06-R2-run3-noproject/`).
+  - 검증: V3 없음(측정 단계 0). 사용자 앱 데이터는 (2) 뒤 백업과 바이트 동일.
+  - 특이사항: Keymap Editor V3 캡처(와 R2 화면 항목)는 다음 화면 차례(Phase 7 V3와 함께)로 미뤘다.
+
+- **W-26 ORDER-06-R2 기록** (2026-11-07)
+  - 무엇을 했나: 위 K-17·K-18·C-29·V3 시도를 적고, SPEC R-2 Keymap·Settings·Extensions·"v" 버튼 표를 K-17·K-18 결과로(C-29 대조 표 기준) 고쳤다. PLAN 진행 현황 Phase 6을 review(core-leader 판정 대기)로 바꿨다. 카드 `cards/W-26.md`.
+  - 결과: `SPEC.md`, `PROGRESS.md`, `PLAN.md` 수정. tauri와 남은 차이 — Keymap·Settings·"v" 버튼 없음, Extensions 3·4(자원 목록·자동 읽기)는 Phase 7.
+  - 검증: 문서만 바꿨다(V0).
+  - 특이사항: 없음.
+
 ## 스펙 불일치 목록
 
 | 요구 | 항목 | Zed | 현재 | 처리 |

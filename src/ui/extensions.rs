@@ -3,6 +3,7 @@ use gpui_kit::component::{ActiveTheme as _, h_flex, v_flex};
 use gpui_kit::component::button::{Button, ButtonVariants as _};
 use gpui_kit::component::input::{Input, InputEvent, InputState};
 use gpui_kit::prelude::FluentBuilder as _;
+use serde_json::Value;
 
 use super::{Workbench, keymap, settings, metrics::extensions as layout};
 
@@ -27,26 +28,50 @@ impl Status {
 struct Resource {
     name: &'static str,
     category: Category,
-    version: &'static str,
-    description: &'static str,
-    author: &'static str,
+    source_path: &'static str,
+    theme_index: usize,
+    theme: Value,
+    family: Value,
 }
 
 // Single catalog of bundled extension resources. Phase 7 adds copied resources and original metadata here.
 // Current theme is gpui-kit's built-in theme; icons come from resources/zed-icons.
-// Neither resource supplies an extension manifest, so unavailable metadata stays empty.
+// No theme JSON metadata exists for these resources; Null keeps absent fields empty.
+// Phase 7 supplies copied theme/family JSON and its path/array index, without reading installed Zed files.
 const RESOURCES: &[Resource] = &[
-    Resource { name: settings::THEME, category: Category::Themes, version: "", description: "", author: "" },
-    Resource { name: settings::ICON_THEME, category: Category::IconThemes, version: "", description: "", author: "" },
+    Resource { name: settings::THEME, category: Category::Themes, source_path: "", theme_index: 0, theme: Value::Null, family: Value::Null },
+    Resource { name: settings::ICON_THEME, category: Category::IconThemes, source_path: "", theme_index: 0, theme: Value::Null, family: Value::Null },
 ];
 
 impl Resource {
+    fn metadata(&self, key: &str) -> &str {
+        self.theme.get(key).and_then(Value::as_str).filter(|s| !s.is_empty())
+            .or_else(|| self.family.get(key).and_then(Value::as_str)).unwrap_or_default()
+    }
+    fn version_text(&self) -> Option<String> {
+        let version = self.metadata("version");
+        (!version.is_empty()).then(|| format!("v{version}"))
+    }
     fn matches(&self, query: &str, category: Category, status: Status) -> bool {
-        let query = query.trim().to_lowercase();
+        let text = format!("{} {} {}", self.name, self.metadata("description"), self.metadata("author")).to_lowercase();
         status != Status::NotInstalled
             && (category == Category::All || category == self.category)
-            && (self.name.to_lowercase().contains(&query) || self.description.to_lowercase().contains(&query))
+            && query.split_whitespace().all(|word| text.contains(&word.to_lowercase()))
     }
+}
+
+fn visible<'a>(resources: &'a [Resource], query: &str, category: Category, status: Status) -> Vec<&'a Resource> {
+    let mut result: Vec<_> = resources.iter().filter(|r| r.matches(query, category, status)).collect();
+    // Theme file path, then array order; icons last. Never reorder by display name.
+    result.sort_by_key(|r| (r.category == Category::IconThemes, r.source_path, r.theme_index));
+    result
+}
+
+fn empty_message(query: &str, status: Status) -> String {
+    let kind = match status { Status::All => "", Status::Installed => "installed ", Status::NotInstalled => "uninstalled " };
+    let query = query.trim();
+    let suffix = if query.is_empty() { String::new() } else { format!(" that match \"{query}\"") };
+    format!("No {kind}extensions{suffix}")
 }
 
 struct Extensions {
@@ -83,14 +108,17 @@ impl Render for Extensions {
                 .on_click(cx.listener(move |this, _, _, cx| { this.category = category; cx.notify(); })));
         }
         let mut cards = v_flex().id("extension-resources").flex_1().min_h_0().overflow_y_scroll().px(layout::LIST_PADDING).pb(layout::LIST_PADDING);
-        for resource in RESOURCES.iter().filter(|r| r.matches(&query, self.category, self.status)) {
+        let resources = visible(RESOURCES, &query, self.category, self.status);
+        if resources.is_empty() { cards = cards.child(empty_message(&query, self.status)); }
+        for resource in resources {
             cards = cards.child(h_flex().mt(layout::CARD_MARGIN).h(layout::CARD_HEIGHT).p(layout::CARD_PADDING)
                 .border_1().border_color(theme.border).rounded(layout::CARD_RADIUS).justify_between()
                 .child(v_flex().flex_1().min_w_0().gap(layout::CARD_GAP)
-                    .child(h_flex().gap(layout::CARD_GAP).child(resource.name).child(resource.version))
+                    .child(h_flex().gap(layout::CARD_GAP).child(resource.name)
+                        .when_some(resource.version_text(), |row, version| row.child(div().text_color(theme.muted_foreground).child(version))))
                     .child(resource.category.label())
-                    .child(resource.description)
-                    .child(div().text_color(theme.muted_foreground).child(resource.author)))
+                    .child(resource.metadata("description").to_owned())
+                    .child(div().text_color(theme.muted_foreground).child(resource.metadata("author").to_owned())))
                 .child(div().text_color(theme.muted_foreground).child("Installed")));
         }
         v_flex().size_full().bg(theme.background).text_color(theme.foreground)
@@ -128,15 +156,38 @@ mod tests {
         assert_eq!(count("  ZED  ", Category::IconThemes, Status::Installed), 1);
         assert_eq!(count("zed", Category::Themes, Status::All), 0);
         assert_eq!(count("missing", Category::All, Status::All), 0);
-        assert!(RESOURCES.iter().all(|r| r.author.is_empty() && r.version.is_empty() && r.description.is_empty()));
+        assert!(RESOURCES.iter().all(|r| r.metadata("author").is_empty() && r.version_text().is_none() && r.metadata("description").is_empty()));
     }
 
     #[test]
-    fn search_includes_description_without_matching_author_or_version() {
-        let resource = Resource { name: "Example", category: Category::Themes, version: "9.8.7", description: "High contrast theme", author: "Creator" };
+    fn search_includes_description_and_author_as_and_terms() {
+        let resource = Resource { name: "Example", category: Category::Themes, source_path: "b.json", theme_index: 0,
+            theme: serde_json::json!({"version":"9.8.7", "description":"High contrast theme", "author":"Creator"}), family: serde_json::Value::Null };
         assert!(resource.matches("CONTRAST", Category::All, Status::Installed));
-        assert!(!resource.matches("Creator", Category::All, Status::All));
+        assert!(resource.matches("Creator", Category::All, Status::All));
+        assert!(resource.matches("  EXAMPLE creator CONTRAST ", Category::All, Status::All));
+        assert!(!resource.matches("Creator missing", Category::All, Status::All));
         assert!(!resource.matches("9.8.7", Category::All, Status::All));
         assert!(!resource.matches("contrast", Category::IconThemes, Status::All));
+    }
+
+    #[test]
+    fn k18_sort_metadata_and_empty_states() {
+        let make = |name, path, index, category| Resource { name, source_path: path, theme_index: index, category,
+            theme: serde_json::json!({"version":"2", "description":"Theme description", "author":""}),
+            family: serde_json::json!({"version":"1", "description":"Family description", "author":"Family author"}) };
+        let resources = [make("Icons", "", 0, Category::IconThemes), make("A", "b.json", 0, Category::Themes),
+            make("Z", "a.json", 1, Category::Themes), make("Y", "a.json", 0, Category::Themes)];
+        let sorted = super::visible(&resources, "", Category::All, Status::All);
+        assert_eq!(sorted.iter().map(|r| r.name).collect::<Vec<_>>(), ["Y", "Z", "A", "Icons"]);
+        let filtered = super::visible(&resources, "family", Category::Themes, Status::Installed);
+        assert_eq!(filtered.iter().map(|r| r.name).collect::<Vec<_>>(), ["Y", "Z", "A"]);
+        assert_eq!(resources[1].version_text().as_deref(), Some("v2"));
+        assert_eq!(resources[1].metadata("description"), "Theme description");
+        assert_eq!(resources[1].metadata("author"), "Family author");
+        for (status, message) in [(Status::All, "No extensions"), (Status::Installed, "No installed extensions"), (Status::NotInstalled, "No uninstalled extensions")] {
+            assert_eq!(super::empty_message(" \t", status), message);
+            assert_eq!(super::empty_message("  Missing  ", status), format!("{message} that match \"Missing\""));
+        }
     }
 }

@@ -1,0 +1,101 @@
+2026-11-07 11:54:53.668 === ORDER-06-R1 V3 Capture Script Started (Out=D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R2) ===
+2026-11-07 11:54:54.542 --- Starting workbench-gpui measurements (ORDER-06-R1) ---
+2026-11-07 11:54:54.549 Dedicated backup: No previous settings.json found.
+2026-11-07 11:54:54.551 Dedicated backup: No previous keymap.json found.
+2026-11-07 11:54:54.560 Calling session.ps1 -Action Start (Exe=D:\projects\workbench-gpui\target\debug\workbench-gpui.exe)...
+2026-11-07 11:54:56.204 App launched via session.ps1: PID=26084, fixtureDir='D:\projects\workbench-gpui\target\measure-e8eb9ffcb3ed4ce08e90f09cab6d5f9c'
+2026-11-07 11:54:58.980 Main window handle HWND=0x2210C24
+2026-11-07 11:55:01.542 Resize: {
+2026-11-07 11:55:01.545 Resize:   "hwnd": "0x2210C24",
+2026-11-07 11:55:01.547 Resize:   "desktop": "Default",
+2026-11-07 11:55:01.548 Resize:   "title": "",
+2026-11-07 11:55:01.550 Resize:   "className": "workbench-gpui",
+2026-11-07 11:55:01.552 Resize:   "workArea_SPI": {
+2026-11-07 11:55:01.553 Resize:     "left": 0,
+2026-11-07 11:55:01.555 Resize:     "top": 0,
+2026-11-07 11:55:01.557 Resize:     "right": 1920,
+2026-11-07 11:55:01.559 Resize:     "bottom": 1032,
+2026-11-07 11:55:01.561 Resize:     "width": 1920,
+2026-11-07 11:55:01.562 Resize:     "height": 1032
+2026-11-07 11:55:01.563 Resize:   },
+2026-11-07 11:55:01.565 Resize:   "workArea_Monitor": {
+2026-11-07 11:55:01.566 Resize:     "device": "\\\\.\\DISPLAY1",
+2026-11-07 11:55:01.568 Resize:     "left": 0,
+2026-11-07 11:55:01.569 Resize:     "top": 0,
+2026-11-07 11:55:01.571 Resize:     "right": 1920,
+2026-11-07 11:55:01.574 Resize:     "bottom": 1032,
+2026-11-07 11:55:01.575 Resize:     "width": 1920,
+2026-11-07 11:55:01.578 Resize:     "height": 1032
+2026-11-07 11:55:01.580 Resize:   },
+2026-11-07 11:55:01.592 Resize:   "workAreaCenter": {
+2026-11-07 11:55:01.594 Resize:     "x": 960.0,
+2026-11-07 11:55:01.595 Resize:     "y": 516.0
+2026-11-07 11:55:01.596 Resize:   },
+2026-11-07 11:55:01.598 Resize:   "windowRect": {
+2026-11-07 11:55:01.599 Resize:     "left": 232,
+2026-11-07 11:55:01.601 Resize:     "top": 90,
+2026-11-07 11:55:01.603 Resize:     "right": 1688,
+2026-11-07 11:55:01.605 Resize:     "bottom": 950,
+2026-11-07 11:55:01.608 Resize:     "width": 1456,
+2026-11-07 11:55:01.610 Resize:     "height": 860
+2026-11-07 11:55:01.611 Resize:   },
+2026-11-07 11:55:01.612 Resize:   "windowCenter": {
+2026-11-07 11:55:01.614 Resize:     "x": 960.0,
+2026-11-07 11:55:01.615 Resize:     "y": 520.0
+2026-11-07 11:55:01.617 Resize:   },
+2026-11-07 11:55:01.618 Resize:   "windowCenterDiff": {
+2026-11-07 11:55:01.620 Resize:     "dx": 0.0,
+2026-11-07 11:55:01.621 Resize:     "dy": 4.0
+2026-11-07 11:55:01.623 Resize:   },
+2026-11-07 11:55:01.625 Resize:   "clientRect": {
+2026-11-07 11:55:01.627 Resize:     "width": 1440,
+2026-11-07 11:55:01.628 Resize:     "height": 852
+2026-11-07 11:55:01.630 Resize:   },
+2026-11-07 11:55:01.631 Resize:   "clientToScreen": {
+2026-11-07 11:55:01.632 Resize:     "x": 240,
+2026-11-07 11:55:01.634 Resize:     "y": 90
+2026-11-07 11:55:01.635 Resize:   },
+2026-11-07 11:55:01.636 Resize:   "clientScreenRect": {
+2026-11-07 11:55:01.638 Resize:     "left": 240,
+2026-11-07 11:55:01.641 Resize:     "top": 90,
+2026-11-07 11:55:01.642 Resize:     "right": 1680,
+2026-11-07 11:55:01.644 Resize:     "bottom": 942,
+2026-11-07 11:55:01.645 Resize:     "width": 1440,
+2026-11-07 11:55:01.647 Resize:     "height": 852
+2026-11-07 11:55:01.648 Resize:   },
+2026-11-07 11:55:01.650 Resize:   "clientCenter": {
+2026-11-07 11:55:01.652 Resize:     "x": 960.0,
+2026-11-07 11:55:01.653 Resize:     "y": 516.0
+2026-11-07 11:55:01.654 Resize:   },
+2026-11-07 11:55:01.656 Resize:   "clientCenterDiff": {
+2026-11-07 11:55:01.659 Resize:     "dx": 0.0,
+2026-11-07 11:55:01.661 Resize:     "dy": 0.0
+2026-11-07 11:55:01.662 Resize:   },
+2026-11-07 11:55:01.663 Resize:   "capture": {
+2026-11-07 11:55:01.665 Resize:     "ok": false,
+2026-11-07 11:55:01.667 Resize:     "path": ""
+2026-11-07 11:55:01.670 Resize:   }
+2026-11-07 11:55:01.672 Resize: }
+2026-11-07 11:55:02.302 Client size check (workbench-gpui): target=1440x852, actual=1440x852
+2026-11-07 11:55:02.826 Foreground check for 'App started': target=0x2210C24, foreground=0x2210C24
+2026-11-07 11:55:02.875 Project tree not visible. Ensuring left dock is open and project folder active...
+2026-11-07 11:55:02.941 Clicking 'project-empty-open'...
+2026-11-07 11:55:08.857 ERROR: Step 'project-tree-open' failed expectation: tree-row must appear in layout dump after opening project tree
+2026-11-07 11:55:09.104 Foreground check for 'Capture error-project-tree-open': target=0x2210C24, foreground=0x2210C24
+2026-11-07 11:55:11.360 Capture 'error-project-tree-open' -> D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R2\error-project-tree-open.png (exit=0)
+2026-11-07 11:55:11.377 Cleaning up workbench-gpui process (PID=26084)...
+2026-11-07 11:55:11.685 Restoring app data via session.ps1 -Action Stop...
+2026-11-07 11:55:13.309 Session Stop: {
+2026-11-07 11:55:13.311 Session Stop:   "exeUnchanged": true,
+2026-11-07 11:55:13.313 Session Stop:   "restored": true,
+2026-11-07 11:55:13.314 Session Stop:   "files": {
+2026-11-07 11:55:13.316 Session Stop:     "state.json": "D2C22F71AA168FC0C544C570AF7E9996EDA42424BC94AE4DD2CB7FE73A788020"
+2026-11-07 11:55:13.317 Session Stop:   },
+2026-11-07 11:55:13.319 Session Stop:   "fixtureRemoved": true
+2026-11-07 11:55:13.320 Session Stop: }
+2026-11-07 11:55:13.324 FATAL ERROR: Step 'project-tree-open' assertion failed: tree-row must appear in layout dump after opening project tree
+2026-11-07 11:55:13.326 Assert-LayoutCondition에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order06-r1.snap.ps1: 줄 511
+Ensure-ProjectTreeOpen에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order06-r1.snap.ps1: 줄 605
+Run-AppMeasure에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order06-r1.snap.ps1: 줄 717
+<ScriptBlock>에서 C:\Users\nampl\AppData\Local\Temp\claude\17d49c999518e6e0\197163dd-27a0-4cea-a9f0-18b54597e96e\scratchpad\order06-r1.snap.ps1: 줄 1605
+2026-11-07 11:55:13.347 === Execution Summary written to D:\projects\workbench-gpui\specs\v0.5\verify\reviews\measure-ORDER-06-R2\summary.json ===
