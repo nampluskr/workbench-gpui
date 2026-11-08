@@ -53,7 +53,7 @@ fn load(root: &std::path::Path) -> Vec<Entry> {
 
 pub fn catalog() -> &'static [Entry] {
     static CATALOG: std::sync::OnceLock<Vec<Entry>> = std::sync::OnceLock::new();
-    CATALOG.get_or_init(|| load(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/zed-icon-themes")))
+    CATALOG.get_or_init(|| load(&super::zed_icons::resources_dir().join("zed-icon-themes")))
 }
 
 /// Selectable names. Always starts with the default so Settings stays valid when the copies are missing.

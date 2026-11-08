@@ -1,7 +1,22 @@
-use std::{borrow::Cow, path::PathBuf};
+use std::{borrow::Cow, path::{Path, PathBuf}, sync::OnceLock};
 
 use gpui_kit::{AssetSource, Result, SharedString};
 use gpui_kit::component::Icon;
+
+/// Folder holding the copied Zed resources: `resources` next to the exe (packaged build), else the source tree (development).
+pub fn resources_dir() -> &'static Path {
+    static DIR: OnceLock<PathBuf> = OnceLock::new();
+    DIR.get_or_init(|| {
+        let exe_dir = std::env::current_exe().ok().and_then(|exe| exe.parent().map(Path::to_path_buf));
+        let dir = pick_resources(exe_dir.as_deref(), Path::new(env!("CARGO_MANIFEST_DIR")));
+        eprintln!("resources: {}", dir.display());
+        dir
+    })
+}
+
+fn pick_resources(exe_dir: Option<&Path>, dev_root: &Path) -> PathBuf {
+    exe_dir.map(|dir| dir.join("resources")).filter(|dir| dir.is_dir()).unwrap_or_else(|| dev_root.join("resources"))
+}
 
 pub struct Assets {
     root: PathBuf,
@@ -9,7 +24,7 @@ pub struct Assets {
 
 impl Assets {
     pub fn new() -> Self {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("resources/zed-icons");
+        let root = resources_dir().join("zed-icons");
         if !root.join("menu.svg").is_file() {
             eprintln!("zed icons missing: run tools/fetch-zed-icons.ps1");
         }
@@ -65,8 +80,20 @@ pub fn icon(name: &str) -> Icon {
 
 #[cfg(test)]
 mod tests {
-    use super::Assets;
+    use super::{Assets, pick_resources};
     use gpui_kit::AssetSource;
+
+    #[test]
+    fn resources_prefer_dir_next_to_exe() {
+        let base = std::env::temp_dir().join(format!("pick-resources-{}", std::process::id()));
+        let (exe, dev) = (base.join("exe"), base.join("dev"));
+        std::fs::create_dir_all(&exe).unwrap();
+        assert_eq!(pick_resources(Some(&exe), &dev), dev.join("resources"));
+        std::fs::create_dir_all(exe.join("resources")).unwrap();
+        assert_eq!(pick_resources(Some(&exe), &dev), exe.join("resources"));
+        assert_eq!(pick_resources(None, &dev), dev.join("resources"));
+        std::fs::remove_dir_all(&base).unwrap();
+    }
 
     #[test]
     fn missing_zed_icons_are_empty_without_panic() {

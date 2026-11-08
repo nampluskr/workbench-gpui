@@ -65,7 +65,7 @@ fn manifest(dir: &std::path::Path) -> Value {
 fn resources() -> &'static [Resource] {
     static RESOURCES: std::sync::OnceLock<Vec<Resource>> = std::sync::OnceLock::new();
     RESOURCES.get_or_init(|| {
-        let resources = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("resources");
+        let resources = super::zed_icons::resources_dir();
         let mut seen = std::collections::HashSet::new();
         let mut make = |root: &str, source: &str, category: Category| {
             let bundle = source.split('/').next().unwrap_or_default();

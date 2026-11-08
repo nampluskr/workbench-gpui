@@ -1048,3 +1048,34 @@
     - Phase 11 미리보기 중첩 번호 목록: 중첩 번호 목록 표시 `A.`/`B.`(Zed `1.`/`2.`) — 근거 ORDER-11 79~80행 (V4-LIST 상태: 기록 없음)
     - Phase 11 미리보기 제목 밑줄·가운데 정렬: 제목 아래 구분선·본문 폭 가운데 정렬 없음 — 근거 ORDER-11 80행 (V4-LIST 상태: 기록 없음)
     - Phase 11 미리보기 코드 블록 다음 제목 간격: 코드 블록 다음 제목 위 간격이 Zed보다 약 3px 작음 — 근거 ORDER-11 80행 (V4-LIST 상태: 기록 없음)
+
+## 버전 종료 뒤 사용자 요청 작업
+
+### 다른 PC에서 도는 배포본 (2026-11-08)
+
+- 요청: core-leader [ORDER](사용자 지시, 2026-11-08) — 다른 PC에서 도는 배포본. 실행 중 resources 경로를 한 함수로(exe 옆 `resources\` 먼저, 없으면 개발 경로), 정적 CRT(`.cargo/config.toml`), `tools/package-release.ps1`.
+- 조치(K-51, coder):
+  - `src/ui/zed_icons.rs`: `pub fn resources_dir()`(OnceLock, 정한 경로를 stderr에 `resources: <경로>` 한 줄) + 선택 로직 `pick_resources(exe_dir, dev_root)` + `#[test] resources_prefer_dir_next_to_exe`. `Assets::new()`도 이 함수를 쓴다.
+  - `src/ui/theme.rs`·`icon_theme.rs`·`syntax.rs`·`extensions.rs`: `env!("CARGO_MANIFEST_DIR")` 경로를 `resources_dir()`로 교체. 테스트 코드의 `CARGO_MANIFEST_DIR`·`include_str!`/`include_bytes!`는 그대로.
+  - `.cargo/config.toml`(새 파일): `[target.x86_64-pc-windows-msvc] rustflags = ["-C", "target-feature=+crt-static"]`. `Cargo.toml`·`Cargo.lock`·`vendor/` 변경 없음. 링크 오류 없음.
+  - `tools/package-release.ps1`(새 파일): `cargo build --release`(`-NoBuild`로 건너뜀) → `apply-manifest.ps1`(release exe) → `target\dist\workbench-gpui\`(exe + `resources\` 4폴더)와 `target\dist\workbench-gpui.zip`. 4폴더가 없으면 fetch 스크립트 이름을 알리고 실패. 지우는 것은 그 폴더와 zip뿐.
+- 결과:
+  - release exe: 41.38 MB(43,394,560 B) → 41.61 MB(43,631,616 B, manifest 병합 후). 정적 CRT로 +약 0.23 MB.
+  - 배포 폴더 `D:\projects\workbench-gpui\target\dist\workbench-gpui\`: 47.22 MB, 5,751 파일(exe + `resources\{zed-icon-themes, zed-icons, zed-languages, zed-themes}`).
+  - zip `D:\projects\workbench-gpui\target\dist\workbench-gpui.zip`: 16.36 MB(17,154,349 B).
+  - 배포 폴더와 zip은 `target\` 아래라 git에 들어가지 않는다. 다시 만들 때: `pwsh -NoProfile -File tools/package-release.ps1`.
+  - 보고: `specs/v0.5/reports/RELEASE.md`.
+- 검증(K-51 V1, C-46 checker PASS):
+  - K-51: `cargo build` OK, `apply-manifest.ps1` OK, `cargo test resources_prefer` 1 passed, `cargo clippy --all-targets -- -D warnings` 경고 0, `tools/package-release.ps1` OK. rustflags 변경으로 프로필마다 전부 재빌드(debug 3분 36초, test 1분 24초, clippy 1분 44초, release 5분 2초).
+  - C-46: `cargo test` 전체 319 passed, 0 failed, 3 ignored(`resources_prefer_dir_next_to_exe`·`missing_zed_icons_are_empty_without_panic`·`k20_res_prefix_serves_resources_svg_only` 통과). clippy 경고 0. `Cargo.toml`·`Cargo.lock`·`vendor` 변경 없음. 실행 코드의 resources 조회가 모두 `resources_dir()` 하나를 거침(코드 읽기).
+  - `dumpbin /dependents`(release exe, 배포 exe): `VCRUNTIME140`·`MSVCP`·`api-ms-win-crt-*`·`ucrt` 없음. 남은 DLL은 전부 OS 제공 26개(KERNEL32, USER32, ole32, SHELL32, advapi32, api-ms-win-core-synch-l1-2-0, combase, icuuc, oleaut32, gdi32, dcomp, dwmapi, winmm, comctl32, dwrite, dxgi, d3d11, imm32, ntdll, api-ms-win-shcore-scaling-l1-1-1, uiautomationcore, api-ms-win-core-winrt-l1-1-0, api-ms-win-core-winrt-error-l1-1-0, bcryptprimitives, gdiplus, userenv).
+  - 다른 경로 실행([SCREEN-OK] 뒤): 배포 폴더를 `C:\Users\nampl\AppData\Local\Temp\c46-run-23e06da8\`에 복사(5,751 파일)해 exe 1회 실행(PID 18664, 6초 뒤 실행 중). stderr 한 줄 `resources: C:\Users\nampl\AppData\Local\Temp\c46-run-23e06da8\resources`, stdout 비어 있음, `icons missing`·`queries unavailable` 등 다른 오류 없음. 그 PID만 닫음. 화면 조작·캡처 없음.
+- 상태: 완료(C-46 PASS). 남은 제약(`specs/v0.5/reports/RELEASE.md` "남은 제약", K-51·C-46 사용자 확인 필요):
+  1. 실제 다른 PC에서는 아직 안 돌려 봤다. 같은 PC의 다른 경로에서만 확인했다. VC++ 재배포 패키지가 없는 PC에서 뜨는지, 아이콘·테마·문법 강조가 실제로 보이는지는 사용자 확인이 필요하다.
+  2. 콘솔 창이 같이 뜬다. `main.rs`에 `windows_subsystem = "windows"`가 없어 exe를 더블클릭하면 콘솔 창이 함께 열린다(stderr `resources:` 줄이 거기 찍힌다). 이번 지시 범위 밖이라 바꾸지 않았다.
+  3. OS 조건: `icuuc.dll`은 Windows 10 1703 이상의 시스템 DLL이다. 긴 경로 지원(longPathAware)은 그 PC의 레지스트리 `LongPathsEnabled`도 1이어야 켜진다. x64 Windows만 대상이다(정적 CRT 설정은 `x86_64-pc-windows-msvc`에만).
+  4. `resources\` 판단은 폴더 존재만 본다. exe 옆에 빈 `resources\`가 있으면 그 폴더를 쓴다(개발 경로로 넘어가지 않는다). 개발 경로(`CARGO_MANIFEST_DIR`) 문자열은 exe에 그대로 남아 있다.
+  5. 서명 없음. exe에 코드 서명이 없어 다른 PC에서 SmartScreen 경고가 뜰 수 있다(확인 안 함).
+  6. 빌드 시간: rustflags가 바뀌어 공유 `target`의 모든 프로필이 한 번씩 전부 다시 빌드됐다(debug 3분 36초, release 5분 2초 등, K-51). 이후 빌드는 다시 증분이다.
+  7. 실행 방식: 이번 작업은 herdr 서브 에이전트 pane이 떠 있지 않아 leader가 Claude Code 내부 서브 에이전트(Sonnet)로 coder·checker 카드를 돌렸다.
+  - K-51 생략: 아이콘/테마 폴더 누락 시 배포 폴더 자동 fetch 없음(스크립트 이름만 안내).

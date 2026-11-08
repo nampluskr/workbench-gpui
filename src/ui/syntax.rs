@@ -222,7 +222,7 @@ fn load_queries(root: &Path, id: &str, language: &Language) -> Result<Vec<Query>
 pub fn resources() -> &'static QueryResources {
     static RESOURCES: OnceLock<QueryResources> = OnceLock::new();
     RESOURCES.get_or_init(|| {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/zed-languages");
+        let root = super::zed_icons::resources_dir().join("zed-languages");
         let resources = QueryResources::load(&root);
         if !resources.errors.is_empty() {
             eprintln!("Local Zed queries unavailable; using plain text: {}", resources.errors.join("; "));
