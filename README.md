@@ -100,6 +100,8 @@ pwsh -NoProfile -File tools/apply-manifest.ps1
 - `cargo build`를 하면 병합이 사라지므로 빌드할 때마다 다시 실행해야 합니다.
 - 긴 경로(260자 초과)를 실제로 쓰려면 Windows 설정 `LongPathsEnabled`도 켜져 있어야 합니다.
 
+다른 PC로 옮길 배포본(zip) 만들기와 복사본 채우기는 [docs/BUILD.md](docs/BUILD.md)를 보세요.
+
 ## 검증
 
 ### 사용자가 직접 UI 테스트하기

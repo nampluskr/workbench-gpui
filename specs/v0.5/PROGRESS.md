@@ -1079,3 +1079,14 @@
   6. 빌드 시간: rustflags가 바뀌어 공유 `target`의 모든 프로필이 한 번씩 전부 다시 빌드됐다(debug 3분 36초, release 5분 2초 등, K-51). 이후 빌드는 다시 증분이다.
   7. 실행 방식: 이번 작업은 herdr 서브 에이전트 pane이 떠 있지 않아 leader가 Claude Code 내부 서브 에이전트(Sonnet)로 coder·checker 카드를 돌렸다.
   - K-51 생략: 아이콘/테마 폴더 누락 시 배포 폴더 자동 fetch 없음(스크립트 이름만 안내).
+
+### 배포본 빌드 문서 (2026-11-08)
+
+- 요청: core-leader [ORDER](사용자 지시, 2026-11-08) — 배포본 빌드 과정 문서, README 링크, 빌드 산출물을 git에서 막기.
+- 조치(W-60, writer):
+  - `docs/BUILD.md`(새 파일): 필요한 도구와 버전, 복사본 채우기(fetch 스크립트 3개·채우는 폴더·고정 커밋), 빌드 명령(개발 빌드, `tools/package-release.ps1`·`-NoBuild`, 스크립트 단계, `CARGO_TARGET_DIR`, 정적 CRT), 결과 파일 경로·크기·폴더 구성, 걸린 시간, 다른 PC로 옮기기, 알려진 제약(RELEASE "남은 제약" 1~6), 라이선스 주의(배포물에 들어가는 `resources\` 복사본), GitHub에 올리지 않는 것.
+  - `.gitignore`: `target/` 다음에 `dist/`, `bundle/`, `*.exe`, `*.zip`, `*.msi`, `*.pdb`(주석 한 줄).
+  - `README.md`: "빌드와 실행" 절 끝에 `docs/BUILD.md` 링크 한 줄.
+- 결과: 근거는 `specs/v0.5/reports/RELEASE.md`, K-51 보고, C-46 리뷰, `tools/*.ps1`, `build.rs`, `.cargo/config.toml`, `Cargo.toml`, `HERDR-SETUP.md` 2.2, `resources/` 라이선스 파일, `src/ui/app_menu.rs` 라이선스 목록. 근거가 없는 것은 "확인 안 함"으로 적었다(측정 PC의 CPU·메모리, `extensions/html` 쿼리에 따로 적용되는 라이선스).
+- 검증(V0, writer): 절 구성 확인, 링크 경로 확인(README → `docs/BUILD.md`, BUILD.md → RELEASE·K-51·C-46 파일 존재). `git ls-files -ci --exclude-standard` 0건(새 `.gitignore` 줄에 걸리는 추적 파일 없음). 산출물 커밋 여부는 leader 확인(`git ls-files`에 `\.(exe|zip|msi|pdb|dll|7z)$`·`target/`·`dist/`·`bundle/` 0건). 빌드·앱 실행 없음.
+- 상태: 완료(writer). 보고: `specs/v0.5/cards/W-60.report.md`.

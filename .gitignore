@@ -1,4 +1,11 @@
 target/
+# build outputs are never committed
+dist/
+bundle/
+*.exe
+*.zip
+*.msi
+*.pdb
 resources/zed-icons/
 resources/zed-themes/
 .serena/
