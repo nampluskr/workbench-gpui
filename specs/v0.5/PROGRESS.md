@@ -1008,5 +1008,43 @@
 
 ## 버전 종료
 
-- 사용자 종료 판단: 진행 중.
-- 남은 것: 진행 중.
+- 사용자 종료 판단(core-leader 전달, 2026-11-08): 사용자가 v0.5를 끝냈다. 목표의 약 90%에 도달했고, 추가 수정은 다음 버전에서 한다.
+- 마지막 상태: Phase 11까지 push(`0c37da4`). Phase 12 사용자 테스트는 master `0c37da4` 빌드로 했다.
+- 남은 것:
+  - Phase 12 결과 기록 없음 — 다음 버전에서 다시 확인. 아래는 `specs/v0.5/reports/V4-LIST.md`에서 상태가 "Phase 12"·"기록 없음"·"다시 확인 안 함"인 미확인 항목과 "범위 밖" 차이를 종류별로 옮긴 것이다(근거 줄 번호는 V4-LIST를 만든 때의 보고 파일 기준).
+  - V4(11):
+    - Phase 3 I-14 글자 모양 인상: 영문(IBM Plex Sans·Lilex)·한글(Malgun Gothic) 글자 모양, 굵기(미리보기 제목 600 포함), 렌더링 인상 — 근거 ORDER-03 39~40행, PROGRESS "Phase 12 V4 확인 항목" 990행 (V4-LIST 상태: Phase 12)
+    - Phase 3 I-13 현재 줄 강조 대비: One Light 현재 줄 배경 `#ebebecbf`의 대비·인상 — 근거 ORDER-03 41행, PROGRESS 991행 (V4-LIST 상태: Phase 12)
+    - Phase 4 OS 네이티브 대화 상자 `\`: 탭 닫기 미저장·파일 삭제 TaskDialog의 역슬래시 표시(OS 글꼴, I-20 판정 제외, core 결정 A) — 근거 ORDER-04 11행 `measure-ORDER-04/app-I20-dialog-unsaved.png`·`app-I20-dialog-delete.png`, PROGRESS 992행 (V4-LIST 상태: Phase 12)
+    - Phase 5 아이콘 모양 인상: Zed SVG로 바꾼 아이콘의 모양 인상 — 근거 ORDER-05 31~32행 (V4-LIST 상태: Phase 12)
+    - Phase 6 Licenses 표시 방식: gpui는 별도 창(이제 문법·확장 라이선스 포함) — 근거 ORDER-06-R2 17행 (V4-LIST 상태: Phase 12)
+    - Phase 7 테마·아이콘 테마 인상: 테마·아이콘 테마 인상, Catppuccin 컬러·Monochrome 아이콘 대비, 미리 보기 중 깜박임 — 근거 ORDER-07 35~36행 (V4-LIST 상태: Phase 12)
+    - Phase 8 검색 툴바 인상: 검색 툴바 아이콘(‹ › 겹 chevron, 필터 줄 두 아이콘) 인상, 다른 창 크기에서 검색 입력 폭 — 근거 ORDER-08 38행 (V4-LIST 상태: Phase 12)
+    - Phase 9 긴 경로 탭 툴팁: 긴 경로 툴팁이 여러 줄로 감기는 모양(Zed 캡처는 짧은 경로라 비교 못 함) — 근거 ORDER-09 39행 (V4-LIST 상태: Phase 12)
+    - Phase 11 구문 색 품질 인상: 언어별 강조 색 인상(ORDER-11 판정 방법 V4) — 근거 ORDER-11 83행 (V4-LIST 상태: Phase 12)
+    - Phase 11 미리보기 코드 블록 인상: 미리보기 코드 블록의 강조·테두리·배경 인상 — 근거 ORDER-11 83행 (V4-LIST 상태: Phase 12)
+    - Phase 11 코드 파일 첫 프레임 줄바꿈: 코드 파일을 연 첫 프레임에 줄바꿈이 한 번 켜졌다 꺼지는지(렌더 때 적용, 한 프레임 늦음, K-47-R1) — 근거 ORDER-11 84행 (V4-LIST 상태: Phase 12)
+  - 측정 못 함·V4(7):
+    - Phase 6 Settings 창 안 조작: Settings 창 안 검색, 숫자 입력 저장, Edit in settings.json 버튼 — SendInput 입력이 별도 창에 가지 않음(V1·코드 리뷰만) — 근거 ORDER-06-R1 17~18·30~31행, ORDER-06-R2 17행 (V4-LIST 상태: Phase 12)
+    - Phase 6 View → Editor Layout 하위 메뉴 열림: 하위 메뉴 hover 입력이 전달되지 않아 캡처 해시 불변(`cargo test app_menu::tests`만) — 근거 ORDER-06-R1 10·18·31행, ORDER-06-R2 17행 (V4-LIST 상태: Phase 12)
+    - Phase 8 미리보기 클릭 위치: 미리보기에서 목록·코드 블록·인용 클릭 뒤 커서 위치(덤프에 블록 probe가 없어 화면 클릭 측정 안 함, V1 K-24) — 근거 ORDER-08 1·7·37행 (V4-LIST 상태: Phase 12)
+    - Phase 8 Replace 뒤 수정 표시: Replace Next·Replace All 뒤 탭이 수정됨 표시이고 디스크 파일은 그대로인지(화면 측정에서 Replace를 누르지 않음) — 근거 ORDER-08 1·36행 (V4-LIST 상태: Phase 12)
+    - Phase 9 폴더 둘일 때 경로 줄: 측정 스크립트가 둘째 폴더의 파일을 열지 못함(V1 K-34 `path_text`만). 예 `workbench-tauri\AGENTS.md › # AGENTS` — 근거 ORDER-09 8·36행 (V4-LIST 상태: Phase 12)
+    - Phase 9 분할 pane별 제목: 분할 두 pane이 각자 커서 기준 제목을 보이는지(V1 `heading_trail`만) — 근거 ORDER-09 8·37행 (V4-LIST 상태: Phase 12)
+    - Phase 9 다른 탭으로 뒤로 가기: 다른 탭으로 뒤로 가기(App.tsx → AGENTS.md)와 닫은 탭 다시 열기 — 근거 ORDER-09 1·38행 (V4-LIST 상태: Phase 12)
+  - 측정 못 함(5):
+    - Phase 7 Zed 트리 아이콘 화면 비교: Zed 단독 실행이 fixture 폴더를 앱 단계에서만 만들어 시작 전 종료(대응은 테마 JSON 기준 V1 `cargo test icon_theme`) — 근거 ORDER-07 1·8·36행 (V4-LIST 상태: Phase 12)
+    - Phase 9 스크롤 행 안 probe: gpui 스크롤 행 안 probe가 덤프에 비거나 갱신되지 않아 스크립트 `[RESULT]` 일부가 틀림(판정은 leader가 캡처로) — 근거 ORDER-09 33행, PROGRESS K-37 범위 밖 발견 (V4-LIST 상태: 기록 없음)
+    - Phase 10 사이드바 누름 색: `ghost_element_active`는 화면 측정 안 함(소스 기준) — 근거 ORDER-10 37행 (V4-LIST 상태: Phase 12)
+    - Phase 11 Zed 캡처 없는 형식: Diff·Go Mod·Go Work·Env·Git Commit은 강조됨을 캡처로 확인했으나 Zed 캡처가 없어 비교 못 함 — 근거 ORDER-11 57행 (`run4-step3`) (V4-LIST 상태: 기록 없음)
+    - Phase 11 V1만 확인한 형식: JSONC, TOML, Git 4종(Attributes·Config·Ignore·Rebase)은 V1 샘플 run 테스트만, 화면 샘플 없음 — 근거 ORDER-11 58행 (V4-LIST 상태: 기록 없음)
+  - 결정·V4(1):
+    - Phase 10 `panel.focused_border` 라이트: gpui `#0588f0`(Zed `default_colors.rs` 98), tauri `border.focused`. 라이트 값 toml ID 형식 미정 — 근거 ORDER-10 19·36행 (V4-LIST 상태: tauri K-46으로 같아짐(PROGRESS C-40 뒤 "tauri와 다른 점(마무리)"). toml 라이트 슬롯은 기록 없음(W-45 제안 미결). 인상은 Phase 12)
+  - 결정(2):
+    - Phase 9 폴더 밖 파일 경로 줄: gpui는 파일 이름만, tauri는 전체 경로. Zed 소스 대조(C-38)로 파일 이름만이 Zed와 같음 — 근거 ORDER-09 20~21행 (V4-LIST 상태: gpui는 그대로(Zed와 같음). tauri 쪽 처리 기록 없음)
+    - Phase 11 백그라운드 파싱: 남은 값: 합성 마크다운(1만 줄, 코드 블록 330) 연 뒤 첫 편집 61ms(이후 중앙 19.9ms, 루트 증분 파싱), ash `definitions.rs` 5.7만 줄 한 글자 26ms, 큰 파일 첫 파싱이 UI 스레드(TS 4.5만 줄 1.4초, 1.5만 줄 0.4초 — 그동안 화면이 멈춤). Zed식 1ms 동기 + background 파싱(첫 파싱 동안 평문)을 할지 — 근거 `cards/K-49.report.md` 2·3절, `cards/K-50.report.md` 1~3절 (V4-LIST 상태: core 결정(ORDER-11-R2, 2026-11-08): 처음 열 때 전체 파싱만 background, 편집 중 증분은 동기. K-50에서 고침 — TS 4.5만 줄 UI 정지 1,353ms → 1.9ms(색은 약 1.4초 뒤, 그동안 평문). 남은 것: 마크다운 첫 편집 61ms는 기록만(core). 앱에서 평문 → 색 전환, 파싱 중 입력·탭 닫기 모습은 V3/Phase 12)
+  - 범위 밖(4):
+    - Phase 10 편집 영역 포커스 테두리 대체값: pane 쪽 대체값 `#62adef`는 그대로(panel만 Zed 기본으로 나눔) — 근거 ORDER-10 24행 (V4-LIST 상태: 그대로)
+    - Phase 11 미리보기 중첩 번호 목록: 중첩 번호 목록 표시 `A.`/`B.`(Zed `1.`/`2.`) — 근거 ORDER-11 79~80행 (V4-LIST 상태: 기록 없음)
+    - Phase 11 미리보기 제목 밑줄·가운데 정렬: 제목 아래 구분선·본문 폭 가운데 정렬 없음 — 근거 ORDER-11 80행 (V4-LIST 상태: 기록 없음)
+    - Phase 11 미리보기 코드 블록 다음 제목 간격: 코드 블록 다음 제목 위 간격이 Zed보다 약 3px 작음 — 근거 ORDER-11 80행 (V4-LIST 상태: 기록 없음)
