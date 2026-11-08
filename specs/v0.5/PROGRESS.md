@@ -1090,3 +1090,19 @@
 - 결과: 근거는 `specs/v0.5/reports/RELEASE.md`, K-51 보고, C-46 리뷰, `tools/*.ps1`, `build.rs`, `.cargo/config.toml`, `Cargo.toml`, `HERDR-SETUP.md` 2.2, `resources/` 라이선스 파일, `src/ui/app_menu.rs` 라이선스 목록. 근거가 없는 것은 "확인 안 함"으로 적었다(측정 PC의 CPU·메모리, `extensions/html` 쿼리에 따로 적용되는 라이선스).
 - 검증(V0, writer): 절 구성 확인, 링크 경로 확인(README → `docs/BUILD.md`, BUILD.md → RELEASE·K-51·C-46 파일 존재). `git ls-files -ci --exclude-standard` 0건(새 `.gitignore` 줄에 걸리는 추적 파일 없음). 산출물 커밋 여부는 leader 확인(`git ls-files`에 `\.(exe|zip|msi|pdb|dll|7z)$`·`target/`·`dist/`·`bundle/` 0건). 빌드·앱 실행 없음.
 - 상태: 완료(writer). 보고: `specs/v0.5/cards/W-60.report.md`.
+
+### 노트북에서 clone 후 BUILD.md만으로 빌드 (2026-11-08)
+
+- 요청: core-leader [ORDER 추가]·[ORDER 정정]·[ORDER 정정 2](사용자 지시, 2026-11-08) — 사용자 개인 노트북에서 `git clone` 한 뒤 `docs/BUILD.md` 순서만 따라 배포본까지 만들 수 있게. 처음 지시로 깨끗한 복제에서 BUILD.md대로 빌드하는 C-47(checker)을 냈으나, 사용자 정정으로 실제 빌드·clone 테스트는 하지 않고 문서만 고치기로 했다. C-47은 시작 직후 멈췄고, 만든 `%TEMP%` 복제 폴더는 leader가 지웠다.
+- 조치(W-61, writer): `docs/BUILD.md`만 고쳤다. 스크립트·코드·설정은 바꾸지 않았다.
+  - 0절 "처음부터 순서"(새 절): 도구 설치(winget) → 새 터미널 → Rust 1.99.1 맞추기·설치 확인 → `git clone https://github.com/nampluskr/workbench-gpui.git`·`cd workbench-gpui` → fetch 셋 → `tools/package-release.ps1` → 결과 위치. 단계마다 확인 방법(fetch 스크립트 마지막 줄, `package-release.ps1`의 `folder:`·`zip:`·`size:` 세 줄)과 근거 있는 시간만.
+  - 1절: winget 설치 명령(Git, PowerShell 7, Build Tools 2022 + VCTools + Windows 11 SDK 10.0.26100, Rustup)과 `rustup toolchain install 1.99.1`·`rustup default 1.99.1`, 설치 확인 명령, GUI 설치 때 고를 것. winget ID·구성 요소 ID는 이 PC에서 실행해 확인하지 않았다고 적음. `Cargo.toml` git 의존성·`vendor/gpui-base`·`build.rs`가 저장소와 공개 고정 rev만 쓴다는 점.
+  - 2절: fetch는 GitHub 공개 고정 커밋·태그만 `%TEMP%`에 새로 받고 이 PC 전용 사본에 기대지 않음, 새 PC에서 따로 준비할 것 없음, 필요한 것은 git·pwsh·네트워크(github.com 막히면 실패).
+  - 3절: `CARGO_TARGET_DIR`은 기본으로 설정하지 않음(레포 `target\`). 이 PC 공유 경로는 멀티 에이전트 데스크톱 전용 참고로만. 개발 빌드 명령에서 그 줄을 뺐다.
+  - 4절: 결과 경로를 `<레포>\target\dist\...`로, 크기는 2026-11-08 이 PC 값.
+  - 5절: 이 PC 측정값이며 다른 PC는 다를 수 있음, 새 clone 첫 빌드는 crates·git 의존성 받는 시간이 더해짐, 깨끗한 clone 빌드·fetch 시간은 측정 안 함.
+  - 7절: 7 깨끗한 clone에서 빌드해 본 기록 없음(코드 읽기로만 확인), 8 `apply-manifest.ps1`은 PATH의 `mt.exe` 또는 Windows SDK 기본 경로 필요, 9 디스크 여유(release `target` 약 4.5 GB, 이 PC·leader 값).
+  - 8절 라이선스 주의, 9절 GitHub에 올리지 않는 것은 유지.
+- 결과: 근거는 W-61 카드의 leader 코드 확인 사실, `tools/fetch-zed-*.ps1`·`package-release.ps1`·`apply-manifest.ps1` 출력·경로 코드, W-60 BUILD.md. 근거가 없는 것(도구 설치 시간, fetch 시간, 깨끗한 clone 빌드 시간)은 "측정 안 함"으로 적었다.
+- 검증(V0, writer, 코드 읽기): 단계 명령에 이 PC 전용 경로(`D:\projects`)가 없는지 grep — BUILD.md의 `D:\projects`는 2절 "기대지 않는다" 설명과 3절 데스크톱 전용 참고 두 곳뿐이고 단계 명령에는 없다. fetch 스크립트의 마지막 출력 줄, `package-release.ps1`의 출력 세 줄과 `CARGO_TARGET_DIR` 처리, `apply-manifest.ps1`의 SDK 경로를 스크립트에서 대조. 저장소에 `rust-toolchain` 파일 없음 확인. 빌드·clone·winget 설치·앱 실행 없음.
+- 상태: 완료(writer). 깨끗한 clone에서 실제로 따라 해 보는 확인은 사용자(노트북)에게 남는다. 보고: `specs/v0.5/cards/W-61.report.md`.
